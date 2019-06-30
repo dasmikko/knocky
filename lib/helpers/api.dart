@@ -6,7 +6,7 @@ import 'package:knocky/models/thread.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class KnockoutAPI {
-  static bool _isDev;
+  static bool _isDev = false;
 
   static String baseurlSite =
       !_isDev ? "https://knockout.chat/" : "https://forums.stylepunch.club/";
