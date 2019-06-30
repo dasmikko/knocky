@@ -118,13 +118,13 @@ class _MyHomePageState extends State<MyHomePage>
 
               flutterWebviewPlugin.onUrlChanged.listen((String url) async {
                 print(url);
-                if (url.contains(baseurl + "auth/finish")) {
-                  flutterWebviewPlugin.reloadUrl(baseurlSite);
+                if (url.contains(KnockoutAPI.baseurl + "auth/finish")) {
+                  flutterWebviewPlugin.reloadUrl(KnockoutAPI.baseurlSite);
                 }
 
-                if (url == baseurlSite) {
+                if (url == KnockoutAPI.baseurlSite) {
                   var cookies = await CookieManager.getCookies(
-                      baseurl);
+                      KnockoutAPI.baseurl);
 
                   SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -153,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage>
               });
 
               flutterWebviewPlugin.launch(
-                baseurlSite + "login",
+                KnockoutAPI.baseurlSite + "login",
                 userAgent:
                     "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
               );
