@@ -30,8 +30,9 @@ class _ThreadScreenState extends State<ThreadScreen>
 
   @override
   void afterFirstLayout(BuildContext context) {
+    var api = new KnockoutAPI();
     // Calling the same function "after layout" to resolve the issue.
-    getThread(widget.threadModel.id).then((res) {
+    api.getThread(widget.threadModel.id).then((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -45,7 +46,9 @@ class _ThreadScreenState extends State<ThreadScreen>
       _currentPage = _currentPage + 1;
     });
 
-    getThread(widget.threadModel.id, page: _currentPage).then((res) {
+     var api = new KnockoutAPI();
+
+    api.getThread(widget.threadModel.id, page: _currentPage).then((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -59,7 +62,9 @@ class _ThreadScreenState extends State<ThreadScreen>
       _currentPage = _currentPage - 1;
     });
 
-    getThread(widget.threadModel.id, page: _currentPage).then((res) {
+    var api = new KnockoutAPI();
+
+    api.getThread(widget.threadModel.id, page: _currentPage).then((res) {
       setState(() {
         details = res;
         _isLoading = false;

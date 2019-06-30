@@ -21,8 +21,9 @@ class _SubforumScreenState extends State<SubforumScreen> with AfterLayoutMixin<S
 
   @override
   void afterFirstLayout(BuildContext context) {
+    var api = new KnockoutAPI();
     // Calling the same function "after layout" to resolve the issue.
-    getSubforumDetails(widget.subforumModel.id).then((res) {
+    api.getSubforumDetails(widget.subforumModel.id).then((res) {
       setState(() {
         details = res;
       });
