@@ -65,13 +65,15 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   void afterFirstLayout(BuildContext context) {
     // Calling the same function "after layout" to resolve the issue.
-    getSubforums().then((subforums) {
+    var kapi = new KnockoutAPI();
+
+    kapi.getSubforums().then((subforums) {
       setState(() {
         _subforums = subforums;
       });
     });
 
-    authCheck();
+    kapi.authCheck();
   }
 
   Future<bool> _onWillPop() async {
