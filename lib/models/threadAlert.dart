@@ -24,5 +24,23 @@ class ThreadAlert {
   final DateTime threadUpdateAt;
   final int threadUser;
 
+  ThreadAlert({
+    this.avatarUrl,
+    this.backgroundUrl,
+    this.email,
+    this.firstUnreadId,
+    this.iconId,
+    this.id,
+    this.lastSeen,
+    this.locked,
+    this.pinned,
+    this.subforumId,
+    this.threadCreatedAt,
+    this.threadDeletedAt,
+    this.threadTitle,
+    this.threadUpdateAt,
+    this.threadUser
+  });
+
 
 }
