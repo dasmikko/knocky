@@ -10,8 +10,8 @@ class PostHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('avatar: ' +  avatarUrl);
-    print('background : ' + backgroundUrl);
+    //print('avatar: ' +  avatarUrl);
+    //print('background : ' + backgroundUrl);
 
     bool hasBg = (backgroundUrl != null || backgroundUrl != '' || backgroundUrl != 'none.webp');
     bool hasAvatar = (avatarUrl != null || avatarUrl != '');

@@ -81,15 +81,21 @@ class ThreadPostItem extends StatelessWidget {
                 ],
               ),
             ),
-            SlateDocumentParser(
-              slateObject: postDetails.content,
-              onPressSpoiler: (text) {
-                onPressSpoiler(context, text);
-              },
+            Container(
+              padding: EdgeInsets.only(left: 10, right: 10),
+              child: SlateDocumentParser(
+                slateObject: postDetails.content,
+                onPressSpoiler: (text) {
+                  onPressSpoiler(context, text);
+                },
+              ),
             ),
-            Row(
-              children: buildRatings(postDetails.ratings),
-            )
+            Container(
+              padding: EdgeInsets.only(top: 5, right: 10, left: 10, bottom: 10),
+              child: Row(
+                children: buildRatings(postDetails.ratings),
+              ),
+            ),
           ],
         ),
       ),
