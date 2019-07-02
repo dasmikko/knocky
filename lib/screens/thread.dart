@@ -20,6 +20,7 @@ class _ThreadScreenState extends State<ThreadScreen>
   int _currentPage = 1;
   int _totalPages = 0;
   bool _isLoading = true;
+  final scaffoldkey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -76,6 +77,7 @@ class _ThreadScreenState extends State<ThreadScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.threadModel.title)),
+      key: scaffoldkey,
       body: _isLoading
           ? Text('Node graph out of date')
           : ListView.builder(
@@ -84,6 +86,7 @@ class _ThreadScreenState extends State<ThreadScreen>
               itemBuilder: (BuildContext context, int index) {
                 ThreadPost item = details.posts[index];
                 return ThreadPostItem(
+                  scaffoldKey: scaffoldkey,
                   postDetails: item,
                 );
               },

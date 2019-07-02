@@ -6,13 +6,15 @@ import 'package:knocky/widget/YouTubeEmbed.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:intent/intent.dart';
 import 'package:intent/action.dart';
+import 'package:knocky/widget/PostElements/Image.dart';
 import 'dart:convert';
 
 class SlateDocumentParser extends StatelessWidget {
   final SlateObject slateObject;
   final Function onPressSpoiler;
+  final GlobalKey scaffoldkey;
 
-  SlateDocumentParser({this.slateObject, this.onPressSpoiler});
+  SlateDocumentParser({this.slateObject, this.onPressSpoiler, this.scaffoldkey});
 
   Widget paragraphToWidget(SlateNode node) {
     List<TextSpan> lines = List();
@@ -300,7 +302,7 @@ class SlateDocumentParser extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 20.0),
       child: LimitedBox(
         maxHeight: 300,
-        child: CachedNetworkImage(imageUrl: node.data.src),
+        child: ImageWidget(url: node.data.src),
       ),
     );
   }

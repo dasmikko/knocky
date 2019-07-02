@@ -7,8 +7,9 @@ import 'package:knocky/widget/PostHeader.dart';
 
 class ThreadPostItem extends StatelessWidget {
   final ThreadPost postDetails;
+  final GlobalKey scaffoldKey;
 
-  ThreadPostItem({this.postDetails});
+  ThreadPostItem({this.postDetails, this.scaffoldKey});
 
   List<Widget> buildRatings(List<ThreadPostRatings> ratings) {
     List<Widget> items = List();
