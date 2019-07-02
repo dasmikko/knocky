@@ -10,16 +10,19 @@ class PostHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(avatarUrl);
-    print(backgroundUrl);
+    print('avatar: ' +  avatarUrl);
+    print('background : ' + backgroundUrl);
 
-    bool hasBg = (backgroundUrl != null || backgroundUrl != '');
+    bool hasBg = (backgroundUrl != null || backgroundUrl != '' || backgroundUrl != 'none.webp');
     bool hasAvatar = (avatarUrl != null || avatarUrl != '');
 
     return Container(
+      padding: EdgeInsets.all(5),
       decoration: BoxDecoration(
         image: hasBg != null ? DecorationImage(
           alignment: Alignment.center,
+          fit: BoxFit.cover,
+          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
           image: CachedNetworkImageProvider('https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' + backgroundUrl)
         ) : null
       ),

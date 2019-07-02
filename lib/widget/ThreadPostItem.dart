@@ -14,7 +14,7 @@ class ThreadPostItem extends StatelessWidget {
     List<Widget> items = List();
 
     if (ratings != null) {
-      ratings.sort((a,b) => b.count.compareTo(a.count));
+      ratings.sort((a, b) => b.count.compareTo(a.count));
       ratings.forEach((rating) {
         RatingistItem icon =
             ratingsIconList.where((icon) => icon.id == rating.rating).first;
@@ -36,7 +36,7 @@ class ThreadPostItem extends StatelessWidget {
     return items;
   }
 
-  void onPressSpoiler (BuildContext context, String content) {
+  void onPressSpoiler(BuildContext context, String content) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -60,23 +60,32 @@ class ThreadPostItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      clipBehavior: Clip.antiAlias,
       margin: EdgeInsets.only(bottom: 5.0, top: 10.0),
       child: Container(
-        padding: EdgeInsets.all(10.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                PostHeader(username: postDetails.user.username, avatarUrl: postDetails.user.avatarUrl, backgroundUrl: postDetails.user.backgroundUrl,),
-              ],
+            Container(
+              margin: EdgeInsets.only(bottom: 10),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: PostHeader(
+                      username: postDetails.user.username,
+                      avatarUrl: postDetails.user.avatarUrl,
+                      backgroundUrl: postDetails.user.backgroundUrl,
+                    ),
+                  )
+                ],
+              ),
             ),
             SlateDocumentParser(
               slateObject: postDetails.content,
               onPressSpoiler: (text) {
                 onPressSpoiler(context, text);
-                },
+              },
             ),
             Row(
               children: buildRatings(postDetails.ratings),
