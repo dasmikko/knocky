@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/models/slateDocument.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:knocky/widget/PostElements/Video.dart';
 import 'package:knocky/widget/YouTubeEmbed.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:intent/intent.dart';
@@ -307,6 +307,10 @@ class SlateDocumentParser extends StatelessWidget {
     );
   }
 
+  Widget handleVideo(SlateNode node) {
+    return VideoElement(node.data.src, scaffoldkey);
+  }
+
   List<Widget> handleNodes(List<SlateNode> nodes) {
     List<Widget> widgets = new List();
 
@@ -365,7 +369,7 @@ class SlateDocumentParser extends StatelessWidget {
           );
           break;
         case 'video':
-          widgets.add(Text('Video embed'));
+          widgets.add(handleVideo(node));
           break;
         default:
           if (node.object == 'text') {
