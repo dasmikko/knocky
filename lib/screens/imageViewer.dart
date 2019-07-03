@@ -8,7 +8,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 //import 'package:path_provider/path_provider.dart';
 //import 'package:path/path.dart';
 //import 'dart:io';
-//import 'package:flutter_punch/helpers/Download.dart';
+import 'package:knocky/helpers/Download.dart';
 //import 'package:flutter/services.dart';
 
 class ImageViewerScreen extends StatelessWidget {
@@ -29,7 +29,7 @@ class ImageViewerScreen extends StatelessWidget {
             icon: Icon(Icons.file_download),
             tooltip: "Download image",
             onPressed: () async {
-              //DownloadHelper().downloadFile(url, _scaffoldKey);              
+              DownloadHelper().downloadFile(url, _scaffoldKey);              
             },
           ),
           IconButton(
