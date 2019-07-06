@@ -22,20 +22,26 @@ class KnockoutAPI {
   }
 
   Future<List<Subforum>> getSubforums() async {
-    final response = await http.get(baseurl + 'subforum');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final response = await http.get(baseurl + 'subforum', headers: {'Cookie': prefs.getString('cookieString')});
 
     return parseSubforums(response.body);
   }
 
   Future<SubforumDetails> getSubforumDetails(int id) async {
-    final response = await http.get(baseurl + 'subforum/' + id.toString());
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final response = await http.get(baseurl + 'subforum/' + id.toString(), headers: {'Cookie': prefs.getString('cookieString')});
 
     return SubforumDetails.fromJson(json.decode(response.body));
   }
 
   Future<Thread> getThread(int id, {int page: 1}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    
     final response = await http
-        .get(baseurl + 'thread/' + id.toString() + '/' + page.toString());
+        .get(baseurl + 'thread/' + id.toString() + '/' + page.toString(), headers: {'Cookie': prefs.getString('cookieString')});
 
     return Thread.fromJson(json.decode(response.body));
   }
@@ -46,7 +52,8 @@ class KnockoutAPI {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final response = await http.get(baseurl + 'user/authCheck',
-        headers: {'Cookie': prefs.getString('cookieString')});
+        headers: {'Cookie': prefs.getString('cookieString')}
+    );
 
     print('Auth: ' + response.body);
   }
