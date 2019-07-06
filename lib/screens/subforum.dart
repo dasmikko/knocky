@@ -30,7 +30,7 @@ class _SubforumScreenState extends State<SubforumScreen> with AfterLayoutMixin<S
       setState(() {
         details = res;
 
-        if (!prefs.getBool('showNSFWThreads')) {
+        if (prefs.getBool('showNSFWThreads') == null || !prefs.getBool('showNSFWThreads')) {
           details.threads = details.threads.where((item) => !item.title.contains('NSFW')).toList();
         }        
       });
