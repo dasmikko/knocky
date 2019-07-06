@@ -34,12 +34,17 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   void initState() {
     super.initState();
     SharedPreferences.getInstance().then((prefs) {
-      print(prefs.getBool('isLoggedIn'));
-
       setState(() {
         _loginState = prefs.getBool('isLoggedIn') != null
             ? prefs.getBool('isLoggedIn')
             : false;
+
+        _userId = prefs.getInt('userId');
+        _username = prefs.getString('username');
+        _avatar = prefs.getString('avatar_url');
+        _background = prefs.getString(
+                       'background_url');
+        _usergroup = prefs.getInt('usergroup');
       });
     });
   }
@@ -158,8 +163,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               onTap: () async {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
 
-                CookieManager.deleteAllCookies();
-                await prefs.setBool('isLoggedIn', true);
+                await prefs.setBool('isLoggedIn', false);
                 await prefs.setString('cookieString', null);
 
                 setState(() {
