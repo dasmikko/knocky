@@ -4,6 +4,7 @@ import 'package:knocky/models/subforum.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/widget/SubforumDetailListItem.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class SubforumScreen extends StatefulWidget {
@@ -20,14 +21,19 @@ class _SubforumScreenState extends State<SubforumScreen> with AfterLayoutMixin<S
 
 
   @override
-  void afterFirstLayout(BuildContext context) {
+  void afterFirstLayout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     var api = new KnockoutAPI();
     // Calling the same function "after layout" to resolve the issue.
     api.getSubforumDetails(widget.subforumModel.id).then((res) {
       setState(() {
         details = res;
-      });
 
+        if (!prefs.getBool('showNSFWThreads')) {
+          details.threads = details.threads.where((item) => !item.title.contains('NSFW')).toList();
+        }        
+      });
     });
   }
 

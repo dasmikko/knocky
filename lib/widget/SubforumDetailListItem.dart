@@ -15,7 +15,7 @@ class SubforumDetailListItem extends StatelessWidget {
         (IconListItem item) => item.id == threadDetails.iconId).url;
 
     return Card(
-      color: threadDetails.pinned == 1 ? Colors.green : Colors.white,
+      color: threadDetails.pinned == 1 ? Colors.green : null,
       margin: EdgeInsets.only(bottom: 5.0, top: 10.0),
       child: InkWell(
         onTap: () {

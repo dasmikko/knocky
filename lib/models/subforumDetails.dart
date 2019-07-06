@@ -9,7 +9,7 @@ class SubforumDetails {
   final int iconId;
   final String name;
   final int totalThreads;
-  final List<SubforumThread> threads;
+  List<SubforumThread> threads;
 
 
   SubforumDetails({this.id, this.currentPage, this.iconId, this.name, this.totalThreads, this.threads});
