@@ -64,12 +64,16 @@ ThreadPost _$ThreadPostFromJson(Map<String, dynamic> json) {
           ?.map((e) => e == null
               ? null
               : ThreadPostRatings.fromJson(e as Map<String, dynamic>))
-          ?.toList());
+          ?.toList(),
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String));
 }
 
 Map<String, dynamic> _$ThreadPostToJson(ThreadPost instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'createdAt': instance.createdAt?.toIso8601String(),
       'content': _contentToJson(instance.content),
       'user': instance.user,
       'ratings': instance.ratings

@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
-ThemeData defaultTheme() {
+ThemeData DefaultTheme() {
   return ThemeData(
-    primarySwatch: Colors.red
+    brightness: Brightness.light,
+    primarySwatch: Colors.red,
+    textTheme: TextTheme(
+      body1: TextStyle(
+        color: Colors.black
+      )
+    ),
   );
 }
+

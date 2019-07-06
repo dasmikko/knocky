@@ -13,8 +13,9 @@ class SlateDocumentParser extends StatelessWidget {
   final SlateObject slateObject;
   final Function onPressSpoiler;
   final GlobalKey scaffoldkey;
+  final BuildContext context;
 
-  SlateDocumentParser({this.slateObject, this.onPressSpoiler, this.scaffoldkey});
+  SlateDocumentParser({this.slateObject, this.onPressSpoiler, this.scaffoldkey, this.context});
 
   Widget paragraphToWidget(SlateNode node) {
     List<TextSpan> lines = List();
@@ -55,9 +56,8 @@ class SlateDocumentParser extends StatelessWidget {
     });
 
     return Container(
-      //margin: EdgeInsets.only(bottom: 10),
       child: RichText(
-        text: TextSpan(style: TextStyle(color: Colors.black), children: lines),
+        text: TextSpan(children: lines),
       ),
     );
   }
@@ -78,6 +78,20 @@ class SlateDocumentParser extends StatelessWidget {
       bool isSpoiler =
           leaf.marks.where((mark) => mark.type == 'spoiler').length > 0;
 
+      TextStyle textStyle = Theme.of(context).textTheme.body1.copyWith(
+        fontSize: fontSize,
+        fontFamily: isCode ? 'RobotoMono' : 'Roboto',
+        decoration:
+          isUnderlined ? TextDecoration.underline : TextDecoration.none,
+        fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+        fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
+      );
+
+      TextStyle spoilerStyle = textStyle.copyWith(
+        background: Paint()..color = Theme.of(context).textTheme.body1.color,
+        color: Theme.of(context).textTheme.body1.color
+      );
+
       if (isSpoiler) {
         lines.add(
           TextSpan(
@@ -87,29 +101,14 @@ class SlateDocumentParser extends StatelessWidget {
                 print('Clicked spoiler');
                 this.onPressSpoiler(leaf.text);
               },
-            style: TextStyle(
-              background: Paint()..color = Colors.black,
-              fontFamily: isCode ? 'RobotoMono' : 'Roboto',
-              fontSize: fontSize,
-              decoration:
-                  isUnderlined ? TextDecoration.underline : TextDecoration.none,
-              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-              fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
-            ),
+            style: spoilerStyle,
           ),
         );
       } else {
         lines.add(
           TextSpan(
             text: leaf.text,
-            style: TextStyle(
-              fontFamily: isCode ? 'RobotoMono' : 'Roboto',
-              fontSize: fontSize,
-              decoration:
-                  isUnderlined ? TextDecoration.underline : TextDecoration.none,
-              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-              fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
-            ),
+            style: textStyle,
           ),
         );
       }
@@ -165,7 +164,7 @@ class SlateDocumentParser extends StatelessWidget {
                 height: 5.0,
                 width: 5.0,
                 decoration: new BoxDecoration(
-                  color: Colors.black,
+                  color: Theme.of(context).textTheme.body1.color,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -177,7 +176,7 @@ class SlateDocumentParser extends StatelessWidget {
     });
 
     return Container(
-      margin: EdgeInsets.only(bottom: 10),
+      margin: EdgeInsets.only(top: 10, bottom: 10),
       child: Column(children: listItems),
     );
   }
@@ -246,7 +245,7 @@ class SlateDocumentParser extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(bottom: 10),
       child: RichText(
-        text: TextSpan(style: TextStyle(color: Colors.black), children: lines),
+        text: TextSpan(children: lines),
       ),
     );
   }
@@ -299,7 +298,7 @@ class SlateDocumentParser extends StatelessWidget {
 
   Widget handleImage(SlateNode node) {
     return Container(
-      margin: EdgeInsets.only(bottom: 20.0),
+      margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
       child: LimitedBox(
         maxHeight: 300,
         child: ImageWidget(url: node.data.src),
@@ -319,7 +318,6 @@ class SlateDocumentParser extends StatelessWidget {
       switch (node.type) {
         case 'paragraph':
           widgets.add(Container(
-              margin: EdgeInsets.only(bottom: 10.0),
               child: paragraphToWidget(node)));
           break;
         case 'heading-one':

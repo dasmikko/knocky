@@ -34,6 +34,7 @@ dependencies:
   permission_handler: '^3.1.0'
   dio: ^2.1.8
   dynamic_theme: ^1.0.1
+  timeago: ^2.0.17
   intent: ^1.1.0
   flutter:
     sdk: flutter

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
+import 'themes/DarkTheme.dart';
 import 'screens/home.dart';
 
 void main() {
@@ -12,11 +13,7 @@ void main() {
 
   rv = new DynamicTheme(
     defaultBrightness: Brightness.dark,
-    data: (brightness) => ThemeData(
-      primarySwatch: Colors.red,
-      brightness: brightness,
-      accentColor: Colors.red
-    ),
+    data: (brightness) => DarkTheme(),
     themedWidgetBuilder: (context, theme) {
       return MaterialApp(
         title: 'Knocky',

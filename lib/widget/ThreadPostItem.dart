@@ -77,6 +77,8 @@ class ThreadPostItem extends StatelessWidget {
                       username: postDetails.user.username,
                       avatarUrl: postDetails.user.avatarUrl,
                       backgroundUrl: postDetails.user.backgroundUrl,
+                      threadPost: postDetails,
+                      context: context,
                     ),
                   )
                 ],
@@ -89,6 +91,7 @@ class ThreadPostItem extends StatelessWidget {
                 onPressSpoiler: (text) {
                   onPressSpoiler(context, text);
                 },
+                context: context,
               ),
             ),
             Container(

@@ -40,12 +40,13 @@ class ThreadUser {
 @JsonSerializable()
 class ThreadPost {
   final int id;
+  final DateTime createdAt;
   @JsonKey(fromJson: _contentFromJson, toJson: _contentToJson)
   final SlateObject content;
   final ThreadPostUser user;
   final List<ThreadPostRatings> ratings;
 
-  ThreadPost({this.id, this.content, this.user, this.ratings});
+  ThreadPost({this.id, this.content, this.user, this.ratings, this.createdAt});
 
   factory ThreadPost.fromJson(Map<String, dynamic> json) => _$ThreadPostFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadPostToJson(this);

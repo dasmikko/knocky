@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:knocky/screens/Settings/filter.dart';
 
+import 'package:knocky/themes/DefaultTheme.dart';
+import 'package:knocky/themes/DarkTheme.dart';
+
 
 class SettingsScreen extends StatefulWidget {
   BuildContext appContext;
+  
 
   SettingsScreen({
     @required this.appContext
@@ -15,25 +19,26 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _isUsingDarkTheme;
+  ThemeData selectedTheme = DarkTheme();
 
   @override
   void initState() {
     super.initState();
 
-    _isUsingDarkTheme = DynamicTheme.of(context).brightness == Brightness.dark? true : false;
+    if (DynamicTheme.of(context).brightness == Brightness.light) {
+      selectedTheme = DefaultTheme();
+    } else {
+      selectedTheme = DarkTheme();
+    }
+
   }
 
-  bool updateDarkThemeSetting() {
-    DynamicTheme.of(context).setBrightness(Theme.of(context).brightness == Brightness.dark? Brightness.light: Brightness.dark);
-    DynamicTheme.of(context).setThemeData(new ThemeData(
-        primarySwatch: Colors.red,
-        brightness: Theme.of(context).brightness == Brightness.dark? Brightness.light: Brightness.dark,
-        accentColor: Theme.of(context).brightness == Brightness.dark? Colors.red : Colors.red
-    ));
+  void onSelectTheme (dynamic theme) {
+    DynamicTheme.of(context).setBrightness(theme.brightness);
+    DynamicTheme.of(context).setThemeData(theme);
 
     setState(() {
-     _isUsingDarkTheme = Theme.of(context).brightness == Brightness.dark? false : true;
+     selectedTheme = theme; 
     });
   }
 
@@ -47,16 +52,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: ListView(
           padding: EdgeInsets.only(top: 8, bottom: 8),
           children: <Widget>[
-            SwitchListTile(
-              title: Text('Dark theme'),
-              subtitle: Text('Enable the dark theme for when\nusing the app at night.'),
-              onChanged: (bool value) {
-                this.updateDarkThemeSetting();
-              },
-              value: _isUsingDarkTheme,
+            ListTile(
+              enabled: true,
+              title: Text('Theme'),
+              trailing: DropdownButton(
+                value: selectedTheme,
+                onChanged: onSelectTheme,
+                items: <DropdownMenuItem>[
+                  DropdownMenuItem(
+                    child: Text('Light theme'),
+                    value: DefaultTheme(),
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Dark theme'),
+                    value: DarkTheme(),
+                  )
+                ],
+              ),
+
             ),
             ListTile(
               title: Text('Filter'),
+              subtitle: Text('Select what content to filter'),
               onTap: () {
                 Navigator.push(
                   context,
