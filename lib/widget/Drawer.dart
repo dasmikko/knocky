@@ -55,7 +55,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       child: ListView(
         children: <Widget>[
           DrawerHeader(
-            decoration: BoxDecoration(
+            decoration: _loginState ? BoxDecoration(
               image: DecorationImage(
                   alignment: Alignment.center,
                   fit: BoxFit.cover,
@@ -64,7 +64,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   image: CachedNetworkImageProvider(
                       'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
                           _background)),
-            ),
+            ) : null,
             child: Text(_loginState ? _username : 'Not logged in'),
           ),
           if (!_loginState)
