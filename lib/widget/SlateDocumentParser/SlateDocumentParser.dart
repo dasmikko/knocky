@@ -4,9 +4,9 @@ import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/widget/PostElements/Video.dart';
 import 'package:knocky/widget/YouTubeEmbed.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:knocky/widget/PostElements/Image.dart';
 import 'package:intent/intent.dart';
 import 'package:intent/action.dart';
-import 'package:knocky/widget/PostElements/Image.dart';
 import 'dart:convert';
 
 class SlateDocumentParser extends StatelessWidget {

@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+part 'threadAlert.g.dart';
+
 @JsonSerializable()
 class ThreadAlert {
   @JsonKey(name: 'avatar_url')
@@ -23,6 +25,20 @@ class ThreadAlert {
   final String threadTitle;
   final DateTime threadUpdateAt;
   final int threadUser;
+  final String threadUserAvatarUrl;
+  final int threadUserUsergroup;
+  final String threadUsername;
+  @JsonKey(name: 'thread_id')
+  final int threadId;
+  final String title;
+  final int unreadPosts;
+  @JsonKey(nullable: true, name: 'updated_at')
+  final DateTime updatedAt;
+  @JsonKey(name: 'user_id')
+  final int userId;
+  final int usergroup;
+  final String username;
+
 
   ThreadAlert({
     this.avatarUrl,
@@ -39,8 +55,19 @@ class ThreadAlert {
     this.threadDeletedAt,
     this.threadTitle,
     this.threadUpdateAt,
-    this.threadUser
+    this.threadUser,
+    this.username,
+    this.threadId,
+    this.threadUserAvatarUrl,
+    this.threadUsername,
+    this.threadUserUsergroup,
+    this.title,
+    this.unreadPosts,
+    this.updatedAt,
+    this.usergroup,
+    this.userId
   });
-
-
+  
+  factory ThreadAlert.fromJson(Map<String, dynamic> json) => _$ThreadAlertFromJson(json);
+  Map<String, dynamic> toJson() => _$ThreadAlertToJson(this);
 }
