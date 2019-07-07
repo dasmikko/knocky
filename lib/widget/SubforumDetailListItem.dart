@@ -25,7 +25,9 @@ class SubforumDetailListItem extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => ThreadScreen(
-                    threadModel: threadDetails,
+                    title: threadDetails.title,
+                    postCount: threadDetails.postCount,
+                    threadId: threadDetails.id,
                   ),
             ),
           );

@@ -38,6 +38,9 @@ class ThreadAlert {
   final int userId;
   final int usergroup;
   final String username;
+  final ThreadAlertLastPost lastPost;
+  @JsonKey(name: 'created_at')
+  final DateTime createdAt;
 
 
   ThreadAlert({
@@ -65,9 +68,67 @@ class ThreadAlert {
     this.unreadPosts,
     this.updatedAt,
     this.usergroup,
-    this.userId
+    this.userId,
+    this.lastPost,
+    this.createdAt
   });
   
   factory ThreadAlert.fromJson(Map<String, dynamic> json) => _$ThreadAlertFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadAlertToJson(this);
+}
+
+@JsonSerializable()
+class ThreadAlertLastPost {
+  final int id;
+  @JsonKey(name: 'created_at')
+  final DateTime createdAt;
+  final ThreadAlertLastPostThread thread;
+  final ThreadAlertLastPostUser user;
+
+  ThreadAlertLastPost({
+    this.createdAt,
+    this.id,
+    this.thread,
+    this.user
+  });
+
+  factory ThreadAlertLastPost.fromJson(Map<String, dynamic> json) => _$ThreadAlertLastPostFromJson(json);
+  Map<String, dynamic> toJson() => _$ThreadAlertLastPostToJson(this);
+}
+
+@JsonSerializable()
+class ThreadAlertLastPostThread {
+  final int id;
+  @JsonKey(name: 'created_at')
+  final DateTime createdAt;
+  final String title;
+  @JsonKey(name: 'post_count')
+  final int postCount;
+
+  ThreadAlertLastPostThread({
+    this.createdAt,
+    this.id,
+    this.title,
+    this.postCount  
+  });
+
+  factory ThreadAlertLastPostThread.fromJson(Map<String, dynamic> json) => _$ThreadAlertLastPostThreadFromJson(json);
+  Map<String, dynamic> toJson() => _$ThreadAlertLastPostThreadToJson(this);
+}
+
+@JsonSerializable()
+class ThreadAlertLastPostUser {
+  final int usergroup;
+  @JsonKey(name: 'avatar_url')
+  final String avatarUrl;
+  final String username;
+
+  ThreadAlertLastPostUser({
+    this.usergroup,
+    this.username,
+    this.avatarUrl
+  });
+
+  factory ThreadAlertLastPostUser.fromJson(Map<String, dynamic> json) => _$ThreadAlertLastPostUserFromJson(json);
+  Map<String, dynamic> toJson() => _$ThreadAlertLastPostUserToJson(this);
 }

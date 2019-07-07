@@ -42,7 +42,14 @@ ThreadAlert _$ThreadAlertFromJson(Map<String, dynamic> json) {
           ? null
           : DateTime.parse(json['updated_at'] as String),
       usergroup: json['usergroup'] as int,
-      userId: json['user_id'] as int);
+      userId: json['user_id'] as int,
+      lastPost: json['lastPost'] == null
+          ? null
+          : ThreadAlertLastPost.fromJson(
+              json['lastPost'] as Map<String, dynamic>),
+      createdAt: json['created_at'] == null
+          ? null
+          : DateTime.parse(json['created_at'] as String));
 }
 
 Map<String, dynamic> _$ThreadAlertToJson(ThreadAlert instance) =>
@@ -71,5 +78,68 @@ Map<String, dynamic> _$ThreadAlertToJson(ThreadAlert instance) =>
       'updated_at': instance.updatedAt?.toIso8601String(),
       'user_id': instance.userId,
       'usergroup': instance.usergroup,
+      'username': instance.username,
+      'lastPost': instance.lastPost,
+      'created_at': instance.createdAt?.toIso8601String()
+    };
+
+ThreadAlertLastPost _$ThreadAlertLastPostFromJson(Map<String, dynamic> json) {
+  return ThreadAlertLastPost(
+      createdAt: json['created_at'] == null
+          ? null
+          : DateTime.parse(json['created_at'] as String),
+      id: json['id'] as int,
+      thread: json['thread'] == null
+          ? null
+          : ThreadAlertLastPostThread.fromJson(
+              json['thread'] as Map<String, dynamic>),
+      user: json['user'] == null
+          ? null
+          : ThreadAlertLastPostUser.fromJson(
+              json['user'] as Map<String, dynamic>));
+}
+
+Map<String, dynamic> _$ThreadAlertLastPostToJson(
+        ThreadAlertLastPost instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'created_at': instance.createdAt?.toIso8601String(),
+      'thread': instance.thread,
+      'user': instance.user
+    };
+
+ThreadAlertLastPostThread _$ThreadAlertLastPostThreadFromJson(
+    Map<String, dynamic> json) {
+  return ThreadAlertLastPostThread(
+      createdAt: json['created_at'] == null
+          ? null
+          : DateTime.parse(json['created_at'] as String),
+      id: json['id'] as int,
+      title: json['title'] as String,
+      postCount: json['post_count'] as int);
+}
+
+Map<String, dynamic> _$ThreadAlertLastPostThreadToJson(
+        ThreadAlertLastPostThread instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'created_at': instance.createdAt?.toIso8601String(),
+      'title': instance.title,
+      'post_count': instance.postCount
+    };
+
+ThreadAlertLastPostUser _$ThreadAlertLastPostUserFromJson(
+    Map<String, dynamic> json) {
+  return ThreadAlertLastPostUser(
+      usergroup: json['usergroup'] as int,
+      username: json['username'] as String,
+      avatarUrl: json['avatar_url'] as String);
+}
+
+Map<String, dynamic> _$ThreadAlertLastPostUserToJson(
+        ThreadAlertLastPostUser instance) =>
+    <String, dynamic>{
+      'usergroup': instance.usergroup,
+      'avatar_url': instance.avatarUrl,
       'username': instance.username
     };

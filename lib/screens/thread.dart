@@ -6,9 +6,12 @@ import 'package:knocky/models/thread.dart';
 import 'package:knocky/widget/ThreadPostItem.dart';
 
 class ThreadScreen extends StatefulWidget {
-  final SubforumThread threadModel;
+  final String title;
+  final int postCount;
+  final int threadId;
+  final int page;
 
-  ThreadScreen({this.threadModel});
+  ThreadScreen({this.title, this.page = 1, this.postCount, this.threadId});
 
   @override
   _ThreadScreenState createState() => _ThreadScreenState();
@@ -17,7 +20,7 @@ class ThreadScreen extends StatefulWidget {
 class _ThreadScreenState extends State<ThreadScreen>
     with AfterLayoutMixin<ThreadScreen> {
   Thread details;
-  int _currentPage = 1;
+  int _currentPage;
   int _totalPages = 0;
   bool _isLoading = true;
   final scaffoldkey = new GlobalKey<ScaffoldState>();
@@ -25,15 +28,16 @@ class _ThreadScreenState extends State<ThreadScreen>
   @override
   void initState() {
     super.initState();
+    _currentPage = this.widget.page;
 
-    _totalPages = (widget.threadModel.postCount / 20).ceil();
+    _totalPages = (widget.postCount / 20).ceil();
   }
 
   @override
   void afterFirstLayout(BuildContext context) {
     var api = new KnockoutAPI();
     // Calling the same function "after layout" to resolve the issue.
-    api.getThread(widget.threadModel.id).then((res) {
+    api.getThread(widget.threadId).then((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -49,7 +53,7 @@ class _ThreadScreenState extends State<ThreadScreen>
 
      var api = new KnockoutAPI();
 
-    api.getThread(widget.threadModel.id, page: _currentPage).then((res) {
+    api.getThread(widget.threadId, page: _currentPage).then((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -65,7 +69,7 @@ class _ThreadScreenState extends State<ThreadScreen>
 
     var api = new KnockoutAPI();
 
-    api.getThread(widget.threadModel.id, page: _currentPage).then((res) {
+    api.getThread(widget.threadId, page: _currentPage).then((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -76,7 +80,7 @@ class _ThreadScreenState extends State<ThreadScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.threadModel.title)),
+      appBar: AppBar(title: Text(widget.title)),
       key: scaffoldkey,
       body: _isLoading
           ? Text('Node graph out of date')
