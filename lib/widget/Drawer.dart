@@ -157,6 +157,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 );
               },
             ),
+          ListTile(
+            title: Text('Subsriptions'),
+          ),
           if (_loginState)
             ListTile(
               title: Text('Logout'),
