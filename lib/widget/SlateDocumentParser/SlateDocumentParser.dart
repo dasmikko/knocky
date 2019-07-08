@@ -8,6 +8,7 @@ import 'package:knocky/widget/PostElements/Image.dart';
 import 'package:intent/intent.dart';
 import 'package:intent/action.dart';
 import 'dart:convert';
+import 'package:knocky/widget/PostElements/Embed.dart';
 
 class SlateDocumentParser extends StatelessWidget {
   final SlateObject slateObject;
@@ -348,22 +349,8 @@ class SlateDocumentParser extends StatelessWidget {
           widgets.add(handleQuotes(node));
           break;
         case 'twitter':
-          String html = """
-            <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Finally started working on the <a href="https://twitter.com/hashtag/knockout?src=hash&amp;ref_src=twsrc%5Etfw">#knockout</a> forum app.<br><br>Super early shit, but it&#39;s nice to work with an actual api for once. <a href="https://t.co/1Gca7cBkDq">pic.twitter.com/1Gca7cBkDq</a></p>&mdash; dasmikko (@dasmikko) <a href="https://twitter.com/dasmikko/status/1143423077134557184?ref_src=twsrc%5Etfw">June 25, 2019</a></blockquote>
-              <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-          """;
-
-          final String contentBase64 =
-              base64Encode(const Utf8Encoder().convert(html));
-
           widgets.add(
-            LimitedBox(
-              maxHeight: 450,
-              child: WebView(
-                javascriptMode: JavascriptMode.unrestricted,
-                initialUrl: 'data:text/html;base64,$contentBase64',
-              ),
-            ),
+            EmbedWidget(url: node.data.src)
           );
           break;
         case 'video':
