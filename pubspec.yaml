@@ -19,7 +19,8 @@ environment:
 dependencies:
   http: any
   flutter_store: ^1.0.0+4
-  cached_network_image: ^0.8.0
+  cached_network_image: ^1.0.0
+  intent: ^1.1.0
   after_layout: ^1.0.7+1
   division: ^0.6.3
   json_annotation: ^2.4.0
@@ -35,7 +36,7 @@ dependencies:
   dio: ^2.1.8
   dynamic_theme: ^1.0.1
   timeago: ^2.0.17
-  intent: ^1.1.0
+  font_awesome_flutter: ^8.4.0
   flutter:
     sdk: flutter
 

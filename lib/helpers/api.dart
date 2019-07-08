@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:knocky/models/subforum.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/models/threadAlert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class KnockoutAPI {
@@ -58,15 +59,25 @@ class KnockoutAPI {
     print('Auth: ' + response.body);
   }
 
-  Future<void> getAlerts() async {
-    final response = await http.get(baseurl + 'alert/list', headers: {});
+  Future<List<ThreadAlert>> getAlerts() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    print(response.body);
+    final response = await http.post(baseurl + 'alert/list', headers: {
+      'Cookie': prefs.getString('cookieString')
+    });
+
+    final parsedJson =
+        json.decode(response.body).cast<Map<String, dynamic>>();
+
+    return parsedJson.map<ThreadAlert>((json) => ThreadAlert.fromJson(json)).toList();
   }
 
-  Future<void> getEvetns() async {
+  Future<List<ThreadAlert>> getEvents() async {
     final response = await http.get(baseurl + 'events', headers: {});
 
-    print(response.body);
+    final parsedJson =
+        json.decode(response.body).cast<Map<String, dynamic>>();
+
+    return parsedJson.map<ThreadAlert>((json) => ThreadAlert.fromJson(json)).toList();
   }
 }
