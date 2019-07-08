@@ -49,7 +49,8 @@ ThreadAlert _$ThreadAlertFromJson(Map<String, dynamic> json) {
               json['lastPost'] as Map<String, dynamic>),
       createdAt: json['created_at'] == null
           ? null
-          : DateTime.parse(json['created_at'] as String));
+          : DateTime.parse(json['created_at'] as String),
+      threadPostCount: json['threadPostCount'] as int);
 }
 
 Map<String, dynamic> _$ThreadAlertToJson(ThreadAlert instance) =>
@@ -69,6 +70,7 @@ Map<String, dynamic> _$ThreadAlertToJson(ThreadAlert instance) =>
       'threadTitle': instance.threadTitle,
       'threadUpdateAt': instance.threadUpdateAt?.toIso8601String(),
       'threadUser': instance.threadUser,
+      'threadPostCount': instance.threadPostCount,
       'threadUserAvatarUrl': instance.threadUserAvatarUrl,
       'threadUserUsergroup': instance.threadUserUsergroup,
       'threadUsername': instance.threadUsername,
