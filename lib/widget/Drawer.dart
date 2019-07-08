@@ -177,11 +177,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               },
             ),
           ListTile(
+            enabled: _loginState,
             leading: Icon(FontAwesomeIcons.solidNewspaper),
             title: Text('Subscriptions'), 
             onTap: onTapSubsriptions,
           ),
           ListTile(
+            enabled: _loginState,
             leading: Icon(FontAwesomeIcons.bullhorn),
             title: Text('Events'),
             onTap: () {
