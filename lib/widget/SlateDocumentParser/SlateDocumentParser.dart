@@ -7,6 +7,7 @@ import 'package:knocky/widget/PostElements/Image.dart';
 import 'package:intent/intent.dart';
 import 'package:intent/action.dart';
 import 'package:knocky/widget/PostElements/Embed.dart';
+import 'package:knocky/helpers/colors.dart';
 
 class SlateDocumentParser extends StatelessWidget {
   final SlateObject slateObject;
@@ -14,7 +15,8 @@ class SlateDocumentParser extends StatelessWidget {
   final GlobalKey scaffoldkey;
   final BuildContext context;
 
-  SlateDocumentParser({this.slateObject, this.onPressSpoiler, this.scaffoldkey, this.context});
+  SlateDocumentParser(
+      {this.slateObject, this.onPressSpoiler, this.scaffoldkey, this.context});
 
   Widget paragraphToWidget(SlateNode node) {
     List<TextSpan> lines = List();
@@ -78,18 +80,17 @@ class SlateDocumentParser extends StatelessWidget {
           leaf.marks.where((mark) => mark.type == 'spoiler').length > 0;
 
       TextStyle textStyle = Theme.of(context).textTheme.body1.copyWith(
-        fontSize: fontSize,
-        fontFamily: isCode ? 'RobotoMono' : 'Roboto',
-        decoration:
-          isUnderlined ? TextDecoration.underline : TextDecoration.none,
-        fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-        fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
-      );
+            fontSize: fontSize,
+            fontFamily: isCode ? 'RobotoMono' : 'Roboto',
+            decoration:
+                isUnderlined ? TextDecoration.underline : TextDecoration.none,
+            fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+            fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
+          );
 
       TextStyle spoilerStyle = textStyle.copyWith(
-        background: Paint()..color = Theme.of(context).textTheme.body1.color,
-        color: Theme.of(context).textTheme.body1.color
-      );
+          background: Paint()..color = Theme.of(context).textTheme.body1.color,
+          color: Theme.of(context).textTheme.body1.color);
 
       if (isSpoiler) {
         lines.add(
@@ -252,13 +253,7 @@ class SlateDocumentParser extends StatelessWidget {
   Widget userquoteToWidget(SlateNode node) {
     List<Widget> widgets = List();
 
-    widgets.add(
-      Container(
-        margin: EdgeInsets.only(bottom: 10.0),
-        child: Text(node.data.postData.username,
-            style: TextStyle(fontWeight: FontWeight.bold)),
-      ),
-    );
+    AppColors appColors = AppColors(context);
 
     // Handle block nodes
     widgets.addAll(handleNodes(node.nodes));
@@ -266,14 +261,31 @@ class SlateDocumentParser extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           border: Border.all(color: Colors.black),
-          color: Colors.grey,
+          color: appColors.userQuoteBodyBackground(),
           borderRadius: BorderRadius.all(Radius.circular(5.0))),
-      padding: EdgeInsets.all(10.0),
       margin: EdgeInsets.only(bottom: 10.0),
-      child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: widgets),
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.all(10.0),
+                color: appColors.userQuoteHeaderBackground(),
+                child: Text(node.data.postData.username,
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+              Container(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: widgets,
+                ),
+              ),
+            ]),
+      ),
     );
   }
 
@@ -316,8 +328,7 @@ class SlateDocumentParser extends StatelessWidget {
       // Handle blocks
       switch (node.type) {
         case 'paragraph':
-          widgets.add(Container(
-              child: paragraphToWidget(node)));
+          widgets.add(Container(child: paragraphToWidget(node)));
           break;
         case 'heading-one':
           widgets.add(headingToWidget(node));
@@ -347,9 +358,7 @@ class SlateDocumentParser extends StatelessWidget {
           widgets.add(handleQuotes(node));
           break;
         case 'twitter':
-          widgets.add(
-            EmbedWidget(url: node.data.src)
-          );
+          widgets.add(EmbedWidget(url: node.data.src));
           break;
         case 'video':
           widgets.add(handleVideo(node));
