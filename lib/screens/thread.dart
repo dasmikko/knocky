@@ -37,7 +37,7 @@ class _ThreadScreenState extends State<ThreadScreen>
   void afterFirstLayout(BuildContext context) {
     var api = new KnockoutAPI();
     // Calling the same function "after layout" to resolve the issue.
-    api.getThread(widget.threadId).then((res) {
+    api.getThread(widget.threadId, page: _currentPage).then((res) {
       setState(() {
         details = res;
         _isLoading = false;
