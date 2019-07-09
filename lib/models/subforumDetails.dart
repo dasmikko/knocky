@@ -28,6 +28,7 @@ class SubforumThread {
   final int locked;
   final int pinned;
   final int postCount;
+  @JsonKey(defaultValue: 0)
   final int readThreadUnreadPosts;
   final String title;
   final int unreadType;

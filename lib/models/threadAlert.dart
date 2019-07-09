@@ -25,6 +25,7 @@ class ThreadAlert {
   final String threadTitle;
   final DateTime threadUpdateAt;
   final int threadUser;
+  final int threadPostCount;
   final String threadUserAvatarUrl;
   final int threadUserUsergroup;
   final String threadUsername;
@@ -70,7 +71,8 @@ class ThreadAlert {
     this.usergroup,
     this.userId,
     this.lastPost,
-    this.createdAt
+    this.createdAt,
+    this.threadPostCount
   });
   
   factory ThreadAlert.fromJson(Map<String, dynamic> json) => _$ThreadAlertFromJson(json);

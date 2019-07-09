@@ -5,6 +5,7 @@ import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/models/threadAlert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:knocky/models/readThreads.dart';
 
 class KnockoutAPI {
   static bool _isDev = false;
@@ -70,6 +71,22 @@ class KnockoutAPI {
         json.decode(response.body).cast<Map<String, dynamic>>();
 
     return parsedJson.map<ThreadAlert>((json) => ThreadAlert.fromJson(json)).toList();
+  }
+
+  Future<void> readThreads(DateTime lastseen, int threadId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    ReadThreads jsonToPost = new ReadThreads(lastSeen: lastseen, threadId: threadId);
+
+    final response = await http.post(
+      baseurl + 'readThreads', 
+      body: json.encode(jsonToPost.toJson()),
+      headers: {
+        'Cookie': prefs.getString('cookieString'),
+        "Content-Type": "application/json"
+      }
+    );
+    
+    print(response.body);
   }
 
   Future<List<ThreadAlert>> getEvents() async {

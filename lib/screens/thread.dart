@@ -37,12 +37,32 @@ class _ThreadScreenState extends State<ThreadScreen>
   void afterFirstLayout(BuildContext context) {
     var api = new KnockoutAPI();
     // Calling the same function "after layout" to resolve the issue.
-    api.getThread(widget.threadId).then((res) {
+    api.getThread(widget.threadId, page: _currentPage).then((res) {
       setState(() {
         details = res;
         _isLoading = false;
       });
+      checkIfShouldMarkThreadRead();
     });
+  }
+
+  void checkIfShouldMarkThreadRead() {
+    DateTime lastPostDate = details.posts.last.createdAt;
+    
+    // Check if last read is null
+    if (details.readThreadLastSeen == null) {
+      //print('Is null! Mark thread as read');
+      KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {
+        //print('Thread marked read!');
+      });
+    } else if (details.readThreadLastSeen.isBefore(lastPostDate)) {
+      //print('last read date is before last post date! Mark thread as read');
+      KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {
+        //print('Thread marked read!');
+      });
+    } else { 
+      //print('All is fine, do not mark as read');
+    }
   }
 
   void navigateToNextPage() {
@@ -58,6 +78,7 @@ class _ThreadScreenState extends State<ThreadScreen>
         details = res;
         _isLoading = false;
       });
+      checkIfShouldMarkThreadRead();
     });
   }
 
@@ -74,6 +95,7 @@ class _ThreadScreenState extends State<ThreadScreen>
         details = res;
         _isLoading = false;
       });
+      checkIfShouldMarkThreadRead();
     });
   }
 
