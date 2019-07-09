@@ -5,7 +5,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/widget/SubforumDetailListItem.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:knocky/widget/subforumPage.dart';
 
 class SubforumScreen extends StatefulWidget {
   final Subforum subforumModel;
@@ -16,40 +16,67 @@ class SubforumScreen extends StatefulWidget {
   _SubforumScreenState createState() => _SubforumScreenState();
 }
 
-class _SubforumScreenState extends State<SubforumScreen> with AfterLayoutMixin<SubforumScreen> {
+class _SubforumScreenState extends State<SubforumScreen>
+    with AfterLayoutMixin<SubforumScreen> {
   SubforumDetails details;
+  bool isSwiping = false;
+  int _totalPages;
+  int _currentPage = 1;
 
+  @override
+  void initState() {
+    super.initState();
+
+    _totalPages = (widget.subforumModel.totalThreads / 40).ceil();
+  }
 
   @override
   void afterFirstLayout(BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    var api = new KnockoutAPI();
-    // Calling the same function "after layout" to resolve the issue.
-    api.getSubforumDetails(widget.subforumModel.id).then((res) {
-      setState(() {
-        details = res;
-
-        if (prefs.getBool('showNSFWThreads') == null || !prefs.getBool('showNSFWThreads')) {
-          details.threads = details.threads.where((item) => !item.title.contains('NSFW')).toList();
-        }        
-      });
+    setState(() {
+      
     });
   }
 
+  Widget content() {
+    return PageView.builder(
+        itemCount: _totalPages,
+        onPageChanged: (int page) {
+          setState(() {
+           _currentPage = page + 1; 
+          });
+        },
+        controller: PageController(initialPage: 0),
+        itemBuilder: (BuildContext context, int position) {
+          return SubforumPage(
+            subforumModel: widget.subforumModel,
+            page: position + 1,
+            isSwiping: isSwiping,
+          );
+        },
+      );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.subforumModel.name)),
-      body: details == null ? Text('Node graph out of date') : ListView.builder(
-          padding: EdgeInsets.all(10.0),
-          itemCount: details.threads.length,
-          itemBuilder: (BuildContext context, int index) {
-            var item = details.threads[index];
-            return SubforumDetailListItem(threadDetails: item);
-          },
+      body: content(),
+      bottomNavigationBar: BottomAppBar(
+        child: Container(
+          padding: EdgeInsets.only(left: 10, right: 10),
+          height: 56,
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Text('Page: ' +
+                    _currentPage.toString() +
+                    ' / ' +
+                    _totalPages.toString()),
+              ),
+            ],
+          ),
         ),
+      ),
     );
   }
 }

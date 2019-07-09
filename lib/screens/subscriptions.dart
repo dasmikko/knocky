@@ -20,11 +20,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
 
   @override
   void afterFirstLayout(BuildContext context) {
+    loadSubscriptions();
+  }
+
+  Future<void> loadSubscriptions() {
     setState(() {
       fetching = true;
     });
 
-    KnockoutAPI().getAlerts().then((List<ThreadAlert> res) {
+    return KnockoutAPI().getAlerts().then((List<ThreadAlert> res) {
       setState(() {
         alerts = res;
         fetching = true;
@@ -37,26 +41,26 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
       context,
       MaterialPageRoute(
         builder: (context) => ThreadScreen(
-              title: item.threadTitle,
-              postCount: item.lastPost.thread.postCount,
-              threadId: item.threadId,
-            ),
+          title: item.threadTitle,
+          postCount: item.lastPost.thread.postCount,
+          threadId: item.threadId,
+        ),
       ),
     );
   }
 
   void onTapNewPostsButton(ThreadAlert item) {
-    double pagenumber = (item.threadPostCount-(item.unreadPosts-1)) / 20;
+    double pagenumber = (item.threadPostCount - (item.unreadPosts - 1)) / 20;
 
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ThreadScreen(
-              title: item.threadTitle,
-              postCount: item.lastPost.thread.postCount,
-              threadId: item.threadId,
-              page: pagenumber.ceil(),
-            ),
+          title: item.threadTitle,
+          postCount: item.lastPost.thread.postCount,
+          threadId: item.threadId,
+          page: pagenumber.ceil(),
+        ),
       ),
     );
   }
@@ -67,16 +71,19 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
       appBar: AppBar(
         title: Text('Subscriptions'),
       ),
-      body: ListView.builder(
-        itemCount: alerts.length,
-        itemBuilder: (BuildContext context, int index) {
-          ThreadAlert item = alerts[index];
-          return SubscriptionListItem(
-            item: item,
-            onTapItem: onTapItem,
-            onTapNewPostButton: onTapNewPostsButton,
-          );
-        },
+      body: RefreshIndicator(
+        onRefresh: loadSubscriptions,
+        child: ListView.builder(
+          itemCount: alerts.length,
+          itemBuilder: (BuildContext context, int index) {
+            ThreadAlert item = alerts[index];
+            return SubscriptionListItem(
+              item: item,
+              onTapItem: onTapItem,
+              onTapNewPostButton: onTapNewPostsButton,
+            );
+          },
+        ),
       ),
     );
   }

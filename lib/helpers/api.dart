@@ -31,10 +31,10 @@ class KnockoutAPI {
     return parseSubforums(response.body);
   }
 
-  Future<SubforumDetails> getSubforumDetails(int id) async {
+  Future<SubforumDetails> getSubforumDetails(int id, {int page = 1}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    final response = await http.get(baseurl + 'subforum/' + id.toString(), headers: {'Cookie': prefs.getString('cookieString')});
+    final response = await http.get(baseurl + 'subforum/' + id.toString() + '/' + page.toString() , headers: {'Cookie': prefs.getString('cookieString')});
 
     return SubforumDetails.fromJson(json.decode(response.body));
   }
