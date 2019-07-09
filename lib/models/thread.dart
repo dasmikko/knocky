@@ -15,12 +15,24 @@ class Thread {
   final String subforumName;
   final String title;
   final int totalPosts;
+  @JsonKey(nullable: true)
+  final DateTime readThreadLastSeen;
   final List<ThreadPost> posts;
   final List<ThreadUser> user;
 
-
-
-  Thread({this.currentPage, this.iconId, this.id, this.locked, this.pinned, this.title, this.totalPosts, this.subforumId, this.subforumName, this.posts, this.user});
+  Thread(
+      {this.currentPage,
+      this.iconId,
+      this.readThreadLastSeen,
+      this.id,
+      this.locked,
+      this.pinned,
+      this.title,
+      this.totalPosts,
+      this.subforumId,
+      this.subforumName,
+      this.posts,
+      this.user});
 
   factory Thread.fromJson(Map<String, dynamic> json) => _$ThreadFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadToJson(this);
@@ -33,7 +45,8 @@ class ThreadUser {
 
   ThreadUser({this.usergroup, this.username});
 
-  factory ThreadUser.fromJson(Map<String, dynamic> json) => _$ThreadUserFromJson(json);
+  factory ThreadUser.fromJson(Map<String, dynamic> json) =>
+      _$ThreadUserFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadUserToJson(this);
 }
 
@@ -48,7 +61,8 @@ class ThreadPost {
 
   ThreadPost({this.id, this.content, this.user, this.ratings, this.createdAt});
 
-  factory ThreadPost.fromJson(Map<String, dynamic> json) => _$ThreadPostFromJson(json);
+  factory ThreadPost.fromJson(Map<String, dynamic> json) =>
+      _$ThreadPostFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadPostToJson(this);
 }
 
@@ -61,15 +75,16 @@ class ThreadPostRatings {
 
   ThreadPostRatings({this.ratingId, this.rating, this.count});
 
-  factory ThreadPostRatings.fromJson(Map<String, dynamic> json) => _$ThreadPostRatingsFromJson(json);
+  factory ThreadPostRatings.fromJson(Map<String, dynamic> json) =>
+      _$ThreadPostRatingsFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadPostRatingsToJson(this);
 }
 
-SlateObject _contentFromJson (String jsonString) {
-    return SlateObject.fromJson(json.decode(jsonString));
-  }
+SlateObject _contentFromJson(String jsonString) {
+  return SlateObject.fromJson(json.decode(jsonString));
+}
 
-  Map _contentToJson (SlateObject slateObject) => slateObject.toJson();
+Map _contentToJson(SlateObject slateObject) => slateObject.toJson();
 
 @JsonSerializable()
 class ThreadPostUser {
@@ -81,8 +96,15 @@ class ThreadPostUser {
   final int usergroup;
   final String username;
 
-  ThreadPostUser({this.id, this.avatarUrl, this.backgroundUrl, this.isBanned, this.usergroup, this.username});
+  ThreadPostUser(
+      {this.id,
+      this.avatarUrl,
+      this.backgroundUrl,
+      this.isBanned,
+      this.usergroup,
+      this.username});
 
-  factory ThreadPostUser.fromJson(Map<String, dynamic> json) => _$ThreadPostUserFromJson(json);
+  factory ThreadPostUser.fromJson(Map<String, dynamic> json) =>
+      _$ThreadPostUserFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadPostUserToJson(this);
 }

@@ -10,6 +10,9 @@ Thread _$ThreadFromJson(Map<String, dynamic> json) {
   return Thread(
       currentPage: json['currentPage'] as String,
       iconId: json['iconId'] as int,
+      readThreadLastSeen: json['readThreadLastSeen'] == null
+          ? null
+          : DateTime.parse(json['readThreadLastSeen'] as String),
       id: json['id'] as int,
       locked: json['locked'] as bool,
       pinned: json['pinned'] as bool,
@@ -37,6 +40,7 @@ Map<String, dynamic> _$ThreadToJson(Thread instance) => <String, dynamic>{
       'subforumName': instance.subforumName,
       'title': instance.title,
       'totalPosts': instance.totalPosts,
+      'readThreadLastSeen': instance.readThreadLastSeen?.toIso8601String(),
       'posts': instance.posts,
       'user': instance.user
     };

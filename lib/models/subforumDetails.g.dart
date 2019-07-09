@@ -38,7 +38,7 @@ SubforumThread _$SubforumThreadFromJson(Map<String, dynamic> json) {
       locked: json['locked'] as int,
       pinned: json['pinned'] as int,
       postCount: json['postCount'] as int,
-      readThreadUnreadPosts: json['readThreadUnreadPosts'] as int,
+      readThreadUnreadPosts: json['readThreadUnreadPosts'] as int ?? 0,
       title: json['title'] as String,
       unreadType: json['unreadType'] as int);
 }
