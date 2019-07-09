@@ -4,8 +4,8 @@ import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/widget/PostElements/Video.dart';
 import 'package:knocky/widget/YouTubeEmbed.dart';
 import 'package:knocky/widget/PostElements/Image.dart';
-import 'package:intent/intent.dart';
-import 'package:intent/action.dart';
+import 'package:intent/intent.dart' as Intent;
+import 'package:intent/action.dart' as Action;
 import 'package:knocky/widget/PostElements/Embed.dart';
 import 'package:knocky/helpers/colors.dart';
 
@@ -38,8 +38,8 @@ class SlateDocumentParser extends StatelessWidget {
                   style: TextStyle(color: Colors.blue),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      Intent()
-                        ..setAction(Action.ACTION_VIEW)
+                      Intent.Intent()
+                        ..setAction(Action.Action.ACTION_VIEW)
                         ..setData(Uri.parse(line.data.href))
                         ..startActivity().catchError((e) => print(e));
                       print('Clicked link: ' + line.data.href);

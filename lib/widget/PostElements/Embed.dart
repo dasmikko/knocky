@@ -3,8 +3,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
 import 'package:knocky/widget/InkWellOnWidget.dart';
-import 'package:intent/intent.dart';
-import 'package:intent/action.dart';
+import 'package:intent/intent.dart' as intent;
+import 'package:intent/action.dart' as action;
 
 class EmbedWidget extends StatefulWidget {
   final String url;
@@ -84,8 +84,8 @@ class _EmbedWidgetState extends State<EmbedWidget>
           color: Colors.grey,
           child: InkWellOverWidget(
             onTap: () async {
-              Intent()
-                ..setAction(Action.ACTION_VIEW)
+              intent.Intent()
+                ..setAction(action.Action.ACTION_VIEW)
                 ..setData(Uri.parse(this.widget.url))
                 ..startActivity().catchError((e) => print(e));
             },
