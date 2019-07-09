@@ -6,8 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:intent/intent.dart';
-import 'package:intent/action.dart';
+import 'package:intent/intent.dart' as Intent;
+import 'package:intent/action.dart' as Action;
 import 'package:knocky/screens/subscriptions.dart';
 
 
@@ -196,8 +196,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             leading: Icon(FontAwesomeIcons.discord),
             title: Text('Discord'),
             onTap: () {
-              Intent()
-                ..setAction(Action.ACTION_VIEW)
+              Intent.Intent()
+                ..setAction(Action.Action.ACTION_VIEW)
                 ..setData(Uri.parse('https://discord.gg/ce8pVKH'))
                 ..startActivity().catchError((e) => print(e));
             },
