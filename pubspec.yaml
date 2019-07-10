@@ -37,6 +37,7 @@ dependencies:
   dynamic_theme: ^1.0.1
   timeago: ^2.0.17
   font_awesome_flutter: ^8.4.0
+  flutter_slidable: ^0.5.3
   flutter:
     sdk: flutter
 
