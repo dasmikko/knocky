@@ -3,6 +3,7 @@ import 'package:knocky/models/subforum.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:knocky/helpers/colors.dart';
+import 'package:knocky/screens/thread.dart';
 
 class CategoryListItem extends StatelessWidget {
   final Subforum subforum;
@@ -99,44 +100,65 @@ class CategoryListItem extends StatelessWidget {
     );
   }
 
-  Widget footer() {
+  Widget footer(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(10),
       child: Row(
         children: <Widget>[
           Flexible(
             flex: 1,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Container(
-                  child: Text(
-                    subforum.lastPost.thread.title,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Container(
-                    child: Row(
-                  children: <Widget>[
-                    RichText(
-                      text: TextSpan(
-                        style: TextStyle(color: Colors.grey),
-                        children: <InlineSpan>[
-                          TextSpan(text: 'Last post by '),
-                          TextSpan(
-                            text: subforum.lastPost.user.username + ' ',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                          TextSpan(
-                              text: timeago
-                                  .format(subforum.lastPost.createdAt)
-                                  .toString())
-                        ],
-                      ),
+            child: InkWell(
+              onTap: () {
+                print('Clicked on last post');
+
+                int page = (subforum.lastPost.thread.postCount / 20).ceil();
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ThreadScreen(
+                      title: subforum.lastPost.thread.title,
+                      postCount: subforum.lastPost.thread.postCount,
+                      page: page,
+                      threadId: subforum.lastPost.thread.id,
                     ),
-                  ],
-                )),
-              ],
+                  ),
+                );
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Container(
+                    child: Text(
+                      subforum.lastPost.thread.title,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Container(
+                      child: Row(
+                    children: <Widget>[
+                      Flexible(
+                        child: RichText(
+                          text: TextSpan(
+                            style: TextStyle(color: Colors.grey),
+                            children: <InlineSpan>[
+                              TextSpan(text: 'Last post by '),
+                              TextSpan(
+                                text: subforum.lastPost.user.username + ' ',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                              TextSpan(
+                                  text: timeago
+                                      .format(subforum.lastPost.createdAt)
+                                      .toString())
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  )),
+                ],
+              ),
             ),
           ),
           Container(
@@ -148,6 +170,7 @@ class CategoryListItem extends StatelessWidget {
                 ),
               ),
             ),
+            margin: EdgeInsets.only(left: 10),
             padding: EdgeInsets.only(left: 10),
             child: Column(
               children: <Widget>[
@@ -198,7 +221,10 @@ class CategoryListItem extends StatelessWidget {
       child: InkWell(
         onTap: () => onTapItem(subforum),
         child: Column(
-          children: <Widget>[header(), footer()],
+          children: <Widget>[
+            header(),
+            footer(context),
+          ],
         ),
       ),
     );

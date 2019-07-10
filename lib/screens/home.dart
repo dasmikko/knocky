@@ -25,16 +25,16 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   void afterFirstLayout(BuildContext context) {
-    // Calling the same function "after layout" to resolve the issue.
-    var kapi = new KnockoutAPI();
+    getSubforums();
+    KnockoutAPI().authCheck();
+  }
 
-    kapi.getSubforums().then((subforums) {
+  Future<void> getSubforums () {
+    return KnockoutAPI().getSubforums().then((subforums) {
       setState(() {
         _subforums = subforums;
       });
     });
-
-    kapi.authCheck();
   }
 
   Future<bool> _onWillPop() async {
@@ -105,16 +105,19 @@ class _HomeScreenState extends State<HomeScreen>
             });
           },
         ),
-        body: ListView.builder(
-          padding: EdgeInsets.all(10.0),
-          itemCount: _subforums.length,
-          itemBuilder: (BuildContext context, int index) {
-            Subforum item = _subforums[index];
-            return CategoryListItem(
-              subforum: item,
-              onTapItem: onTapItem,
-            );
-          },
+        body: RefreshIndicator(
+          onRefresh: getSubforums,
+          child: ListView.builder(
+            padding: EdgeInsets.all(10.0),
+            itemCount: _subforums.length,
+            itemBuilder: (BuildContext context, int index) {
+              Subforum item = _subforums[index];
+              return CategoryListItem(
+                subforum: item,
+                onTapItem: onTapItem,
+              );
+            },
+          ),
         ),
       ),
     );
