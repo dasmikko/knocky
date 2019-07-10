@@ -7,6 +7,7 @@ import 'package:knocky/widget/InkWellOnWidget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/colors.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'dart:ui' as ui;
 
 class SubforumDetailListItem extends StatelessWidget {
   final SubforumThread threadDetails;
@@ -85,7 +86,36 @@ class SubforumDetailListItem extends StatelessWidget {
                         children: <Widget>[
                           Container(
                             margin: EdgeInsets.only(bottom: 5),
-                            child: Text(threadDetails.title),
+                            child: RichText(
+                              text: TextSpan(children: <InlineSpan>[
+                                if (threadDetails.locked == 1)
+                                  WidgetSpan(
+                                    child: Container(
+                                      margin: EdgeInsets.only(right: 5),
+                                      child: Icon(
+                                        FontAwesomeIcons.lock,
+                                        size: 14,
+                                        color: HexColor('b38d4f'),
+                                      ),
+                                    ),
+                                  ),
+                                if (threadDetails.pinned == 1)
+                                  WidgetSpan(
+                                    alignment: ui.PlaceholderAlignment.bottom,
+                                    child: Container(
+                                      margin: EdgeInsets.only(right: 5),
+                                      child: Icon(
+                                        FontAwesomeIcons.solidStickyNote,
+                                        size: 14,
+                                        color: HexColor('b4e42d'),
+                                      ),
+                                    ),
+                                  ),
+                                TextSpan(
+                                  text: threadDetails.title,
+                                ),
+                              ]),
+                            ),
                           ),
                           if (threadDetails.readThreadUnreadPosts > 0)
                             Stack(
@@ -137,7 +167,9 @@ class SubforumDetailListItem extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.only(bottom: 4),
                     child: Text(
-                        threadDetails.postCount.toString() + ' replies', style: TextStyle(fontSize: 11),),
+                      threadDetails.postCount.toString() + ' replies',
+                      style: TextStyle(fontSize: 11),
+                    ),
                   ),
                   Container(
                     margin: EdgeInsets.only(bottom: 4),
@@ -155,7 +187,10 @@ class SubforumDetailListItem extends StatelessWidget {
                   ),
                   Container(
                     margin: EdgeInsets.only(bottom: 4),
-                    child: Text(timeago.format(threadDetails.lastPost.createdAt), style: TextStyle(fontSize: 11),),
+                    child: Text(
+                      timeago.format(threadDetails.lastPost.createdAt),
+                      style: TextStyle(fontSize: 11),
+                    ),
                   ),
                 ],
               ),

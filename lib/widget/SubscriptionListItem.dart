@@ -4,6 +4,8 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/helpers/icons.dart';
 import 'package:knocky/widget/InkWellOnWidget.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:knocky/helpers/colors.dart';
 
 class SubscriptionListItem extends StatelessWidget {
   ThreadAlert item;
@@ -50,7 +52,36 @@ class SubscriptionListItem extends StatelessWidget {
                         children: <Widget>[
                           Container(
                             margin: EdgeInsets.only(bottom: 5),
-                            child: Text(item.threadTitle),
+                            child: RichText(
+                              text: TextSpan(children: <InlineSpan>[
+                                if (item.locked == 1)
+                                  WidgetSpan(
+                                    child: Container(
+                                      margin: EdgeInsets.only(right: 5),
+                                      child: Icon(
+                                        FontAwesomeIcons.lock,
+                                        size: 14,
+                                        color: HexColor('b38d4f'),
+                                      ),
+                                    ),
+                                  ),
+                                if (item.pinned == 1)
+                                  WidgetSpan(
+                                    alignment: PlaceholderAlignment.bottom,
+                                    child: Container(
+                                      margin: EdgeInsets.only(right: 5),
+                                      child: Icon(
+                                        FontAwesomeIcons.solidStickyNote,
+                                        size: 14,
+                                        color: HexColor('b4e42d'),
+                                      ),
+                                    ),
+                                  ),
+                                TextSpan(
+                                  text: item.title,
+                                ),
+                              ]),
+                            ),
                           ),
                           if (item.unreadPosts > 0)
                             Stack(
