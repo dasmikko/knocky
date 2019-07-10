@@ -2,20 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:knocky/screens/subforum.dart';
-import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knocky/screens/settings.dart';
 import 'package:knocky/widget/Drawer.dart';
+import 'package:knocky/widget/CategoryListItem.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with AfterLayoutMixin<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with AfterLayoutMixin<HomeScreen> {
   List<Subforum> _subforums = new List<Subforum>();
   bool _loginIsOpen;
 
@@ -49,6 +47,18 @@ class _HomeScreenState extends State<HomeScreen> with AfterLayoutMixin<HomeScree
 
   bool notNull(Object o) => o != null;
 
+  void onTapItem(Subforum item) {
+    print('Clicked item ' + item.id.toString());
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => SubforumScreen(
+                subforumModel: item,
+              )),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -68,10 +78,12 @@ class _HomeScreenState extends State<HomeScreen> with AfterLayoutMixin<HomeScree
               icon: Icon(Icons.settings),
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SettingsScreen(appContext: context,)),
-                  );
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SettingsScreen(
+                            appContext: context,
+                          )),
+                );
               },
             )
           ],
@@ -98,57 +110,9 @@ class _HomeScreenState extends State<HomeScreen> with AfterLayoutMixin<HomeScree
           itemCount: _subforums.length,
           itemBuilder: (BuildContext context, int index) {
             Subforum item = _subforums[index];
-            return Card(
-              margin: EdgeInsets.only(bottom: 5.0, top: 10.0),
-              child: InkWell(
-                onTap: () {
-                  print('Clicked item ' + item.id.toString());
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SubforumScreen(
-                              subforumModel: item,
-                            )),
-                  );
-                },
-                child: Container(
-                  padding: EdgeInsets.all(10.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  item.name,
-                                  style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  item.description,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontSize: 16.0),
-                                ),
-                              ]),
-                        ),
-                      ),
-                      if (item.icon != '/static/faesbunch.png')
-                        Container(
-                          child: CachedNetworkImage(
-                            imageUrl: item.icon,
-                            width: 40.0,
-                          ),
-                        )
-                    ],
-                  ),
-                ),
-              ),
+            return CategoryListItem(
+              subforum: item,
+              onTapItem: onTapItem,
             );
           },
         ),
