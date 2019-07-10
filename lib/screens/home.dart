@@ -6,6 +6,7 @@ import 'package:knocky/screens/subforum.dart';
 import 'package:knocky/screens/settings.dart';
 import 'package:knocky/widget/Drawer.dart';
 import 'package:knocky/widget/CategoryListItem.dart';
+import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -16,6 +17,7 @@ class _HomeScreenState extends State<HomeScreen>
     with AfterLayoutMixin<HomeScreen> {
   List<Subforum> _subforums = new List<Subforum>();
   bool _loginIsOpen;
+  bool _isFetching = false;
 
   void initState() {
     super.initState();
@@ -29,10 +31,15 @@ class _HomeScreenState extends State<HomeScreen>
     KnockoutAPI().authCheck();
   }
 
-  Future<void> getSubforums () {
+  Future<void> getSubforums() {
+    setState(() {
+      _isFetching = true;
+    });
+
     return KnockoutAPI().getSubforums().then((subforums) {
       setState(() {
         _subforums = subforums;
+        _isFetching = false;
       });
     });
   }
@@ -105,18 +112,22 @@ class _HomeScreenState extends State<HomeScreen>
             });
           },
         ),
-        body: RefreshIndicator(
-          onRefresh: getSubforums,
-          child: ListView.builder(
-            padding: EdgeInsets.all(10.0),
-            itemCount: _subforums.length,
-            itemBuilder: (BuildContext context, int index) {
-              Subforum item = _subforums[index];
-              return CategoryListItem(
-                subforum: item,
-                onTapItem: onTapItem,
-              );
-            },
+        body: Container(
+          child: RefreshIndicator(
+            onRefresh: getSubforums,
+            child: !_isFetching
+                ? ListView.builder(
+                    padding: EdgeInsets.all(10.0),
+                    itemCount: _subforums.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      Subforum item = _subforums[index];
+                      return CategoryListItem(
+                        subforum: item,
+                        onTapItem: onTapItem,
+                      );
+                    },
+                  )
+                : KnockoutLoadingIndicator(),
           ),
         ),
       ),

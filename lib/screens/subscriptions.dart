@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/threadAlert.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:knocky/helpers/icons.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widget/SubscriptionListItem.dart';
+import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   @override
@@ -73,17 +71,19 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
       ),
       body: RefreshIndicator(
         onRefresh: loadSubscriptions,
-        child: ListView.builder(
-          itemCount: alerts.length,
-          itemBuilder: (BuildContext context, int index) {
-            ThreadAlert item = alerts[index];
-            return SubscriptionListItem(
-              item: item,
-              onTapItem: onTapItem,
-              onTapNewPostButton: onTapNewPostsButton,
-            );
-          },
-        ),
+        child: fetching
+            ? KnockoutLoadingIndicator()
+            : ListView.builder(
+                itemCount: alerts.length,
+                itemBuilder: (BuildContext context, int index) {
+                  ThreadAlert item = alerts[index];
+                  return SubscriptionListItem(
+                    item: item,
+                    onTapItem: onTapItem,
+                    onTapNewPostButton: onTapNewPostsButton,
+                  );
+                },
+              ),
       ),
     );
   }

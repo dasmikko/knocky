@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widget/ThreadPostItem.dart';
+import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 
 class ThreadScreen extends StatefulWidget {
   final String title;
@@ -105,7 +105,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       appBar: AppBar(title: Text(widget.title)),
       key: scaffoldkey,
       body: _isLoading
-          ? Text('Node graph out of date')
+          ? KnockoutLoadingIndicator()
           : ListView.builder(
               padding: EdgeInsets.all(10.0),
               itemCount: details.posts.length,
