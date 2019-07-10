@@ -29,7 +29,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
     return KnockoutAPI().getAlerts().then((List<ThreadAlert> res) {
       setState(() {
         alerts = res;
-        fetching = true;
+        fetching = false;
       });
     });
   }
