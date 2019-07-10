@@ -101,24 +101,25 @@ class SubscriptionListItem extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.only(bottom: 4),
                     child: Text(
-                        item.lastPost.thread.postCount.toString() + ' replies'),
+                        item.lastPost.thread.postCount.toString() + ' replies', style: TextStyle(fontSize: 11),),
                   ),
                   Container(
                     margin: EdgeInsets.only(bottom: 4),
                     child: Text(
                       timeago.format(item.createdAt),
+                      style: TextStyle(fontSize: 11),
                     ),
                   ),
                   Container(
                     margin: EdgeInsets.only(bottom: 4),
                     child: Text(
                       item.lastPost.user.username,
-                      style: TextStyle(color: Colors.blue),
+                      style: TextStyle(color: Colors.blue, fontSize: 11),
                     ),
                   ),
                   Container(
                     margin: EdgeInsets.only(bottom: 4),
-                    child: Text(timeago.format(item.lastPost.createdAt)),
+                    child: Text(timeago.format(item.lastPost.createdAt), style: TextStyle(fontSize: 11),),
                   ),
                 ],
               ),
