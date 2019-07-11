@@ -13,7 +13,7 @@ class KnockoutLoadingIndicator extends StatelessWidget {
               margin: EdgeInsets.only(bottom: 12),
               child: Text(
                 'Node graph out of date. Rebuilding...',
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 14, fontFamily: 'RobotoMono'),
               ),
             ),
             CircularProgressIndicator()
