@@ -80,20 +80,6 @@ class _HomeScreenState extends State<HomeScreen>
       child: Scaffold(
         appBar: AppBar(
           title: Text('Knocky'),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.settings),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SettingsScreen(
-                            appContext: context,
-                          )),
-                );
-              },
-            )
-          ],
         ),
         drawer: DrawerWidget(
           onLoginOpen: () {
