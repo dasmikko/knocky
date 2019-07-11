@@ -8,10 +8,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/colors.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'dart:ui' as ui;
+import 'package:numberpicker/numberpicker.dart';
 
 class SubforumDetailListItem extends StatelessWidget {
   final SubforumThread threadDetails;
-
   SubforumDetailListItem({this.threadDetails});
 
   void onTapNewPostsButton(BuildContext context, SubforumThread item) {
@@ -46,6 +46,34 @@ class SubforumDetailListItem extends StatelessWidget {
     );
   }
 
+  void showJumpDialog(BuildContext context) {
+    int totalPages = (threadDetails.postCount / 20).ceil();
+    showDialog<int>(
+        context: context,
+        builder: (BuildContext context) {
+          return new NumberPickerDialog.integer(
+            minValue: 1,
+            maxValue: totalPages,
+            title: new Text("Jump to page"),
+            initialIntegerValue: 1,
+          );
+        }).then((int value) {
+      if (value != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ThreadScreen(
+              title: threadDetails.title,
+              postCount: threadDetails.postCount,
+              threadId: threadDetails.id,
+              page: value,
+            ),
+          ),
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     String _iconUrl = iconList
@@ -78,6 +106,7 @@ class SubforumDetailListItem extends StatelessWidget {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () => onTapItem(context, threadDetails),
+                    onLongPress: () => showJumpDialog(context),
                     child: Container(
                       padding: EdgeInsets.all(10),
                       child: Column(
