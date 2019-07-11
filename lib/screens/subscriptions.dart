@@ -3,7 +3,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/screens/thread.dart';
-import 'package:knocky/widget/SubscriptionListItem.dart';
+import 'package:knocky/widget/Subscription/SubscriptionListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 
 class SubscriptionScreen extends StatefulWidget {

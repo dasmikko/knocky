@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/models/thread.dart';
-import 'package:knocky/widget/ThreadPostItem.dart';
+import 'package:knocky/widget/Thread/ThreadPostItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widget/Drawer.dart';
 import 'package:numberpicker/numberpicker.dart';
