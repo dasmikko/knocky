@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widget/ThreadPostItem.dart';
+import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
+import 'package:knocky/widget/Drawer.dart';
 
 class ThreadScreen extends StatefulWidget {
   final String title;
@@ -48,7 +50,7 @@ class _ThreadScreenState extends State<ThreadScreen>
 
   void checkIfShouldMarkThreadRead() {
     DateTime lastPostDate = details.posts.last.createdAt;
-    
+
     // Check if last read is null
     if (details.readThreadLastSeen == null) {
       //print('Is null! Mark thread as read');
@@ -60,7 +62,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {
         //print('Thread marked read!');
       });
-    } else { 
+    } else {
       //print('All is fine, do not mark as read');
     }
   }
@@ -71,7 +73,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       _currentPage = _currentPage + 1;
     });
 
-     var api = new KnockoutAPI();
+    var api = new KnockoutAPI();
 
     api.getThread(widget.threadId, page: _currentPage).then((res) {
       setState(() {
@@ -99,13 +101,76 @@ class _ThreadScreenState extends State<ThreadScreen>
     });
   }
 
+  void onCancelSubscription(BuildContext scaffoldcontext) {
+    KnockoutAPI().deleteThreadAlert(details.id).then((onValue) {
+      Scaffold.of(scaffoldcontext).showSnackBar(
+        SnackBar(
+          content: Text('Canceled subscription'),
+          elevation: 2
+        ),
+      );
+    }).catchError((onError) {
+      Scaffold.of(scaffoldcontext).showSnackBar(
+          SnackBar(
+            content: Text('Cancel failed. Try again'),
+          ),
+        );
+    });;
+  }
+
+  void onTapSubscribe(BuildContext scaffoldcontext) {
+    DateTime lastSeen;
+
+    if (details.readThreadLastSeen != null) {
+      lastSeen = details.readThreadLastSeen;
+    } else {
+      lastSeen = details.posts.last.createdAt;
+    }
+
+    KnockoutAPI().subscribe(lastSeen, details.id).then(
+      (avoid) {
+        Scaffold.of(scaffoldcontext).showSnackBar(
+          SnackBar(
+            content: Text('Subscribed to thread'),
+            elevation: 2,
+            action: SnackBarAction(
+              label: 'Cancel',
+              onPressed: () => onCancelSubscription(scaffoldcontext),
+            ),
+          ),
+        );
+      },
+    ).catchError((onError) {
+      Scaffold.of(scaffoldcontext).showSnackBar(
+          SnackBar(
+            content: Text('Subscribing failed. Try again'),
+          ),
+        );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: AppBar(
+        title: Text(widget.title),
+        actions: <Widget>[
+          Builder(
+            builder: (BuildContext bcontext) {
+              return IconButton(
+                tooltip: 'Subscribe to thread',
+                icon: Icon(FontAwesomeIcons.eye),
+                onPressed:
+                    details != null ? () => onTapSubscribe(bcontext) : null,
+              );
+            },
+          ),
+        ],
+      ),
       key: scaffoldkey,
+      drawer: DrawerWidget(),
       body: _isLoading
-          ? Text('Node graph out of date')
+          ? KnockoutLoadingIndicator()
           : ListView.builder(
               padding: EdgeInsets.all(10.0),
               itemCount: details.posts.length,

@@ -5,6 +5,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/widget/SubforumDetailListItem.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 
 class SubforumPage extends StatefulWidget {
   final Subforum subforumModel;
@@ -63,6 +64,6 @@ class _SubforumPagenState extends State<SubforumPage>
 
   @override
   Widget build(BuildContext context) {
-    return details == null ? Text('Node graph out of date') : content();
+    return details == null ? KnockoutLoadingIndicator() : content();
   }
 }

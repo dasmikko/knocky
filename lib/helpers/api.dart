@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:knocky/models/subforum.dart';
 import 'package:knocky/models/subforumDetails.dart';
@@ -6,6 +7,7 @@ import 'package:knocky/models/thread.dart';
 import 'package:knocky/models/threadAlert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knocky/models/readThreads.dart';
+import 'package:dio/dio.dart';
 
 class KnockoutAPI {
   static bool _isDev = false;
@@ -96,5 +98,46 @@ class KnockoutAPI {
         json.decode(response.body).cast<Map<String, dynamic>>();
 
     return parsedJson.map<ThreadAlert>((json) => ThreadAlert.fromJson(json)).toList();
+  }
+
+  Future<void> deleteThreadAlert(int threadid) async {
+    print(threadid.toString());
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    Dio dio = new Dio();
+    dio.options.baseUrl = baseurl;
+    dio.options.contentType = ContentType.json;
+    dio.options.headers = {
+      'Cookie': prefs.getString('cookieString'),
+    };
+    final response = await dio.delete('alert', data: {
+      'threadId': threadid
+    });
+
+    if (response.statusCode == 200) {
+      print(response.data);
+    }
+  }
+
+  Future<void> subscribe(DateTime lastSeen, int threadid) async {
+    print(threadid.toString());
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    Dio dio = new Dio();
+    dio.options.baseUrl = baseurl;
+    dio.options.contentType = ContentType.json;
+    dio.options.headers = {
+      'Cookie': prefs.getString('cookieString'),
+    };
+    final response = await dio.post('alert', data: {
+      'lastSeen': lastSeen.toIso8601String(),
+      'threadId': threadid
+    });
+
+    print(response.data);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+    }
   }
 }
