@@ -6,6 +6,7 @@ import 'package:knocky/models/thread.dart';
 import 'package:knocky/widget/ThreadPostItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widget/Drawer.dart';
+import 'package:numberpicker/numberpicker.dart';
 
 class ThreadScreen extends StatefulWidget {
   final String title;
@@ -101,6 +102,23 @@ class _ThreadScreenState extends State<ThreadScreen>
     });
   }
 
+  void navigateToPage(int page) {
+    setState(() {
+      _isLoading = true;
+      _currentPage = page;
+    });
+
+    var api = new KnockoutAPI();
+
+    api.getThread(widget.threadId, page: _currentPage).then((res) {
+      setState(() {
+        details = res;
+        _isLoading = false;
+      });
+      checkIfShouldMarkThreadRead();
+    });
+  }
+
   void onCancelSubscription(BuildContext scaffoldcontext) {
     KnockoutAPI().deleteThreadAlert(details.id).then((onValue) {
       Scaffold.of(scaffoldcontext).showSnackBar(
@@ -153,6 +171,22 @@ class _ThreadScreenState extends State<ThreadScreen>
     });
   }
 
+  void showJumpDialog() {
+    showDialog<int>(
+        context: context,
+        builder: (BuildContext context) {
+          return new NumberPickerDialog.integer(
+            minValue: 1,
+            maxValue: _totalPages,
+            title: new Text("Jump to page"),
+            initialIntegerValue: 1,
+          );
+        }).then((int value) {
+      if (value != null) navigateToPage(value) ;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -201,6 +235,11 @@ class _ThreadScreenState extends State<ThreadScreen>
               IconButton(
                 icon: Icon(Icons.chevron_left),
                 onPressed: _currentPage == 1 ? null : navigateToPrevPage,
+              ),
+              IconButton(
+                onPressed: showJumpDialog,
+                icon: Icon(Icons.redo),
+                tooltip: 'Jump to page',
               ),
               IconButton(
                 icon: Icon(Icons.chevron_right),
