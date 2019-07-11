@@ -105,13 +105,16 @@ class _ThreadScreenState extends State<ThreadScreen>
     KnockoutAPI().deleteThreadAlert(details.id).then((onValue) {
       Scaffold.of(scaffoldcontext).showSnackBar(
         SnackBar(
+          behavior: SnackBarBehavior.floating,
           content: Text('Canceled subscription'),
-          elevation: 2
+          elevation: 6
         ),
       );
     }).catchError((onError) {
       Scaffold.of(scaffoldcontext).showSnackBar(
           SnackBar(
+            behavior: SnackBarBehavior.floating,
+            elevation: 6,
             content: Text('Cancel failed. Try again'),
           ),
         );
@@ -131,8 +134,9 @@ class _ThreadScreenState extends State<ThreadScreen>
       (avoid) {
         Scaffold.of(scaffoldcontext).showSnackBar(
           SnackBar(
+            behavior: SnackBarBehavior.floating,
             content: Text('Subscribed to thread'),
-            elevation: 2,
+            elevation: 6,
             action: SnackBarAction(
               label: 'Cancel',
               onPressed: () => onCancelSubscription(scaffoldcontext),
