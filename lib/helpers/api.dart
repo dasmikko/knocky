@@ -118,4 +118,26 @@ class KnockoutAPI {
       print(response.data);
     }
   }
+
+  Future<void> subscribe(DateTime lastSeen, int threadid) async {
+    print(threadid.toString());
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    Dio dio = new Dio();
+    dio.options.baseUrl = baseurl;
+    dio.options.contentType = ContentType.json;
+    dio.options.headers = {
+      'Cookie': prefs.getString('cookieString'),
+    };
+    final response = await dio.post('alert', data: {
+      'lastSeen': lastSeen.toIso8601String(),
+      'threadId': threadid
+    });
+
+    print(response.data);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+    }
+  }
 }
