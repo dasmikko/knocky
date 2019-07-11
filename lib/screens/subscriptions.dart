@@ -63,6 +63,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
     );
   }
 
+  void onTapUnsubscribe(ThreadAlert item) {
+    KnockoutAPI().deleteThreadAlert(item.threadId).then((val) {
+      loadSubscriptions();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,6 +87,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
                     item: item,
                     onTapItem: onTapItem,
                     onTapNewPostButton: onTapNewPostsButton,
+                    onUnsubscribe: () => onTapUnsubscribe(item),
                   );
                 },
               ),
