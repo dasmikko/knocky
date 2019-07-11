@@ -63,8 +63,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
     );
   }
 
-  void onTapUnsubscribe(ThreadAlert item) {
+  void onTapUnsubscribe(BuildContext bcontext, ThreadAlert item) {
     KnockoutAPI().deleteThreadAlert(item.threadId).then((val) {
+      Scaffold.of(bcontext).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        content: Text('Removed subscription'),
+      ));
       loadSubscriptions();
     });
   }
@@ -87,7 +91,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
                     item: item,
                     onTapItem: onTapItem,
                     onTapNewPostButton: onTapNewPostsButton,
-                    onUnsubscribe: () => onTapUnsubscribe(item),
+                    onUnsubscribe: () => onTapUnsubscribe(context, item),
                   );
                 },
               ),
