@@ -9,6 +9,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intent/intent.dart' as Intent;
 import 'package:intent/action.dart' as Action;
 import 'package:knocky/screens/subscriptions.dart';
+import 'package:knocky/screens/settings.dart';
 
 
 class DrawerWidget extends StatefulWidget {
@@ -151,6 +152,15 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     );
   }
 
+  void onTapSettings () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SettingsScreen(appContext: context,),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -201,6 +211,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 ..setData(Uri.parse('https://discord.gg/ce8pVKH'))
                 ..startActivity().catchError((e) => print(e));
             },
+          ),
+          ListTile(
+            leading: Icon(FontAwesomeIcons.cog),
+            title: Text('Settings'),
+            onTap: onTapSettings,
           ),
           if (_loginState)
             ListTile(
