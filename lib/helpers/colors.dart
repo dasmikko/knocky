@@ -10,6 +10,12 @@ class AppColors {
     this.currentBrightness = DynamicTheme.of(this.context).brightness;
   }
 
+  Color switchColor() {
+    return this.currentBrightness == Brightness.dark
+        ? Colors.red
+        : Colors.red;
+  }
+
   Color userQuoteBodyBackground() {
     return this.currentBrightness == Brightness.dark
         ? HexColor('2d2d30')
