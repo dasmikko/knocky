@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/models/subforumDetails.dart';
-import 'package:knocky/widget/SubforumDetailListItem.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knocky/widget/subforumPage.dart';
+import 'package:knocky/widget/Drawer.dart';
 
 class SubforumScreen extends StatefulWidget {
   final Subforum subforumModel;
@@ -61,6 +59,7 @@ class _SubforumScreenState extends State<SubforumScreen>
     return Scaffold(
       appBar: AppBar(title: Text(widget.subforumModel.name)),
       body: content(),
+      drawer: DrawerWidget(),
       bottomNavigationBar: BottomAppBar(
         child: Container(
           padding: EdgeInsets.only(left: 10, right: 10),

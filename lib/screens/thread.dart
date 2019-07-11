@@ -5,6 +5,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widget/ThreadPostItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
+import 'package:knocky/widget/Drawer.dart';
 
 class ThreadScreen extends StatefulWidget {
   final String title;
@@ -167,6 +168,7 @@ class _ThreadScreenState extends State<ThreadScreen>
         ],
       ),
       key: scaffoldkey,
+      drawer: DrawerWidget(),
       body: _isLoading
           ? KnockoutLoadingIndicator()
           : ListView.builder(
