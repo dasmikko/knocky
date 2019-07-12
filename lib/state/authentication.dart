@@ -71,7 +71,7 @@ class AuthenticationModel extends Model {
   }
 
   void authCheck () {
-    KnockoutAPI().authCheck(cookieString);
+    KnockoutAPI().authCheck();
   }
 
   static AuthenticationModel of(BuildContext context) =>
