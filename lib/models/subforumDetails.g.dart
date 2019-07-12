@@ -42,6 +42,7 @@ SubforumThread _$SubforumThreadFromJson(Map<String, dynamic> json) {
       pinned: json['pinned'] as int,
       postCount: json['postCount'] as int,
       readThreadUnreadPosts: json['readThreadUnreadPosts'] as int ?? 0,
+      unreadPostCount: json['unreadPostCount'] as int ?? 0,
       title: json['title'] as String,
       unreadType: json['unreadType'] as int,
       user: json['user'] == null
@@ -63,6 +64,7 @@ Map<String, dynamic> _$SubforumThreadToJson(SubforumThread instance) =>
       'pinned': instance.pinned,
       'postCount': instance.postCount,
       'readThreadUnreadPosts': instance.readThreadUnreadPosts,
+      'unreadPostCount': instance.unreadPostCount,
       'title': instance.title,
       'unreadType': instance.unreadType,
       'user': instance.user,

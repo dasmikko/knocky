@@ -27,7 +27,11 @@ Thread _$ThreadFromJson(Map<String, dynamic> json) {
       user: (json['user'] as List)
           ?.map((e) =>
               e == null ? null : ThreadUser.fromJson(e as Map<String, dynamic>))
-          ?.toList());
+          ?.toList(),
+      subscriptionLastSeen: json['subscriptionLastSeen'] == null
+          ? null
+          : DateTime.parse(json['subscriptionLastSeen'] as String),
+      isSubscribedTo: json['isSubscribedTo'] as int ?? 0);
 }
 
 Map<String, dynamic> _$ThreadToJson(Thread instance) => <String, dynamic>{
@@ -41,8 +45,10 @@ Map<String, dynamic> _$ThreadToJson(Thread instance) => <String, dynamic>{
       'title': instance.title,
       'totalPosts': instance.totalPosts,
       'readThreadLastSeen': instance.readThreadLastSeen?.toIso8601String(),
+      'subscriptionLastSeen': instance.subscriptionLastSeen?.toIso8601String(),
       'posts': instance.posts,
-      'user': instance.user
+      'user': instance.user,
+      'isSubscribedTo': instance.isSubscribedTo
     };
 
 ThreadUser _$ThreadUserFromJson(Map<String, dynamic> json) {

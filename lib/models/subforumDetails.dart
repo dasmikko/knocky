@@ -38,10 +38,13 @@ class SubforumThread {
   final int postCount;
   @JsonKey(defaultValue: 0)
   final int readThreadUnreadPosts;
+  @JsonKey(defaultValue: 0)
+  final int unreadPostCount;
   final String title;
   final int unreadType;
   final SubforumThreadUser user;
   final SubforumLastPost lastPost;
+
 
   SubforumThread({
     this.createdAt,
@@ -52,10 +55,11 @@ class SubforumThread {
     this.pinned,
     this.postCount,
     this.readThreadUnreadPosts,
+    this.unreadPostCount,
     this.title,
     this.unreadType,
     this.user,
-    this.lastPost
+    this.lastPost,
   });
 
   factory SubforumThread.fromJson(Map<String, dynamic> json) =>

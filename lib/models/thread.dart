@@ -17,22 +17,29 @@ class Thread {
   final int totalPosts;
   @JsonKey(nullable: true)
   final DateTime readThreadLastSeen;
+  @JsonKey(nullable: true)
+  final DateTime subscriptionLastSeen;
   final List<ThreadPost> posts;
   final List<ThreadUser> user;
+  @JsonKey(defaultValue: 0)
+  final int isSubscribedTo;
 
-  Thread(
-      {this.currentPage,
-      this.iconId,
-      this.readThreadLastSeen,
-      this.id,
-      this.locked,
-      this.pinned,
-      this.title,
-      this.totalPosts,
-      this.subforumId,
-      this.subforumName,
-      this.posts,
-      this.user});
+  Thread({
+    this.currentPage,
+    this.iconId,
+    this.readThreadLastSeen,
+    this.id,
+    this.locked,
+    this.pinned,
+    this.title,
+    this.totalPosts,
+    this.subforumId,
+    this.subforumName,
+    this.posts,
+    this.user,
+    this.subscriptionLastSeen,
+    this.isSubscribedTo,
+  });
 
   factory Thread.fromJson(Map<String, dynamic> json) => _$ThreadFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadToJson(this);
