@@ -45,7 +45,6 @@ class SubforumThread {
   final SubforumThreadUser user;
   final SubforumLastPost lastPost;
 
-
   SubforumThread({
     this.createdAt,
     this.firstUnreadId,
@@ -91,14 +90,10 @@ class SubforumThreadLastPost {
   final SubforumThreadLastPostThread thread;
   final SubforumThreadLastPostUser user;
 
-  SubforumThreadLastPost({
-    this.createdAt,
-    this.id,
-    this.thread,
-    this.user
-  });
+  SubforumThreadLastPost({this.createdAt, this.id, this.thread, this.user});
 
-  factory SubforumThreadLastPost.fromJson(Map<String, dynamic> json) => _$SubforumThreadLastPostFromJson(json);
+  factory SubforumThreadLastPost.fromJson(Map<String, dynamic> json) =>
+      _$SubforumThreadLastPostFromJson(json);
   Map<String, dynamic> toJson() => _$SubforumThreadLastPostToJson(this);
 }
 
@@ -111,14 +106,11 @@ class SubforumThreadLastPostThread {
   @JsonKey(name: 'post_count')
   final int postCount;
 
-  SubforumThreadLastPostThread({
-    this.createdAt,
-    this.id,
-    this.title,
-    this.postCount  
-  });
+  SubforumThreadLastPostThread(
+      {this.createdAt, this.id, this.title, this.postCount});
 
-  factory SubforumThreadLastPostThread.fromJson(Map<String, dynamic> json) => _$SubforumThreadLastPostThreadFromJson(json);
+  factory SubforumThreadLastPostThread.fromJson(Map<String, dynamic> json) =>
+      _$SubforumThreadLastPostThreadFromJson(json);
   Map<String, dynamic> toJson() => _$SubforumThreadLastPostThreadToJson(this);
 }
 
@@ -129,12 +121,9 @@ class SubforumThreadLastPostUser {
   final String avatarUrl;
   final String username;
 
-  SubforumThreadLastPostUser({
-    this.usergroup,
-    this.username,
-    this.avatarUrl
-  });
+  SubforumThreadLastPostUser({this.usergroup, this.username, this.avatarUrl});
 
-  factory SubforumThreadLastPostUser.fromJson(Map<String, dynamic> json) => _$SubforumThreadLastPostUserFromJson(json);
+  factory SubforumThreadLastPostUser.fromJson(Map<String, dynamic> json) =>
+      _$SubforumThreadLastPostUserFromJson(json);
   Map<String, dynamic> toJson() => _$SubforumThreadLastPostUserToJson(this);
 }
