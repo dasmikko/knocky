@@ -3,7 +3,7 @@ import 'package:knocky/models/thread.dart';
 import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
 import 'package:knocky/helpers/icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:knocky/widget/PostHeader.dart';
+import 'package:knocky/widget/Thread/PostHeader.dart';
 
 class ThreadPostItem extends StatelessWidget {
   final ThreadPost postDetails;

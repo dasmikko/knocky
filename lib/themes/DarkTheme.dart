@@ -7,6 +7,7 @@ ThemeData DarkTheme() {
   return ThemeData(
     brightness: Brightness.dark,
     primarySwatch: Colors.red,
+    accentColor: Colors.red,
     scaffoldBackgroundColor: HexColor('#111015'),
     cardColor: HexColor('#222226')
   );

@@ -3,7 +3,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/screens/thread.dart';
-import 'package:knocky/widget/SubscriptionListItem.dart';
+import 'package:knocky/widget/Subscription/SubscriptionListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 
 class SubscriptionScreen extends StatefulWidget {
@@ -63,8 +63,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
     );
   }
 
-  void onTapUnsubscribe(ThreadAlert item) {
+  void onTapUnsubscribe(BuildContext bcontext, ThreadAlert item) {
     KnockoutAPI().deleteThreadAlert(item.threadId).then((val) {
+      Scaffold.of(bcontext).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        content: Text('Removed subscription'),
+      ));
       loadSubscriptions();
     });
   }
@@ -87,7 +91,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
                     item: item,
                     onTapItem: onTapItem,
                     onTapNewPostButton: onTapNewPostsButton,
-                    onUnsubscribe: () => onTapUnsubscribe(item),
+                    onUnsubscribe: () => onTapUnsubscribe(context, item),
                   );
                 },
               ),

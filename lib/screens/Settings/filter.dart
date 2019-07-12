@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart'; 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:knocky/helpers/colors.dart';
 
 
 class FilterScreen extends StatefulWidget {
@@ -47,6 +48,7 @@ class _FilterScreenState extends State<FilterScreen> {
           padding: EdgeInsets.only(top: 8, bottom: 8),
           children: <Widget>[
             SwitchListTile(
+              activeColor: AppColors(context).switchColor(),
               title: Text('Show NSFW threads'),
               subtitle: Text('Enable this if you are a naughty boy.'),
               onChanged: (bool value) {

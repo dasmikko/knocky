@@ -1,12 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/models/slateDocument.dart';
-import 'package:knocky/widget/PostElements/Video.dart';
-import 'package:knocky/widget/YouTubeEmbed.dart';
-import 'package:knocky/widget/PostElements/Image.dart';
+import 'package:knocky/widget/Thread/PostElements/Video.dart';
+import 'package:knocky/widget/Thread/PostElements/YouTubeEmbed.dart';
+import 'package:knocky/widget/Thread/PostElements/Image.dart';
 import 'package:intent/intent.dart' as Intent;
 import 'package:intent/action.dart' as Action;
-import 'package:knocky/widget/PostElements/Embed.dart';
+import 'package:knocky/widget/Thread/PostElements/Embed.dart';
 import 'package:knocky/helpers/colors.dart';
 
 class SlateDocumentParser extends StatelessWidget {

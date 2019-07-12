@@ -3,9 +3,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/models/thread.dart';
-import 'package:knocky/widget/ThreadPostItem.dart';
+import 'package:knocky/widget/Thread/ThreadPostItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widget/Drawer.dart';
+import 'package:numberpicker/numberpicker.dart';
 
 class ThreadScreen extends StatefulWidget {
   final String title;
@@ -101,17 +102,37 @@ class _ThreadScreenState extends State<ThreadScreen>
     });
   }
 
+  void navigateToPage(int page) {
+    setState(() {
+      _isLoading = true;
+      _currentPage = page;
+    });
+
+    var api = new KnockoutAPI();
+
+    api.getThread(widget.threadId, page: _currentPage).then((res) {
+      setState(() {
+        details = res;
+        _isLoading = false;
+      });
+      checkIfShouldMarkThreadRead();
+    });
+  }
+
   void onCancelSubscription(BuildContext scaffoldcontext) {
     KnockoutAPI().deleteThreadAlert(details.id).then((onValue) {
       Scaffold.of(scaffoldcontext).showSnackBar(
         SnackBar(
+          behavior: SnackBarBehavior.floating,
           content: Text('Canceled subscription'),
-          elevation: 2
+          elevation: 6
         ),
       );
     }).catchError((onError) {
       Scaffold.of(scaffoldcontext).showSnackBar(
           SnackBar(
+            behavior: SnackBarBehavior.floating,
+            elevation: 6,
             content: Text('Cancel failed. Try again'),
           ),
         );
@@ -131,8 +152,9 @@ class _ThreadScreenState extends State<ThreadScreen>
       (avoid) {
         Scaffold.of(scaffoldcontext).showSnackBar(
           SnackBar(
+            behavior: SnackBarBehavior.floating,
             content: Text('Subscribed to thread'),
-            elevation: 2,
+            elevation: 6,
             action: SnackBarAction(
               label: 'Cancel',
               onPressed: () => onCancelSubscription(scaffoldcontext),
@@ -148,6 +170,22 @@ class _ThreadScreenState extends State<ThreadScreen>
         );
     });
   }
+
+  void showJumpDialog() {
+    showDialog<int>(
+        context: context,
+        builder: (BuildContext context) {
+          return new NumberPickerDialog.integer(
+            minValue: 1,
+            maxValue: _totalPages,
+            title: new Text("Jump to page"),
+            initialIntegerValue: 1,
+          );
+        }).then((int value) {
+      if (value != null) navigateToPage(value) ;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -197,6 +235,11 @@ class _ThreadScreenState extends State<ThreadScreen>
               IconButton(
                 icon: Icon(Icons.chevron_left),
                 onPressed: _currentPage == 1 ? null : navigateToPrevPage,
+              ),
+              IconButton(
+                onPressed: showJumpDialog,
+                icon: Icon(Icons.redo),
+                tooltip: 'Jump to page',
               ),
               IconButton(
                 icon: Icon(Icons.chevron_right),

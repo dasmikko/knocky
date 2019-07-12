@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/screens/thread.dart';
 
 class CategoryListItem extends StatelessWidget {

@@ -4,6 +4,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/widget/subforumPage.dart';
 import 'package:knocky/widget/Drawer.dart';
+import 'package:numberpicker/numberpicker.dart';
 
 class SubforumScreen extends StatefulWidget {
   final Subforum subforumModel;
@@ -17,6 +18,7 @@ class SubforumScreen extends StatefulWidget {
 class _SubforumScreenState extends State<SubforumScreen>
     with AfterLayoutMixin<SubforumScreen> {
   SubforumDetails details;
+  PageController _pageController = new PageController();
   bool isSwiping = false;
   int _totalPages;
   int _currentPage = 1;
@@ -30,28 +32,41 @@ class _SubforumScreenState extends State<SubforumScreen>
 
   @override
   void afterFirstLayout(BuildContext context) async {
-    setState(() {
-      
+    setState(() {});
+  }
+
+  void showJumpDialog() {
+    showDialog<int>(
+        context: context,
+        builder: (BuildContext context) {
+          return new NumberPickerDialog.integer(
+            minValue: 1,
+            maxValue: _totalPages,
+            title: new Text("Jump to page"),
+            initialIntegerValue: 1,
+          );
+        }).then((int value) {
+      if (value != null) _pageController.jumpToPage(value - 1);
     });
   }
 
   Widget content() {
     return PageView.builder(
-        itemCount: _totalPages,
-        onPageChanged: (int page) {
-          setState(() {
-           _currentPage = page + 1; 
-          });
-        },
-        controller: PageController(initialPage: 0),
-        itemBuilder: (BuildContext context, int position) {
-          return SubforumPage(
-            subforumModel: widget.subforumModel,
-            page: position + 1,
-            isSwiping: isSwiping,
-          );
-        },
-      );
+      itemCount: _totalPages,
+      onPageChanged: (int page) {
+        setState(() {
+          _currentPage = page + 1;
+        });
+      },
+      controller: _pageController,
+      itemBuilder: (BuildContext context, int position) {
+        return SubforumPage(
+          subforumModel: widget.subforumModel,
+          page: position + 1,
+          isSwiping: isSwiping,
+        );
+      },
+    );
   }
 
   @override
@@ -72,6 +87,11 @@ class _SubforumScreenState extends State<SubforumScreen>
                     ' / ' +
                     _totalPages.toString()),
               ),
+              IconButton(
+                onPressed: showJumpDialog,
+                icon: Icon(Icons.redo),
+                tooltip: 'Jump to page',
+              )
             ],
           ),
         ),
