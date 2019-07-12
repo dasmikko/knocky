@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,6 +11,7 @@ import 'package:intent/intent.dart' as Intent;
 import 'package:intent/action.dart' as Action;
 import 'package:knocky/screens/subscriptions.dart';
 import 'package:knocky/screens/settings.dart';
+import 'package:knocky/state/authentication.dart';
 
 class DrawerWidget extends StatefulWidget {
   Function onLoginOpen;
@@ -28,29 +30,10 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
-  bool _loginState = false;
-  int _userId = 0;
-  String _username = '';
-  String _avatar = '';
-  String _background = '';
-  int _usergroup = 0;
-
   @override
   void initState() {
     super.initState();
-    SharedPreferences.getInstance().then((prefs) {
-      setState(() {
-        _loginState = prefs.getBool('isLoggedIn') != null
-            ? prefs.getBool('isLoggedIn')
-            : false;
-
-        _userId = prefs.getInt('userId');
-        _username = prefs.getString('username');
-        _avatar = prefs.getString('avatar_url');
-        _background = prefs.getString('background_url');
-        _usergroup = prefs.getInt('usergroup');
-      });
-    });
+    ScopedModel.of<AuthenticationModel>(context).getLoginStateFromSharedPreference();
   }
 
   void onClickLogin() {
@@ -75,50 +58,32 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
         print(valueMap);
 
-        setState(() {
-          _userId = valueMap['id'];
-          _username = valueMap['username'] != null
+        await ScopedModel.of<AuthenticationModel>(context).setLoginState(
+          true, 
+          valueMap['id'], 
+          valueMap['username'] != null
               ? valueMap['username']
-              : 'User has no username?';
-          _avatar = valueMap['avatar_url'];
-          _background = valueMap['background_url'];
-          _usergroup = valueMap['usergroup'];
-        });
-
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-
-        await prefs.setInt('userId', valueMap['id']);
-        await prefs.setString('username', valueMap['username']);
-        await prefs.setString('avatar_url', valueMap['avatar_url']);
-        await prefs.setString('background_url', valueMap['background_url']);
-        await prefs.setInt('usergroup', valueMap['id']);
+              : 'User has no username?', 
+          valueMap['avatar_url'], 
+          valueMap['background_url'], 
+          valueMap['usergroup']
+        );
 
         flutterWebviewPlugin.reloadUrl(KnockoutAPI.baseurlSite);
       }
 
       if (url == KnockoutAPI.baseurlSite) {
         var cookies = await CookieManager.getCookies(KnockoutAPI.baseurl);
-
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-
         String cookieString = '';
-        String jwt = null;
 
         // Get needed JWTToken
         cookies.forEach((element) {
           if (element['name'] == 'knockoutJwt') {
             cookieString += element['name'] + "=" + element['value'] + "; ";
-
-            jwt = element['value'];
           }
         });
 
-        await prefs.setBool('isLoggedIn', true);
-        await prefs.setString('cookieString', cookieString);
-
-        setState(() {
-          _loginState = true;
-        });
+        ScopedModel.of<AuthenticationModel>(context).setCookieString(cookieString);
 
         //flutterWebviewPlugin.evalJavascript('document.cookie = "user=localStorage.getItem("currentUser")";');
 
@@ -162,6 +127,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final bool _loginState = ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true).isLoggedIn;
+    final String _background = ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true).background;
+    final String _username = ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true).username;
+    
     return Drawer(
       child: ListView(
         children: <Widget>[
@@ -224,14 +193,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               leading: Icon(FontAwesomeIcons.lockOpen),
               title: Text('Logout'),
               onTap: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-
-                await prefs.setBool('isLoggedIn', false);
-                await prefs.setString('cookieString', null);
-
-                setState(() {
-                  _loginState = false;
-                });
+                ScopedModel.of<AuthenticationModel>(context).logout();
               },
             )
         ],
