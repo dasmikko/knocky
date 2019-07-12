@@ -11,7 +11,6 @@ import 'package:intent/action.dart' as Action;
 import 'package:knocky/screens/subscriptions.dart';
 import 'package:knocky/screens/settings.dart';
 
-
 class DrawerWidget extends StatefulWidget {
   Function onLoginOpen;
   Function onLoginCloses;
@@ -48,15 +47,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         _userId = prefs.getInt('userId');
         _username = prefs.getString('username');
         _avatar = prefs.getString('avatar_url');
-        _background = prefs.getString(
-                       'background_url');
+        _background = prefs.getString('background_url');
         _usergroup = prefs.getInt('usergroup');
       });
     });
   }
 
-
-  void onClickLogin () {
+  void onClickLogin() {
     final flutterWebviewPlugin = new FlutterWebviewPlugin();
 
     flutterWebviewPlugin.onBack.listen((onData) async {
@@ -68,9 +65,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
     flutterWebviewPlugin.onUrlChanged.listen((String url) async {
       if (url.contains(KnockoutAPI.baseurl + "auth/finish")) {
+        print(url);
         Uri parsedUrl = Uri.parse(url);
-        String userJson =
-            Uri.decodeFull(parsedUrl.queryParameters['user']);
+        String userJson = Uri.decodeFull(parsedUrl.queryParameters['user']);
+
+        print(userJson);
 
         Map valueMap = json.decode(userJson);
 
@@ -78,31 +77,29 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
         setState(() {
           _userId = valueMap['id'];
-          _username = valueMap['username'];
+          _username = valueMap['username'] != null
+              ? valueMap['username']
+              : 'User has no username?';
           _avatar = valueMap['avatar_url'];
           _background = valueMap['background_url'];
           _usergroup = valueMap['usergroup'];
         });
 
-        SharedPreferences prefs =
-            await SharedPreferences.getInstance();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
 
         await prefs.setInt('userId', valueMap['id']);
         await prefs.setString('username', valueMap['username']);
         await prefs.setString('avatar_url', valueMap['avatar_url']);
-        await prefs.setString(
-            'background_url', valueMap['background_url']);
+        await prefs.setString('background_url', valueMap['background_url']);
         await prefs.setInt('usergroup', valueMap['id']);
 
         flutterWebviewPlugin.reloadUrl(KnockoutAPI.baseurlSite);
       }
 
       if (url == KnockoutAPI.baseurlSite) {
-        var cookies =
-            await CookieManager.getCookies(KnockoutAPI.baseurl);
+        var cookies = await CookieManager.getCookies(KnockoutAPI.baseurl);
 
-        SharedPreferences prefs =
-            await SharedPreferences.getInstance();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
 
         String cookieString = '';
         String jwt = null;
@@ -110,8 +107,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         // Get needed JWTToken
         cookies.forEach((element) {
           if (element['name'] == 'knockoutJwt') {
-            cookieString +=
-                element['name'] + "=" + element['value'] + "; ";
+            cookieString += element['name'] + "=" + element['value'] + "; ";
 
             jwt = element['value'];
           }
@@ -139,11 +135,12 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       appCacheEnabled: true,
       withJavascript: true,
       userAgent:
-          "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
+          //"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
     );
   }
 
-  void onTapSubsriptions () {
+  void onTapSubsriptions() {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -152,11 +149,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     );
   }
 
-  void onTapSettings () {
+  void onTapSettings() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SettingsScreen(appContext: context,),
+        builder: (context) => SettingsScreen(
+          appContext: context,
+        ),
       ),
     );
   }
@@ -167,16 +166,19 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       child: ListView(
         children: <Widget>[
           DrawerHeader(
-            decoration: _loginState ? BoxDecoration(
-              image: DecorationImage(
-                  alignment: Alignment.center,
-                  fit: BoxFit.cover,
-                  colorFilter: new ColorFilter.mode(
+            decoration: _loginState && _background != ''
+                ? BoxDecoration(
+                    image: DecorationImage(
+                      alignment: Alignment.center,
+                      fit: BoxFit.cover,
+                      colorFilter: new ColorFilter.mode(
                           Colors.black.withOpacity(0.4), BlendMode.dstATop),
-                  image: CachedNetworkImageProvider(
-                      'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
-                          _background)),
-            ) : null,
+                      image: CachedNetworkImageProvider(
+                          'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
+                              _background),
+                    ),
+                  )
+                : null,
             child: Text(_loginState ? _username : 'Not logged in'),
           ),
           if (!_loginState)
@@ -189,7 +191,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ListTile(
             enabled: _loginState,
             leading: Icon(FontAwesomeIcons.solidNewspaper),
-            title: Text('Subscriptions'), 
+            title: Text('Subscriptions'),
             onTap: onTapSubsriptions,
           ),
           ListTile(
