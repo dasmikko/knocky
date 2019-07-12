@@ -74,6 +74,62 @@ class SubforumDetailListItem extends StatelessWidget {
     });
   }
 
+  Widget newPostsButton(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(bottom: 5),
+          child: ClipRRect(
+              borderRadius: BorderRadius.all(
+                Radius.circular(5),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: InkWellOverWidget(
+                child: Container(
+                  padding: EdgeInsets.all(5),
+                  color: Color.fromRGBO(255, 201, 63, 1),
+                  child: Text(
+                    '${threadDetails.readThreadUnreadPosts} new posts',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                onTap: () {
+                  onTapNewPostsButton(context, threadDetails);
+                },
+              )),
+        ),
+      ],
+    );
+  }
+
+  Widget newPostsSubscriptionButton(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(bottom: 5),
+          child: ClipRRect(
+              borderRadius: BorderRadius.all(
+                Radius.circular(5),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: InkWellOverWidget(
+                child: Container(
+                  padding: EdgeInsets.all(5),
+                  color: Color.fromRGBO(255, 142, 204, 1),
+                  child: Text(
+                    '${threadDetails.unreadPostCount} new posts',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                onTap: () {
+                  onTapNewPostsButton(context, threadDetails);
+                },
+              )),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String _iconUrl = iconList
@@ -146,35 +202,10 @@ class SubforumDetailListItem extends StatelessWidget {
                               ]),
                             ),
                           ),
-                          if (threadDetails.readThreadUnreadPosts > 0)
-                            Stack(
-                              children: <Widget>[
-                                Container(
-                                  margin: EdgeInsets.only(bottom: 5),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(5),
-                                      ),
-                                      clipBehavior: Clip.antiAlias,
-                                      child: InkWellOverWidget(
-                                        child: Container(
-                                          padding: EdgeInsets.all(5),
-                                          color:
-                                              Color.fromRGBO(255, 201, 63, 1),
-                                          child: Text(
-                                            '${threadDetails.readThreadUnreadPosts} new posts',
-                                            style:
-                                                TextStyle(color: Colors.black),
-                                          ),
-                                        ),
-                                        onTap: () {
-                                          onTapNewPostsButton(
-                                              context, threadDetails);
-                                        },
-                                      )),
-                                ),
-                              ],
-                            ),
+                          if (threadDetails.readThreadUnreadPosts > 0 && threadDetails.unreadType == 1)
+                            newPostsButton(context),
+                          if (threadDetails.unreadPostCount > 0 && threadDetails.unreadType == 0)
+                            newPostsSubscriptionButton(context),
                           Text(
                             threadDetails.user.username,
                             style: TextStyle(color: Colors.blue),
