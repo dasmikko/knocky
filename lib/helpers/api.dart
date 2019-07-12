@@ -91,6 +91,22 @@ class KnockoutAPI {
     print(response.body);
   }
 
+  Future<void> readThreadSubsciption(DateTime lastseen, int threadId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    ReadThreads jsonToPost = new ReadThreads(lastSeen: lastseen, threadId: threadId);
+
+    final response = await http.post(
+      baseurl + 'alert', 
+      body: json.encode(jsonToPost.toJson()),
+      headers: {
+        'Cookie': prefs.getString('cookieString'),
+        "Content-Type": "application/json"
+      }
+    );
+    
+    print(response.body);
+  }
+
   Future<List<ThreadAlert>> getEvents() async {
     final response = await http.get(baseurl + 'events', headers: {});
 
