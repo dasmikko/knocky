@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:knocky/screens/Settings/filter.dart';
-
 import 'package:knocky/themes/DefaultTheme.dart';
 import 'package:knocky/themes/DarkTheme.dart';
+import 'package:package_info/package_info.dart';
 
 
 class SettingsScreen extends StatefulWidget {
@@ -20,6 +20,8 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   ThemeData selectedTheme = DarkTheme();
+  String selectedEnv = 'knockout';
+  String _version = ''; 
 
   @override
   void initState() {
@@ -30,7 +32,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     } else {
       selectedTheme = DarkTheme();
     }
+  }
 
+  void updateAppInfo () async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    setState(() {
+     _version = packageInfo.version; 
+    });
   }
 
   void onSelectTheme (dynamic theme) {
@@ -40,6 +49,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {
      selectedTheme = theme; 
     });
+  }
+
+  void onSelectEnv (dynamic env) {
+    setState(() {
+     selectedEnv = env; 
+    });
+
+    // TODO: Add saving logic
   }
 
   @override
@@ -72,6 +89,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             ),
             ListTile(
+              enabled: true,
+              title: Text('Environment'),
+              trailing: DropdownButton(
+                value: selectedEnv,
+                onChanged: onSelectEnv,
+                items: <DropdownMenuItem>[
+                  DropdownMenuItem(
+                    child: Text('Knockout'),
+                    value: 'knockout',
+                  ),
+                  DropdownMenuItem(
+                    child: Text('QA'),
+                    value: 'qa',
+                  )
+                ],
+              ),
+
+            ),
+            ListTile(
               title: Text('Filter'),
               subtitle: Text('Select what content to filter'),
               onTap: () {
@@ -80,6 +116,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   MaterialPageRoute(builder: (context) => FilterScreen()),
                 );
               },
+            ),
+            ListTile(
+              title: Text('Version'),
+              subtitle: Text(_version),
             )
           ],
         ),
