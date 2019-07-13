@@ -91,7 +91,7 @@ Map<String, dynamic> _$ThreadPostToJson(ThreadPost instance) =>
 
 ThreadPostRatings _$ThreadPostRatingsFromJson(Map<String, dynamic> json) {
   return ThreadPostRatings(
-      ratingId: json['rating_id'] as int,
+      ratingId: json['rating_id'] as String,
       rating: json['rating'] as String,
       count: json['count'] as int);
 }

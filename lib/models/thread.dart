@@ -76,7 +76,7 @@ class ThreadPost {
 @JsonSerializable()
 class ThreadPostRatings {
   @JsonKey(name: 'rating_id')
-  final int ratingId;
+  final String ratingId;
   final String rating;
   final int count;
 
