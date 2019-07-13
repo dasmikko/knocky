@@ -7,6 +7,8 @@ import 'package:knocky/screens/settings.dart';
 import 'package:knocky/widget/Drawer.dart';
 import 'package:knocky/widget/CategoryListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:knocky/state/authentication.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -28,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void afterFirstLayout(BuildContext context) {
     getSubforums();
-    KnockoutAPI().authCheck();
+    ScopedModel.of<AuthenticationModel>(context).getLoginStateFromSharedPreference();
   }
 
   Future<void> getSubforums() {

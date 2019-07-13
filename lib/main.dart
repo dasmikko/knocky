@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'themes/DarkTheme.dart';
 import 'screens/home.dart';
+import 'package:knocky/state/authentication.dart';
 
 void main() {
   Widget rv;
@@ -21,6 +23,8 @@ void main() {
         home: HomeScreen()
       );
     });
+
+    rv = ScopedModel<AuthenticationModel>(model: AuthenticationModel(), child: rv);
 
 
   runApp(rv);

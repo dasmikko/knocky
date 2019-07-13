@@ -52,19 +52,33 @@ class _ThreadScreenState extends State<ThreadScreen>
   void checkIfShouldMarkThreadRead() {
     DateTime lastPostDate = details.posts.last.createdAt;
 
-    // Check if last read is null
-    if (details.readThreadLastSeen == null) {
-      //print('Is null! Mark thread as read');
-      KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {
-        //print('Thread marked read!');
-      });
-    } else if (details.readThreadLastSeen.isBefore(lastPostDate)) {
-      //print('last read date is before last post date! Mark thread as read');
-      KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {
-        //print('Thread marked read!');
-      });
+    if (details.isSubscribedTo == 0) {
+      // Check if last read is null
+      if (details.readThreadLastSeen == null) {
+        print('Is null! Mark thread as read');
+        KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {
+          //print('Thread marked read!');
+        });
+      } else if (details.readThreadLastSeen.isBefore(lastPostDate)) {
+        print('last read date is before last post date! Mark thread as read');
+        KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {
+          print('Thread marked read!');
+        });
+      }
     } else {
-      //print('All is fine, do not mark as read');
+      // Handle for subscribed thread
+      // Check if last read is null
+      if (details.subscriptionLastSeen == null) {
+        print('Is null! Mark thread as read');
+        KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {
+          //print('Thread marked read!');
+        });
+      } else if (details.subscriptionLastSeen.isBefore(lastPostDate)) {
+        print('last read date is before last post date! Mark thread as read');
+        KnockoutAPI().readThreadSubsciption(lastPostDate, details.id).then((res) {
+          print('Subscribed Thread marked read!');
+        });
+      }
     }
   }
 
