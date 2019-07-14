@@ -5,12 +5,15 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'themes/DarkTheme.dart';
 import 'screens/home.dart';
 import 'package:knocky/state/authentication.dart';
+import 'package:knocky/state/settings.dart';
 
 void main() {
   Widget rv;
   
+  // Set default settings
   SharedPreferences.getInstance().then((prefs) {
     prefs.setBool('showNSFWThreads', prefs.getBool('showNSFWThreads') != null ? prefs.getBool('showNSFWThreads') : false);
+    prefs.setString('env', prefs.getString('env') != null ? prefs.getString('env') : 'knockout');
   });
 
   rv = new DynamicTheme(
@@ -25,6 +28,7 @@ void main() {
     });
 
     rv = ScopedModel<AuthenticationModel>(model: AuthenticationModel(), child: rv);
+    rv = ScopedModel<SettingsModel>(model: SettingsModel(), child: rv);
 
 
   runApp(rv);
