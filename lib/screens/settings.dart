@@ -4,6 +4,9 @@ import 'package:knocky/screens/Settings/filter.dart';
 import 'package:knocky/themes/DefaultTheme.dart';
 import 'package:knocky/themes/DarkTheme.dart';
 import 'package:package_info/package_info.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:knocky/state/settings.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 
 class SettingsScreen extends StatefulWidget {
@@ -27,18 +30,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void initState() {
     super.initState();
 
+    updateAppInfo();
+
     if (DynamicTheme.of(context).brightness == Brightness.light) {
       selectedTheme = DefaultTheme();
     } else {
       selectedTheme = DarkTheme();
     }
+
+    //selectedEnv = ScopedModel.of<SettingsModel>(context).env;
+
+
   }
 
   void updateAppInfo () async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    print(packageInfo.version);
 
     setState(() {
      _version = packageInfo.version; 
+     selectedEnv = prefs.getString('env');
     });
   }
 
@@ -51,12 +64,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
-  void onSelectEnv (dynamic env) {
+  void onSelectEnv (dynamic env) async  {
     setState(() {
      selectedEnv = env; 
     });
 
     // TODO: Add saving logic
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('env', env);
   }
 
   @override
@@ -102,10 +117,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   DropdownMenuItem(
                     child: Text('QA'),
                     value: 'qa',
-                  )
+                  ),
                 ],
               ),
-
             ),
             ListTile(
               title: Text('Filter'),
