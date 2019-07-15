@@ -79,8 +79,14 @@ class ThreadPostRatings {
   final String ratingId;
   final String rating;
   final int count;
+  final List<String> users;
 
-  ThreadPostRatings({this.ratingId, this.rating, this.count});
+  ThreadPostRatings({
+    this.ratingId,
+    this.rating,
+    this.count,
+    this.users,
+  });
 
   factory ThreadPostRatings.fromJson(Map<String, dynamic> json) =>
       _$ThreadPostRatingsFromJson(json);

@@ -93,14 +93,16 @@ ThreadPostRatings _$ThreadPostRatingsFromJson(Map<String, dynamic> json) {
   return ThreadPostRatings(
       ratingId: json['rating_id'] as String,
       rating: json['rating'] as String,
-      count: json['count'] as int);
+      count: json['count'] as int,
+      users: (json['users'] as List)?.map((e) => e as String)?.toList());
 }
 
 Map<String, dynamic> _$ThreadPostRatingsToJson(ThreadPostRatings instance) =>
     <String, dynamic>{
       'rating_id': instance.ratingId,
       'rating': instance.rating,
-      'count': instance.count
+      'count': instance.count,
+      'users': instance.users
     };
 
 ThreadPostUser _$ThreadPostUserFromJson(Map<String, dynamic> json) {
