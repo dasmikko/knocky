@@ -6,6 +6,7 @@ import 'themes/DarkTheme.dart';
 import 'screens/home.dart';
 import 'package:knocky/state/authentication.dart';
 import 'package:knocky/state/settings.dart';
+import 'package:knocky/state/subscriptions.dart';
 
 void main() {
   Widget rv;
@@ -29,6 +30,7 @@ void main() {
 
     rv = ScopedModel<AuthenticationModel>(model: AuthenticationModel(), child: rv);
     rv = ScopedModel<SettingsModel>(model: SettingsModel(), child: rv);
+    rv = ScopedModel<SubscriptionModel>(model: SubscriptionModel(), child: rv);
 
 
   runApp(rv);
