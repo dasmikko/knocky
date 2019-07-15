@@ -22,12 +22,6 @@ class KnockoutAPI {
       ? "https://api.knockout.chat/"
       : "https://forums.stylepunch.club:3000/";
 
-  KnockoutAPI() {
-    SharedPreferences.getInstance().then((prefs) {
-      currentEnv = prefs.getString('env');
-    });
-    print(currentEnv);
-  }
 
   Future<Response> _request ({String url, String type = 'get', Map<String, dynamic> headers, dynamic data}) async {
     if (url == null) {
