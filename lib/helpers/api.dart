@@ -44,6 +44,7 @@ class KnockoutAPI {
     dio.options.baseUrl = mBaseurl;
     dio.options.contentType = ContentType.json;
     dio.options.headers = mHeaders;
+    dio.options.receiveDataWhenStatusError = true;
 
     switch(type) {
       case 'get':
@@ -55,6 +56,11 @@ class KnockoutAPI {
       case 'delete':
         return dio.delete(url, data: data);
         break;
+      case 'put': 
+        return dio.put(url, data: data);
+        break;
+      default: 
+        throw('unknown request type!');
     }
   }
 
@@ -73,10 +79,11 @@ class KnockoutAPI {
     return Thread.fromJson(response.data);
   }
 
-  Future<Thread> authCheck() async {
+  Future<void> authCheck() async {
     print('Checking auth state...');
     final response = await _request(url: 'user/authCheck');
     print('Auth: ' + response.data);
+        
   }
 
   Future<List<ThreadAlert>> getAlerts() async {
@@ -135,5 +142,16 @@ class KnockoutAPI {
     if (response.statusCode == 200) {
       print(response.data);
     }
+  }
+
+  Future<bool> ratePost (int postId, String rating) async {
+    final response = await _request(url: 'rating', type: 'put', data: {
+      'postId': postId,
+      'rating': rating
+    });
+
+    bool wasRejected = response.data['isRejected'];
+
+    return wasRejected;
   }
 }

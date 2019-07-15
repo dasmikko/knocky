@@ -4,14 +4,20 @@ import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
 import 'package:knocky/helpers/icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:knocky/widget/Thread/PostHeader.dart';
+import 'package:knocky/helpers/icons.dart';
+import 'package:knocky/helpers/api.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:knocky/state/authentication.dart';
+import 'package:knocky/widget/Thread/RatePostContent.dart';
 
 class ThreadPostItem extends StatelessWidget {
   final ThreadPost postDetails;
   final GlobalKey scaffoldKey;
+  Function onPostRated = () {};
 
-  ThreadPostItem({this.postDetails, this.scaffoldKey});
+  ThreadPostItem({this.postDetails, this.scaffoldKey, this.onPostRated});
 
-  List<Widget> buildRatings(List<ThreadPostRatings> ratings) {
+  Widget buildRatings(List<ThreadPostRatings> ratings) {
     List<Widget> items = List();
 
     if (ratings != null) {
@@ -34,7 +40,7 @@ class ThreadPostItem extends StatelessWidget {
       });
     }
 
-    return items;
+    return Row(children: items);
   }
 
   void onPressSpoiler(BuildContext context, String content) {
@@ -58,8 +64,24 @@ class ThreadPostItem extends StatelessWidget {
     );
   }
 
+  void onPressRatePost(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        elevation: 10,
+        builder: (BuildContext bContext) {
+          return RatePostContent(buildContext: context, postId: postDetails.id, onPostRated: onPostRated,);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bool isLoggedIn =
+        ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
+            .isLoggedIn;
+    final int ownUserId =
+        ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
+            .userId;
+
     return Card(
       clipBehavior: Clip.antiAlias,
       margin: EdgeInsets.only(bottom: 5.0, top: 10.0),
@@ -95,9 +117,18 @@ class ThreadPostItem extends StatelessWidget {
               ),
             ),
             Container(
-              padding: EdgeInsets.only(top: 5, right: 10, left: 10, bottom: 10),
+              padding: EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 10),
               child: Row(
-                children: buildRatings(postDetails.ratings),
+                children: <Widget>[
+                  Flexible(
+                    child: buildRatings(postDetails.ratings),
+                  ),
+                  if (isLoggedIn && postDetails.user.id != ownUserId)
+                    FlatButton(
+                      child: Text('Rate'),
+                      onPressed: () => onPressRatePost(context),
+                    )
+                ],
               ),
             ),
           ],
