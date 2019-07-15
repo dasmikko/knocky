@@ -41,6 +41,7 @@ dependencies:
   numberpicker: ^1.0.0
   scoped_model: ^1.0.1
   package_info: ^0.4.0+4
+  sticky_headers: "^0.1.8"
   flutter:
     sdk: flutter
 
