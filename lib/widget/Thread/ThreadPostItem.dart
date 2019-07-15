@@ -9,6 +9,7 @@ import 'package:knocky/helpers/api.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
 import 'package:knocky/widget/Thread/RatePostContent.dart';
+import 'package:knocky/widget/Thread/ViewUsersOfRatingsContent.dart';
 
 class ThreadPostItem extends StatelessWidget {
   final ThreadPost postDetails;
@@ -69,7 +70,23 @@ class ThreadPostItem extends StatelessWidget {
         context: context,
         elevation: 10,
         builder: (BuildContext bContext) {
-          return RatePostContent(buildContext: context, postId: postDetails.id, onPostRated: onPostRated,);
+          return RatePostContent(
+            buildContext: context,
+            postId: postDetails.id,
+            onPostRated: onPostRated,
+          );
+        });
+  }
+
+  void onPressViewRatings(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        elevation: 10,
+        builder: (BuildContext bContext) {
+          return ViewUsersOfRatingsContent(
+            buildContext: context,
+            ratings: postDetails.ratings,
+          );
         });
   }
 
@@ -117,11 +134,16 @@ class ThreadPostItem extends StatelessWidget {
               ),
             ),
             Container(
-              padding: EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 10),
+              padding:
+                  EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 10),
               child: Row(
                 children: <Widget>[
                   Flexible(
-                    child: buildRatings(postDetails.ratings),
+                    child: FlatButton(
+                      padding: EdgeInsets.all(0),
+                      onPressed: () => onPressViewRatings(context),
+                      child: buildRatings(postDetails.ratings),
+                    ),
                   ),
                   if (isLoggedIn && postDetails.user.id != ownUserId)
                     FlatButton(
