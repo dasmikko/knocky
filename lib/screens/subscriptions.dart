@@ -7,6 +7,8 @@ import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widget/Subscription/SubscriptionListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
+import 'package:knocky/state/subscriptions.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   @override
@@ -20,8 +22,19 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
   StreamSubscription<List<ThreadAlert>> _dataSub;
 
   @override
+  void initState () {
+    super.initState();
+  }
+
+  @override
   void afterFirstLayout(BuildContext context) {
-    loadSubscriptions();
+    if (ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).subscriptions.length == 0) {
+      loadSubscriptions();
+    } else {
+      setState(() {
+        alerts = alerts = ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).subscriptions;
+      });
+    }
   }
 
   @override

@@ -12,6 +12,7 @@ import 'package:intent/action.dart' as Action;
 import 'package:knocky/screens/subscriptions.dart';
 import 'package:knocky/screens/settings.dart';
 import 'package:knocky/state/authentication.dart';
+import 'package:knocky/state/subscriptions.dart';
 
 class DrawerWidget extends StatefulWidget {
   Function onLoginOpen;
@@ -33,7 +34,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   @override
   void initState() {
     super.initState();
-    ScopedModel.of<AuthenticationModel>(context).getLoginStateFromSharedPreference();
+    ScopedModel.of<AuthenticationModel>(context)
+        .getLoginStateFromSharedPreference();
+    ScopedModel.of<SubscriptionModel>(context).getSubscriptions();
   }
 
   void onClickLogin() {
@@ -59,15 +62,14 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         print(valueMap);
 
         await ScopedModel.of<AuthenticationModel>(context).setLoginState(
-          true, 
-          valueMap['id'], 
-          valueMap['username'] != null
-              ? valueMap['username']
-              : 'User has no username?', 
-          valueMap['avatar_url'], 
-          valueMap['background_url'], 
-          valueMap['usergroup']
-        );
+            true,
+            valueMap['id'],
+            valueMap['username'] != null
+                ? valueMap['username']
+                : 'User has no username?',
+            valueMap['avatar_url'],
+            valueMap['background_url'],
+            valueMap['usergroup']);
 
         flutterWebviewPlugin.reloadUrl(KnockoutAPI.baseurlSite);
       }
@@ -83,7 +85,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           }
         });
 
-        ScopedModel.of<AuthenticationModel>(context).setCookieString(cookieString);
+        ScopedModel.of<AuthenticationModel>(context)
+            .setCookieString(cookieString);
 
         //flutterWebviewPlugin.evalJavascript('document.cookie = "user=localStorage.getItem("currentUser")";');
 
@@ -127,10 +130,16 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final bool _loginState = ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true).isLoggedIn;
-    final String _background = ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true).background;
-    final String _username = ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true).username;
-    
+    final bool _loginState =
+        ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
+            .isLoggedIn;
+    final String _background =
+        ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
+            .background;
+    final String _username =
+        ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
+            .username;
+
     return Drawer(
       child: ListView(
         children: <Widget>[
@@ -161,6 +170,23 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             enabled: _loginState,
             leading: Icon(FontAwesomeIcons.solidNewspaper),
             title: Text('Subscriptions'),
+            trailing: Container(
+              margin: EdgeInsets.only(bottom: 5),
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: Container(
+                  padding: EdgeInsets.all(5),
+                  color: Color.fromRGBO(255, 201, 63, 1),
+                  child: Text(
+                    '${ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).totalUnreadPosts} new posts',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+            ),
             onTap: onTapSubsriptions,
           ),
           ListTile(
