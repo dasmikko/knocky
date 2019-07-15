@@ -27,6 +27,12 @@ class AppColors {
         ? HexColor('28282c')
         : HexColor('ebedef');
   }
+
+  Color ratingsListUserHeader() {
+    return this.currentBrightness == Brightness.dark
+        ? HexColor('28282c')
+        : HexColor('ebedef');
+  }
 }
 
 class HexColor extends Color {
