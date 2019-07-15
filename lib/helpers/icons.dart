@@ -108,7 +108,7 @@ List<RatingistItem> ratingsIconList = [
   new RatingistItem(id: 'informative', name: 'Informative', url: _baseurl + '/static/ratings/info-24.png'),
   new RatingistItem(id: 'idea', name: 'Idea', url: _baseurl + '/static/ratings/idea-24.png'),
   new RatingistItem(id: 'winner', name: 'Winner', url: _baseurl + '/static/ratings/prize-24.png'),
-  new RatingistItem(id: 'glasses', name: 'Bad Reading', url: _baseurl + '/static/ratings/clock-24.png'),
+  new RatingistItem(id: 'glasses', name: 'Bad Reading', url: _baseurl + '/static/ratings/glasses-24.png'),
   new RatingistItem(id: 'late', name: 'Late', url: _baseurl + '/static/ratings/clock-24.png'),
   new RatingistItem(id: 'dumb', name: 'Dumb', url: _baseurl + '/static/ratings/dumb-box-24.png'),
 ];
