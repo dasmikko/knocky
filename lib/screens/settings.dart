@@ -5,7 +5,7 @@ import 'package:knocky/themes/DefaultTheme.dart';
 import 'package:knocky/themes/DarkTheme.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:knocky/state/settings.dart';
+import 'package:knocky/state/authentication.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 
@@ -64,14 +64,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
-  void onSelectEnv (dynamic env) async  {
-    setState(() {
-     selectedEnv = env; 
-    });
+  void onSelectEnv (dynamic env) async {
+    showDialog(context: context, builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Are you sure?'),
+        content: Text('If you switch environment, you will be logged out.'),
+        actions: <Widget>[  
+          FlatButton(
+            child: Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          FlatButton(
+            child: Text('Yes'), 
+            onPressed: () async {
+              setState(() {
+                selectedEnv = env; 
+              });
 
-    // TODO: Add saving logic
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('env', env);
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.setString('env', env);
+              ScopedModel.of<AuthenticationModel>(context).logout();
+              
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    });
   }
 
   @override
