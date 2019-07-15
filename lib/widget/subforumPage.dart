@@ -54,6 +54,8 @@ class _SubforumPagenState extends State<SubforumPage>
         }
       });
     });
+
+    return _dataSub.asFuture();
   }
 
   Widget content() {

@@ -218,6 +218,7 @@ class _ThreadScreenState extends State<ThreadScreen>
 
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(),
         title: Text(widget.title),
         actions: <Widget>[
           if (_isLoggedIn)

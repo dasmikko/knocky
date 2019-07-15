@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/helpers/api.dart';
@@ -15,10 +17,17 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
     with AfterLayoutMixin<SubscriptionScreen> {
   List<ThreadAlert> alerts = List();
   bool fetching = false;
+  StreamSubscription<List<ThreadAlert>> _dataSub;
 
   @override
   void afterFirstLayout(BuildContext context) {
     loadSubscriptions();
+  }
+
+  @override
+  void dispose () {
+    super.dispose();
+    _dataSub?.cancel();
   }
 
   Future<void> loadSubscriptions() {
@@ -26,12 +35,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
       fetching = true;
     });
 
-    return KnockoutAPI().getAlerts().then((List<ThreadAlert> res) {
+    _dataSub?.cancel();
+    _dataSub =  KnockoutAPI().getAlerts().asStream().listen((List<ThreadAlert> res) {
       setState(() {
         alerts = res;
         fetching = false;
       });
     });
+
+    return _dataSub.asFuture();
   }
 
   void onTapItem(ThreadAlert item) {
