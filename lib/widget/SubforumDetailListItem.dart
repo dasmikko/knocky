@@ -132,9 +132,12 @@ class SubforumDetailListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String _iconUrl = iconList
+    print(threadDetails.iconId);
+    String _iconUrl = threadDetails.iconId != null ? iconList
         .firstWhere((IconListItem item) => item.id == threadDetails.iconId)
-        .url;
+        .url : '';
+
+
 
     return Card(
       color: Color.fromRGBO(45, 45, 48, 1),

@@ -73,6 +73,12 @@ class ThreadPost {
   Map<String, dynamic> toJson() => _$ThreadPostToJson(this);
 }
 
+SlateObject _contentFromJson(String jsonString) {
+  return SlateObject.fromJson(json.decode(jsonString));
+}
+
+Map _contentToJson(SlateObject slateObject) => slateObject.toJson();
+
 @JsonSerializable()
 class ThreadPostRatings {
   @JsonKey(name: 'rating_id')
@@ -93,11 +99,7 @@ class ThreadPostRatings {
   Map<String, dynamic> toJson() => _$ThreadPostRatingsToJson(this);
 }
 
-SlateObject _contentFromJson(String jsonString) {
-  return SlateObject.fromJson(json.decode(jsonString));
-}
 
-Map _contentToJson(SlateObject slateObject) => slateObject.toJson();
 
 @JsonSerializable()
 class ThreadPostUser {

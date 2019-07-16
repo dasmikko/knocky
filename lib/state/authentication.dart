@@ -70,8 +70,22 @@ class AuthenticationModel extends Model {
     notifyListeners();
   }
 
-  void authCheck () {
-    KnockoutAPI().authCheck();
+  void authCheck () async {
+    print('Checking auth state...');
+    dynamic authState = await KnockoutAPI().authCheck();
+    print(authState);
+
+    if (authState is String) {
+      print('is string');
+      print(authState);
+    }
+
+    if (authState is Map) {
+      print('is map');
+      print(authState['message']);
+
+      if (authState['message'] == 'Invalid credentials. Please log out and try again.') this.logout();
+    }
   }
 
   static AuthenticationModel of(BuildContext context) =>
