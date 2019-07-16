@@ -55,7 +55,9 @@ class SlateNodeData {
 @JsonSerializable()
 class NodeDataPostData {
   final dynamic threadPage;
+  @JsonKey(fromJson: _stringToIntFromJson, toJson: _stringToIntToJson)
   final int threadId;
+  @JsonKey(fromJson: _stringToIntFromJson, toJson: _stringToIntToJson)
   final int postId;
   final String username;
 
@@ -65,6 +67,15 @@ class NodeDataPostData {
   factory NodeDataPostData.fromJson(Map<String, dynamic> json) => _$NodeDataPostDataFromJson(json);
   Map<String, dynamic> toJson() => _$NodeDataPostDataToJson(this);
 }
+
+int _stringToIntFromJson(dynamic number) {
+  if (number is String) {
+    return int.parse(number);
+  }
+  return number;
+}
+
+int _stringToIntToJson(int number) => number;
 
 @JsonSerializable()
 class SlateLeaf {

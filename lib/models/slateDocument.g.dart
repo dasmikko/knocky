@@ -72,17 +72,17 @@ Map<String, dynamic> _$SlateNodeDataToJson(SlateNodeData instance) =>
 
 NodeDataPostData _$NodeDataPostDataFromJson(Map<String, dynamic> json) {
   return NodeDataPostData(
-      threadId: json['threadId'] as int,
+      threadId: _stringToIntFromJson(json['threadId']),
       username: json['username'] as String,
-      postId: json['postId'] as int,
+      postId: _stringToIntFromJson(json['postId']),
       threadPage: json['threadPage']);
 }
 
 Map<String, dynamic> _$NodeDataPostDataToJson(NodeDataPostData instance) =>
     <String, dynamic>{
       'threadPage': instance.threadPage,
-      'threadId': instance.threadId,
-      'postId': instance.postId,
+      'threadId': _stringToIntToJson(instance.threadId),
+      'postId': _stringToIntToJson(instance.postId),
       'username': instance.username
     };
 

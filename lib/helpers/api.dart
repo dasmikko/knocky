@@ -13,6 +13,10 @@ class KnockoutAPI {
   static const KNOCKOUT_URL = "https://api.knockout.chat/";
   static const QA_URL = "https://forums.stylepunch.club:3000/";
 
+  static const KNOCKOUT_SITE_URL = "https://knockout.chat/";
+  static const QA_SITE_URL = "https://forums.stylepunch.club/";
+
+
   static bool _isDev = false;
   String currentEnv = 'knockout';
 
@@ -29,6 +33,7 @@ class KnockoutAPI {
     }
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    print(prefs.getString('cookieString'));
     Map<String, dynamic> mHeaders = {'Cookie': prefs.getString('cookieString')};
     if (headers != null) mHeaders.addAll(headers);
 
@@ -73,11 +78,13 @@ class KnockoutAPI {
     return Thread.fromJson(response.data);
   }
 
-  Future<void> authCheck() async {
-    print('Checking auth state...');
-    final response = await _request(url: 'user/authCheck');
-    print('Auth: ' + response.data);
-        
+  Future<dynamic> authCheck() async {
+    try {
+      final response = await _request(url: 'user/authCheck');
+      return response.data;
+    } on DioError catch(e) {
+      return e.response.data;
+    }   
   }
 
   Future<List<ThreadAlert>> getAlerts() async {

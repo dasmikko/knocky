@@ -39,8 +39,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     ScopedModel.of<SubscriptionModel>(context).getSubscriptions();
   }
 
-  void onClickLogin() {
+  void onClickLogin(BuildContext context) async {
     final flutterWebviewPlugin = new FlutterWebviewPlugin();
+    String loginUrl = 'login';
+    String fullUrl = '';
+    
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    fullUrl = prefs.getString('env') == 'knockout' ? KnockoutAPI.KNOCKOUT_SITE_URL + loginUrl : KnockoutAPI.QA_SITE_URL + loginUrl;
 
     flutterWebviewPlugin.onBack.listen((onData) async {
       if (onData == null) {
@@ -50,7 +55,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     });
 
     flutterWebviewPlugin.onUrlChanged.listen((String url) async {
-      if (url.contains(KnockoutAPI.baseurl + "auth/finish")) {
+      if (url.contains(prefs.getString('env') == 'knockout' ? KnockoutAPI.KNOCKOUT_URL + "auth/finish" : KnockoutAPI.QA_URL + "auth/finish")) {
         print(url);
         Uri parsedUrl = Uri.parse(url);
         String userJson = Uri.decodeFull(parsedUrl.queryParameters['user']);
@@ -98,7 +103,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     this.widget.onLoginOpen();
 
     flutterWebviewPlugin.launch(
-      KnockoutAPI.baseurlSite + "login",
+      fullUrl,
       withLocalStorage: true,
       appCacheEnabled: true,
       withJavascript: true,
@@ -167,7 +172,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               leading: Icon(FontAwesomeIcons.signInAlt),
               title: Text('Login'),
               onTap: () {
-                onClickLogin();
+                onClickLogin(context);
               },
             ),
           ListTile(
