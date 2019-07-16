@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:knocky/screens/Settings/filter.dart';
-
 import 'package:knocky/themes/DefaultTheme.dart';
 import 'package:knocky/themes/DarkTheme.dart';
+import 'package:package_info/package_info.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:knocky/state/authentication.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 
 class SettingsScreen extends StatefulWidget {
@@ -20,10 +23,14 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   ThemeData selectedTheme = DarkTheme();
+  String selectedEnv = 'knockout';
+  String _version = ''; 
 
   @override
   void initState() {
     super.initState();
+
+    updateAppInfo();
 
     if (DynamicTheme.of(context).brightness == Brightness.light) {
       selectedTheme = DefaultTheme();
@@ -31,6 +38,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
       selectedTheme = DarkTheme();
     }
 
+    //selectedEnv = ScopedModel.of<SettingsModel>(context).env;
+
+
+  }
+
+  void updateAppInfo () async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    print(packageInfo.version);
+
+    setState(() {
+     _version = packageInfo.version; 
+     selectedEnv = prefs.getString('env');
+    });
   }
 
   void onSelectTheme (dynamic theme) {
@@ -39,6 +61,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     setState(() {
      selectedTheme = theme; 
+    });
+  }
+
+  void onSelectEnv (dynamic env) async {
+    showDialog(context: context, builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Are you sure?'),
+        content: Text('If you switch environment, you will be logged out.'),
+        actions: <Widget>[  
+          FlatButton(
+            child: Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          FlatButton(
+            child: Text('Yes'), 
+            onPressed: () async {
+              setState(() {
+                selectedEnv = env; 
+              });
+
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.setString('env', env);
+              ScopedModel.of<AuthenticationModel>(context).logout();
+              
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
     });
   }
 
@@ -72,6 +125,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             ),
             ListTile(
+              enabled: true,
+              title: Text('Environment'),
+              trailing: DropdownButton(
+                value: selectedEnv,
+                onChanged: onSelectEnv,
+                items: <DropdownMenuItem>[
+                  DropdownMenuItem(
+                    child: Text('Knockout'),
+                    value: 'knockout',
+                  ),
+                  DropdownMenuItem(
+                    child: Text('QA'),
+                    value: 'qa',
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
               title: Text('Filter'),
               subtitle: Text('Select what content to filter'),
               onTap: () {
@@ -80,6 +151,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   MaterialPageRoute(builder: (context) => FilterScreen()),
                 );
               },
+            ),
+            ListTile(
+              title: Text('Version'),
+              subtitle: Text(_version),
             )
           ],
         ),

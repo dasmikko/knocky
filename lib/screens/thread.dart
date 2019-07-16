@@ -7,6 +7,8 @@ import 'package:knocky/widget/Thread/ThreadPostItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widget/Drawer.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:knocky/state/authentication.dart';
 
 class ThreadScreen extends StatefulWidget {
   final String title;
@@ -133,6 +135,15 @@ class _ThreadScreenState extends State<ThreadScreen>
     });
   }
 
+  void refreshPage () {
+    KnockoutAPI().getThread(widget.threadId, page: _currentPage).then((res) {
+      setState(() {
+        details = res;
+        _isLoading = false;
+      });
+    });
+  }
+
   void onCancelSubscription(BuildContext scaffoldcontext) {
     KnockoutAPI().deleteThreadAlert(details.id).then((onValue) {
       Scaffold.of(scaffoldcontext).showSnackBar(
@@ -203,20 +214,24 @@ class _ThreadScreenState extends State<ThreadScreen>
 
   @override
   Widget build(BuildContext context) {
+    final _isLoggedIn = ScopedModel.of<AuthenticationModel>(context).isLoggedIn;
+
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(),
         title: Text(widget.title),
         actions: <Widget>[
-          Builder(
-            builder: (BuildContext bcontext) {
-              return IconButton(
-                tooltip: 'Subscribe to thread',
-                icon: Icon(FontAwesomeIcons.eye),
-                onPressed:
-                    details != null ? () => onTapSubscribe(bcontext) : null,
-              );
-            },
-          ),
+          if (_isLoggedIn)
+            Builder(
+              builder: (BuildContext bcontext) {
+                  return IconButton(
+                    tooltip: 'Subscribe to thread',
+                    icon: Icon(FontAwesomeIcons.eye),
+                    onPressed:
+                        details != null ? () => onTapSubscribe(bcontext) : null,
+                  );
+              },
+            ),
         ],
       ),
       key: scaffoldkey,
@@ -231,6 +246,13 @@ class _ThreadScreenState extends State<ThreadScreen>
                 return ThreadPostItem(
                   scaffoldKey: scaffoldkey,
                   postDetails: item,
+                  onPostRated: () {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text('Post rated!'),
+                      behavior: SnackBarBehavior.floating,
+                    ));
+                    refreshPage();
+                    },
                 );
               },
             ),

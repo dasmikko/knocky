@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/helpers/api.dart';
@@ -5,6 +7,8 @@ import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widget/Subscription/SubscriptionListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
+import 'package:knocky/state/subscriptions.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   @override
@@ -15,10 +19,28 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
     with AfterLayoutMixin<SubscriptionScreen> {
   List<ThreadAlert> alerts = List();
   bool fetching = false;
+  StreamSubscription<List<ThreadAlert>> _dataSub;
+
+  @override
+  void initState () {
+    super.initState();
+  }
 
   @override
   void afterFirstLayout(BuildContext context) {
-    loadSubscriptions();
+    if (ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).subscriptions.length == 0) {
+      loadSubscriptions();
+    } else {
+      setState(() {
+        alerts = alerts = ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).subscriptions;
+      });
+    }
+  }
+
+  @override
+  void dispose () {
+    super.dispose();
+    _dataSub?.cancel();
   }
 
   Future<void> loadSubscriptions() {
@@ -26,12 +48,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
       fetching = true;
     });
 
-    return KnockoutAPI().getAlerts().then((List<ThreadAlert> res) {
+    _dataSub?.cancel();
+    _dataSub =  KnockoutAPI().getAlerts().asStream().listen((List<ThreadAlert> res) {
       setState(() {
         alerts = res;
         fetching = false;
       });
     });
+
+    return _dataSub.asFuture();
   }
 
   void onTapItem(ThreadAlert item) {

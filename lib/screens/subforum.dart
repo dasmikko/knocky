@@ -72,7 +72,10 @@ class _SubforumScreenState extends State<SubforumScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.subforumModel.name)),
+      appBar: AppBar(
+        title: Text(widget.subforumModel.name),
+        leading: BackButton(),
+      ),
       body: content(),
       drawer: DrawerWidget(),
       bottomNavigationBar: BottomAppBar(

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/subforum.dart';
@@ -20,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen>
   List<Subforum> _subforums = new List<Subforum>();
   bool _loginIsOpen;
   bool _isFetching = false;
+  StreamSubscription<List<Subforum>> _dataSub;
 
   void initState() {
     super.initState();
@@ -33,17 +36,26 @@ class _HomeScreenState extends State<HomeScreen>
     ScopedModel.of<AuthenticationModel>(context).getLoginStateFromSharedPreference();
   }
 
+  @override
+  void dispose () {
+    super.dispose();
+    _dataSub.cancel();
+  }
+
   Future<void> getSubforums() {
     setState(() {
       _isFetching = true;
     });
 
-    return KnockoutAPI().getSubforums().then((subforums) {
+    _dataSub?.cancel();
+    _dataSub = KnockoutAPI().getSubforums().asStream().listen((subforums){
       setState(() {
         _subforums = subforums;
         _isFetching = false;
       });
     });
+
+    return _dataSub.asFuture();
   }
 
   Future<bool> _onWillPop() async {

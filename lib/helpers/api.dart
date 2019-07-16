@@ -10,7 +10,11 @@ import 'package:knocky/models/readThreads.dart';
 import 'package:dio/dio.dart';
 
 class KnockoutAPI {
+  static const KNOCKOUT_URL = "https://api.knockout.chat/";
+  static const QA_URL = "https://forums.stylepunch.club:3000/";
+
   static bool _isDev = false;
+  String currentEnv = 'knockout';
 
   static String baseurlSite =
       !_isDev ? "https://knockout.chat/" : "https://forums.stylepunch.club/";
@@ -18,93 +22,79 @@ class KnockoutAPI {
       ? "https://api.knockout.chat/"
       : "https://forums.stylepunch.club:3000/";
 
-  List<Subforum> parseSubforums(String responseBody) {
-    final parsed =
-        json.decode(responseBody)['list'].cast<Map<String, dynamic>>();
 
-    return parsed.map<Subforum>((json) => Subforum.fromJson(json)).toList();
+  Future<Response> _request ({String url, String type = 'get', Map<String, dynamic> headers, dynamic data}) async {
+    if (url == null) {
+      throw('URL not set!');
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> mHeaders = {'Cookie': prefs.getString('cookieString')};
+    if (headers != null) mHeaders.addAll(headers);
+
+    String mBaseurl = prefs.getString('env') == 'knockout' ? KNOCKOUT_URL : QA_URL;
+
+    Dio dio = new Dio();
+    dio.options.baseUrl = mBaseurl;
+    dio.options.contentType = ContentType.json;
+    dio.options.headers = mHeaders;
+    dio.options.receiveDataWhenStatusError = true;
+
+    switch(type) {
+      case 'get':
+        return dio.get(url);
+        break;
+      case 'post':
+        return dio.post(url, data: data);
+        break;
+      case 'delete':
+        return dio.delete(url, data: data);
+        break;
+      case 'put': 
+        return dio.put(url, data: data);
+        break;
+      default: 
+        throw('unknown request type!');
+    }
   }
 
   Future<List<Subforum>> getSubforums() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    final response = await http.get(baseurl + 'subforum', headers: {'Cookie': prefs.getString('cookieString')});
-
-    return parseSubforums(response.body);
+    final response2 = await _request(url: 'subforum');
+    return response2.data['list'].map<Subforum>((json) => Subforum.fromJson(json)).toList();
   }
 
   Future<SubforumDetails> getSubforumDetails(int id, {int page = 1}) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    final response = await http.get(baseurl + 'subforum/' + id.toString() + '/' + page.toString() , headers: {'Cookie': prefs.getString('cookieString')});
-
-    return SubforumDetails.fromJson(json.decode(response.body));
+    final response = await _request(url: 'subforum/' + id.toString() + '/' + page.toString());
+    return SubforumDetails.fromJson(response.data);
   }
 
   Future<Thread> getThread(int id, {int page: 1}) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    
-    final response = await http
-        .get(baseurl + 'thread/' + id.toString() + '/' + page.toString(), headers: {'Cookie': prefs.getString('cookieString')});
-
-    return Thread.fromJson(json.decode(response.body));
+    final response = await _request(url: 'thread/' + id.toString() + '/' + page.toString());
+    return Thread.fromJson(response.data);
   }
 
-  Future<Thread> authCheck() async {
+  Future<void> authCheck() async {
     print('Checking auth state...');
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    final response = await http.get(baseurl + 'user/authCheck',
-        headers: {'Cookie': prefs.getString('cookieString')}
-    );
-
-    print('Auth: ' + response.body);
+    final response = await _request(url: 'user/authCheck');
+    print('Auth: ' + response.data);
+        
   }
 
   Future<List<ThreadAlert>> getAlerts() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    final response = await http.post(baseurl + 'alert/list', headers: {
-      'Cookie': prefs.getString('cookieString')
-    });
-
-    final parsedJson =
-        json.decode(response.body).cast<Map<String, dynamic>>();
-
-    return parsedJson.map<ThreadAlert>((json) => ThreadAlert.fromJson(json)).toList();
+    final response = await _request(url: 'alert/list', type: 'post');
+    return response.data.map<ThreadAlert>((json) => ThreadAlert.fromJson(json)).toList();
   }
 
   Future<void> readThreads(DateTime lastseen, int threadId) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     ReadThreads jsonToPost = new ReadThreads(lastSeen: lastseen, threadId: threadId);
-
-    final response = await http.post(
-      baseurl + 'readThreads', 
-      body: json.encode(jsonToPost.toJson()),
-      headers: {
-        'Cookie': prefs.getString('cookieString'),
-        "Content-Type": "application/json"
-      }
-    );
-    
-    print(response.body);
+    final response = await _request(type: 'post', url: 'readThreads', data: jsonToPost.toJson());   
+    print(response.data);
   }
 
   Future<void> readThreadSubsciption(DateTime lastseen, int threadId) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     ReadThreads jsonToPost = new ReadThreads(lastSeen: lastseen, threadId: threadId);
-
-    final response = await http.post(
-      baseurl + 'alert', 
-      body: json.encode(jsonToPost.toJson()),
-      headers: {
-        'Cookie': prefs.getString('cookieString'),
-        "Content-Type": "application/json"
-      }
-    );
-    
-    print(response.body);
+    final response = await _request(type: 'post', url: 'alert', data: jsonToPost.toJson());
+    print(response.data);
   }
 
   Future<List<ThreadAlert>> getEvents() async {
@@ -118,15 +108,11 @@ class KnockoutAPI {
 
   Future<void> deleteThreadAlert(int threadid) async {
     print(threadid.toString());
-    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    Dio dio = new Dio();
-    dio.options.baseUrl = baseurl;
-    dio.options.contentType = ContentType.json;
-    dio.options.headers = {
-      'Cookie': prefs.getString('cookieString'),
-    };
-    final response = await dio.delete('alert', data: {
+    final response = await _request(
+      url: 'alert',
+      type: 'delete',
+      data: {
       'threadId': threadid
     });
 
@@ -137,15 +123,10 @@ class KnockoutAPI {
 
   Future<void> subscribe(DateTime lastSeen, int threadid) async {
     print(threadid.toString());
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    Dio dio = new Dio();
-    dio.options.baseUrl = baseurl;
-    dio.options.contentType = ContentType.json;
-    dio.options.headers = {
-      'Cookie': prefs.getString('cookieString'),
-    };
-    final response = await dio.post('alert', data: {
+    final response = await _request(
+      url: 'alert',
+      type: 'post',
+      data: {
       'lastSeen': lastSeen.toIso8601String(),
       'threadId': threadid
     });
@@ -155,5 +136,16 @@ class KnockoutAPI {
     if (response.statusCode == 200) {
       print(response.data);
     }
+  }
+
+  Future<bool> ratePost (int postId, String rating) async {
+    final response = await _request(url: 'rating', type: 'put', data: {
+      'postId': postId,
+      'rating': rating
+    });
+
+    bool wasRejected = response.data['isRejected'];
+
+    return wasRejected;
   }
 }

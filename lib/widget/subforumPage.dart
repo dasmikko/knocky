@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/subforum.dart';
@@ -11,7 +13,6 @@ class SubforumPage extends StatefulWidget {
   final Subforum subforumModel;
   final int page;
   final bool isSwiping;
-
   SubforumPage({this.subforumModel, this.page, this.isSwiping});
 
   @override
@@ -21,22 +22,29 @@ class SubforumPage extends StatefulWidget {
 class _SubforumPagenState extends State<SubforumPage>
     with AfterLayoutMixin<SubforumPage> {
   SubforumDetails details;
+  StreamSubscription<SubforumDetails> _dataSub;
 
   @override
   void afterFirstLayout(BuildContext context) async {
     loadPage();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _dataSub.cancel();
+  }
+
   Future<void> loadPage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    var api = new KnockoutAPI();
-    // Calling the same function "after layout" to resolve the issue.
-    return api
+    _dataSub?.cancel();
+    _dataSub = KnockoutAPI()
         .getSubforumDetails(widget.subforumModel.id, page: widget.page)
-        .then((res) {
+        .asStream()
+        .listen((onData) {
       setState(() {
-        details = res;
+        details = onData;
 
         if (prefs.getBool('showNSFWThreads') == null ||
             !prefs.getBool('showNSFWThreads')) {
@@ -46,6 +54,8 @@ class _SubforumPagenState extends State<SubforumPage>
         }
       });
     });
+
+    return _dataSub.asFuture();
   }
 
   Widget content() {
