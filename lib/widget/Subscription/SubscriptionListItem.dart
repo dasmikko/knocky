@@ -99,7 +99,7 @@ class SubscriptionListItem extends StatelessWidget {
                                       ),
                                     ),
                                   TextSpan(
-                                    text: item.title,
+                                    text: item.threadTitle,
                                   ),
                                 ]),
                               ),
@@ -160,7 +160,7 @@ class SubscriptionListItem extends StatelessWidget {
                     Container(
                       margin: EdgeInsets.only(bottom: 4),
                       child: Text(
-                        timeago.format(item.createdAt),
+                        timeago.format(item.threadCreatedAt),
                         style: TextStyle(fontSize: 11),
                       ),
                     ),
