@@ -140,6 +140,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .username;
 
+    final int unreadCount = 
+        ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).totalUnreadPosts;
+
     return Drawer(
       child: ListView(
         children: <Widget>[
@@ -161,6 +164,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
           if (!_loginState)
             ListTile(
+              leading: Icon(FontAwesomeIcons.signInAlt),
               title: Text('Login'),
               onTap: () {
                 onClickLogin();
@@ -170,7 +174,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             enabled: _loginState,
             leading: Icon(FontAwesomeIcons.solidNewspaper),
             title: Text('Subscriptions'),
-            trailing: Container(
+            trailing: unreadCount > 0 ? Container(
               margin: EdgeInsets.only(bottom: 5),
               child: ClipRRect(
                 borderRadius: BorderRadius.all(
@@ -181,12 +185,12 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   padding: EdgeInsets.all(5),
                   color: Color.fromRGBO(255, 201, 63, 1),
                   child: Text(
-                    '${ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).totalUnreadPosts} new posts',
+                    '${unreadCount} new posts',
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
               ),
-            ),
+            ) : null,
             onTap: onTapSubsriptions,
           ),
           ListTile(
