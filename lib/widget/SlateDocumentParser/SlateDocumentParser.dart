@@ -7,6 +7,7 @@ import 'package:knocky/widget/Thread/PostElements/Image.dart';
 import 'package:intent/intent.dart' as Intent;
 import 'package:intent/action.dart' as Action;
 import 'package:knocky/widget/Thread/PostElements/Embed.dart';
+import 'package:knocky/widget/Thread/PostElements/UserQuote.dart';
 import 'package:knocky/helpers/colors.dart';
 
 class SlateDocumentParser extends StatelessWidget {
@@ -258,34 +259,9 @@ class SlateDocumentParser extends StatelessWidget {
     // Handle block nodes
     widgets.addAll(handleNodes(node.nodes));
 
-    return Container(
-      decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
-          color: appColors.userQuoteBodyBackground(),
-          borderRadius: BorderRadius.all(Radius.circular(5.0))),
-      margin: EdgeInsets.only(bottom: 10.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(10.0),
-                color: appColors.userQuoteHeaderBackground(),
-                child: Text(node.data.postData.username,
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-              ),
-              Container(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: widgets,
-                ),
-              ),
-            ]),
-      ),
+    return UserQuoteWidget(
+      username: node.data.postData.username,
+      children: widgets,
     );
   }
 
