@@ -14,11 +14,11 @@ Browse the Knockout forum the native way!
 - View/Edit/Add Subscriptions
 - Authentication
 - Twitter embeds
+- Rating posts
 
 
 ### What is to implemented﻿
 - Events screen
-- Rating posts
 - Posting
 - And probably more
 
