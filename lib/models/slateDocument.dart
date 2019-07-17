@@ -4,8 +4,9 @@ part 'slateDocument.g.dart';
 
 @JsonSerializable()
 class SlateObject {
-  final String object;
-  final SlateDocument document;
+  String object;
+  @JsonKey(toJson: _documentToJson)
+  SlateDocument document;
 
   SlateObject({this.object, this.document});
 
@@ -13,11 +14,14 @@ class SlateObject {
   Map<String, dynamic> toJson() => _$SlateObjectToJson(this);
 }
 
+Map _documentToJson(SlateDocument document) => document.toJson();
+
 @JsonSerializable()
 class SlateDocument {
-  final String object;
-  // final Object data;
-  final List<SlateNode> nodes;
+  String object;
+  // Object data;
+  @JsonKey(toJson: _nodesToJson)
+  List<SlateNode> nodes;
 
   SlateDocument({this.object, this.nodes});
 
@@ -25,14 +29,19 @@ class SlateDocument {
   Map<String, dynamic> toJson() => _$SlateDocumentToJson(this);
 }
 
+List<Map> _nodesToJson(List<SlateNode> nodes) => nodes != null ? nodes.map((node) => node.toJson()).toList() : List();
+
 // Slate Block
 @JsonSerializable()
 class SlateNode {
-  final String object;
-  final String type;
-  final SlateNodeData data;
-  final List<SlateLeaf> leaves;
-  final List<SlateNode> nodes;
+  String object;
+  String type;
+  @JsonKey(toJson: _nodeDataToJson)
+  SlateNodeData data;
+  @JsonKey(toJson: _leavesToJson)
+  List<SlateLeaf> leaves;
+  @JsonKey(toJson: _nodesToJson)
+  List<SlateNode> nodes;
 
   SlateNode({this.nodes, this.object, this.type, this.data, this.leaves});
 
@@ -40,11 +49,14 @@ class SlateNode {
   Map<String, dynamic> toJson() => _$SlateNodeToJson(this);
 }
 
+List<Map> _leavesToJson(List<SlateLeaf> leaves) => leaves != null ? leaves.map((leaf) => leaf.toJson()).toList() : List();
+Map _nodeDataToJson(SlateNodeData data) => data != null ? data.toJson() : null;
+
 @JsonSerializable()
 class SlateNodeData {
-  final String src;
-  final NodeDataPostData postData;
-  final String href;
+  String src;
+  NodeDataPostData postData;
+  String href;
 
   SlateNodeData({this.src, this.postData, this.href});
 
@@ -52,14 +64,16 @@ class SlateNodeData {
   Map<String, dynamic> toJson() => _$SlateNodeDataToJson(this);
 }
 
+Map _nodeDataPostDataToJson(NodeDataPostData postdata) => postdata != null ? postdata.toJson() : null;
+
 @JsonSerializable()
 class NodeDataPostData {
-  final dynamic threadPage;
+  dynamic threadPage;
   @JsonKey(fromJson: _stringToIntFromJson, toJson: _stringToIntToJson)
-  final int threadId;
+  int threadId;
   @JsonKey(fromJson: _stringToIntFromJson, toJson: _stringToIntToJson)
-  final int postId;
-  final String username;
+  int postId;
+  String username;
 
 
   NodeDataPostData({this.threadId, this.username, this.postId, this.threadPage});
@@ -79,9 +93,10 @@ int _stringToIntToJson(int number) => number;
 
 @JsonSerializable()
 class SlateLeaf {
-  final String object;
-  final String text;
-  final List<SlateLeafMark> marks;
+  String object;
+  String text;
+  @JsonKey(toJson: _leafmarksToJson)
+  List<SlateLeafMark> marks;
 
   SlateLeaf({this.object, this.text, this.marks});
 
@@ -89,10 +104,12 @@ class SlateLeaf {
   Map<String, dynamic> toJson() => _$SlateLeafToJson(this);
 }
 
+List<Map> _leafmarksToJson(List<SlateLeafMark> marks) => marks != null ? marks.map((mark) => mark.toJson()).toList() : List();
+
 @JsonSerializable()
 class SlateLeafMark {
-  final String object;
-  final String type;
+  String object;
+  String type;
 
   SlateLeafMark({this.object, this.type});
 
