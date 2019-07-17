@@ -42,6 +42,7 @@ dependencies:
   scoped_model: ^1.0.1
   package_info: ^0.4.0+4
   sticky_headers: "^0.1.8"
+  bbob_dart: ^0.1.1
   flutter:
     sdk: flutter
 
