@@ -9,6 +9,7 @@ import 'package:knocky/widget/Drawer.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
+import 'package:knocky/screens/newPost.dart';
 
 class ThreadScreen extends StatefulWidget {
   final String title;
@@ -77,7 +78,9 @@ class _ThreadScreenState extends State<ThreadScreen>
         });
       } else if (details.subscriptionLastSeen.isBefore(lastPostDate)) {
         print('last read date is before last post date! Mark thread as read');
-        KnockoutAPI().readThreadSubsciption(lastPostDate, details.id).then((res) {
+        KnockoutAPI()
+            .readThreadSubsciption(lastPostDate, details.id)
+            .then((res) {
           print('Subscribed Thread marked read!');
         });
       }
@@ -135,7 +138,7 @@ class _ThreadScreenState extends State<ThreadScreen>
     });
   }
 
-  void refreshPage () {
+  void refreshPage() {
     KnockoutAPI().getThread(widget.threadId, page: _currentPage).then((res) {
       setState(() {
         details = res;
@@ -148,20 +151,20 @@ class _ThreadScreenState extends State<ThreadScreen>
     KnockoutAPI().deleteThreadAlert(details.id).then((onValue) {
       Scaffold.of(scaffoldcontext).showSnackBar(
         SnackBar(
-          behavior: SnackBarBehavior.floating,
-          content: Text('Canceled subscription'),
-          elevation: 6
-        ),
+            behavior: SnackBarBehavior.floating,
+            content: Text('Canceled subscription'),
+            elevation: 6),
       );
     }).catchError((onError) {
       Scaffold.of(scaffoldcontext).showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            elevation: 6,
-            content: Text('Cancel failed. Try again'),
-          ),
-        );
-    });;
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          elevation: 6,
+          content: Text('Cancel failed. Try again'),
+        ),
+      );
+    });
+    ;
   }
 
   void onTapSubscribe(BuildContext scaffoldcontext) {
@@ -189,10 +192,10 @@ class _ThreadScreenState extends State<ThreadScreen>
       },
     ).catchError((onError) {
       Scaffold.of(scaffoldcontext).showSnackBar(
-          SnackBar(
-            content: Text('Subscribing failed. Try again'),
-          ),
-        );
+        SnackBar(
+          content: Text('Subscribing failed. Try again'),
+        ),
+      );
     });
   }
 
@@ -207,10 +210,9 @@ class _ThreadScreenState extends State<ThreadScreen>
             initialIntegerValue: 1,
           );
         }).then((int value) {
-      if (value != null) navigateToPage(value) ;
+      if (value != null) navigateToPage(value);
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -224,12 +226,12 @@ class _ThreadScreenState extends State<ThreadScreen>
           if (_isLoggedIn)
             Builder(
               builder: (BuildContext bcontext) {
-                  return IconButton(
-                    tooltip: 'Subscribe to thread',
-                    icon: Icon(FontAwesomeIcons.eye),
-                    onPressed:
-                        details != null ? () => onTapSubscribe(bcontext) : null,
-                  );
+                return IconButton(
+                  tooltip: 'Subscribe to thread',
+                  icon: Icon(FontAwesomeIcons.eye),
+                  onPressed:
+                      details != null ? () => onTapSubscribe(bcontext) : null,
+                );
               },
             ),
         ],
@@ -252,7 +254,7 @@ class _ThreadScreenState extends State<ThreadScreen>
                       behavior: SnackBarBehavior.floating,
                     ));
                     refreshPage();
-                    },
+                  },
                 );
               },
             ),
@@ -285,6 +287,15 @@ class _ThreadScreenState extends State<ThreadScreen>
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NewPostScreen()),
+          );
+        },
       ),
     );
   }
