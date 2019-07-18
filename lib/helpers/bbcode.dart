@@ -19,7 +19,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
     }
 
     // if string buffer is not empty, add a leaf
-    if (_leafContentBuffer.isNotEmpty || _lastElement.nodes.length > 0) {
+    if (_leafContentBuffer.isNotEmpty || (_lastElement != null && _lastElement.nodes.length > 0)) {
       // New leaf is appearing, add old leaf to node
       SlateNode textLeafNode = SlateNode(object: 'text', leaves: [
         SlateLeaf(
@@ -40,7 +40,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
   void visitText(bbob.Text text) {
     if (_lastElement == null) {
       _lastElement =
-          SlateNode(object: 'block', type: 'paragraph', nodes: List());
+          SlateNode(object: 'block', type: 'paragraph', data: SlateNodeData(), nodes: List());
     }
 
     if (text.textContent == '\n') {
@@ -63,7 +63,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
 
       // Paragraph ended, to reset last element
       _lastElement =
-          SlateNode(object: 'block', type: 'paragraph', nodes: List());
+          SlateNode(object: 'block', type: 'paragraph', data: SlateNodeData(), nodes: List());
     } else {
       _leafContentBuffer.write(text.textContent);
     }
@@ -106,7 +106,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
     if (element.tag == 'url') {
       if (_lastElement == null) {
         _lastElement =
-            SlateNode(object: 'block', type: 'paragraph', nodes: List());
+            SlateNode(object: 'block', type: 'paragraph', data: SlateNodeData(), nodes: List());
       }
 
       _lastElement.nodes.add(SlateNode(
@@ -128,7 +128,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
     if (element.tag == 'img') {
       if (_lastElement != null) {
         _lastElement =
-            SlateNode(object: 'block', type: 'paragraph', nodes: List());
+            SlateNode(object: 'block', type: 'paragraph', data: SlateNodeData(), nodes: List());
       }
 
       SlateNode imgNode = SlateNode(

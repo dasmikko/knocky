@@ -44,13 +44,15 @@ class _SubforumPagenState extends State<SubforumPage>
         .asStream()
         .listen((onData) {
       setState(() {
-        details = onData;
+        if (onData != null) {
+          details = onData;
 
-        if (prefs.getBool('showNSFWThreads') == null ||
-            !prefs.getBool('showNSFWThreads')) {
-          details.threads = details.threads
-              .where((item) => !item.title.contains('NSFW'))
-              .toList();
+          if (prefs.getBool('showNSFWThreads') == null ||
+              !prefs.getBool('showNSFWThreads')) {
+            details.threads = details.threads
+                .where((item) => !item.title.contains('NSFW'))
+                .toList();
+          }
         }
       });
     });

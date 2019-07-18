@@ -291,7 +291,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          Navigator.push(
+          final result = Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => NewPostScreen(
@@ -299,6 +299,10 @@ class _ThreadScreenState extends State<ThreadScreen>
               ),
             ),
           );
+
+          if (result != null) {
+            refreshPage();
+          }
         },
       ),
     );

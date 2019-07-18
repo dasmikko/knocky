@@ -20,7 +20,6 @@ class ViewUsersOfRatingsContent extends StatefulWidget {
 class _ViewUsersOfRatingsContentState extends State<ViewUsersOfRatingsContent> {
   @override
   Widget build(BuildContext context) {
-    print(this.widget.ratings.length);
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

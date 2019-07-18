@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/bbcode.dart';
 import 'package:knocky/models/slateDocument.dart';
@@ -14,12 +16,13 @@ class NewPostScreen extends StatefulWidget {
 }
 
 class _NewPostScreenState extends State<NewPostScreen> {
-  TextEditingController controller = TextEditingController(
-      text: """Hello [b]my[/b] [i]name[/i] [b][i]is[/i][/b] jurgen
+  String defaultText = """Hello [b]my[/b] [i]name[/i] [b][i]is[/i][/b] jurgen
 [u]New line[/u]
 [code]this.isCode = true[/code]
 [spoiler]Shhh... i'm a secret[/spoiler]
-[url]https://google.com/[/url]""");
+[url]https://google.com/[/url]""";
+
+  TextEditingController controller = TextEditingController(text: '');
 
   SlateObject document = null;
   GlobalKey _scaffoldKey;
@@ -33,9 +36,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
     document = BBCodeHandler().parse(controller.text);
   }
 
-  void onPressPost() {
+  void onPressPost() async {
     print('Pressed post');
-    KnockoutAPI().newPost(document.toJson().toString(), this.widget.threadId);
+    await KnockoutAPI().newPost(document.toJson(), this.widget.threadId);
+    Navigator.pop(context, true);
   }
 
   void refreshPreview() {
@@ -67,7 +71,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   void addTagAtSelection(int start, int end, String tag) {
     RegExp regExp = new RegExp(
-      "(\[([^/].*?)(=(.+?))?\](.*?)\[/\2\]|\[([^/].*?)(=(.+?))?\])"
+      r'(\[([^/].*?)(=(.+?))?\](.*?)\[/\2\]|\[([^/].*?)(=(.+?))?\])',
       caseSensitive: false,
       multiLine: false,
     );
@@ -271,7 +275,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                       maxLines: null,
                       keyboardType: TextInputType.multiline,
                       onChanged: (text) {
-                        history.add(text);
                         setState(() {
                           document = BBCodeHandler().parse(text);
                         });

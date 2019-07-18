@@ -19,7 +19,7 @@ Map _documentToJson(SlateDocument document) => document.toJson();
 @JsonSerializable()
 class SlateDocument {
   String object;
-  // Object data;
+  Map data = Map<String, String>();
   @JsonKey(toJson: _nodesToJson)
   List<SlateNode> nodes;
 
@@ -29,18 +29,30 @@ class SlateDocument {
   Map<String, dynamic> toJson() => _$SlateDocumentToJson(this);
 }
 
-List<Map> _nodesToJson(List<SlateNode> nodes) => nodes != null ? nodes.map((node) => node.toJson()).toList() : List();
+@JsonSerializable()
+class SlateDocumentData {
+  @JsonKey(includeIfNull: false)
+  String dummy;
+
+  SlateDocumentData({this.dummy});
+
+  factory SlateDocumentData.fromJson(Map<String, dynamic> json) => _$SlateDocumentDataFromJson(json);
+  Map<String, dynamic> toJson() => _$SlateDocumentDataToJson(this);
+}
+
+List<Map> _nodesToJson(List<SlateNode> nodes) => nodes != null ? nodes.map((node) => node.toJson()).toList() : null;
 
 // Slate Block
 @JsonSerializable()
 class SlateNode {
   String object;
+  @JsonKey(includeIfNull: false)
   String type;
-  @JsonKey(toJson: _nodeDataToJson)
+  @JsonKey(toJson: _nodeDataToJson, includeIfNull: false)
   SlateNodeData data;
-  @JsonKey(toJson: _leavesToJson)
+  @JsonKey(toJson: _leavesToJson, includeIfNull: false)
   List<SlateLeaf> leaves;
-  @JsonKey(toJson: _nodesToJson)
+  @JsonKey(toJson: _nodesToJson, includeIfNull: false)
   List<SlateNode> nodes;
 
   SlateNode({this.nodes, this.object, this.type, this.data, this.leaves});
@@ -49,13 +61,16 @@ class SlateNode {
   Map<String, dynamic> toJson() => _$SlateNodeToJson(this);
 }
 
-List<Map> _leavesToJson(List<SlateLeaf> leaves) => leaves != null ? leaves.map((leaf) => leaf.toJson()).toList() : List();
+List<Map> _leavesToJson(List<SlateLeaf> leaves) => leaves != null ? leaves.map((leaf) => leaf.toJson()).toList() : null;
 Map _nodeDataToJson(SlateNodeData data) => data != null ? data.toJson() : null;
 
 @JsonSerializable()
 class SlateNodeData {
+  @JsonKey(includeIfNull: false)
   String src;
+  @JsonKey(includeIfNull: false)
   NodeDataPostData postData;
+  @JsonKey(includeIfNull: false)
   String href;
 
   SlateNodeData({this.src, this.postData, this.href});

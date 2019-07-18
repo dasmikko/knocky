@@ -132,7 +132,6 @@ class SubforumDetailListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(threadDetails.iconId);
     String _iconUrl = threadDetails.iconId != null ? iconList
         .firstWhere((IconListItem item) => item.id == threadDetails.iconId)
         .url : '';

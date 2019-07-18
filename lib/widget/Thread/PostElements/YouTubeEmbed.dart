@@ -50,9 +50,6 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
 
   @override
   Widget build(BuildContext context) {
-    print("Res: ${this.res}");
-    print(this.widget.url);
-
     String thumbnailUrl = "UNKOWN";
 
     switch (res) {
@@ -66,8 +63,6 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
         thumbnailUrl = defaultThumbnail;
         break;
     }
-
-    print(thumbnailUrl);
 
     return Container(
       margin: EdgeInsets.only(bottom: 8.0),
