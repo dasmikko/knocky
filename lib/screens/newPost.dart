@@ -66,9 +66,21 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addTagAtSelection(int start, int end, String tag) {
+    RegExp regExp = new RegExp(
+      "(\[([^/].*?)(=(.+?))?\](.*?)\[/\2\]|\[([^/].*?)(=(.+?))?\])"
+      caseSensitive: false,
+      multiLine: false,
+    );
+    
+    
     String selectedText = controller.text.substring(start, end);
     String replaceWith = '[${tag}]' + selectedText + '[/${tag}]';
     controller.text = controller.text.replaceRange(start, end, replaceWith);
+    
+    print("allMatches : "+regExp.allMatches(selectedText).toString());
+    print("firstMatch : "+regExp.firstMatch(selectedText).toString());
+    print("hasMatch : "+regExp.hasMatch(selectedText).toString());
+    print("stringMatch : "+regExp.stringMatch(selectedText).toString());
 
     refreshPreview();
   }
