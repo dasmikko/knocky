@@ -155,4 +155,23 @@ class KnockoutAPI {
 
     return wasRejected;
   }
+
+  Future<void> newPost(String content, int threadId) async {
+    final response = await _request(type: 'post', url: 'post', data: {
+      'content': content,
+      'thread_id': threadId
+    });   
+
+    print(response.data);
+  }
+
+  Future<void> updatePost(String content, int postId, int threadId) async {
+    final response = await _request(type: 'post', url: 'post', data: {
+      'content': content,
+      'id': postId,
+      'thread_id': threadId
+    });   
+    
+    print(response.data);
+  }
 }
