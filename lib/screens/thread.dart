@@ -293,7 +293,11 @@ class _ThreadScreenState extends State<ThreadScreen>
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => NewPostScreen()),
+            MaterialPageRoute(
+              builder: (context) => NewPostScreen(
+                threadId: this.widget.threadId,
+              ),
+            ),
           );
         },
       ),

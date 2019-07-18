@@ -2,22 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:knocky/helpers/bbcode.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
+import 'package:knocky/helpers/api.dart';
 
 class NewPostScreen extends StatefulWidget {
+  int threadId;
+
+  NewPostScreen({@required this.threadId});
+
   @override
   _NewPostScreenState createState() => _NewPostScreenState();
 }
 
 class _NewPostScreenState extends State<NewPostScreen> {
-  TextEditingController controller =
-      TextEditingController(
-        text: """
-  Hello [b]my[/b] [i]name[/i] [b][i]is[/i][/b] jurgen
-  [u]New line[/u]
-  [code]this.isCode = true[/code]
-  [spoiler]Shhh... i'm a secret[/spoiler]""");
+  TextEditingController controller = TextEditingController(
+      text: """Hello [b]my[/b] [i]name[/i] [b][i]is[/i][/b] jurgen
+[u]New line[/u]
+[code]this.isCode = true[/code]
+[spoiler]Shhh... i'm a secret[/spoiler]
+[url]https://google.com/[/url]""");
+
   SlateObject document = null;
   GlobalKey _scaffoldKey;
+  FocusNode textFocusNode = FocusNode();
+
+  List<String> history = List();
 
   @override
   void initState() {
@@ -27,10 +35,12 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   void onPressPost() {
     print('Pressed post');
+    KnockoutAPI().newPost(document.toJson().toString(), this.widget.threadId);
+  }
 
+  void refreshPreview() {
     setState(() {
       document = BBCodeHandler().parse(controller.text);
-      print(document.toJson());
     });
   }
 
@@ -52,6 +62,162 @@ class _NewPostScreenState extends State<NewPostScreen> {
           ],
         );
       },
+    );
+  }
+
+  void addTagAtSelection(int start, int end, String tag) {
+    String selectedText = controller.text.substring(start, end);
+    String replaceWith = '[${tag}]' + selectedText + '[/${tag}]';
+    controller.text = controller.text.replaceRange(start, end, replaceWith);
+
+    refreshPreview();
+  }
+
+  void addImageDialog() async {
+    TextEditingController imgurlController = TextEditingController();
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                keyboardType: TextInputType.url,
+                controller: imgurlController,
+                decoration: new InputDecoration(labelText: 'Image url'),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text('Insert'),
+              onPressed: () {
+                Navigator.pop(context);
+                controller.text =
+                    controller.text + '\n[img]${imgurlController.text}[/img]';
+                refreshPreview();
+              })
+        ],
+      ),
+    );
+  }
+
+  void addLinkDialog() async {
+    TextEditingController urlController = TextEditingController();
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                keyboardType: TextInputType.url,
+                controller: urlController,
+                decoration: new InputDecoration(labelText: 'Url'),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text('Insert'),
+              onPressed: () {
+                Navigator.pop(context);
+                controller.text =
+                    controller.text + '\n[url]${urlController.text}[/url]';
+                refreshPreview();
+              })
+        ],
+      ),
+    );
+  }
+
+  void addYoutubeVideoDialog() async {
+    TextEditingController urlController = TextEditingController();
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                keyboardType: TextInputType.url,
+                controller: urlController,
+                decoration: new InputDecoration(labelText: 'YouTube URL'),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text('Insert'),
+              onPressed: () {
+                Navigator.pop(context);
+                controller.text =
+                    controller.text + '\n[youtube]${urlController.text}[/youtube]';
+                refreshPreview();
+              })
+        ],
+      ),
+    );
+  }
+
+  void addVideoDialog() async {
+    TextEditingController urlController = TextEditingController();
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                keyboardType: TextInputType.url,
+                controller: urlController,
+                decoration: new InputDecoration(labelText: 'Video URL (Webm/mp4)'),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text('Insert'),
+              onPressed: () {
+                Navigator.pop(context);
+                controller.text =
+                    controller.text + '\n[video]${urlController.text}[/video]';
+                refreshPreview();
+              })
+        ],
+      ),
     );
   }
 
@@ -80,29 +246,127 @@ class _NewPostScreenState extends State<NewPostScreen> {
         ),
         body: TabBarView(
           children: [
-            Container(
-              padding: EdgeInsets.all(15),
-              child: TextField(
-                controller: controller,
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-                onChanged: (text) {
-                  setState(() {
-                    document = BBCodeHandler().parse(text);
-                  });
-                },
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(15),
+                    child: TextField(
+                      controller: controller,
+                      focusNode: textFocusNode,
+                      maxLines: null,
+                      keyboardType: TextInputType.multiline,
+                      onChanged: (text) {
+                        history.add(text);
+                        setState(() {
+                          document = BBCodeHandler().parse(text);
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                Container(
+                  color: Colors.grey[600],
+                  padding: EdgeInsets.all(0),
+                  child: Wrap(
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(Icons.format_bold),
+                        onPressed: () {
+                          TextSelection theSelection = controller.selection;
+                          addTagAtSelection(
+                              theSelection.start, theSelection.end, 'b');
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.format_italic),
+                        onPressed: () {
+                          TextSelection theSelection = controller.selection;
+                          addTagAtSelection(
+                              theSelection.start, theSelection.end, 'i');
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.format_underlined),
+                        onPressed: () {
+                          TextSelection theSelection = controller.selection;
+                          addTagAtSelection(
+                              theSelection.start, theSelection.end, 'u');
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.code),
+                        onPressed: () {
+                          TextSelection theSelection = controller.selection;
+                          addTagAtSelection(
+                              theSelection.start, theSelection.end, 'code');
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.title),
+                        onPressed: () {
+                          TextSelection theSelection = controller.selection;
+                          addTagAtSelection(
+                              theSelection.start, theSelection.end, 'h1');
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.format_size),
+                        onPressed: () {
+                          TextSelection theSelection = controller.selection;
+                          addTagAtSelection(
+                              theSelection.start, theSelection.end, 'h2');
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.image),
+                        onPressed: () {
+                          TextSelection theSelection = controller.selection;
+                          addImageDialog();
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.link),
+                        onPressed: () {
+                          TextSelection theSelection = controller.selection;
+                          addLinkDialog();
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.ondemand_video),
+                        onPressed: () {
+                          TextSelection theSelection = controller.selection;
+                          addYoutubeVideoDialog();
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.videocam),
+                        onPressed: () {
+                          TextSelection theSelection = controller.selection;
+                          addVideoDialog();
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              ],
             ),
             Container(
-              child: SlateDocumentParser(
-                context: context,
-                scaffoldkey: _scaffoldKey,
-                slateObject: document,
-                onPressSpoiler: (content) {
-                  onPressSpoiler(context, content);
-                },
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.all(15),
+                  child: SlateDocumentParser(
+                    context: context,
+                    scaffoldkey: _scaffoldKey,
+                    slateObject: document,
+                    onPressSpoiler: (content) {
+                      onPressSpoiler(context, content);
+                    },
+                  ),
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -18,18 +18,21 @@ class BBCodeHandler implements bbob.NodeVisitor {
       node.accept(this);
     }
 
-    // New leaf is appearing, add old leaf to node
-    SlateNode textLeafNode = SlateNode(object: 'text', leaves: [
-      SlateLeaf(
-          text: _leafContentBuffer.toString(),
-          marks: _leafMarks,
-          object: 'leaf')
-    ]);
+    // if string buffer is not empty, add a leaf
+    if (_leafContentBuffer.isNotEmpty || _lastElement.nodes.length > 0) {
+      // New leaf is appearing, add old leaf to node
+      SlateNode textLeafNode = SlateNode(object: 'text', leaves: [
+        SlateLeaf(
+            text: _leafContentBuffer.toString(),
+            marks: _leafMarks,
+            object: 'leaf')
+      ]);
 
-    // Add node
-    _lastElement.nodes.add(textLeafNode);
-    _leafContentBuffer = StringBuffer();
-    document.nodes.add(_lastElement);
+      // Add node
+      _lastElement.nodes.add(textLeafNode);
+      _leafContentBuffer = StringBuffer();
+      document.nodes.add(_lastElement);
+    }
 
     return SlateObject(object: 'value', document: document);
   }
@@ -59,7 +62,8 @@ class BBCodeHandler implements bbob.NodeVisitor {
       document.nodes.add(_lastElement);
 
       // Paragraph ended, to reset last element
-      _lastElement = null;
+      _lastElement =
+          SlateNode(object: 'block', type: 'paragraph', nodes: List());
     } else {
       _leafContentBuffer.write(text.textContent);
     }
@@ -82,7 +86,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
       _leafContentBuffer = StringBuffer();
     }
 
-
+    // Text styles
     if (element.tag == 'b') {
       _leafMarks.add(SlateLeafMark(object: 'mark', type: 'bold'));
     }
@@ -90,7 +94,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
       _leafMarks.add(SlateLeafMark(object: 'mark', type: 'italic'));
     }
     if (element.tag == 'u') {
-      _leafMarks.add(SlateLeafMark(object: 'mark', type: 'underline'));
+      _leafMarks.add(SlateLeafMark(object: 'mark', type: 'underlined'));
     }
     if (element.tag == 'code') {
       _leafMarks.add(SlateLeafMark(object: 'mark', type: 'code'));
@@ -99,6 +103,69 @@ class BBCodeHandler implements bbob.NodeVisitor {
       _leafMarks.add(SlateLeafMark(object: 'mark', type: 'spoiler'));
     }
 
+    if (element.tag == 'url') {
+      if (_lastElement == null) {
+        _lastElement =
+            SlateNode(object: 'block', type: 'paragraph', nodes: List());
+      }
+
+      _lastElement.nodes.add(SlateNode(
+          object: 'inline',
+          type: 'link',
+          data: SlateNodeData(href: element.children.first.textContent),
+          nodes: [
+            SlateNode(object: 'text', leaves: [
+              SlateLeaf(
+                  object: 'leaf',
+                  text: element.children.first.textContent,
+                  marks: [])
+            ])
+          ]));
+      // Do not handle children
+      return false;
+    }
+
+    if (element.tag == 'img') {
+      if (_lastElement != null) {
+        _lastElement =
+            SlateNode(object: 'block', type: 'paragraph', nodes: List());
+      }
+
+      SlateNode imgNode = SlateNode(
+        object: 'block',
+        type: 'image',
+        data: SlateNodeData(src: element.children.first.textContent),
+        nodes: List(),
+      );
+
+      document.nodes.add(imgNode);
+      // Do not handle children
+      return false;
+    }
+
+    if (element.tag == 'h1') {
+      _lastElement = SlateNode(
+        object: 'block',
+        type: 'heading-one',
+        data: null,
+        nodes: [
+          SlateNode(object: 'text', leaves: []),
+        ],
+      );
+    }
+
+    if (element.tag == 'h2') {
+      _lastElement = SlateNode(
+        object: 'block',
+        type: 'heading-two',
+        data: null,
+        nodes: [
+          SlateNode(object: 'text', leaves: [],)
+        ]
+      );
+    }
+
+    // Handle children
     return true;
   }
 
