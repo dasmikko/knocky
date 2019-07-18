@@ -175,8 +175,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Insert'),
               onPressed: () {
                 Navigator.pop(context);
-                controller.text =
-                    controller.text + '\n[youtube]${urlController.text}[/youtube]';
+                controller.text = controller.text +
+                    '\n[youtube]${urlController.text}[/youtube]';
                 refreshPreview();
               })
         ],
@@ -197,7 +197,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 autofocus: true,
                 keyboardType: TextInputType.url,
                 controller: urlController,
-                decoration: new InputDecoration(labelText: 'Video URL (Webm/mp4)'),
+                decoration:
+                    new InputDecoration(labelText: 'Video URL (Webm/mp4)'),
               ),
             )
           ],

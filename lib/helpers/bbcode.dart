@@ -165,6 +165,37 @@ class BBCodeHandler implements bbob.NodeVisitor {
       );
     }
 
+    if (element.tag == 'blockquote') {
+      _lastElement = SlateNode(
+        object: 'block',
+        type: 'block-quote',
+        data: null,
+        nodes: [
+          SlateNode(object: 'text', leaves: [],)
+        ]
+      );
+    }
+
+    if (element.tag == 'youtube') {
+      _lastElement = SlateNode(
+        object: 'block',
+        type: 'block-quote',
+        data: SlateNodeData(src: element.children.first.textContent),
+        nodes: []
+      );
+      return false;
+    }
+
+    if (element.tag == 'video') {
+      _lastElement = SlateNode(
+        object: 'block',
+        type: 'video',
+        data: SlateNodeData(src: element.children.first.textContent),
+        nodes: []
+      );
+      return false;
+    }
+
     // Handle children
     return true;
   }
