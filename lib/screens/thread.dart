@@ -30,6 +30,7 @@ class _ThreadScreenState extends State<ThreadScreen>
   int _totalPages = 0;
   bool _isLoading = true;
   final scaffoldkey = new GlobalKey<ScaffoldState>();
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -138,13 +139,18 @@ class _ThreadScreenState extends State<ThreadScreen>
     });
   }
 
-  void refreshPage() {
-    KnockoutAPI().getThread(widget.threadId, page: _currentPage).then((res) {
-      setState(() {
-        details = res;
-        _isLoading = false;
-      });
+  Future<void> refreshPage() async {
+    setState(() {
+      _isLoading = true;
     });
+
+    Thread res = await KnockoutAPI().getThread(widget.threadId, page: _currentPage);
+    setState(() {
+      details = res;
+      _isLoading = false;
+    });
+    checkIfShouldMarkThreadRead();
+    print('Finish refreshing');
   }
 
   void onCancelSubscription(BuildContext scaffoldcontext) {
@@ -241,6 +247,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       body: _isLoading
           ? KnockoutLoadingIndicator()
           : ListView.builder(
+            controller: scrollController,
               padding: EdgeInsets.all(10.0),
               itemCount: details.posts.length,
               itemBuilder: (BuildContext context, int index) {
@@ -290,8 +297,8 @@ class _ThreadScreenState extends State<ThreadScreen>
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {
-          final result = Navigator.push(
+        onPressed: () async {
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => NewPostScreen(
@@ -301,7 +308,13 @@ class _ThreadScreenState extends State<ThreadScreen>
           );
 
           if (result != null) {
-            refreshPage();
+           scaffoldkey.currentState.showSnackBar(SnackBar(
+              content: Text('Posted!'),
+              behavior: SnackBarBehavior.floating,
+            ));
+            await refreshPage();
+            print('Do the scroll');
+            scrollController.jumpTo(999);
           }
         },
       ),
