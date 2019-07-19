@@ -43,9 +43,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     final flutterWebviewPlugin = new FlutterWebviewPlugin();
     String loginUrl = 'login';
     String fullUrl = '';
-    
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    fullUrl = prefs.getString('env') == 'knockout' ? KnockoutAPI.KNOCKOUT_SITE_URL + loginUrl : KnockoutAPI.QA_SITE_URL + loginUrl;
+    fullUrl = prefs.getString('env') == 'knockout'
+        ? KnockoutAPI.KNOCKOUT_SITE_URL + loginUrl
+        : KnockoutAPI.QA_SITE_URL + loginUrl;
 
     flutterWebviewPlugin.onBack.listen((onData) async {
       if (onData == null) {
@@ -55,7 +57,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     });
 
     flutterWebviewPlugin.onUrlChanged.listen((String url) async {
-      if (url.contains(prefs.getString('env') == 'knockout' ? KnockoutAPI.KNOCKOUT_URL + "auth/finish" : KnockoutAPI.QA_URL + "auth/finish")) {
+      if (url.contains(prefs.getString('env') == 'knockout'
+          ? KnockoutAPI.KNOCKOUT_URL + "auth/finish"
+          : KnockoutAPI.QA_URL + "auth/finish")) {
         print(url);
         Uri parsedUrl = Uri.parse(url);
         String userJson = Uri.decodeFull(parsedUrl.queryParameters['user']);
@@ -80,8 +84,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       }
 
       if (url == KnockoutAPI.baseurlSite) {
-        String cookieUrl = prefs.getString('env') == 'knockout' ? KnockoutAPI.KNOCKOUT_URL : KnockoutAPI.QA_URL;
-        
+        String cookieUrl = prefs.getString('env') == 'knockout'
+            ? KnockoutAPI.KNOCKOUT_URL
+            : KnockoutAPI.QA_URL;
+
         var cookies = await CookieManager.getCookies(cookieUrl);
         String cookieString = '';
 
@@ -147,27 +153,35 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .username;
 
-    final int unreadCount = 
-        ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).totalUnreadPosts;
+    final String _avatar = 
+        ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
+            .avatar;
+
+    final int unreadCount =
+        ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
+            .totalUnreadPosts;
+
+    final Decoration drawerHeaderDecoration = _loginState && _background != ''
+        ? BoxDecoration(
+            image: DecorationImage(
+              alignment: Alignment.center,
+              fit: BoxFit.cover,
+              colorFilter: new ColorFilter.mode(
+                  Colors.black.withOpacity(0.4), BlendMode.dstATop),
+              image: CachedNetworkImageProvider(
+                  'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
+                      _background),
+            ),
+          )
+        : null;
 
     return Drawer(
       child: ListView(
         children: <Widget>[
-          DrawerHeader(
-            decoration: _loginState && _background != ''
-                ? BoxDecoration(
-                    image: DecorationImage(
-                      alignment: Alignment.center,
-                      fit: BoxFit.cover,
-                      colorFilter: new ColorFilter.mode(
-                          Colors.black.withOpacity(0.4), BlendMode.dstATop),
-                      image: CachedNetworkImageProvider(
-                          'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
-                              _background),
-                    ),
-                  )
-                : null,
-            child: Text(_loginState ? _username : 'Not logged in'),
+          UserAccountsDrawerHeader(
+            accountName: Text(_loginState ? _username : 'Not logged in'),
+            currentAccountPicture: CachedNetworkImage(imageUrl: 'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' + _avatar,),
+            decoration: drawerHeaderDecoration,
           ),
           if (!_loginState)
             ListTile(
@@ -181,23 +195,25 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             enabled: _loginState,
             leading: Icon(FontAwesomeIcons.solidNewspaper),
             title: Text('Subscriptions'),
-            trailing: unreadCount > 0 ? Container(
-              margin: EdgeInsets.only(bottom: 5),
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5),
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: Container(
-                  padding: EdgeInsets.all(5),
-                  color: Color.fromRGBO(255, 201, 63, 1),
-                  child: Text(
-                    '${unreadCount} new posts',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ),
-            ) : null,
+            trailing: unreadCount > 0
+                ? Container(
+                    margin: EdgeInsets.only(bottom: 5),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: Container(
+                        padding: EdgeInsets.all(5),
+                        color: Color.fromRGBO(255, 201, 63, 1),
+                        child: Text(
+                          '${unreadCount} new posts',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  )
+                : null,
             onTap: onTapSubsriptions,
           ),
           ListTile(
