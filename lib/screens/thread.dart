@@ -258,6 +258,7 @@ class _ThreadScreenState extends State<ThreadScreen>
               postDetails: item,
               onPostRated: () {
                 Scaffold.of(context).showSnackBar(SnackBar(
+                  backgroundColor: Colors.green,
                   content: Text('Post rated!'),
                   behavior: SnackBarBehavior.floating,
                 ));
