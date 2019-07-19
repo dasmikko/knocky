@@ -222,7 +222,7 @@ class CategoryListItem extends StatelessWidget {
         child: Column(
           children: <Widget>[
             header(),
-            footer(context),
+            if (subforum.lastPost != null) footer(context),
           ],
         ),
       ),
