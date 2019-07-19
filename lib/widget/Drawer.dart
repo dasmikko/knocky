@@ -152,7 +152,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     final String _username =
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .username;
-
     final String _avatar = 
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .avatar;
@@ -180,7 +179,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         children: <Widget>[
           UserAccountsDrawerHeader(
             accountName: Text(_loginState ? _username : 'Not logged in'),
-            currentAccountPicture: CachedNetworkImage(imageUrl: 'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' + _avatar,),
+            currentAccountPicture: _loginState ? CachedNetworkImage(imageUrl: 'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' + _avatar,) : null,
             decoration: drawerHeaderDecoration,
           ),
           if (!_loginState)

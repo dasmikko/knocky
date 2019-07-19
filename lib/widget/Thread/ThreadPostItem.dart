@@ -10,6 +10,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
 import 'package:knocky/widget/Thread/RatePostContent.dart';
 import 'package:knocky/widget/Thread/ViewUsersOfRatingsContent.dart';
+import 'package:knocky/widget/Thread/PostBan.dart';
 
 class ThreadPostItem extends StatelessWidget {
   final ThreadPost postDetails;
@@ -134,25 +135,32 @@ class ThreadPostItem extends StatelessWidget {
               ),
             ),
             Container(
-              padding:
-                  EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 10),
-              child: Row(
-                children: <Widget>[
-                  Flexible(
-                    child: FlatButton(
-                      padding: EdgeInsets.all(0),
-                      onPressed: () => onPressViewRatings(context),
-                      child: buildRatings(postDetails.ratings),
+                padding:
+                    EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    if(postDetails.bans != null)
+                      Row(children: postDetails.bans.map((ban) => Flexible(child: PostBan(ban: ban,),),).toList(),),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Flexible(
+                          child: FlatButton(
+                            padding: EdgeInsets.all(0),
+                            onPressed: () => onPressViewRatings(context),
+                            child: buildRatings(postDetails.ratings),
+                          ),
+                        ),
+                        if (isLoggedIn && postDetails.user.id != ownUserId)
+                          FlatButton(
+                            child: Text('Rate'),
+                            onPressed: () => onPressRatePost(context),
+                          )
+                      ],
                     ),
-                  ),
-                  if (isLoggedIn && postDetails.user.id != ownUserId)
-                    FlatButton(
-                      child: Text('Rate'),
-                      onPressed: () => onPressRatePost(context),
-                    )
-                ],
-              ),
-            ),
+                  ],
+                )),
           ],
         ),
       ),
