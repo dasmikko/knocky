@@ -144,7 +144,8 @@ class _ThreadScreenState extends State<ThreadScreen>
       _isLoading = true;
     });
 
-    Thread res = await KnockoutAPI().getThread(widget.threadId, page: _currentPage);
+    Thread res =
+        await KnockoutAPI().getThread(widget.threadId, page: _currentPage);
     setState(() {
       details = res;
       _isLoading = false;
@@ -244,27 +245,28 @@ class _ThreadScreenState extends State<ThreadScreen>
       ),
       key: scaffoldkey,
       drawer: DrawerWidget(),
-      body: _isLoading
-          ? KnockoutLoadingIndicator()
-          : ListView.builder(
-            controller: scrollController,
-              padding: EdgeInsets.all(10.0),
-              itemCount: details.posts.length,
-              itemBuilder: (BuildContext context, int index) {
-                ThreadPost item = details.posts[index];
-                return ThreadPostItem(
-                  scaffoldKey: scaffoldkey,
-                  postDetails: item,
-                  onPostRated: () {
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text('Post rated!'),
-                      behavior: SnackBarBehavior.floating,
-                    ));
-                    refreshPage();
-                  },
-                );
+      body: KnockoutLoadingIndicator(
+        show: _isLoading,
+        child: details != null ? ListView.builder(
+          controller: scrollController,
+          padding: EdgeInsets.all(10.0),
+          itemCount: details.posts.length,
+          itemBuilder: (BuildContext context, int index) {
+            ThreadPost item = details.posts[index];
+            return ThreadPostItem(
+              scaffoldKey: scaffoldkey,
+              postDetails: item,
+              onPostRated: () {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text('Post rated!'),
+                  behavior: SnackBarBehavior.floating,
+                ));
+                refreshPage();
               },
-            ),
+            );
+          },
+        ) : Container(),
+      ),
       bottomNavigationBar: BottomAppBar(
         child: Container(
           padding: EdgeInsets.only(left: 10, right: 10),
@@ -308,7 +310,7 @@ class _ThreadScreenState extends State<ThreadScreen>
           );
 
           if (result != null) {
-           scaffoldkey.currentState.showSnackBar(SnackBar(
+            scaffoldkey.currentState.showSnackBar(SnackBar(
               content: Text('Posted!'),
               behavior: SnackBarBehavior.floating,
             ));
