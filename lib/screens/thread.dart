@@ -276,9 +276,9 @@ class _ThreadScreenState extends State<ThreadScreen>
           child: Row(
             children: <Widget>[
               Expanded(
-                child: Text('Page: ' +
+                child: Text('Page ' +
                     _currentPage.toString() +
-                    ' / ' +
+                    ' of ' +
                     _totalPages.toString()),
               ),
               IconButton(
@@ -286,7 +286,7 @@ class _ThreadScreenState extends State<ThreadScreen>
                 onPressed: _currentPage == 1 ? null : navigateToPrevPage,
               ),
               IconButton(
-                onPressed: showJumpDialog,
+                onPressed: _totalPages > 1 ? showJumpDialog : null,
                 icon: Icon(Icons.redo),
                 tooltip: 'Jump to page',
               ),
