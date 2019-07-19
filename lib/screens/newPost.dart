@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +7,7 @@ import 'package:knocky/helpers/bbcode.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
 import 'package:knocky/helpers/api.dart';
+import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 
 class NewPostScreen extends StatefulWidget {
   int threadId;
@@ -17,17 +19,11 @@ class NewPostScreen extends StatefulWidget {
 }
 
 class _NewPostScreenState extends State<NewPostScreen> {
-  String defaultText = """Hello [b]my[/b] [i]name[/i] [b][i]is[/i][/b] jurgen
-[u]New line[/u]
-[code]this.isCode = true[/code]
-[spoiler]Shhh... i'm a secret[/spoiler]
-[url]https://google.com/[/url]""";
-
   TextEditingController controller = TextEditingController(text: '');
-
   SlateObject document = null;
   GlobalKey _scaffoldKey;
   FocusNode textFocusNode = FocusNode();
+  bool _isPosting = false;
 
   List<String> history = List();
 
@@ -39,6 +35,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   void onPressPost() async {
     print('Pressed post');
+    setState(() {
+      _isPosting = true;
+    });
     await KnockoutAPI().newPost(document.toJson(), this.widget.threadId);
     Navigator.pop(context, true);
   }
@@ -76,23 +75,26 @@ class _NewPostScreenState extends State<NewPostScreen> {
       caseSensitive: false,
       multiLine: false,
     );
-    
-    
+
+    String newline = tag == 'h1' || tag == 'h2' ? "\n" : '';
     String selectedText = controller.text.substring(start, end);
-    String replaceWith = '[${tag}]' + selectedText + '[/${tag}]';
+    String replaceWith = '';
+
+    if (regExp.hasMatch(selectedText)) {
+      replaceWith = selectedText.replaceAll('[${tag}]', '');
+      replaceWith = replaceWith.replaceAll('[/${tag}]', '');
+    } else {
+      replaceWith = newline + '[${tag}]' + selectedText + '[/${tag}]';
+    }
     controller.text = controller.text.replaceRange(start, end, replaceWith);
-    
-    print("allMatches : "+regExp.allMatches(selectedText).toString());
-    print("firstMatch : "+regExp.firstMatch(selectedText).toString());
-    print("hasMatch : "+regExp.hasMatch(selectedText).toString());
-    print("stringMatch : "+regExp.stringMatch(selectedText).toString());
 
     refreshPreview();
   }
 
   void addImageDialog() async {
     ClipboardData clipBoardText = await Clipboard.getData('text/plain');
-    TextEditingController imgurlController = TextEditingController(text: clipBoardText.text);
+    TextEditingController imgurlController =
+        TextEditingController(text: clipBoardText.text);
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -130,7 +132,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   void addLinkDialog() async {
     ClipboardData clipBoardText = await Clipboard.getData('text/plain');
-    TextEditingController urlController = TextEditingController(text: clipBoardText.text);
+    TextEditingController urlController =
+        TextEditingController(text: clipBoardText.text);
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -168,7 +171,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   void addYoutubeVideoDialog() async {
     ClipboardData clipBoardText = await Clipboard.getData('text/plain');
-    TextEditingController urlController = TextEditingController(text: clipBoardText.text);
+    TextEditingController urlController =
+        TextEditingController(text: clipBoardText.text);
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -206,7 +210,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   void addVideoDialog() async {
     ClipboardData clipBoardText = await Clipboard.getData('text/plain');
-    TextEditingController urlController = TextEditingController(text: clipBoardText.text);
+    TextEditingController urlController =
+        TextEditingController(text: clipBoardText.text);
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -253,8 +258,16 @@ class _NewPostScreenState extends State<NewPostScreen> {
           title: Text('New post'),
           actions: <Widget>[
             IconButton(
-              onPressed: onPressPost,
+              onPressed: !_isPosting ? onPressPost : null,
               icon: Icon(Icons.send),
+            ),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  _isPosting = !_isPosting;
+                });
+              },
+              icon: Icon(Icons.visibility),
             ),
           ],
           bottom: TabBar(
@@ -266,129 +279,132 @@ class _NewPostScreenState extends State<NewPostScreen> {
             ],
           ),
         ),
-        body: TabBarView(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Expanded(
+        body: KnockoutLoadingIndicator(
+          show: _isPosting,
+          child: TabBarView(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.all(15),
+                      child: TextField(
+                        controller: controller,
+                        focusNode: textFocusNode,
+                        maxLines: null,
+                        keyboardType: TextInputType.multiline,
+                        onChanged: (text) {
+                          setState(() {
+                            document = BBCodeHandler().parse(text);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  Container(
+                    color: Colors.grey[600],
+                    padding: EdgeInsets.all(0),
+                    child: Wrap(
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.format_bold),
+                          onPressed: () {
+                            TextSelection theSelection = controller.selection;
+                            addTagAtSelection(
+                                theSelection.start, theSelection.end, 'b');
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.format_italic),
+                          onPressed: () {
+                            TextSelection theSelection = controller.selection;
+                            addTagAtSelection(
+                                theSelection.start, theSelection.end, 'i');
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.format_underlined),
+                          onPressed: () {
+                            TextSelection theSelection = controller.selection;
+                            addTagAtSelection(
+                                theSelection.start, theSelection.end, 'u');
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.code),
+                          onPressed: () {
+                            TextSelection theSelection = controller.selection;
+                            addTagAtSelection(
+                                theSelection.start, theSelection.end, 'code');
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.title),
+                          onPressed: () {
+                            TextSelection theSelection = controller.selection;
+                            addTagAtSelection(
+                                theSelection.start, theSelection.end, 'h1');
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.format_size),
+                          onPressed: () {
+                            TextSelection theSelection = controller.selection;
+                            addTagAtSelection(
+                                theSelection.start, theSelection.end, 'h2');
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.image),
+                          onPressed: () {
+                            TextSelection theSelection = controller.selection;
+                            addImageDialog();
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.link),
+                          onPressed: () {
+                            TextSelection theSelection = controller.selection;
+                            addLinkDialog();
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.ondemand_video),
+                          onPressed: () {
+                            TextSelection theSelection = controller.selection;
+                            addYoutubeVideoDialog();
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.videocam),
+                          onPressed: () {
+                            TextSelection theSelection = controller.selection;
+                            addVideoDialog();
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                child: SingleChildScrollView(
                   child: Container(
                     padding: EdgeInsets.all(15),
-                    child: TextField(
-                      controller: controller,
-                      focusNode: textFocusNode,
-                      maxLines: null,
-                      keyboardType: TextInputType.multiline,
-                      onChanged: (text) {
-                        setState(() {
-                          document = BBCodeHandler().parse(text);
-                        });
+                    child: SlateDocumentParser(
+                      context: context,
+                      scaffoldkey: _scaffoldKey,
+                      slateObject: document,
+                      onPressSpoiler: (content) {
+                        onPressSpoiler(context, content);
                       },
                     ),
                   ),
                 ),
-                Container(
-                  color: Colors.grey[600],
-                  padding: EdgeInsets.all(0),
-                  child: Wrap(
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(Icons.format_bold),
-                        onPressed: () {
-                          TextSelection theSelection = controller.selection;
-                          addTagAtSelection(
-                              theSelection.start, theSelection.end, 'b');
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.format_italic),
-                        onPressed: () {
-                          TextSelection theSelection = controller.selection;
-                          addTagAtSelection(
-                              theSelection.start, theSelection.end, 'i');
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.format_underlined),
-                        onPressed: () {
-                          TextSelection theSelection = controller.selection;
-                          addTagAtSelection(
-                              theSelection.start, theSelection.end, 'u');
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.code),
-                        onPressed: () {
-                          TextSelection theSelection = controller.selection;
-                          addTagAtSelection(
-                              theSelection.start, theSelection.end, 'code');
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.title),
-                        onPressed: () {
-                          TextSelection theSelection = controller.selection;
-                          addTagAtSelection(
-                              theSelection.start, theSelection.end, 'h1');
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.format_size),
-                        onPressed: () {
-                          TextSelection theSelection = controller.selection;
-                          addTagAtSelection(
-                              theSelection.start, theSelection.end, 'h2');
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.image),
-                        onPressed: () {
-                          TextSelection theSelection = controller.selection;
-                          addImageDialog();
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.link),
-                        onPressed: () {
-                          TextSelection theSelection = controller.selection;
-                          addLinkDialog();
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.ondemand_video),
-                        onPressed: () {
-                          TextSelection theSelection = controller.selection;
-                          addYoutubeVideoDialog();
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.videocam),
-                        onPressed: () {
-                          TextSelection theSelection = controller.selection;
-                          addVideoDialog();
-                        },
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Container(
-              child: SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.all(15),
-                  child: SlateDocumentParser(
-                    context: context,
-                    scaffoldkey: _scaffoldKey,
-                    slateObject: document,
-                    onPressSpoiler: (content) {
-                      onPressSpoiler(context, content);
-                    },
-                  ),
-                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
