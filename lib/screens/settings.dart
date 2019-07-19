@@ -6,6 +6,7 @@ import 'package:knocky/themes/DarkTheme.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knocky/state/authentication.dart';
+import 'package:knocky/state/subscriptions.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 
@@ -86,7 +87,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               SharedPreferences prefs = await SharedPreferences.getInstance();
               prefs.setString('env', env);
               ScopedModel.of<AuthenticationModel>(context).logout();
-              
+              ScopedModel.of<SubscriptionModel>(context).clearList();
+
               Navigator.of(context).pop();
             },
           ),

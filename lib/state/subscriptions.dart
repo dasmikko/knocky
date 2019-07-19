@@ -27,8 +27,12 @@ class SubscriptionModel extends Model {
     return sub;
   }
 
-  void calledFailed () {
+  void clearList () {
     _alerts = List();
+  }
+
+  void calledFailed () {
+    this.clearList();
   }
 
   void _calcTotalUnreadPosts () {

@@ -247,6 +247,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               title: Text('Logout'),
               onTap: () async {
                 ScopedModel.of<AuthenticationModel>(context).logout();
+                ScopedModel.of<SubscriptionModel>(context).clearList();
               },
             )
         ],
