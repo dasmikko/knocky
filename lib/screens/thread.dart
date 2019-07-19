@@ -268,6 +268,7 @@ class _ThreadScreenState extends State<ThreadScreen>
         ) : Container(),
       ),
       bottomNavigationBar: BottomAppBar(
+        shape: CircularNotchedRectangle(),
         child: Container(
           padding: EdgeInsets.only(left: 10, right: 10),
           height: 56,
@@ -297,6 +298,7 @@ class _ThreadScreenState extends State<ThreadScreen>
           ),
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () async {
