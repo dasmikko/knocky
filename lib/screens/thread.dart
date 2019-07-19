@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/api.dart';
@@ -31,6 +33,7 @@ class _ThreadScreenState extends State<ThreadScreen>
   bool _isLoading = true;
   final scaffoldkey = new GlobalKey<ScaffoldState>();
   ScrollController scrollController = ScrollController();
+  StreamSubscription<Thread> _dataSub;
 
   @override
   void initState() {
@@ -41,10 +44,16 @@ class _ThreadScreenState extends State<ThreadScreen>
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _dataSub.cancel();
+  }
+
+  @override
   void afterFirstLayout(BuildContext context) {
     var api = new KnockoutAPI();
     // Calling the same function "after layout" to resolve the issue.
-    api.getThread(widget.threadId, page: _currentPage).then((res) {
+    _dataSub = api.getThread(widget.threadId, page: _currentPage).asStream().listen((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -96,7 +105,8 @@ class _ThreadScreenState extends State<ThreadScreen>
 
     var api = new KnockoutAPI();
 
-    api.getThread(widget.threadId, page: _currentPage).then((res) {
+    _dataSub?.cancel();
+    _dataSub = api.getThread(widget.threadId, page: _currentPage).asStream().listen((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -113,7 +123,8 @@ class _ThreadScreenState extends State<ThreadScreen>
 
     var api = new KnockoutAPI();
 
-    api.getThread(widget.threadId, page: _currentPage).then((res) {
+    _dataSub?.cancel();
+    _dataSub = api.getThread(widget.threadId, page: _currentPage).asStream().listen((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -130,7 +141,8 @@ class _ThreadScreenState extends State<ThreadScreen>
 
     var api = new KnockoutAPI();
 
-    api.getThread(widget.threadId, page: _currentPage).then((res) {
+    _dataSub?.cancel();
+    _dataSub = api.getThread(widget.threadId, page: _currentPage).asStream().listen((res) {
       setState(() {
         details = res;
         _isLoading = false;
