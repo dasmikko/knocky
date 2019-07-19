@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:knocky/helpers/bbcode.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
@@ -90,7 +91,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addImageDialog() async {
-    TextEditingController imgurlController = TextEditingController();
+    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    TextEditingController imgurlController = TextEditingController(text: clipBoardText.text);
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -127,7 +129,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addLinkDialog() async {
-    TextEditingController urlController = TextEditingController();
+    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    TextEditingController urlController = TextEditingController(text: clipBoardText.text);
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -164,7 +167,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addYoutubeVideoDialog() async {
-    TextEditingController urlController = TextEditingController();
+    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    TextEditingController urlController = TextEditingController(text: clipBoardText.text);
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -201,7 +205,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addVideoDialog() async {
-    TextEditingController urlController = TextEditingController();
+    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    TextEditingController urlController = TextEditingController(text: clipBoardText.text);
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
