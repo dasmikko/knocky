@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 
 class KnockoutLoadingIndicator extends StatefulWidget {
   final Widget child;
-  bool show = false;
+  final bool show;
+  final bool blurBackground;
 
-  KnockoutLoadingIndicator({this.child, this.show});
+  KnockoutLoadingIndicator(
+      {@required this.child, this.show = false, this.blurBackground = true});
 
   @override
   _KnockoutLoadingIndicatorState createState() =>
@@ -36,15 +38,36 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
         });
       }
     });
+  }
 
-    /*animation.addStatusListener((status) {
-    if (status == AnimationStatus.completed) {
-      controller.reverse();
-    } else if (status == AnimationStatus.dismissed) {
-      controller.forward();
-    }
-  });*/
-//this will start the animation
+  Widget blurredContent() {
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+      child: Container(color: Color.fromRGBO(0, 0, 0, 0.5), child: content()),
+    );
+  }
+
+  Widget fadedContent() {
+    return Container(color: Color.fromRGBO(0, 0, 0, 0.5), child: content());
+  }
+
+  Widget content() {
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(bottom: 12),
+            child: Text(
+              'Node graph out of date. Rebuilding...',
+              style: TextStyle(fontSize: 14, fontFamily: 'RobotoMono'),
+            ),
+          ),
+          CircularProgressIndicator()
+        ],
+      ),
+    );
   }
 
   @override
@@ -61,31 +84,10 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
         IgnorePointer(
           ignoring: !this.widget.show,
           child: FadeTransition(
-            opacity: animation,
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-              child: Container(
-                color: Color.fromRGBO(0, 0, 0, 0.5),
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(bottom: 12),
-                        child: Text(
-                          'Node graph out of date. Rebuilding...',
-                          style:
-                              TextStyle(fontSize: 14, fontFamily: 'RobotoMono'),
-                        ),
-                      ),
-                      CircularProgressIndicator()
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
+              opacity: animation,
+              child: this.widget.blurBackground
+                  ? blurredContent()
+                  : fadedContent()),
         ),
       ],
     );
