@@ -9,10 +9,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
   List<SlateLeafMark> _leafMarks = List();
 
   SlateObject parse(String text) {
-    print(text);
-
     var ast = bbob.parse(text);
-    print(ast);
 
     for (final node in ast) {
       node.accept(this);
