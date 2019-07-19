@@ -22,23 +22,28 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
   StreamSubscription<List<ThreadAlert>> _dataSub;
 
   @override
-  void initState () {
+  void initState() {
     super.initState();
   }
 
   @override
   void afterFirstLayout(BuildContext context) {
-    if (ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).subscriptions.length == 0) {
+    if (ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
+            .subscriptions
+            .length ==
+        0) {
       loadSubscriptions();
     } else {
       setState(() {
-        alerts = alerts = ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).subscriptions;
+        alerts = alerts =
+            ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
+                .subscriptions;
       });
     }
   }
 
   @override
-  void dispose () {
+  void dispose() {
     super.dispose();
     _dataSub?.cancel();
   }
@@ -49,7 +54,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
     });
 
     _dataSub?.cancel();
-    _dataSub =  KnockoutAPI().getAlerts().asStream().listen((List<ThreadAlert> res) {
+    _dataSub =
+        KnockoutAPI().getAlerts().asStream().listen((List<ThreadAlert> res) {
       setState(() {
         alerts = res;
         fetching = false;
@@ -105,22 +111,22 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
         title: Text('Subscriptions'),
       ),
       body: RefreshIndicator(
-        onRefresh: loadSubscriptions,
-        child: fetching
-            ? KnockoutLoadingIndicator()
-            : ListView.builder(
-                itemCount: alerts.length,
-                itemBuilder: (BuildContext context, int index) {
-                  ThreadAlert item = alerts[index];
-                  return SubscriptionListItem(
-                    item: item,
-                    onTapItem: onTapItem,
-                    onTapNewPostButton: onTapNewPostsButton,
-                    onUnsubscribe: () => onTapUnsubscribe(context, item),
-                  );
-                },
-              ),
-      ),
+          onRefresh: loadSubscriptions,
+          child: KnockoutLoadingIndicator(
+            show: fetching,
+            child: ListView.builder(
+              itemCount: alerts.length,
+              itemBuilder: (BuildContext context, int index) {
+                ThreadAlert item = alerts[index];
+                return SubscriptionListItem(
+                  item: item,
+                  onTapItem: onTapItem,
+                  onTapNewPostButton: onTapNewPostsButton,
+                  onUnsubscribe: () => onTapUnsubscribe(context, item),
+                );
+              },
+            ),
+          )),
     );
   }
 }
