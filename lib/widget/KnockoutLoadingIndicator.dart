@@ -17,12 +17,25 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
     with TickerProviderStateMixin {
   AnimationController controller;
   Animation<double> animation;
+  bool isHidden = false;
 
   initState() {
     super.initState();
     controller = AnimationController(
-        duration: const Duration(milliseconds: 100), vsync: this);
+        duration: const Duration(milliseconds: 250), vsync: this);
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
+
+    animation.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          isHidden = false;
+        });
+      } else if (status == AnimationStatus.dismissed) {
+        setState(() {
+          isHidden = true;
+        });
+      }
+    });
 
     /*animation.addStatusListener((status) {
     if (status == AnimationStatus.completed) {
@@ -32,7 +45,6 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
     }
   });*/
 //this will start the animation
-  
   }
 
   @override
@@ -46,12 +58,14 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
     return Stack(
       children: <Widget>[
         this.widget.child,
-        Positioned(
+        IgnorePointer(
+          ignoring: !this.widget.show,
           child: FadeTransition(
             opacity: animation,
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
               child: Container(
+                color: Color.fromRGBO(0, 0, 0, 0.5),
                 child: Center(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
