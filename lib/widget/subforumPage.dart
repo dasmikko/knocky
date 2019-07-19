@@ -83,6 +83,6 @@ class _SubforumPagenState extends State<SubforumPage>
 
   @override
   Widget build(BuildContext context) {
-    return KnockoutLoadingIndicator(show: _isFetching, child: content());
+    return KnockoutLoadingIndicator(show: _isFetching, child: content(), blurBackground: false,);
   }
 }
