@@ -80,7 +80,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       }
 
       if (url == KnockoutAPI.baseurlSite) {
-        var cookies = await CookieManager.getCookies(KnockoutAPI.baseurl);
+        String cookieUrl = prefs.getString('env') == 'knockout' ? KnockoutAPI.KNOCKOUT_URL : KnockoutAPI.QA_URL;
+        
+        var cookies = await CookieManager.getCookies(cookieUrl);
         String cookieString = '';
 
         // Get needed JWTToken
