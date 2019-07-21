@@ -11,7 +11,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 
 class SettingsScreen extends StatefulWidget {
-  BuildContext appContext;
+  final BuildContext appContext;
   
 
   SettingsScreen({
