@@ -29,10 +29,13 @@ class SubscriptionModel extends Model {
 
   void clearList () {
     _alerts = List();
+    _calcTotalUnreadPosts();
+    notifyListeners();
   }
 
   void calledFailed () {
     this.clearList();
+    notifyListeners();
   }
 
   void _calcTotalUnreadPosts () {

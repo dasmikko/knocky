@@ -88,7 +88,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               prefs.setString('env', env);
               ScopedModel.of<AuthenticationModel>(context).logout();
               ScopedModel.of<SubscriptionModel>(context).clearList();
-
               Navigator.of(context).pop();
             },
           ),

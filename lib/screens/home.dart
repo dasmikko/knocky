@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen>
   void afterFirstLayout(BuildContext context) {
     getSubforums();
     ScopedModel.of<AuthenticationModel>(context)
-        .getLoginStateFromSharedPreference();
+        .getLoginStateFromSharedPreference(context);
   }
 
   @override

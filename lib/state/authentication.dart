@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knocky/helpers/api.dart';
+import 'package:knocky/state/subscriptions.dart';
+import 'package:knocky/state/appState.dart';
 
 class AuthenticationModel extends Model {
+  BuildContext buildContext;
+
   bool _isLoggedIn = false;
   int _userId = 0;
   String _username = 'Not logged in';
@@ -11,6 +15,12 @@ class AuthenticationModel extends Model {
   String _background = '';
   int _usergroup = 0;
   String _cookieString = '';
+  bool _isBanned = false;
+  String _banMessage = '';
+  int _banThreadId = 0;
+
+  AuthenticationModel({this.buildContext});
+
 
   bool get isLoggedIn => _isLoggedIn;
   int get userId => _userId;
@@ -19,9 +29,12 @@ class AuthenticationModel extends Model {
   String get background => _background;
   int get usergroup => _usergroup;
   String get cookieString => _cookieString;
+  bool get isBanned => _isBanned;
+  String get banMessage => _banMessage;
+  int get banThreadId => _banThreadId; 
 
   // Get the stored auth state
-  void getLoginStateFromSharedPreference() async {
+  void getLoginStateFromSharedPreference(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print(prefs.getBool('isLoggedIn'));
     _isLoggedIn = prefs.getBool('isLoggedIn') != null
@@ -84,10 +97,22 @@ class AuthenticationModel extends Model {
       print('is map');
       print(authState['message']);
 
+      _isBanned = false;
+      _banMessage = '';
+      _banThreadId = 0;
+
       if (authState['message'] == 'Invalid credentials. Please log out and try again.') this.logout();
+      if (authState['banMessage'] != null) {
+        _isBanned = true;
+        _banMessage = authState['banMessage'];
+        _banThreadId = authState['threadId'];
+        this.logout();
+      } 
     }
   }
 
-  static AuthenticationModel of(BuildContext context) =>
-    ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true);
+  static AuthenticationModel of(BuildContext context) {
+    return ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true);
+  }
+    
 }

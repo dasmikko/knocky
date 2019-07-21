@@ -13,6 +13,7 @@ import 'package:knocky/screens/subscriptions.dart';
 import 'package:knocky/screens/settings.dart';
 import 'package:knocky/state/authentication.dart';
 import 'package:knocky/state/subscriptions.dart';
+import 'package:knocky/state/appState.dart';
 
 class DrawerWidget extends StatefulWidget {
   Function onLoginOpen;
@@ -35,7 +36,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   void initState() {
     super.initState();
     ScopedModel.of<AuthenticationModel>(context)
-        .getLoginStateFromSharedPreference();
+        .getLoginStateFromSharedPreference(context);
     ScopedModel.of<SubscriptionModel>(context).getSubscriptions();
   }
 
@@ -152,13 +153,25 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     final String _username =
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .username;
-    final String _avatar = 
+    final String _avatar =
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .avatar;
 
     final int unreadCount =
         ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
             .totalUnreadPosts;
+
+    final bool isBanned =
+        ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
+            .isBanned;
+
+    final String banMessage =
+        ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
+            .banMessage;
+
+    final int banThreadId =
+        ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
+            .banThreadId;
 
     final Decoration drawerHeaderDecoration = _loginState && _background != ''
         ? BoxDecoration(
@@ -179,9 +192,26 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         children: <Widget>[
           UserAccountsDrawerHeader(
             accountName: Text(_loginState ? _username : 'Not logged in'),
-            currentAccountPicture: _loginState ? CachedNetworkImage(imageUrl: 'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' + _avatar,) : null,
+            currentAccountPicture: _loginState
+                ? CachedNetworkImage(
+                    imageUrl:
+                        'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
+                            _avatar,
+                  )
+                : null,
             decoration: drawerHeaderDecoration,
           ),
+          if (isBanned)
+            DrawerHeader(
+              decoration: BoxDecoration(color: Colors.red),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text('You are banned!'),
+                  Text('Reason: ' + banMessage)
+                ],
+              ),
+            ),
           if (!_loginState)
             ListTile(
               leading: Icon(FontAwesomeIcons.signInAlt),
