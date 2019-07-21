@@ -15,11 +15,12 @@ Browse the Knockout forum the native way!
 - Authentication
 - Twitter embeds
 - Rating posts
+- Posting
+- Latest/Popular threads
 
 
 ### What is to implemented﻿
 - Events screen
-- Posting
 - And probably more
 
 ## Where can I follow the development?
