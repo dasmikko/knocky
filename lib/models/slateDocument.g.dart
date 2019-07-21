@@ -15,7 +15,10 @@ SlateObject _$SlateObjectFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$SlateObjectToJson(SlateObject instance) =>
-    <String, dynamic>{'object': instance.object, 'document': instance.document};
+    <String, dynamic>{
+      'object': instance.object,
+      'document': _documentToJson(instance.document)
+    };
 
 SlateDocument _$SlateDocumentFromJson(Map<String, dynamic> json) {
   return SlateDocument(
@@ -23,11 +26,33 @@ SlateDocument _$SlateDocumentFromJson(Map<String, dynamic> json) {
       nodes: (json['nodes'] as List)
           ?.map((e) =>
               e == null ? null : SlateNode.fromJson(e as Map<String, dynamic>))
-          ?.toList());
+          ?.toList())
+    ..data = json['data'] as Map<String, dynamic>;
 }
 
 Map<String, dynamic> _$SlateDocumentToJson(SlateDocument instance) =>
-    <String, dynamic>{'object': instance.object, 'nodes': instance.nodes};
+    <String, dynamic>{
+      'object': instance.object,
+      'data': instance.data,
+      'nodes': _nodesToJson(instance.nodes)
+    };
+
+SlateDocumentData _$SlateDocumentDataFromJson(Map<String, dynamic> json) {
+  return SlateDocumentData(dummy: json['dummy'] as String);
+}
+
+Map<String, dynamic> _$SlateDocumentDataToJson(SlateDocumentData instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('dummy', instance.dummy);
+  return val;
+}
 
 SlateNode _$SlateNodeFromJson(Map<String, dynamic> json) {
   return SlateNode(
@@ -46,13 +71,23 @@ SlateNode _$SlateNodeFromJson(Map<String, dynamic> json) {
           ?.toList());
 }
 
-Map<String, dynamic> _$SlateNodeToJson(SlateNode instance) => <String, dynamic>{
-      'object': instance.object,
-      'type': instance.type,
-      'data': instance.data,
-      'leaves': instance.leaves,
-      'nodes': instance.nodes
-    };
+Map<String, dynamic> _$SlateNodeToJson(SlateNode instance) {
+  final val = <String, dynamic>{
+    'object': instance.object,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('type', instance.type);
+  writeNotNull('data', _nodeDataToJson(instance.data));
+  writeNotNull('leaves', _leavesToJson(instance.leaves));
+  writeNotNull('nodes', _nodesToJson(instance.nodes));
+  return val;
+}
 
 SlateNodeData _$SlateNodeDataFromJson(Map<String, dynamic> json) {
   return SlateNodeData(
@@ -63,12 +98,20 @@ SlateNodeData _$SlateNodeDataFromJson(Map<String, dynamic> json) {
       href: json['href'] as String);
 }
 
-Map<String, dynamic> _$SlateNodeDataToJson(SlateNodeData instance) =>
-    <String, dynamic>{
-      'src': instance.src,
-      'postData': instance.postData,
-      'href': instance.href
-    };
+Map<String, dynamic> _$SlateNodeDataToJson(SlateNodeData instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('src', instance.src);
+  writeNotNull('postData', instance.postData);
+  writeNotNull('href', instance.href);
+  return val;
+}
 
 NodeDataPostData _$NodeDataPostDataFromJson(Map<String, dynamic> json) {
   return NodeDataPostData(
@@ -100,7 +143,7 @@ SlateLeaf _$SlateLeafFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$SlateLeafToJson(SlateLeaf instance) => <String, dynamic>{
       'object': instance.object,
       'text': instance.text,
-      'marks': instance.marks
+      'marks': _leafmarksToJson(instance.marks)
     };
 
 SlateLeafMark _$SlateLeafMarkFromJson(Map<String, dynamic> json) {

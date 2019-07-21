@@ -3,23 +3,26 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/helpers/api.dart';
+import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/screens/thread.dart';
+import 'package:knocky/widget/SubforumDetailListItem.dart';
+import 'package:knocky/widget/SubforumPopularLatestDetailListItem.dart';
 import 'package:knocky/widget/Subscription/SubscriptionListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky/state/subscriptions.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class SubscriptionScreen extends StatefulWidget {
+class LatestThreadsScreen extends StatefulWidget {
   @override
-  _SubscriptionScreenState createState() => _SubscriptionScreenState();
+  _LatestThreadsScreenState createState() => _LatestThreadsScreenState();
 }
 
-class _SubscriptionScreenState extends State<SubscriptionScreen>
-    with AfterLayoutMixin<SubscriptionScreen> {
-  List<ThreadAlert> alerts = List();
+class _LatestThreadsScreenState extends State<LatestThreadsScreen>
+    with AfterLayoutMixin<LatestThreadsScreen> {
+  List<SubforumThreadLatestPopular> items = List();
   bool fetching = false;
-  StreamSubscription<List<ThreadAlert>> _dataSub;
+  StreamSubscription<List<SubforumThreadLatestPopular>> _dataSub;
 
   @override
   void initState() {
@@ -28,18 +31,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
 
   @override
   void afterFirstLayout(BuildContext context) {
-    if (ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
-            .subscriptions
-            .length ==
-        0) {
-      loadSubscriptions();
-    } else {
-      setState(() {
-        alerts = alerts =
-            ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
-                .subscriptions;
-      });
-    }
+    loadThreads();
   }
 
   @override
@@ -48,16 +40,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
     _dataSub?.cancel();
   }
 
-  Future<void> loadSubscriptions() {
+  Future<void> loadThreads() {
     setState(() {
       fetching = true;
     });
 
     _dataSub?.cancel();
     _dataSub =
-        KnockoutAPI().getAlerts().asStream().listen((List<ThreadAlert> res) {
+        KnockoutAPI().latestThreads().asStream().listen((List<SubforumThreadLatestPopular> res) {
       setState(() {
-        alerts = res;
+        items = res;
         fetching = false;
       });
     });
@@ -94,35 +86,23 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
     );
   }
 
-  void onTapUnsubscribe(BuildContext bcontext, ThreadAlert item) {
-    KnockoutAPI().deleteThreadAlert(item.threadId).then((val) {
-      Scaffold.of(bcontext).showSnackBar(SnackBar(
-        behavior: SnackBarBehavior.floating,
-        content: Text('Removed subscription'),
-      ));
-      loadSubscriptions();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Subscriptions'),
+        title: Text('Latest threads'),
       ),
       body: RefreshIndicator(
-          onRefresh: loadSubscriptions,
+          onRefresh: loadThreads,
           child: KnockoutLoadingIndicator(
             show: fetching,
             child: ListView.builder(
-              itemCount: alerts.length,
+              itemCount: items.length,
               itemBuilder: (BuildContext context, int index) {
-                ThreadAlert item = alerts[index];
-                return SubscriptionListItem(
-                  item: item,
-                  onTapItem: onTapItem,
-                  onTapNewPostButton: onTapNewPostsButton,
-                  onUnsubscribe: () => onTapUnsubscribe(context, item),
+                SubforumThreadLatestPopular item = items[index];
+                return SubforumPopularLatestDetailListItem(
+                  threadDetails: item,
                 );
               },
             ),

@@ -106,59 +106,67 @@ class CategoryListItem extends StatelessWidget {
         children: <Widget>[
           Flexible(
             flex: 1,
-            child: InkWell(
-              onTap: () {
-                print('Clicked on last post');
+            child: subforum.lastPost != null
+                ? InkWell(
+                    onTap: () {
+                      print('Clicked on last post');
 
-                int page = (subforum.lastPost.thread.postCount / 20).ceil();
+                      int page =
+                          (subforum.lastPost.thread.postCount / 20).ceil();
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ThreadScreen(
-                      title: subforum.lastPost.thread.title,
-                      postCount: subforum.lastPost.thread.postCount,
-                      page: page,
-                      threadId: subforum.lastPost.thread.id,
-                    ),
-                  ),
-                );
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Container(
-                    child: Text(
-                      subforum.lastPost.thread.title,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Container(
-                      child: Row(
-                    children: <Widget>[
-                      Flexible(
-                        child: RichText(
-                          text: TextSpan(
-                            style: TextStyle(color: Colors.grey),
-                            children: <InlineSpan>[
-                              TextSpan(text: 'Last post by '),
-                              TextSpan(
-                                text: subforum.lastPost.user.username + ' ',
-                                style: TextStyle(color: Colors.blue),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ThreadScreen(
+                            title: subforum.lastPost.thread.title,
+                            postCount: subforum.lastPost.thread.postCount,
+                            page: page,
+                            threadId: subforum.lastPost.thread.id,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Container(
+                          child: Text(
+                            subforum.lastPost.thread.title,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Container(
+                          child: Row(
+                            children: <Widget>[
+                              Flexible(
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: TextStyle(color: Colors.grey),
+                                    children: <InlineSpan>[
+                                      TextSpan(text: 'Last post by '),
+                                      TextSpan(
+                                        text: subforum.lastPost.user.username +
+                                            ' ',
+                                        style: TextStyle(color: Colors.blue),
+                                      ),
+                                      TextSpan(
+                                          text: timeago
+                                              .format(
+                                                  subforum.lastPost.createdAt)
+                                              .toString())
+                                    ],
+                                  ),
+                                ),
                               ),
-                              TextSpan(
-                                  text: timeago
-                                      .format(subforum.lastPost.createdAt)
-                                      .toString())
                             ],
                           ),
                         ),
-                      ),
-                    ],
-                  )),
-                ],
-              ),
-            ),
+                      ],
+                    ),
+                  )
+                : Row(
+                    children: <Widget>[Text('No posts here...')],
+                  ),
           ),
           Container(
             decoration: BoxDecoration(
@@ -172,6 +180,7 @@ class CategoryListItem extends StatelessWidget {
             margin: EdgeInsets.only(left: 10),
             padding: EdgeInsets.only(left: 10),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Row(
                   children: <Widget>[

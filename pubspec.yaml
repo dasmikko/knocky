@@ -11,7 +11,7 @@ description: A knockout! client.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.1.6+13
+version: 1.2.1+15
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -42,6 +42,7 @@ dependencies:
   scoped_model: ^1.0.1
   package_info: ^0.4.0+4
   sticky_headers: "^0.1.8"
+  bbob_dart: ^0.1.1
   flutter:
     sdk: flutter
 

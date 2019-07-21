@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart' as http;
@@ -24,37 +25,61 @@ class _EmbedWidgetState extends State<EmbedWidget>
   @override
   void initState() {
     super.initState();
-    fetchHtml(widget.url);
+    
+    compute(fetchHtml, widget.url).then((data) {
+      print('got html and data');
+      setState(() {
+        if (data['title'] != null) {
+          _title = data['title'];
+        }
+
+        if (data['description'] != null ) {
+          _description = data['description'];
+        }
+
+        if (data['imageUrl'] != null) {
+          _imageUrl = data['imageUrl'];
+        }
+      });
+    });
   }
 
-  void fetchHtml(url) {
-    http.get(url).then((response) {
-      if (response.statusCode == 200) {
-        // If server returns an OK response, parse the JSON
-        var document = parse(response.body);
+  static Future<Map> fetchHtml(url) async {
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      // If server returns an OK response, parse the JSON
+      var document = parse(response.body);
 
-        var list = document.getElementsByTagName('meta');
+      var list = document.getElementsByTagName('meta');
 
-        setState(() {
-          for (var item in list) {
-            if (item.attributes['property'] == "og:title") {
-              _title = item.attributes['content'];
-            }
+      String title;
+      String description;
+      String imageUrl;
 
-            if (item.attributes['property'] == "og:description") {
-              _description = item.attributes['content'];
-            }
+      for (var item in list) {
+        if (item.attributes['property'] == "og:title") {
+          title = item.attributes['content'];
+        }
 
-            if (item.attributes['property'] == "og:image") {
-              _imageUrl = item.attributes['content'];
-            }
-          }
-        });
-      } else {
-        // If that response was not OK, throw an error.
-        throw Exception('Failed to load post');
+        if (item.attributes['property'] == "og:description") {
+          description = item.attributes['content'];
+        }
+
+        if (item.attributes['property'] == "og:image") {
+          imageUrl = item.attributes['content'];
+        }
       }
-    });
+
+      var map = Map<String,String>();
+      map['title'] = title;
+      map['description'] = description;
+      map['imageUrl'] = imageUrl;
+
+      return map;
+    } else {
+      // If that response was not OK, throw an error.
+      throw Exception('Failed to load post');
+    }
   }
 
   bool notNull(Object o) => o != null;

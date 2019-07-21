@@ -10,11 +10,11 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'dart:ui' as ui;
 import 'package:numberpicker/numberpicker.dart';
 
-class SubforumDetailListItem extends StatelessWidget {
-  final SubforumThread threadDetails;
-  SubforumDetailListItem({this.threadDetails});
+class SubforumPopularLatestDetailListItem extends StatelessWidget {
+  final SubforumThreadLatestPopular threadDetails;
+  SubforumPopularLatestDetailListItem({this.threadDetails});
 
-  void onTapNewPostsButton(BuildContext context, SubforumThread item) {
+  void onTapNewPostsButton(BuildContext context, SubforumThreadLatestPopular item) {
     double pagenumber =
         (item.postCount - (item.readThreadUnreadPosts - 1)) / 20;
 
@@ -31,7 +31,7 @@ class SubforumDetailListItem extends StatelessWidget {
     );
   }
 
-  void onTapItem(BuildContext context, SubforumThread item) {
+  void onTapItem(BuildContext context, SubforumThreadLatestPopular item) {
     print('Clicked item ' + threadDetails.id.toString());
 
     Navigator.push(

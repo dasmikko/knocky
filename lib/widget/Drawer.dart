@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:knocky/screens/latestThreads.dart';
+import 'package:knocky/screens/popularThreads.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -13,6 +15,7 @@ import 'package:knocky/screens/subscriptions.dart';
 import 'package:knocky/screens/settings.dart';
 import 'package:knocky/state/authentication.dart';
 import 'package:knocky/state/subscriptions.dart';
+import 'package:knocky/state/appState.dart';
 
 class DrawerWidget extends StatefulWidget {
   Function onLoginOpen;
@@ -35,7 +38,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   void initState() {
     super.initState();
     ScopedModel.of<AuthenticationModel>(context)
-        .getLoginStateFromSharedPreference();
+        .getLoginStateFromSharedPreference(context);
     ScopedModel.of<SubscriptionModel>(context).getSubscriptions();
   }
 
@@ -43,9 +46,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     final flutterWebviewPlugin = new FlutterWebviewPlugin();
     String loginUrl = 'login';
     String fullUrl = '';
-    
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    fullUrl = prefs.getString('env') == 'knockout' ? KnockoutAPI.KNOCKOUT_SITE_URL + loginUrl : KnockoutAPI.QA_SITE_URL + loginUrl;
+    fullUrl = prefs.getString('env') == 'knockout'
+        ? KnockoutAPI.KNOCKOUT_SITE_URL + loginUrl
+        : KnockoutAPI.QA_SITE_URL + loginUrl;
 
     flutterWebviewPlugin.onBack.listen((onData) async {
       if (onData == null) {
@@ -55,7 +60,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     });
 
     flutterWebviewPlugin.onUrlChanged.listen((String url) async {
-      if (url.contains(prefs.getString('env') == 'knockout' ? KnockoutAPI.KNOCKOUT_URL + "auth/finish" : KnockoutAPI.QA_URL + "auth/finish")) {
+      if (url.contains(prefs.getString('env') == 'knockout'
+          ? KnockoutAPI.KNOCKOUT_URL + "auth/finish"
+          : KnockoutAPI.QA_URL + "auth/finish")) {
         print(url);
         Uri parsedUrl = Uri.parse(url);
         String userJson = Uri.decodeFull(parsedUrl.queryParameters['user']);
@@ -80,7 +87,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       }
 
       if (url == KnockoutAPI.baseurlSite) {
-        var cookies = await CookieManager.getCookies(KnockoutAPI.baseurl);
+        String cookieUrl = prefs.getString('env') == 'knockout'
+            ? KnockoutAPI.KNOCKOUT_URL
+            : KnockoutAPI.QA_URL;
+
+        var cookies = await CookieManager.getCookies(cookieUrl);
         String cookieString = '';
 
         // Get needed JWTToken
@@ -122,6 +133,24 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     );
   }
 
+  void onTapLatestThreads() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LatestThreadsScreen(),
+      ),
+    );
+  }
+
+  void onTapPopulaThreads() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PopularThreadsScreen(),
+      ),
+    );
+  }
+
   void onTapSettings() {
     Navigator.push(
       context,
@@ -144,29 +173,65 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     final String _username =
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .username;
+    final String _avatar =
+        ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
+            .avatar;
 
-    final int unreadCount = 
-        ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).totalUnreadPosts;
+    final int unreadCount =
+        ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
+            .totalUnreadPosts;
+
+    final bool isBanned =
+        ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
+            .isBanned;
+
+    final String banMessage =
+        ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
+            .banMessage;
+
+    final int banThreadId =
+        ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
+            .banThreadId;
+
+    final Decoration drawerHeaderDecoration = _loginState && _background != ''
+        ? BoxDecoration(
+            image: DecorationImage(
+              alignment: Alignment.center,
+              fit: BoxFit.cover,
+              colorFilter: new ColorFilter.mode(
+                  Colors.black.withOpacity(0.4), BlendMode.dstATop),
+              image: CachedNetworkImageProvider(
+                  'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
+                      _background),
+            ),
+          )
+        : null;
 
     return Drawer(
       child: ListView(
         children: <Widget>[
-          DrawerHeader(
-            decoration: _loginState && _background != ''
-                ? BoxDecoration(
-                    image: DecorationImage(
-                      alignment: Alignment.center,
-                      fit: BoxFit.cover,
-                      colorFilter: new ColorFilter.mode(
-                          Colors.black.withOpacity(0.4), BlendMode.dstATop),
-                      image: CachedNetworkImageProvider(
-                          'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
-                              _background),
-                    ),
+          UserAccountsDrawerHeader(
+            accountName: Text(_loginState ? _username : 'Not logged in'),
+            currentAccountPicture: _loginState
+                ? CachedNetworkImage(
+                    imageUrl:
+                        'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
+                            _avatar,
                   )
                 : null,
-            child: Text(_loginState ? _username : 'Not logged in'),
+            decoration: drawerHeaderDecoration,
           ),
+          if (isBanned)
+            DrawerHeader(
+              decoration: BoxDecoration(color: Colors.red),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text('You are banned!'),
+                  Text('Reason: ' + banMessage)
+                ],
+              ),
+            ),
           if (!_loginState)
             ListTile(
               leading: Icon(FontAwesomeIcons.signInAlt),
@@ -179,24 +244,36 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             enabled: _loginState,
             leading: Icon(FontAwesomeIcons.solidNewspaper),
             title: Text('Subscriptions'),
-            trailing: unreadCount > 0 ? Container(
-              margin: EdgeInsets.only(bottom: 5),
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5),
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: Container(
-                  padding: EdgeInsets.all(5),
-                  color: Color.fromRGBO(255, 201, 63, 1),
-                  child: Text(
-                    '${unreadCount} new posts',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ),
-            ) : null,
+            trailing: unreadCount > 0
+                ? Container(
+                    margin: EdgeInsets.only(bottom: 5),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: Container(
+                        padding: EdgeInsets.all(5),
+                        color: Color.fromRGBO(255, 201, 63, 1),
+                        child: Text(
+                          '${unreadCount} new posts',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  )
+                : null,
             onTap: onTapSubsriptions,
+          ),
+          ListTile(
+            leading: Icon(FontAwesomeIcons.clock),
+            title: Text('Latest threads'),
+            onTap: onTapLatestThreads
+          ),
+          ListTile(
+            leading: Icon(FontAwesomeIcons.fire),
+            title: Text('Popular threads'),
+            onTap: onTapPopulaThreads
           ),
           ListTile(
             enabled: _loginState,
@@ -229,6 +306,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               title: Text('Logout'),
               onTap: () async {
                 ScopedModel.of<AuthenticationModel>(context).logout();
+                ScopedModel.of<SubscriptionModel>(context).clearList();
               },
             )
         ],

@@ -85,13 +85,13 @@ class _SubforumScreenState extends State<SubforumScreen>
           child: Row(
             children: <Widget>[
               Expanded(
-                child: Text('Page: ' +
+                child: Text('Page ' +
                     _currentPage.toString() +
-                    ' / ' +
+                    ' of ' +
                     _totalPages.toString()),
               ),
               IconButton(
-                onPressed: showJumpDialog,
+                onPressed: _totalPages > 1 ? showJumpDialog : null,
                 icon: Icon(Icons.redo),
                 tooltip: 'Jump to page',
               )

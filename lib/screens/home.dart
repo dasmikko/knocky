@@ -33,11 +33,12 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void afterFirstLayout(BuildContext context) {
     getSubforums();
-    ScopedModel.of<AuthenticationModel>(context).getLoginStateFromSharedPreference();
+    ScopedModel.of<AuthenticationModel>(context)
+        .getLoginStateFromSharedPreference(context);
   }
 
   @override
-  void dispose () {
+  void dispose() {
     super.dispose();
     _dataSub.cancel();
   }
@@ -48,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen>
     });
 
     _dataSub?.cancel();
-    _dataSub = KnockoutAPI().getSubforums().asStream().listen((subforums){
+    _dataSub = KnockoutAPI().getSubforums().asStream().listen((subforums) {
       setState(() {
         _subforums = subforums;
         _isFetching = false;
@@ -112,23 +113,23 @@ class _HomeScreenState extends State<HomeScreen>
             });
           },
         ),
-        body: Container(
+        body: KnockoutLoadingIndicator(
+                show: _isFetching,
+                child: Container(
           child: RefreshIndicator(
-            onRefresh: getSubforums,
-            child: !_isFetching
-                ? ListView.builder(
-                    padding: EdgeInsets.all(10.0),
-                    itemCount: _subforums.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      Subforum item = _subforums[index];
-                      return CategoryListItem(
-                        subforum: item,
-                        onTapItem: onTapItem,
-                      );
-                    },
-                  )
-                : KnockoutLoadingIndicator(),
-          ),
+              onRefresh: getSubforums,
+              child:  ListView.builder(
+                  padding: EdgeInsets.all(10.0),
+                  itemCount: _subforums.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    Subforum item = _subforums[index];
+                    return CategoryListItem(
+                      subforum: item,
+                      onTapItem: onTapItem,
+                    );
+                  },
+                ),
+              )),
         ),
       ),
     );

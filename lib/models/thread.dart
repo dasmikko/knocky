@@ -65,8 +65,16 @@ class ThreadPost {
   final SlateObject content;
   final ThreadPostUser user;
   final List<ThreadPostRatings> ratings;
+  @JsonKey(nullable: true)
+  final List<ThreadPostBan> bans;
 
-  ThreadPost({this.id, this.content, this.user, this.ratings, this.createdAt});
+  ThreadPost(
+      {this.id,
+      this.content,
+      this.user,
+      this.ratings,
+      this.createdAt,
+      this.bans});
 
   factory ThreadPost.fromJson(Map<String, dynamic> json) =>
       _$ThreadPostFromJson(json);
@@ -78,6 +86,27 @@ SlateObject _contentFromJson(String jsonString) {
 }
 
 Map _contentToJson(SlateObject slateObject) => slateObject.toJson();
+
+@JsonSerializable()
+class ThreadPostBan {
+  final String banBannedBy;
+  final DateTime banCreatedAt;
+  final DateTime banExpiresAt;
+  final int banPostId;
+  final String banReason;
+
+  ThreadPostBan({
+    this.banBannedBy,
+    this.banCreatedAt,
+    this.banExpiresAt,
+    this.banPostId,
+    this.banReason,
+  });
+
+  factory ThreadPostBan.fromJson(Map<String, dynamic> json) =>
+      _$ThreadPostBanFromJson(json);
+  Map<String, dynamic> toJson() => _$ThreadPostBanToJson(this);
+}
 
 @JsonSerializable()
 class ThreadPostRatings {
@@ -98,8 +127,6 @@ class ThreadPostRatings {
       _$ThreadPostRatingsFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadPostRatingsToJson(this);
 }
-
-
 
 @JsonSerializable()
 class ThreadPostUser {

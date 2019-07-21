@@ -67,6 +67,45 @@ class SubforumThread {
 }
 
 @JsonSerializable()
+class SubforumThreadLatestPopular {
+  final int firstUnreadId;
+  final DateTime createdAt;
+  final int iconId;
+  final int id;
+  final int locked;
+  final int pinned;
+  final int postCount;
+  @JsonKey(defaultValue: 0)
+  final int readThreadUnreadPosts;
+  @JsonKey(defaultValue: 0)
+  final int unreadPostCount;
+  final String title;
+  final int unreadType;
+  final SubforumThreadUser user;
+  final SubforumLastPost lastPost;
+
+  SubforumThreadLatestPopular({
+    this.createdAt,
+    this.firstUnreadId,
+    this.iconId,
+    this.id,
+    this.locked,
+    this.pinned,
+    this.postCount,
+    this.readThreadUnreadPosts,
+    this.unreadPostCount,
+    this.title,
+    this.unreadType,
+    this.user,
+    this.lastPost,
+  });
+
+  factory SubforumThreadLatestPopular.fromJson(Map<String, dynamic> json) =>
+      _$SubforumThreadLatestPopularFromJson(json);
+  Map<String, dynamic> toJson() => _$SubforumThreadLatestPopularToJson(this);
+}
+
+@JsonSerializable()
 class SubforumThreadUser {
   final int usergroup;
   @JsonKey(name: 'avatar_url')

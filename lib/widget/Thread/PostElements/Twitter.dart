@@ -29,8 +29,6 @@ class _TwitterEmbedWidgetState extends State<TwitterEmbedWidget>
 
     final response = await http.get(twitterApi + this.widget.twitterUrl);
 
-    print(json.decode(response.body));
-
     setState(() {
      _isLoading = false;
      _embedHtml = json.decode(response.body)['html']; 

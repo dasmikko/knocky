@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/api.dart';
@@ -9,6 +11,7 @@ import 'package:knocky/widget/Drawer.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
+import 'package:knocky/screens/newPost.dart';
 
 class ThreadScreen extends StatefulWidget {
   final String title;
@@ -29,6 +32,8 @@ class _ThreadScreenState extends State<ThreadScreen>
   int _totalPages = 0;
   bool _isLoading = true;
   final scaffoldkey = new GlobalKey<ScaffoldState>();
+  ScrollController scrollController = ScrollController();
+  StreamSubscription<Thread> _dataSub;
 
   @override
   void initState() {
@@ -39,10 +44,16 @@ class _ThreadScreenState extends State<ThreadScreen>
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _dataSub.cancel();
+  }
+
+  @override
   void afterFirstLayout(BuildContext context) {
     var api = new KnockoutAPI();
     // Calling the same function "after layout" to resolve the issue.
-    api.getThread(widget.threadId, page: _currentPage).then((res) {
+    _dataSub = api.getThread(widget.threadId, page: _currentPage).asStream().listen((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -77,7 +88,9 @@ class _ThreadScreenState extends State<ThreadScreen>
         });
       } else if (details.subscriptionLastSeen.isBefore(lastPostDate)) {
         print('last read date is before last post date! Mark thread as read');
-        KnockoutAPI().readThreadSubsciption(lastPostDate, details.id).then((res) {
+        KnockoutAPI()
+            .readThreadSubsciption(lastPostDate, details.id)
+            .then((res) {
           print('Subscribed Thread marked read!');
         });
       }
@@ -92,7 +105,8 @@ class _ThreadScreenState extends State<ThreadScreen>
 
     var api = new KnockoutAPI();
 
-    api.getThread(widget.threadId, page: _currentPage).then((res) {
+    _dataSub?.cancel();
+    _dataSub = api.getThread(widget.threadId, page: _currentPage).asStream().listen((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -109,7 +123,8 @@ class _ThreadScreenState extends State<ThreadScreen>
 
     var api = new KnockoutAPI();
 
-    api.getThread(widget.threadId, page: _currentPage).then((res) {
+    _dataSub?.cancel();
+    _dataSub = api.getThread(widget.threadId, page: _currentPage).asStream().listen((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -126,7 +141,8 @@ class _ThreadScreenState extends State<ThreadScreen>
 
     var api = new KnockoutAPI();
 
-    api.getThread(widget.threadId, page: _currentPage).then((res) {
+    _dataSub?.cancel();
+    _dataSub = api.getThread(widget.threadId, page: _currentPage).asStream().listen((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -135,33 +151,39 @@ class _ThreadScreenState extends State<ThreadScreen>
     });
   }
 
-  void refreshPage () {
-    KnockoutAPI().getThread(widget.threadId, page: _currentPage).then((res) {
-      setState(() {
-        details = res;
-        _isLoading = false;
-      });
+  Future<void> refreshPage() async {
+    setState(() {
+      _isLoading = true;
     });
+
+    Thread res =
+        await KnockoutAPI().getThread(widget.threadId, page: _currentPage);
+    setState(() {
+      details = res;
+      _isLoading = false;
+    });
+    checkIfShouldMarkThreadRead();
+    print('Finish refreshing');
   }
 
   void onCancelSubscription(BuildContext scaffoldcontext) {
     KnockoutAPI().deleteThreadAlert(details.id).then((onValue) {
       Scaffold.of(scaffoldcontext).showSnackBar(
         SnackBar(
-          behavior: SnackBarBehavior.floating,
-          content: Text('Canceled subscription'),
-          elevation: 6
-        ),
+            behavior: SnackBarBehavior.floating,
+            content: Text('Canceled subscription'),
+            elevation: 6),
       );
     }).catchError((onError) {
       Scaffold.of(scaffoldcontext).showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            elevation: 6,
-            content: Text('Cancel failed. Try again'),
-          ),
-        );
-    });;
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          elevation: 6,
+          content: Text('Cancel failed. Try again'),
+        ),
+      );
+    });
+    ;
   }
 
   void onTapSubscribe(BuildContext scaffoldcontext) {
@@ -189,10 +211,10 @@ class _ThreadScreenState extends State<ThreadScreen>
       },
     ).catchError((onError) {
       Scaffold.of(scaffoldcontext).showSnackBar(
-          SnackBar(
-            content: Text('Subscribing failed. Try again'),
-          ),
-        );
+        SnackBar(
+          content: Text('Subscribing failed. Try again'),
+        ),
+      );
     });
   }
 
@@ -207,10 +229,9 @@ class _ThreadScreenState extends State<ThreadScreen>
             initialIntegerValue: 1,
           );
         }).then((int value) {
-      if (value != null) navigateToPage(value) ;
+      if (value != null) navigateToPage(value);
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -224,48 +245,52 @@ class _ThreadScreenState extends State<ThreadScreen>
           if (_isLoggedIn)
             Builder(
               builder: (BuildContext bcontext) {
-                  return IconButton(
-                    tooltip: 'Subscribe to thread',
-                    icon: Icon(FontAwesomeIcons.eye),
-                    onPressed:
-                        details != null ? () => onTapSubscribe(bcontext) : null,
-                  );
+                return IconButton(
+                  tooltip: 'Subscribe to thread',
+                  icon: Icon(FontAwesomeIcons.eye),
+                  onPressed:
+                      details != null ? () => onTapSubscribe(bcontext) : null,
+                );
               },
             ),
         ],
       ),
       key: scaffoldkey,
       drawer: DrawerWidget(),
-      body: _isLoading
-          ? KnockoutLoadingIndicator()
-          : ListView.builder(
-              padding: EdgeInsets.all(10.0),
-              itemCount: details.posts.length,
-              itemBuilder: (BuildContext context, int index) {
-                ThreadPost item = details.posts[index];
-                return ThreadPostItem(
-                  scaffoldKey: scaffoldkey,
-                  postDetails: item,
-                  onPostRated: () {
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text('Post rated!'),
-                      behavior: SnackBarBehavior.floating,
-                    ));
-                    refreshPage();
-                    },
-                );
+      body: KnockoutLoadingIndicator(
+        show: _isLoading,
+        child: details != null ? ListView.builder(
+          controller: scrollController,
+          padding: EdgeInsets.all(10.0),
+          itemCount: details.posts.length,
+          itemBuilder: (BuildContext context, int index) {
+            ThreadPost item = details.posts[index];
+            return ThreadPostItem(
+              scaffoldKey: scaffoldkey,
+              postDetails: item,
+              onPostRated: () {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  backgroundColor: Colors.green,
+                  content: Text('Post rated!'),
+                  behavior: SnackBarBehavior.floating,
+                ));
+                refreshPage();
               },
-            ),
+            );
+          },
+        ) : Container(),
+      ),
       bottomNavigationBar: BottomAppBar(
+        shape: CircularNotchedRectangle(),
         child: Container(
           padding: EdgeInsets.only(left: 10, right: 10),
           height: 56,
           child: Row(
             children: <Widget>[
               Expanded(
-                child: Text('Page: ' +
+                child: Text('Page ' +
                     _currentPage.toString() +
-                    ' / ' +
+                    ' of ' +
                     _totalPages.toString()),
               ),
               IconButton(
@@ -273,7 +298,7 @@ class _ThreadScreenState extends State<ThreadScreen>
                 onPressed: _currentPage == 1 ? null : navigateToPrevPage,
               ),
               IconButton(
-                onPressed: showJumpDialog,
+                onPressed: _totalPages > 1 ? showJumpDialog : null,
                 icon: Icon(Icons.redo),
                 tooltip: 'Jump to page',
               ),
@@ -285,6 +310,30 @@ class _ThreadScreenState extends State<ThreadScreen>
             ],
           ),
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NewPostScreen(
+                threadId: this.widget.threadId,
+              ),
+            ),
+          );
+
+          if (result != null) {
+            scaffoldkey.currentState.showSnackBar(SnackBar(
+              content: Text('Posted!'),
+              behavior: SnackBarBehavior.floating,
+            ));
+            await refreshPage();
+            print('Do the scroll');
+            scrollController.jumpTo(999);
+          }
+        },
       ),
     );
   }
