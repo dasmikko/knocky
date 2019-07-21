@@ -15,7 +15,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 class PopularThreadsScreen extends StatefulWidget {
   @override
-  _LatestThreadsScreenState createState() => _PopularThreadsScreenState();
+  _PopularThreadsScreenState createState() => _PopularThreadsScreenState();
 }
 
 class _PopularThreadsScreenState extends State<PopularThreadsScreen>
