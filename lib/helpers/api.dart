@@ -200,4 +200,24 @@ class KnockoutAPI {
 
     print(response.data);
   }
+
+  Future<List<SubforumThreadLatestPopular>> latestThreads() async {
+    final response = await _request(
+        type: 'get',
+        url: 'thread/latest');
+
+    return response.data['list']
+        .map<SubforumThreadLatestPopular>((json) => SubforumThreadLatestPopular.fromJson(json))
+        .toList();
+  }
+
+  Future<List<SubforumThreadLatestPopular>> popularThreads() async {
+    final response = await _request(
+        type: 'get',
+        url: 'thread/popular');
+
+    return response.data['list']
+        .map<SubforumThreadLatestPopular>((json) => SubforumThreadLatestPopular.fromJson(json))
+        .toList();
+  }
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:knocky/screens/latestThreads.dart';
+import 'package:knocky/screens/popularThreads.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -131,6 +133,24 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     );
   }
 
+  void onTapLatestThreads() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LatestThreadsScreen(),
+      ),
+    );
+  }
+
+  void onTapPopulaThreads() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PopularThreadsScreen(),
+      ),
+    );
+  }
+
   void onTapSettings() {
     Navigator.push(
       context,
@@ -244,6 +264,16 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   )
                 : null,
             onTap: onTapSubsriptions,
+          ),
+          ListTile(
+            leading: Icon(FontAwesomeIcons.clock),
+            title: Text('Latest threads'),
+            onTap: onTapLatestThreads
+          ),
+          ListTile(
+            leading: Icon(FontAwesomeIcons.fire),
+            title: Text('Popular threads'),
+            onTap: onTapPopulaThreads
           ),
           ListTile(
             enabled: _loginState,
