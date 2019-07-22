@@ -242,41 +242,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             ),
           ListTile(
             enabled: _loginState,
-            leading: Icon(FontAwesomeIcons.solidNewspaper),
-            title: Text('Subscriptions'),
-            trailing: unreadCount > 0
-                ? Container(
-                    margin: EdgeInsets.only(bottom: 5),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5),
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: Container(
-                        padding: EdgeInsets.all(5),
-                        color: Color.fromRGBO(255, 201, 63, 1),
-                        child: Text(
-                          '${unreadCount} new posts',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ),
-                    ),
-                  )
-                : null,
-            onTap: onTapSubsriptions,
-          ),
-          ListTile(
-            leading: Icon(FontAwesomeIcons.clock),
-            title: Text('Latest threads'),
-            onTap: onTapLatestThreads
-          ),
-          ListTile(
-            leading: Icon(FontAwesomeIcons.fire),
-            title: Text('Popular threads'),
-            onTap: onTapPopulaThreads
-          ),
-          ListTile(
-            enabled: _loginState,
             leading: Icon(FontAwesomeIcons.bullhorn),
             title: Text('Events'),
             onTap: () {
