@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:after_layout/after_layout.dart';
@@ -34,6 +35,7 @@ class _ThreadScreenState extends State<ThreadScreen>
   final scaffoldkey = new GlobalKey<ScaffoldState>();
   ScrollController scrollController = ScrollController();
   StreamSubscription<Thread> _dataSub;
+  bool _bottomBarVisible = true;
 
   @override
   void initState() {
@@ -41,6 +43,23 @@ class _ThreadScreenState extends State<ThreadScreen>
     _currentPage = this.widget.page;
 
     _totalPages = (widget.postCount / 20).ceil();
+
+    scrollController.addListener(() {
+      if (scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+       if(_bottomBarVisible)
+        setState(() {
+          _bottomBarVisible = false;
+        });
+      }
+      if (scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        if(!_bottomBarVisible)
+        setState(() {
+          _bottomBarVisible = true;
+        });
+      }
+    });
   }
 
   @override
@@ -280,7 +299,10 @@ class _ThreadScreenState extends State<ThreadScreen>
           },
         ) : Container(),
       ),
-      bottomNavigationBar: BottomAppBar(
+      bottomNavigationBar: AnimatedContainer(
+        duration: Duration(milliseconds: 500),
+        height: _bottomBarVisible ? 60 : 0,
+        child: BottomAppBar(
         shape: CircularNotchedRectangle(),
         child: Container(
           padding: EdgeInsets.only(left: 10, right: 10),
@@ -311,6 +333,7 @@ class _ThreadScreenState extends State<ThreadScreen>
           ),
         ),
       ),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
@@ -331,7 +354,7 @@ class _ThreadScreenState extends State<ThreadScreen>
             ));
             await refreshPage();
             print('Do the scroll');
-            scrollController.jumpTo(999);
+            scrollController.jumpTo(scrollController.positions.length.toDouble());
           }
         },
       ),

@@ -14,6 +14,10 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
 
 class ForumScreen extends StatefulWidget {
+  final ScaffoldState scaffoldKey;
+
+  ForumScreen({this.scaffoldKey});
+  
   @override
   _ForumScreenState createState() => _ForumScreenState();
 }
