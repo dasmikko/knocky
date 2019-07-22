@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -21,12 +23,13 @@ class _EmbedWidgetState extends State<EmbedWidget>
   String _title = "Fetching embed...";
   String _description = "";
   String _imageUrl;
+  StreamSubscription<Map> _dataSub;
 
   @override
   void initState() {
     super.initState();
     
-    compute(fetchHtml, widget.url).then((data) {
+    _dataSub = compute(fetchHtml, widget.url).asStream().listen((data) {
       print('got html and data');
       setState(() {
         if (data['title'] != null) {
@@ -42,6 +45,12 @@ class _EmbedWidgetState extends State<EmbedWidget>
         }
       });
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _dataSub.cancel();
   }
 
   static Future<Map> fetchHtml(url) async {
