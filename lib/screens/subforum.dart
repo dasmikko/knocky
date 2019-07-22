@@ -62,8 +62,7 @@ class _SubforumScreenState extends State<SubforumScreen>
       itemBuilder: (BuildContext context, int position) {
         return SubforumPage(
           subforumModel: widget.subforumModel,
-          page: position + 1,
-          isSwiping: isSwiping,
+          page: position + 1
         );
       },
     );

@@ -17,6 +17,7 @@ class ThreadPostItem extends StatelessWidget {
   final GlobalKey scaffoldKey;
   Function onPostRated = () {};
 
+
   ThreadPostItem({this.postDetails, this.scaffoldKey, this.onPostRated});
 
   Widget buildRatings(List<ThreadPostRatings> ratings) {

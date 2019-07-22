@@ -15,22 +15,11 @@ class TabNavigator extends StatelessWidget {
   final int tabItem;
   final GlobalKey<NavigatorState> navigatorKey;
 
-  void _push(BuildContext context, TabNavigatorRoutes route) {
-    var routeBuilders = _routeBuilders(context);
-
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                routeBuilders[route](context)));
-  }
-
   Map<String, WidgetBuilder> _routeBuilders(BuildContext context) {
     switch (tabItem) {
       case 0:
         return {
           TabNavigatorRoutes.root: (context) => ForumScreen(),
-          TabNavigatorRoutes.subforum: (context) => LatestThreadsScreen(),
         };
         break;
       case 1:
@@ -51,7 +40,6 @@ class TabNavigator extends StatelessWidget {
       default:
        return {
           TabNavigatorRoutes.root: (context) => ForumScreen(),
-          TabNavigatorRoutes.subforum: (context) => LatestThreadsScreen(),
         };
     }
     

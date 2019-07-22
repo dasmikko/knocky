@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildOffstageNavigator(int tabItem) {
+  Widget _buildOffstageNavigator(int tabItem, BuildContext rootContext) {
     return Offstage(
       offstage: _selectedTab != tabItem,
       child: TabNavigator(
@@ -136,10 +136,10 @@ class _HomeScreenState extends State<HomeScreen>
           },
         ),
         body: Stack(children: <Widget>[
-          _buildOffstageNavigator(0),
-          _buildOffstageNavigator(1),
-          _buildOffstageNavigator(2),
-          _buildOffstageNavigator(3),
+          _buildOffstageNavigator(0, context),
+          _buildOffstageNavigator(1, context),
+          _buildOffstageNavigator(2, context),
+          _buildOffstageNavigator(3, context),
         ]),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedTab,
