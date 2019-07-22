@@ -9,6 +9,7 @@ import 'package:knocky/widget/Subscription/SubscriptionListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky/state/subscriptions.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:knocky/state/appState.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   @override
@@ -66,6 +67,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
   }
 
   void onTapItem(ThreadAlert item) {
+    print('onTapItem');
     Navigator.push(
       context,
       MaterialPageRoute(

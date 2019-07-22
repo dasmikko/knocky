@@ -11,9 +11,9 @@ class TabNavigatorRoutes {
 }
 
 class TabNavigator extends StatelessWidget {
-  TabNavigator({this.navigatorKey, this.tabItem});
+  TabNavigator({this.tabItem, this.navigatorKeys});
   final int tabItem;
-  final GlobalKey<NavigatorState> navigatorKey;
+  final Map<int, GlobalKey<NavigatorState>> navigatorKeys;
 
   Map<String, WidgetBuilder> _routeBuilders(BuildContext context) {
     switch (tabItem) {
@@ -50,7 +50,7 @@ class TabNavigator extends StatelessWidget {
     var routeBuilders = _routeBuilders(context);
 
     return Navigator(
-        key: navigatorKey,
+        key: navigatorKeys[tabItem],
         initialRoute: TabNavigatorRoutes.root,
         onGenerateRoute: (routeSettings) {
           return MaterialPageRoute(

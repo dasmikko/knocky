@@ -9,6 +9,7 @@ import 'package:knocky/screens/subforum.dart';
 import 'package:knocky/widget/Drawer.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
+import 'package:knocky/state/appState.dart';
 import 'package:knocky/widget/tab-navigator.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,7 +23,6 @@ class _HomeScreenState extends State<HomeScreen>
   bool _loginIsOpen;
   bool _isFetching = false;
   StreamSubscription<List<Subforum>> _dataSub;
-  int _selectedTab = 0;
   final navigatorKey = GlobalKey<NavigatorState>();
 
   Map<int, GlobalKey<NavigatorState>> navigatorKeys = {
@@ -68,12 +68,12 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Future<bool> _onWillPop() async {
-    if (navigatorKeys[_selectedTab].currentState.canPop()) {
-      !await navigatorKeys[_selectedTab].currentState.maybePop();
+    int selectedTab = ScopedModel.of<AppStateModel>(context, rebuildOnChange: true).currentTab;
+    if (navigatorKeys[selectedTab].currentState.canPop()) {
+      !await navigatorKeys[selectedTab].currentState.maybePop();
       return false;
     }
     return true;
-    
 
     /*if (_loginIsOpen) {
       return false;
@@ -96,24 +96,20 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildOffstageNavigator(int tabItem, BuildContext rootContext) {
+  Widget _buildOffstageNavigator(int tabItem) {
+    int selectedTab = ScopedModel.of<AppStateModel>(context, rebuildOnChange: true).currentTab;
     return Offstage(
-      offstage: _selectedTab != tabItem,
+      offstage: selectedTab != tabItem,
       child: TabNavigator(
-        navigatorKey: navigatorKeys[tabItem],
         tabItem: tabItem,
+        navigatorKeys: navigatorKeys,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    int selectedTab = ScopedModel.of<AppStateModel>(context, rebuildOnChange: true).currentTab;
 
     return WillPopScope(
       onWillPop: _onWillPop,
@@ -136,30 +132,54 @@ class _HomeScreenState extends State<HomeScreen>
           },
         ),
         body: Stack(children: <Widget>[
-          _buildOffstageNavigator(0, context),
-          _buildOffstageNavigator(1, context),
-          _buildOffstageNavigator(2, context),
-          _buildOffstageNavigator(3, context),
+          _buildOffstageNavigator(0),
+          _buildOffstageNavigator(1),
+          _buildOffstageNavigator(2),
+          _buildOffstageNavigator(3),
         ]),
         bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _selectedTab,
+          currentIndex: selectedTab,
           onTap: (int index) {
-            if (index != _selectedTab) {
+            if (index != selectedTab) {
               setState(() {
-                _selectedTab = index;
+                ScopedModel.of<AppStateModel>(context).setCurrentTab(index);
               });
+
+              if (selectedTab != 0 && navigatorKeys[selectedTab].currentState.canPop()) {
+                navigatorKeys[selectedTab]
+                    .currentState
+                    .pushNamedAndRemoveUntil(
+                        '/', (Route<dynamic> route) => false);
+              }
             } else {
-              if(navigatorKeys[_selectedTab].currentState.canPop()) {
-               navigatorKeys[_selectedTab].currentState.pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
+              if (navigatorKeys[selectedTab].currentState.canPop()) {
+                navigatorKeys[selectedTab]
+                    .currentState
+                    .pushNamedAndRemoveUntil(
+                        '/', (Route<dynamic> route) => false);
               }
             }
-            
           },
           items: [
             BottomNavigationBarItem(
                 icon: Icon(Icons.view_list), title: Text('Forum')),
             BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.solidNewspaper),
+                icon: Stack(
+                  children: <Widget>[
+                    Icon(FontAwesomeIcons.solidNewspaper),
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        child: Container(
+                          color: Colors.red,
+                          child: Text('1'),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
                 title: Text('Subscriptions')),
             BottomNavigationBarItem(
                 icon: Icon(FontAwesomeIcons.solidClock), title: Text('Latest')),
