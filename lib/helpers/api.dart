@@ -38,7 +38,8 @@ class KnockoutAPI {
     print(prefs.getString('cookieString'));
     Map<String, dynamic> mHeaders = {
       'Cookie': prefs.getString('cookieString'),
-      'Access-Control-Request-Headers': 'content-format-version,content-type'
+      'Access-Control-Request-Headers': 'content-format-version,content-type',
+      'content-format-version': '1'
     };
     if (headers != null) mHeaders.addAll(headers);
 
