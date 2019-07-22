@@ -40,6 +40,12 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
     });
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
   Widget blurredContent() {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
