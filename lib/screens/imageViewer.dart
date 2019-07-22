@@ -22,7 +22,7 @@ class ImageViewerScreen extends StatelessWidget {
     return Scaffold(
       key:_scaffoldKey,
       appBar: AppBar(
-        title: Text("Image viewer"),
+        title: Text(url),
         actions: <Widget>[
           // action button
           IconButton(
