@@ -6,11 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:knocky/helpers/Download.dart';
 
 class VideoElement extends StatefulWidget {
-  String url;
-  GlobalKey<ScaffoldState> scaffoldKey;
+  final String url;
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
 
-  VideoElement(@required this.url, this.scaffoldKey);
+  VideoElement({@required this.url, this.scaffoldKey});
 
   @override
   _VideoElementState createState() => _VideoElementState();

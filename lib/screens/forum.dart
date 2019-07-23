@@ -1,13 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/screens/subforum.dart';
-import 'package:knocky/screens/settings.dart';
-import 'package:knocky/widget/Drawer.dart';
 import 'package:knocky/widget/CategoryListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -28,7 +25,6 @@ class _ForumScreenState extends State<ForumScreen>
   bool _loginIsOpen;
   bool _isFetching = false;
   StreamSubscription<List<Subforum>> _dataSub;
-  int _selectedTab = 0;
 
   void initState() {
     super.initState();
@@ -45,8 +41,8 @@ class _ForumScreenState extends State<ForumScreen>
 
   @override
   void dispose() {
-    super.dispose();
     _dataSub.cancel();
+    super.dispose(); 
   }
 
   Future<void> getSubforums() {

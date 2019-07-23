@@ -6,12 +6,8 @@ import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/screens/thread.dart';
-import 'package:knocky/widget/SubforumDetailListItem.dart';
 import 'package:knocky/widget/SubforumPopularLatestDetailListItem.dart';
-import 'package:knocky/widget/Subscription/SubscriptionListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
-import 'package:knocky/state/subscriptions.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 class LatestThreadsScreen extends StatefulWidget {
   @override
@@ -36,8 +32,8 @@ class _LatestThreadsScreenState extends State<LatestThreadsScreen>
 
   @override
   void dispose() {
-    super.dispose();
     _dataSub?.cancel();
+    super.dispose();
   }
 
   Future<void> loadThreads() {

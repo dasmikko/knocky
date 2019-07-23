@@ -8,7 +8,6 @@ import 'screens/home.dart';
 import 'package:knocky/state/authentication.dart';
 import 'package:knocky/state/settings.dart';
 import 'package:knocky/state/subscriptions.dart';
-import 'package:knocky/state/appState.dart';
 
 void main() {
   Widget rv;

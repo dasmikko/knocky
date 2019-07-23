@@ -15,13 +15,12 @@ import 'package:knocky/screens/subscriptions.dart';
 import 'package:knocky/screens/settings.dart';
 import 'package:knocky/state/authentication.dart';
 import 'package:knocky/state/subscriptions.dart';
-import 'package:knocky/state/appState.dart';
 
 class DrawerWidget extends StatefulWidget {
-  Function onLoginOpen;
-  Function onLoginCloses;
-  Function closeLoginWebview;
-  Function onLoginFinished;
+  final Function onLoginOpen;
+  final Function onLoginCloses;
+  final Function closeLoginWebview;
+  final Function onLoginFinished;
 
   DrawerWidget(
       {this.onLoginOpen,
@@ -177,10 +176,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .avatar;
 
-    final int unreadCount =
-        ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
-            .totalUnreadPosts;
-
     final bool isBanned =
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .isBanned;
@@ -189,9 +184,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .banMessage;
 
-    final int banThreadId =
+    /*final int banThreadId =
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
-            .banThreadId;
+            .banThreadId;*/
 
     final Decoration drawerHeaderDecoration = _loginState && _background != ''
         ? BoxDecoration(

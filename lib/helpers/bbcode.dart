@@ -5,7 +5,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
   SlateDocument document = SlateDocument(object: 'document', nodes: List());
   StringBuffer _leafContentBuffer = StringBuffer();
 
-  SlateNode _lastElement = null;
+  SlateNode _lastElement;
   List<SlateLeafMark> _leafMarks = List();
 
   SlateObject parse(String text) {

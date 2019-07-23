@@ -5,8 +5,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:path/path.dart';
 
 class ImageWidget extends StatefulWidget {
-  String url;
-  GlobalKey<ScaffoldState> scaffoldKey;
+  final String url;
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   ImageWidget({this.url, this.scaffoldKey});
 

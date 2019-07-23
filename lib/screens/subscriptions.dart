@@ -9,7 +9,6 @@ import 'package:knocky/widget/Subscription/SubscriptionListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky/state/subscriptions.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:knocky/state/appState.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   @override
@@ -18,10 +17,6 @@ class SubscriptionScreen extends StatefulWidget {
 
 class _SubscriptionScreenState extends State<SubscriptionScreen>
     with AfterLayoutMixin<SubscriptionScreen> {
-  List<ThreadAlert> alerts = List();
-  bool fetching = false;
-  StreamSubscription<List<ThreadAlert>> _dataSub;
-
   @override
   void initState() {
     super.initState();
@@ -29,41 +24,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
 
   @override
   void afterFirstLayout(BuildContext context) {
-    if (ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
-            .subscriptions
-            .length ==
-        0) {
-      loadSubscriptions();
-    } else {
-      setState(() {
-        alerts = alerts =
-            ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
-                .subscriptions;
-      });
-    }
+    loadSubscriptions();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _dataSub?.cancel();
   }
 
-  Future<void> loadSubscriptions() {
-    setState(() {
-      fetching = true;
-    });
-
-    _dataSub?.cancel();
-    _dataSub =
-        KnockoutAPI().getAlerts().asStream().listen((List<ThreadAlert> res) {
-      setState(() {
-        alerts = res;
-        fetching = false;
-      });
-    });
-
-    return _dataSub.asFuture();
+  Future <void> loadSubscriptions() async {
+    return ScopedModel.of<SubscriptionModel>(context).getSubscriptions().asFuture();
   }
 
   void onTapItem(ThreadAlert item) {
@@ -108,6 +78,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
 
   @override
   Widget build(BuildContext context) {
+    var alerts = ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).subscriptions;
+    bool fetching = ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).isFetching;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Subscriptions'),

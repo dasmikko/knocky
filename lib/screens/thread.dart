@@ -27,7 +27,7 @@ class ThreadScreen extends StatefulWidget {
 }
 
 class _ThreadScreenState extends State<ThreadScreen>
-    with AfterLayoutMixin<ThreadScreen> {
+    with AfterLayoutMixin<ThreadScreen>, SingleTickerProviderStateMixin {
   Thread details;
   int _currentPage;
   int _totalPages = 0;
@@ -36,6 +36,8 @@ class _ThreadScreenState extends State<ThreadScreen>
   ScrollController scrollController = ScrollController();
   StreamSubscription<Thread> _dataSub;
   bool _bottomBarVisible = true;
+  AnimationController expandController;
+  Animation<double> animation;
 
   @override
   void initState() {
@@ -44,35 +46,60 @@ class _ThreadScreenState extends State<ThreadScreen>
 
     _totalPages = (widget.postCount / 20).ceil();
 
+    prepareAnimations();
+
     scrollController.addListener(() {
       if (scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
-       if(_bottomBarVisible)
-        setState(() {
-          _bottomBarVisible = false;
-        });
+        if (_bottomBarVisible)
+          setState(() {
+            expandController.forward();
+            _bottomBarVisible = false;
+          });
       }
       if (scrollController.position.userScrollDirection ==
           ScrollDirection.forward) {
-        if(!_bottomBarVisible)
-        setState(() {
-          _bottomBarVisible = true;
-        });
+        if (!_bottomBarVisible)
+          setState(() {
+            expandController.reverse();
+            _bottomBarVisible = true;
+          });
+      }
+
+      if (scrollController.position.atEdge) {
+        expandController.reverse();
       }
     });
   }
 
+  void prepareAnimations() {
+    expandController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 250));
+    Animation curve = CurvedAnimation(
+      parent: expandController,
+      curve: Curves.fastOutSlowIn,
+    );
+    animation = Tween(begin: 1.0, end: 0.0).animate(curve)
+      ..addListener(() {
+        setState(() {});
+      });
+  }
+
   @override
   void dispose() {
-    super.dispose();
+    expandController.dispose();
     _dataSub.cancel();
+    super.dispose();
   }
 
   @override
   void afterFirstLayout(BuildContext context) {
     var api = new KnockoutAPI();
     // Calling the same function "after layout" to resolve the issue.
-    _dataSub = api.getThread(widget.threadId, page: _currentPage).asStream().listen((res) {
+    _dataSub = api
+        .getThread(widget.threadId, page: _currentPage)
+        .asStream()
+        .listen((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -125,7 +152,10 @@ class _ThreadScreenState extends State<ThreadScreen>
     var api = new KnockoutAPI();
 
     _dataSub?.cancel();
-    _dataSub = api.getThread(widget.threadId, page: _currentPage).asStream().listen((res) {
+    _dataSub = api
+        .getThread(widget.threadId, page: _currentPage)
+        .asStream()
+        .listen((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -143,7 +173,10 @@ class _ThreadScreenState extends State<ThreadScreen>
     var api = new KnockoutAPI();
 
     _dataSub?.cancel();
-    _dataSub = api.getThread(widget.threadId, page: _currentPage).asStream().listen((res) {
+    _dataSub = api
+        .getThread(widget.threadId, page: _currentPage)
+        .asStream()
+        .listen((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -161,7 +194,10 @@ class _ThreadScreenState extends State<ThreadScreen>
     var api = new KnockoutAPI();
 
     _dataSub?.cancel();
-    _dataSub = api.getThread(widget.threadId, page: _currentPage).asStream().listen((res) {
+    _dataSub = api
+        .getThread(widget.threadId, page: _currentPage)
+        .asStream()
+        .listen((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -202,7 +238,6 @@ class _ThreadScreenState extends State<ThreadScreen>
         ),
       );
     });
-    ;
   }
 
   void onTapSubscribe(BuildContext scaffoldcontext) {
@@ -278,85 +313,91 @@ class _ThreadScreenState extends State<ThreadScreen>
       drawer: DrawerWidget(),
       body: KnockoutLoadingIndicator(
         show: _isLoading,
-        child: details != null ? ListView.builder(
-          controller: scrollController,
-          padding: EdgeInsets.all(10.0),
-          itemCount: details.posts.length,
-          itemBuilder: (BuildContext context, int index) {
-            ThreadPost item = details.posts[index];
-            return ThreadPostItem(
-              scaffoldKey: scaffoldkey,
-              postDetails: item,
-              onPostRated: () {
-                Scaffold.of(context).showSnackBar(SnackBar(
-                  backgroundColor: Colors.green,
-                  content: Text('Post rated!'),
-                  behavior: SnackBarBehavior.floating,
-                ));
-                refreshPage();
-              },
-            );
-          },
-        ) : Container(),
-      ),
-      bottomNavigationBar: AnimatedContainer(
-        duration: Duration(milliseconds: 500),
-        height: _bottomBarVisible ? 60 : 0,
-        child: BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        child: Container(
-          padding: EdgeInsets.only(left: 10, right: 10),
-          height: 56,
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Text('Page ' +
-                    _currentPage.toString() +
-                    ' of ' +
-                    _totalPages.toString()),
-              ),
-              IconButton(
-                icon: Icon(Icons.chevron_left),
-                onPressed: _currentPage == 1 ? null : navigateToPrevPage,
-              ),
-              IconButton(
-                onPressed: _totalPages > 1 ? showJumpDialog : null,
-                icon: Icon(Icons.redo),
-                tooltip: 'Jump to page',
-              ),
-              IconButton(
-                icon: Icon(Icons.chevron_right),
-                onPressed:
-                    _totalPages == _currentPage ? null : navigateToNextPage,
+        child: details != null
+            ? ListView.builder(
+                controller: scrollController,
+                padding: EdgeInsets.all(10.0),
+                itemCount: details.posts.length,
+                itemBuilder: (BuildContext context, int index) {
+                  ThreadPost item = details.posts[index];
+                  return ThreadPostItem(
+                    scaffoldKey: scaffoldkey,
+                    postDetails: item,
+                    onPostRated: () {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        backgroundColor: Colors.green,
+                        content: Text('Post rated!'),
+                        behavior: SnackBarBehavior.floating,
+                      ));
+                      refreshPage();
+                    },
+                  );
+                },
               )
-            ],
+            : Container(),
+      ),
+      bottomNavigationBar: SizeTransition(
+        axisAlignment: -1.0,
+        sizeFactor: animation,
+        child: BottomAppBar(
+          shape: CircularNotchedRectangle(),
+          child: Container(
+            padding: EdgeInsets.only(left: 10, right: 10),
+            height: 56,
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Text('Page ' +
+                      _currentPage.toString() +
+                      ' of ' +
+                      _totalPages.toString()),
+                ),
+                IconButton(
+                  icon: Icon(Icons.chevron_left),
+                  onPressed: _currentPage == 1 ? null : navigateToPrevPage,
+                ),
+                IconButton(
+                  onPressed: _totalPages > 1 ? showJumpDialog : null,
+                  icon: Icon(Icons.redo),
+                  tooltip: 'Jump to page',
+                ),
+                IconButton(
+                  icon: Icon(Icons.chevron_right),
+                  onPressed:
+                      _totalPages == _currentPage ? null : navigateToNextPage,
+                )
+              ],
+            ),
           ),
         ),
       ),
-      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NewPostScreen(
-                threadId: this.widget.threadId,
+      floatingActionButton: ScaleTransition(
+        scale: animation,
+        child: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () async {
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => NewPostScreen(
+                  threadId: this.widget.threadId,
+                ),
               ),
-            ),
-          );
+            );
 
-          if (result != null) {
-            scaffoldkey.currentState.showSnackBar(SnackBar(
-              content: Text('Posted!'),
-              behavior: SnackBarBehavior.floating,
-            ));
-            await refreshPage();
-            print('Do the scroll');
-            scrollController.jumpTo(scrollController.positions.length.toDouble());
-          }
-        },
+            if (result != null) {
+              scaffoldkey.currentState.showSnackBar(SnackBar(
+                content: Text('Posted!'),
+                behavior: SnackBarBehavior.floating,
+              ));
+              await refreshPage();
+              print('Do the scroll');
+              scrollController
+                  .jumpTo(scrollController.positions.length.toDouble());
+            }
+          },
+        ),
       ),
     );
   }

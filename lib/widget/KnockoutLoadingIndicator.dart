@@ -42,8 +42,8 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
 
   @override
   void dispose() {
-    super.dispose();
     controller.dispose();
+    super.dispose();
   }
 
   Widget blurredContent() {

@@ -180,7 +180,7 @@ class KnockoutAPI {
 
   Future<void> newPost(dynamic content, int threadId) async {
     try {
-      final response = await _request(type: 'post', url: 'post', data: {
+      await _request(type: 'post', url: 'post', data: {
         'content': json.encode(content).toString(),
         'thread_id': threadId,
       }, headers: {
