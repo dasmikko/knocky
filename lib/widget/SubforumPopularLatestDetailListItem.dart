@@ -12,7 +12,8 @@ import 'package:numberpicker/numberpicker.dart';
 
 class SubforumPopularLatestDetailListItem extends StatelessWidget {
   final SubforumThreadLatestPopular threadDetails;
-  SubforumPopularLatestDetailListItem({this.threadDetails});
+  final BuildContext rootContext;
+  SubforumPopularLatestDetailListItem({this.threadDetails, this.rootContext});
 
   void onTapNewPostsButton(BuildContext context, SubforumThreadLatestPopular item) {
     double pagenumber =

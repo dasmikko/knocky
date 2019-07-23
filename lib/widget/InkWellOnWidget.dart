@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class InkWellOverWidget extends StatelessWidget {
-  Widget child;
-  Function onTap;
-  Function onLongPress;
-  Function onDoubleTap;
-  Function onTapDown;
+  final Widget child;
+  final Function onTap;
+  final Function onLongPress;
+  final Function onDoubleTap;
+  final Function onTapDown;
 
   InkWellOverWidget({this.child, this.onTap, this.onTapDown, this.onDoubleTap, this.onLongPress});
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/icons.dart';
-import 'package:knocky/helpers/api.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:sticky_headers/sticky_headers.dart';

@@ -6,7 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 class RatePostContent extends StatefulWidget {
   final int postId;
   final BuildContext buildContext;
-  Function onPostRated = () {};
+  final Function onPostRated;
 
   RatePostContent({this.buildContext, this.postId, this.onPostRated});
 
@@ -40,7 +40,9 @@ class _RatePostContentState extends State<RatePostContent> {
                                 KnockoutAPI()
                                     .ratePost(this.widget.postId, o.id)
                                     .then((res) {
-                                  this.widget.onPostRated();
+                                  if (this.widget.onPostRated != null) {
+                                    this.widget.onPostRated();
+                                  } 
                                   Navigator.pop(context);
                                 });
                               },

@@ -8,7 +8,6 @@ import 'package:intent/intent.dart' as Intent;
 import 'package:intent/action.dart' as Action;
 import 'package:knocky/widget/Thread/PostElements/Embed.dart';
 import 'package:knocky/widget/Thread/PostElements/UserQuote.dart';
-import 'package:knocky/helpers/colors.dart';
 
 class SlateDocumentParser extends StatelessWidget {
   final SlateObject slateObject;
@@ -254,8 +253,6 @@ class SlateDocumentParser extends StatelessWidget {
   Widget userquoteToWidget(SlateNode node) {
     List<Widget> widgets = List();
 
-    AppColors appColors = AppColors(context);
-
     // Handle block nodes
     widgets.addAll(handleNodes(node.nodes));
 
@@ -294,7 +291,7 @@ class SlateDocumentParser extends StatelessWidget {
   }
 
   Widget handleVideo(SlateNode node) {
-    return VideoElement(node.data.src, scaffoldkey);
+    return VideoElement(url: node.data.src, scaffoldKey: scaffoldkey);
   }
 
   List<Widget> handleNodes(List<SlateNode> nodes) {

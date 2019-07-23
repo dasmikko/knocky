@@ -5,8 +5,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:path/path.dart';
 
 class ImageWidget extends StatefulWidget {
-  String url;
-  GlobalKey<ScaffoldState> scaffoldKey;
+  final String url;
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   ImageWidget({this.url, this.scaffoldKey});
 
@@ -56,8 +56,7 @@ class _ImageWidgetState extends State<ImageWidget> {
     return GestureDetector(
       onLongPress: () => this.imageLongPress(context, this.widget.url),
       onTap: () {
-        Navigator.push(
-          context,
+        Navigator.of(context, rootNavigator: true).push(
           MaterialPageRoute(
               builder: (context) => ImageViewerScreen(url: this.widget.url)),
         );

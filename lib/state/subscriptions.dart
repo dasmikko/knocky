@@ -7,13 +7,19 @@ import 'package:knocky/helpers/api.dart';
 class SubscriptionModel extends Model {
   List<ThreadAlert> _alerts = List();
   int _totalUnreadPosts = 0;
+  bool _isFetching = false;
 
   List<ThreadAlert> get subscriptions => _alerts;
   int get totalUnreadPosts => _totalUnreadPosts;
+  bool get isFetching => _isFetching;
 
   StreamSubscription getSubscriptions () {
+    _isFetching = true;
+    notifyListeners();
+    
     StreamSubscription sub = KnockoutAPI().getAlerts().asStream().listen((res) {
       _alerts = res;
+      _isFetching = false;
       _calcTotalUnreadPosts();
       notifyListeners();
     });

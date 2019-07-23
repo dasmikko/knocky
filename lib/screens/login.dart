@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:knocky/models/thread.dart';
 import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
-import 'dart:async';
-import 'dart:convert';
 
 class LoginScreen extends StatefulWidget {
 
