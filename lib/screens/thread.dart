@@ -51,19 +51,22 @@ class _ThreadScreenState extends State<ThreadScreen>
     scrollController.addListener(() {
       if (scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
-        if (_bottomBarVisible)
+        if (_bottomBarVisible) {
           setState(() {
             expandController.forward();
             _bottomBarVisible = false;
           });
+        }
       }
       if (scrollController.position.userScrollDirection ==
           ScrollDirection.forward) {
-        if (!_bottomBarVisible)
+        if (!_bottomBarVisible) {
+          
           setState(() {
             expandController.reverse();
             _bottomBarVisible = true;
           });
+        }
       }
 
       if (scrollController.position.atEdge) {
@@ -336,6 +339,7 @@ class _ThreadScreenState extends State<ThreadScreen>
               )
             : Container(),
       ),
+      extendBody: false,
       bottomNavigationBar: SizeTransition(
         axisAlignment: -1.0,
         sizeFactor: animation,
