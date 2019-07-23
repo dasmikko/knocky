@@ -15,7 +15,11 @@ void main() {
   // Set default settings
   SharedPreferences.getInstance().then((prefs) {
     prefs.setBool('showNSFWThreads', prefs.getBool('showNSFWThreads') != null ? prefs.getBool('showNSFWThreads') : false);
-    prefs.setString('env', prefs.getString('env') != 'null' ? prefs.getString('env') : 'knockout');
+
+    if (prefs.getString('env').toString() == 'null') {
+      print('env is null, set it');
+      prefs.setString('env', 'knockout');
+    }
   });
 
   rv = new DynamicTheme(
