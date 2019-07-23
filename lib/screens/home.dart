@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen>
     with AfterLayoutMixin<HomeScreen> {
   StreamSubscription<List<Subforum>> _dataSub;
   final navigatorKey = GlobalKey<NavigatorState>();
+  bool _loginIsOpen = false;
 
   Map<int, GlobalKey<NavigatorState>> navigatorKeys = {
     0: GlobalKey<NavigatorState>(),
@@ -45,6 +46,11 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Future<bool> _onWillPop() async {
+    // handle login overlay
+    if (_loginIsOpen) {
+      return false;
+    }
+
     int selectedTab =
         ScopedModel.of<AppStateModel>(context, rebuildOnChange: true)
             .currentTab;
@@ -53,12 +59,6 @@ class _HomeScreenState extends State<HomeScreen>
       return false;
     }
     return true;
-
-    /*if (_loginIsOpen) {
-      return false;
-    } else {
-      return true;
-    }*/
   }
 
   Widget _buildOffstageNavigator(int tabItem) {
@@ -86,7 +86,23 @@ class _HomeScreenState extends State<HomeScreen>
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        drawer: DrawerWidget(),
+        drawer: DrawerWidget(
+          onLoginOpen: () {
+            setState(() {
+             _loginIsOpen = true; 
+            });
+          },
+          onLoginCloses: () {
+            setState(() {
+             _loginIsOpen = false; 
+            });
+          },
+          onLoginFinished: () {
+            setState(() {
+             _loginIsOpen = false; 
+            });
+          },
+        ),
         body: Stack(children: <Widget>[
           _buildOffstageNavigator(0),
           _buildOffstageNavigator(1),
