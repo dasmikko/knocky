@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/colors.dart';
+import 'package:knocky/widget/InkWellOnWidget.dart';
 
 class UserQuoteWidget extends StatefulWidget {
   final String username;
   final List<Widget> children;
+  final bool isChild;
 
-  UserQuoteWidget({this.username, this.children});
+  UserQuoteWidget({this.username, this.children, this.isChild = false});
 
   @override
   _UserQuoteWidgetState createState() => _UserQuoteWidgetState();
@@ -54,6 +56,36 @@ class _UserQuoteWidgetState extends State<UserQuoteWidget>
     });
   }
 
+  Widget noToggleContent() {
+    AppColors appColors = AppColors(context);
+
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: this.widget.children,
+      ),
+    );
+  }
+
+  Widget toggleContent() {
+    AppColors appColors = AppColors(context);
+
+    return SizeTransition(
+      axisAlignment: -1.0,
+      sizeFactor: animation,
+      child: Container(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: this.widget.children,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     AppColors appColors = AppColors(context);
@@ -73,29 +105,26 @@ class _UserQuoteWidgetState extends State<UserQuoteWidget>
       child: ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                  color: appColors.userQuoteHeaderBackground(),
-                  border: Border(
-                    bottom: BorderSide(color: Colors.black, width: 1),
-                  ),
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                color: appColors.userQuoteHeaderBackground(),
+                border: Border(
+                  bottom: BorderSide(color: Colors.black, width: 1),
                 ),
-                padding: EdgeInsets.all(10.0),
+              ),
+              padding: EdgeInsets.all(10.0),
+              child: InkWellOverWidget(
+                onTap: toggleUserQuote,
                 child: Text(this.widget.username,
                     style: TextStyle(fontWeight: FontWeight.bold)),
               ),
-              Container(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: this.widget.children,
-                ),
-              ),
-            ]),
+            ),
+            if (this.widget.isChild) toggleContent() else noToggleContent()
+          ],
+        ),
       ),
     );
   }

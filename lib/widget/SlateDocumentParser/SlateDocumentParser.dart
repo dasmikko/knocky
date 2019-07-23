@@ -250,15 +250,16 @@ class SlateDocumentParser extends StatelessWidget {
     );
   }
 
-  Widget userquoteToWidget(SlateNode node) {
+  Widget userquoteToWidget(SlateNode node, {bool isChild = false}) {
     List<Widget> widgets = List();
 
     // Handle block nodes
-    widgets.addAll(handleNodes(node.nodes));
+    widgets.addAll(handleNodes(node.nodes, isChild: !isChild));
 
     return UserQuoteWidget(
       username: node.data.postData.username,
       children: widgets,
+      isChild: isChild,
     );
   }
 
@@ -294,7 +295,7 @@ class SlateDocumentParser extends StatelessWidget {
     return VideoElement(url: node.data.src, scaffoldKey: scaffoldkey);
   }
 
-  List<Widget> handleNodes(List<SlateNode> nodes) {
+  List<Widget> handleNodes(List<SlateNode> nodes, {bool isChild = false}) {
     List<Widget> widgets = new List();
 
     nodes.forEach((node) {
@@ -310,7 +311,7 @@ class SlateDocumentParser extends StatelessWidget {
           widgets.add(headingToWidget(node));
           break;
         case 'userquote':
-          widgets.add(userquoteToWidget(node));
+          widgets.add(userquoteToWidget(node, isChild: isChild));
           break;
         case 'bulleted-list':
           widgets.add(bulletListToWidget(node));
