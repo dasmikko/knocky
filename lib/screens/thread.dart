@@ -152,6 +152,8 @@ class _ThreadScreenState extends State<ThreadScreen>
       _currentPage = _currentPage + 1;
     });
 
+    scrollController.jumpTo(0);
+
     var api = new KnockoutAPI();
 
     _dataSub?.cancel();
@@ -172,6 +174,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       _isLoading = true;
       _currentPage = _currentPage - 1;
     });
+    scrollController.jumpTo(0);
 
     var api = new KnockoutAPI();
 
@@ -193,6 +196,8 @@ class _ThreadScreenState extends State<ThreadScreen>
       _isLoading = true;
       _currentPage = page;
     });
+
+    scrollController.jumpTo(0);
 
     var api = new KnockoutAPI();
 
