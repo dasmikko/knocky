@@ -83,23 +83,27 @@ class _HomeScreenState extends State<HomeScreen>
         ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
             .totalUnreadPosts;
 
+    bool _isLoggedIn =
+        ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
+            .isLoggedIn;
+
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
         drawer: DrawerWidget(
           onLoginOpen: () {
             setState(() {
-             _loginIsOpen = true; 
+              _loginIsOpen = true;
             });
           },
           onLoginCloses: () {
             setState(() {
-             _loginIsOpen = false; 
+              _loginIsOpen = false;
             });
           },
           onLoginFinished: () {
             setState(() {
-             _loginIsOpen = false; 
+              _loginIsOpen = false;
             });
           },
         ),
@@ -132,30 +136,33 @@ class _HomeScreenState extends State<HomeScreen>
           items: [
             BottomNavigationBarItem(
                 icon: Icon(Icons.view_list), title: Text('Forum')),
-            BottomNavigationBarItem(
-                icon: Stack(
-                  children: <Widget>[
-                    Container(width: 70, child: Icon(FontAwesomeIcons.solidNewspaper)),
-                    if (unreadPosts > 0)
-                      Positioned(
-                        top: 0,
-                        right: 0,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 2),
-                            color: Colors.red,
-                            child: Text(
-                              unreadPosts.toString(),
-                              style: TextStyle(fontSize: 12),
+            if (_isLoggedIn)
+              BottomNavigationBarItem(
+                  icon: Stack(
+                    children: <Widget>[
+                      Container(
+                          width: 70,
+                          child: Icon(FontAwesomeIcons.solidNewspaper)),
+                      if (unreadPosts > 0)
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 2),
+                              color: Colors.red,
+                              child: Text(
+                                unreadPosts.toString(),
+                                style: TextStyle(fontSize: 12),
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                  ],
-                ),
-                title: Text('Subscriptions')),
+                        )
+                    ],
+                  ),
+                  title: Text('Subscriptions')),
             BottomNavigationBarItem(
                 icon: Icon(FontAwesomeIcons.solidClock), title: Text('Latest')),
             BottomNavigationBarItem(
