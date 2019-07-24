@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knocky/state/appState.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
@@ -14,7 +15,11 @@ void main() {
   // Set default settings
   SharedPreferences.getInstance().then((prefs) {
     prefs.setBool('showNSFWThreads', prefs.getBool('showNSFWThreads') != null ? prefs.getBool('showNSFWThreads') : false);
-    prefs.setString('env', prefs.getString('env') != 'null' ? prefs.getString('env') : 'knockout');
+
+    if (prefs.getString('env').toString() == 'null') {
+      print('env is null, set it');
+      prefs.setString('env', 'knockout');
+    }
   });
 
   rv = new DynamicTheme(
@@ -31,7 +36,7 @@ void main() {
     rv = ScopedModel<AuthenticationModel>(model: AuthenticationModel(), child: rv);
     rv = ScopedModel<SettingsModel>(model: SettingsModel(), child: rv);
     rv = ScopedModel<SubscriptionModel>(model: SubscriptionModel(), child: rv);
-
+    rv = ScopedModel<AppStateModel>(model: AppStateModel(), child: rv);
 
   runApp(rv);
 }

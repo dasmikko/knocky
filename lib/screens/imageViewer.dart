@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_advanced_networkimage/zoomable.dart';
 import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-//import 'package:dio/dio.dart';
-//import 'package:simple_permissions/simple_permissions.dart';
-//import 'package:path_provider/path_provider.dart';
-//import 'package:path/path.dart';
-//import 'dart:io';
 import 'package:knocky/helpers/Download.dart';
-//import 'package:flutter/services.dart';
 
 class ImageViewerScreen extends StatelessWidget {
   final String url;
@@ -22,7 +15,7 @@ class ImageViewerScreen extends StatelessWidget {
     return Scaffold(
       key:_scaffoldKey,
       appBar: AppBar(
-        title: Text("Image viewer"),
+        title: Text(url),
         actions: <Widget>[
           // action button
           IconButton(

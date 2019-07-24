@@ -20,15 +20,15 @@ class DownloadHelper {
               .createSync(recursive: true);
 
           Dio()
-              .download(url, "${dir.path}/knocky/${fileName}")
+              .download(url, dir.path + "/knocky/" + fileName)
               .then((response) {
             if (response.statusCode == 200) {
               scaffoldKey.currentState.showSnackBar(new SnackBar(
-                content: Text("${fileName} was downloaded"),
+                content: Text(fileName + " was downloaded"),
               ));
             } else {
               scaffoldKey.currentState.showSnackBar(new SnackBar(
-                content: Text("${fileName} was not downloaded"),
+                content: Text(fileName + " was not downloaded"),
               ));
             }
           });
@@ -40,7 +40,7 @@ class DownloadHelper {
         var fileName = basename(url);
 
         // Create directory if not existing!
-        new Directory.fromUri(new Uri.file(dir.path + '/NewpunchDroid/'))
+        new Directory.fromUri(new Uri.file(dir.path + '/knocky/'))
             .createSync(recursive: true);
 
         Map<PermissionGroup, PermissionStatus> permissions =
@@ -50,15 +50,15 @@ class DownloadHelper {
         if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
           Dio()
               .downloadUri(
-                  Uri.parse(url), "${dir.path}/newpunchDroid/${fileName}")
+                  Uri.parse(url), dir.path + "/knocky/" + fileName)
               .then((response) {
             if (response.statusCode == 200) {
               scaffoldKey.currentState.showSnackBar(new SnackBar(
-                content: Text("${fileName} was downloaded"),
+                content: Text(fileName + " was downloaded"),
               ));
             } else {
               scaffoldKey.currentState.showSnackBar(new SnackBar(
-                content: Text("${fileName} was not downloaded"),
+                content: Text(fileName + " was not downloaded"),
               ));
             }
           });

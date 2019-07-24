@@ -4,11 +4,11 @@ import 'package:knocky/models/thread.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class PostHeader extends StatelessWidget {
-  BuildContext context;
-  String username;
-  String avatarUrl;
-  String backgroundUrl;
-  ThreadPost threadPost;
+  final BuildContext context;
+  final String username;
+  final String avatarUrl;
+  final String backgroundUrl;
+  final ThreadPost threadPost;
 
   PostHeader(
       {this.avatarUrl, this.backgroundUrl, this.username, this.threadPost, this.context});

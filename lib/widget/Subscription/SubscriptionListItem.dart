@@ -7,13 +7,12 @@ import 'package:knocky/widget/InkWellOnWidget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/colors.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:knocky/helpers/api.dart';
 
 class SubscriptionListItem extends StatelessWidget {
-  ThreadAlert item;
-  Function onTapItem;
-  Function onTapNewPostButton;
-  Function onUnsubscribe;
+  final ThreadAlert item;
+  final Function onTapItem;
+  final Function onTapNewPostButton;
+  final Function onUnsubscribe;
 
   SubscriptionListItem(
       {this.item, this.onTapItem, this.onTapNewPostButton, this.onUnsubscribe});

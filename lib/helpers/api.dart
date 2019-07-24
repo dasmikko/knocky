@@ -38,7 +38,8 @@ class KnockoutAPI {
     print(prefs.getString('cookieString'));
     Map<String, dynamic> mHeaders = {
       'Cookie': prefs.getString('cookieString'),
-      'Access-Control-Request-Headers': 'content-format-version,content-type'
+      'Access-Control-Request-Headers': 'content-format-version,content-type',
+      'content-format-version': '1'
     };
     if (headers != null) mHeaders.addAll(headers);
 
@@ -179,7 +180,7 @@ class KnockoutAPI {
 
   Future<void> newPost(dynamic content, int threadId) async {
     try {
-      final response = await _request(type: 'post', url: 'post', data: {
+      await _request(type: 'post', url: 'post', data: {
         'content': json.encode(content).toString(),
         'thread_id': threadId,
       }, headers: {

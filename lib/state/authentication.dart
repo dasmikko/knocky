@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knocky/helpers/api.dart';
-import 'package:knocky/state/subscriptions.dart';
-import 'package:knocky/state/appState.dart';
 
 class AuthenticationModel extends Model {
   BuildContext buildContext;

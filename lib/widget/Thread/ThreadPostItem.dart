@@ -4,8 +4,6 @@ import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
 import 'package:knocky/helpers/icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:knocky/widget/Thread/PostHeader.dart';
-import 'package:knocky/helpers/icons.dart';
-import 'package:knocky/helpers/api.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
 import 'package:knocky/widget/Thread/RatePostContent.dart';
@@ -15,7 +13,8 @@ import 'package:knocky/widget/Thread/PostBan.dart';
 class ThreadPostItem extends StatelessWidget {
   final ThreadPost postDetails;
   final GlobalKey scaffoldKey;
-  Function onPostRated = () {};
+  final Function onPostRated;
+
 
   ThreadPostItem({this.postDetails, this.scaffoldKey, this.onPostRated});
 

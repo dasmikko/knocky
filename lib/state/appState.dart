@@ -1,18 +1,12 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:scoped_model/scoped_model.dart';
-import 'package:knocky/state/authentication.dart';
-import 'package:knocky/state/subscriptions.dart';
 
 class AppStateModel extends Model {
-  BuildContext context;
-  AppStateModel({this.context});
+  int _currentTab = 0;
+  int get currentTab => _currentTab;
 
-  AuthenticationModel authenticationModel () {
-    return ScopedModel.of<AuthenticationModel>(context);
+  void setCurrentTab (int index) {
+    _currentTab = index;
+    notifyListeners();
   }
-
-  SubscriptionModel subscriptionModel () {
-    return ScopedModel.of<SubscriptionModel>(context);
-  } 
-
 }

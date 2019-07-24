@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:knocky/helpers/bbcode.dart';
@@ -10,7 +7,7 @@ import 'package:knocky/helpers/api.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 
 class NewPostScreen extends StatefulWidget {
-  int threadId;
+  final int threadId;
 
   NewPostScreen({@required this.threadId});
 
@@ -20,7 +17,7 @@ class NewPostScreen extends StatefulWidget {
 
 class _NewPostScreenState extends State<NewPostScreen> {
   TextEditingController controller = TextEditingController(text: '');
-  SlateObject document = null;
+  SlateObject document;
   GlobalKey _scaffoldKey;
   FocusNode textFocusNode = FocusNode();
   bool _isPosting = false;
@@ -97,6 +94,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         TextEditingController(text: clipBoardText.text);
     await showDialog<String>(
       context: context,
+    
       child: new AlertDialog(
         contentPadding: const EdgeInsets.all(16.0),
         content: new Row(
@@ -358,28 +356,24 @@ class _NewPostScreenState extends State<NewPostScreen> {
                         IconButton(
                           icon: Icon(Icons.image),
                           onPressed: () {
-                            TextSelection theSelection = controller.selection;
                             addImageDialog();
                           },
                         ),
                         IconButton(
                           icon: Icon(Icons.link),
                           onPressed: () {
-                            TextSelection theSelection = controller.selection;
                             addLinkDialog();
                           },
                         ),
                         IconButton(
                           icon: Icon(Icons.ondemand_video),
                           onPressed: () {
-                            TextSelection theSelection = controller.selection;
                             addYoutubeVideoDialog();
                           },
                         ),
                         IconButton(
                           icon: Icon(Icons.videocam),
                           onPressed: () {
-                            TextSelection theSelection = controller.selection;
                             addVideoDialog();
                           },
                         )

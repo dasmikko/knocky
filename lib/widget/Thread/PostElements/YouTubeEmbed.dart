@@ -35,11 +35,11 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
 
   void playYouTubeVideo(String url) {
     FlutterYoutube.playYoutubeVideoByUrl(
-        apiKey: "AIzaSyBehHEbtDN5ExcdWydEBp5R8EYlB6cf6nM",
-        videoUrl: url,
-        autoPlay: true, //default falase
-        fullScreen: false //default false
-        );
+      apiKey: "AIzaSyBehHEbtDN5ExcdWydEBp5R8EYlB6cf6nM",
+      videoUrl: url,
+      autoPlay: true, //default falase
+      fullScreen: false //default false
+    );
   }
 
   void switchRes (String newRes) {

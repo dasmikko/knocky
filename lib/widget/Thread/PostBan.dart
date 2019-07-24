@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/models/thread.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 class PostBan extends StatelessWidget {
   final ThreadPostBan ban;

@@ -32,8 +32,8 @@ class _SubforumPagenState extends State<SubforumPage>
 
   @override
   void dispose() {
-    super.dispose();
     _dataSub.cancel();
+    super.dispose();
   }
 
   Future<void> loadPage() async {
