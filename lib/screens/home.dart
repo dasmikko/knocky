@@ -114,6 +114,7 @@ class _HomeScreenState extends State<HomeScreen>
           _buildOffstageNavigator(3),
         ]),
         bottomNavigationBar: BottomNavigationBar(
+          selectedItemColor: Colors.red,
           currentIndex: selectedTab,
           onTap: (int index) {
             if (index != selectedTab) {
@@ -135,7 +136,8 @@ class _HomeScreenState extends State<HomeScreen>
           },
           items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.view_list), title: Text('Forum')),
+                activeIcon: Icon(Icons.view_list),
+                icon: Icon(Icons.view_list), title: Text('Forum'),),
             if (_isLoggedIn)
               BottomNavigationBarItem(
                   icon: Stack(
