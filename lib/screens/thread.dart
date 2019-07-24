@@ -82,10 +82,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       parent: expandController,
       curve: Curves.fastOutSlowIn,
     );
-    animation = Tween(begin: 1.0, end: 0.0).animate(curve)
-      ..addListener(() {
-        setState(() {});
-      });
+    animation = Tween(begin: 1.0, end: 0.0).animate(curve);
   }
 
   @override
