@@ -67,8 +67,18 @@ class _SubforumScreenState extends State<SubforumScreen>
     return PageView.builder(
       itemCount: _totalPages,
       onPageChanged: (int page) {
+        // Show bottombar on page change
+        if (!_bottomBarVisible) {
+          expandController.reverse();
+        }
+
         setState(() {
           _currentPage = page + 1;
+
+          // Show bottombar on page change
+          if (!_bottomBarVisible) {
+            _bottomBarVisible = true;
+          }
         });
       },
       controller: _pageController,
