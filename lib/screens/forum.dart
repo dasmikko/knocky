@@ -34,7 +34,7 @@ class _ForumScreenState extends State<ForumScreen>
 
   @override
   void afterFirstLayout(BuildContext context) {
-    getSubforums();
+    getSubforums(context);
     ScopedModel.of<AuthenticationModel>(context)
         .getLoginStateFromSharedPreference(context);
   }
@@ -45,20 +45,39 @@ class _ForumScreenState extends State<ForumScreen>
     super.dispose(); 
   }
 
-  Future<void> getSubforums() {
+  Future<void> getSubforums(context) {
     setState(() {
       _isFetching = true;
     });
 
     _dataSub?.cancel();
-    _dataSub = KnockoutAPI().getSubforums().asStream().listen((subforums) {
+    print('Gettings subforums');
+
+    Future _future = KnockoutAPI().getSubforums();
+
+    _future.catchError((error) {
+      print('error:');
+      print(error.toString());
+      setState(() {
+        _isFetching = false;
+      });
+      
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to get categories. Try again.'),
+        backgroundColor: Colors.red,
+      ));
+
+      _dataSub?.cancel();
+    });
+
+    _dataSub = _future.asStream().listen((subforums) {
       setState(() {
         _subforums = subforums;
         _isFetching = false;
       });
     });
 
-    return _dataSub.asFuture();
+    return _future;
   }
 
   Future<bool> _onWillPop() async {
@@ -102,7 +121,7 @@ class _ForumScreenState extends State<ForumScreen>
           show: _isFetching,
           child: Container(
             child: RefreshIndicator(
-              onRefresh: getSubforums,
+              onRefresh: () => getSubforums(context),
               child: ListView.builder(
                 padding: EdgeInsets.all(10.0),
                 itemCount: _subforums.length,

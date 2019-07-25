@@ -80,9 +80,8 @@ class KnockoutAPI {
         .toList();
     } on DioError catch (e) {
       print(e.response.data);
-      return List();
+      throw e;
     }
-    
   }
 
   Future<SubforumDetails> getSubforumDetails(int id, {int page = 1}) async {
