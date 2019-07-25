@@ -14,7 +14,7 @@ class ForumScreen extends StatefulWidget {
   final ScaffoldState scaffoldKey;
 
   ForumScreen({this.scaffoldKey});
-  
+
   @override
   _ForumScreenState createState() => _ForumScreenState();
 }
@@ -42,7 +42,7 @@ class _ForumScreenState extends State<ForumScreen>
   @override
   void dispose() {
     _dataSub.cancel();
-    super.dispose(); 
+    super.dispose();
   }
 
   Future<void> getSubforums(context) {
@@ -61,10 +61,12 @@ class _ForumScreenState extends State<ForumScreen>
       setState(() {
         _isFetching = false;
       });
-      
+
+      Scaffold.of(context).hideCurrentSnackBar();
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text('Failed to get categories. Try again.'),
         backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
       ));
 
       _dataSub?.cancel();
