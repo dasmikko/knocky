@@ -63,7 +63,7 @@ class _SubforumScreenState extends State<SubforumScreen>
     });
   }
 
-  Widget content() {
+  Widget content(sContext) {
     return PageView.builder(
       itemCount: _totalPages,
       onPageChanged: (int page) {
@@ -87,6 +87,7 @@ class _SubforumScreenState extends State<SubforumScreen>
           subforumModel: widget.subforumModel,
           page: position + 1,
           bottomBarVisible: _bottomBarVisible,
+          onError: () => onFetchError(sContext),
           isScrollingUp: () {
             expandController.reverse();
             setState(() {
@@ -104,6 +105,15 @@ class _SubforumScreenState extends State<SubforumScreen>
     );
   }
 
+  void onFetchError (context) {
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text('Failed to load page. Try again.'),
+      backgroundColor: Colors.red,
+      behavior: SnackBarBehavior.floating,
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,7 +121,7 @@ class _SubforumScreenState extends State<SubforumScreen>
         title: Text(widget.subforumModel.name),
         leading: BackButton(),
       ),
-      body: content(),
+      body: content(context),
       drawer: DrawerWidget(),
       extendBody: false,
       bottomNavigationBar: SizeTransition(

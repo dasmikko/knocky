@@ -17,6 +17,7 @@ class SubforumPage extends StatefulWidget {
   final Function isScrollingDown;
   final Function isScrollingUp;
   final bool bottomBarVisible;
+  final Function onError;
 
   SubforumPage(
       {this.subforumModel,
@@ -24,7 +25,8 @@ class SubforumPage extends StatefulWidget {
       this.isSwiping,
       this.isScrollingDown,
       this.isScrollingUp,
-      this.bottomBarVisible});
+      this.bottomBarVisible,
+      this.onError});
 
   @override
   _SubforumPagenState createState() => _SubforumPagenState();
@@ -75,10 +77,17 @@ class _SubforumPagenState extends State<SubforumPage>
     });
 
     _dataSub?.cancel();
-    _dataSub = KnockoutAPI()
+
+    Future _future = KnockoutAPI()
         .getSubforumDetails(widget.subforumModel.id, page: widget.page)
-        .asStream()
-        .listen((onData) {
+        .catchError((error) {
+      this.widget.onError();
+      setState(() {
+        _isFetching = false;
+      });
+    });
+
+    _dataSub = _future.asStream().listen((onData) {
       setState(() {
         _isFetching = false;
         if (onData != null) {
@@ -94,14 +103,13 @@ class _SubforumPagenState extends State<SubforumPage>
       });
     });
 
-    return _dataSub.asFuture();
+    return _future;
   }
 
   Widget content() {
-    if (details == null) return Container();
     return RefreshIndicator(
       onRefresh: loadPage,
-      child: ListView.builder(
+      child: details == null ? Container() : ListView.builder(
         controller: scrollController,
         padding: EdgeInsets.all(10.0),
         itemCount: details.threads.length,
