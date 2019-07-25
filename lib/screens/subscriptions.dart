@@ -33,8 +33,17 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
   }
 
   Future <void> loadSubscriptions() async {
-    return ScopedModel.of<SubscriptionModel>(context).getSubscriptions().asFuture();
+    ScopedModel.of<SubscriptionModel>(context).getSubscriptions(errorCallback: () {
+      Scaffold.of(context).hideCurrentSnackBar();
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to get subscriptions. Try again.'),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+      ));
+    });
   }
+
+
 
   void onTapItem(ThreadAlert item) {
     print('onTapItem');
@@ -80,6 +89,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
   Widget build(BuildContext context) {
     var alerts = ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).subscriptions;
     bool fetching = ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).isFetching;
+    bool hasFailed = ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).hasFailed;
+
+
+    //if (hasFailed)
 
     return Scaffold(
       appBar: AppBar(

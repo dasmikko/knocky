@@ -36,21 +36,30 @@ class _PopularThreadsScreenState extends State<PopularThreadsScreen>
     super.dispose();
   }
 
-  Future<void> loadThreads() {
+ Future<void> loadThreads() {
     setState(() {
       fetching = true;
     });
 
-    _dataSub?.cancel();
-    _dataSub =
-        KnockoutAPI().popularThreads().asStream().listen((List<SubforumThreadLatestPopular> res) {
+    Future _future = KnockoutAPI().popularThreads().then((res) {
       setState(() {
         items = res;
         fetching = false;
       });
+    }).catchError((error) {
+      setState(() {
+        fetching = false;
+      });
+
+      Scaffold.of(context).hideCurrentSnackBar();
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to get popular threads. Try again.'),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+      ));
     });
 
-    return _dataSub.asFuture();
+    return _future;
   }
 
   void onTapItem(ThreadAlert item) {

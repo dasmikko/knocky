@@ -41,16 +41,25 @@ class _LatestThreadsScreenState extends State<LatestThreadsScreen>
       fetching = true;
     });
 
-    _dataSub?.cancel();
-    _dataSub =
-        KnockoutAPI().latestThreads().asStream().listen((List<SubforumThreadLatestPopular> res) {
+    Future _future = KnockoutAPI().latestThreads().then((res) {
       setState(() {
         items = res;
         fetching = false;
       });
+    }).catchError((error) {
+      setState(() {
+        fetching = false;
+      });
+
+      Scaffold.of(context).hideCurrentSnackBar();
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to get latest threads. Try again.'),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+      ));
     });
 
-    return _dataSub.asFuture();
+    return _future;
   }
 
   void onTapItem(ThreadAlert item) {
