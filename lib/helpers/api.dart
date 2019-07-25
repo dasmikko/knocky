@@ -111,10 +111,16 @@ class KnockoutAPI {
   }
 
   Future<List<ThreadAlert>> getAlerts() async {
-    final response = await _request(url: 'alert/list', type: 'post');
-    return response.data
-        .map<ThreadAlert>((json) => ThreadAlert.fromJson(json))
-        .toList();
+    try {
+      final response = await _request(url: 'alert/list', type: 'post');
+      return response.data
+          .map<ThreadAlert>((json) => ThreadAlert.fromJson(json))
+          .toList();
+    } on DioError catch (e) {
+      print(e.request.headers);
+      print(e.response.data);
+      throw e;
+    }
   }
 
   Future<void> readThreads(DateTime lastseen, int threadId) async {
