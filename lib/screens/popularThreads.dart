@@ -8,6 +8,7 @@ import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widget/SubforumPopularLatestDetailListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
+import 'package:knocky/events.dart';
 
 class PopularThreadsScreen extends StatefulWidget {
   @override
@@ -36,7 +37,7 @@ class _PopularThreadsScreenState extends State<PopularThreadsScreen>
     super.dispose();
   }
 
- Future<void> loadThreads() {
+  Future<void> loadThreads() {
     setState(() {
       fetching = true;
     });
@@ -91,11 +92,15 @@ class _PopularThreadsScreenState extends State<PopularThreadsScreen>
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              eventBus.fire(ClickDrawerEvent(true));
+            }),
         title: Text('Popular threads'),
       ),
       body: RefreshIndicator(

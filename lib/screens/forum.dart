@@ -9,11 +9,13 @@ import 'package:knocky/widget/CategoryListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
+import 'package:knocky/events.dart';
 
 class ForumScreen extends StatefulWidget {
   final ScaffoldState scaffoldKey;
+  final Function onMenuClick;
 
-  ForumScreen({this.scaffoldKey});
+  ForumScreen({this.scaffoldKey, this.onMenuClick});
 
   @override
   _ForumScreenState createState() => _ForumScreenState();
@@ -117,6 +119,9 @@ class _ForumScreenState extends State<ForumScreen>
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(icon: Icon(Icons.menu), onPressed: () {
+            eventBus.fire(ClickDrawerEvent(true));
+          }),
           title: Text('Knocky'),
         ),
         body: KnockoutLoadingIndicator(

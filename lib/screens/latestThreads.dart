@@ -8,6 +8,7 @@ import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widget/SubforumPopularLatestDetailListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
+import 'package:knocky/events.dart';
 
 class LatestThreadsScreen extends StatefulWidget {
   @override
@@ -96,6 +97,9 @@ class _LatestThreadsScreenState extends State<LatestThreadsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(icon: Icon(Icons.menu), onPressed: () {
+            eventBus.fire(ClickDrawerEvent(true));
+          }),
         title: Text('Latest threads'),
       ),
       body: RefreshIndicator(
