@@ -16,23 +16,36 @@ class SubforumScreen extends StatefulWidget {
 }
 
 class _SubforumScreenState extends State<SubforumScreen>
-    with AfterLayoutMixin<SubforumScreen> {
+    with AfterLayoutMixin<SubforumScreen>, SingleTickerProviderStateMixin {
   SubforumDetails details;
   PageController _pageController = new PageController();
   bool isSwiping = false;
   int _totalPages;
   int _currentPage = 1;
+  bool _bottomBarVisible = true;
+  AnimationController expandController;
+  Animation<double> animation;
 
   @override
   void initState() {
     super.initState();
-
+    prepareAnimations();
     _totalPages = (widget.subforumModel.totalThreads / 40).ceil();
   }
 
   @override
   void afterFirstLayout(BuildContext context) async {
     setState(() {});
+  }
+
+  void prepareAnimations() {
+    expandController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 250));
+    Animation curve = CurvedAnimation(
+      parent: expandController,
+      curve: Curves.fastOutSlowIn,
+    );
+    animation = Tween(begin: 1.0, end: 0.0).animate(curve);
   }
 
   void showJumpDialog() {
@@ -50,22 +63,55 @@ class _SubforumScreenState extends State<SubforumScreen>
     });
   }
 
-  Widget content() {
+  Widget content(sContext) {
     return PageView.builder(
       itemCount: _totalPages,
       onPageChanged: (int page) {
+        // Show bottombar on page change
+        if (!_bottomBarVisible) {
+          expandController.reverse();
+        }
+
         setState(() {
           _currentPage = page + 1;
+
+          // Show bottombar on page change
+          if (!_bottomBarVisible) {
+            _bottomBarVisible = true;
+          }
         });
       },
       controller: _pageController,
       itemBuilder: (BuildContext context, int position) {
         return SubforumPage(
           subforumModel: widget.subforumModel,
-          page: position + 1
+          page: position + 1,
+          bottomBarVisible: _bottomBarVisible,
+          onError: () => onFetchError(sContext),
+          isScrollingUp: () {
+            expandController.reverse();
+            setState(() {
+              _bottomBarVisible = true;
+            });
+          },
+          isScrollingDown: () {
+            expandController.forward();
+            setState(() {
+              _bottomBarVisible = false;
+            });
+          },
         );
       },
     );
+  }
+
+  void onFetchError (context) {
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text('Failed to load page. Try again.'),
+      backgroundColor: Colors.red,
+      behavior: SnackBarBehavior.floating,
+    ));
   }
 
   @override
@@ -75,26 +121,31 @@ class _SubforumScreenState extends State<SubforumScreen>
         title: Text(widget.subforumModel.name),
         leading: BackButton(),
       ),
-      body: content(),
+      body: content(context),
       drawer: DrawerWidget(),
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          padding: EdgeInsets.only(left: 10, right: 10),
-          height: 56,
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Text('Page ' +
-                    _currentPage.toString() +
-                    ' of ' +
-                    _totalPages.toString()),
-              ),
-              IconButton(
-                onPressed: _totalPages > 1 ? showJumpDialog : null,
-                icon: Icon(Icons.redo),
-                tooltip: 'Jump to page',
-              )
-            ],
+      extendBody: false,
+      bottomNavigationBar: SizeTransition(
+        axisAlignment: -1.0,
+        sizeFactor: animation,
+        child: BottomAppBar(
+          child: Container(
+            padding: EdgeInsets.only(left: 10, right: 10),
+            height: 56,
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Text('Page ' +
+                      _currentPage.toString() +
+                      ' of ' +
+                      _totalPages.toString()),
+                ),
+                IconButton(
+                  onPressed: _totalPages > 1 ? showJumpDialog : null,
+                  icon: Icon(Icons.redo),
+                  tooltip: 'Jump to page',
+                )
+              ],
+            ),
           ),
         ),
       ),

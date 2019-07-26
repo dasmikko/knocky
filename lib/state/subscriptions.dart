@@ -8,39 +8,43 @@ class SubscriptionModel extends Model {
   List<ThreadAlert> _alerts = List();
   int _totalUnreadPosts = 0;
   bool _isFetching = false;
+  bool _hasFailed = false;
 
   List<ThreadAlert> get subscriptions => _alerts;
   int get totalUnreadPosts => _totalUnreadPosts;
   bool get isFetching => _isFetching;
+  bool get hasFailed => _hasFailed;
 
-  StreamSubscription getSubscriptions () {
+
+  Future getSubscriptions ({Function errorCallback}) {
     _isFetching = true;
     notifyListeners();
-    
-    StreamSubscription sub = KnockoutAPI().getAlerts().asStream().listen((res) {
-      _alerts = res;
+
+    Future _future = KnockoutAPI().getAlerts().then((res) {
+      if (res != null) {
+        _alerts = res;
+        _isFetching = false;
+        _calcTotalUnreadPosts();
+        notifyListeners();
+      }
+    }).catchError((error) {
+      _hasFailed = true;
       _isFetching = false;
-      _calcTotalUnreadPosts();
-      notifyListeners();
-    });
-    
-    sub.onError((handleError) {
-      _alerts = List();
-      _calcTotalUnreadPosts();
+
+      if (errorCallback != null) errorCallback();
       notifyListeners();
     });
 
-    return sub;
+    return _future;
+  }
+
+  void resetHasFailedState() {
+    _hasFailed = false;
   }
 
   void clearList () {
     _alerts = List();
     _calcTotalUnreadPosts();
-    notifyListeners();
-  }
-
-  void calledFailed () {
-    this.clearList();
     notifyListeners();
   }
 

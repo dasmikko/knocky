@@ -10,6 +10,7 @@ import 'package:knocky/state/authentication.dart';
 import 'package:knocky/state/subscriptions.dart';
 import 'package:knocky/state/appState.dart';
 import 'package:knocky/widget/tab-navigator.dart';
+import 'package:knocky/events.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -21,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen>
   StreamSubscription<List<Subforum>> _dataSub;
   final navigatorKey = GlobalKey<NavigatorState>();
   bool _loginIsOpen = false;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Map<int, GlobalKey<NavigatorState>> navigatorKeys = {
     0: GlobalKey<NavigatorState>(),
@@ -34,9 +36,17 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   @override
-  void afterFirstLayout(BuildContext context) {
-    ScopedModel.of<AuthenticationModel>(context)
-        .getLoginStateFromSharedPreference(context);
+  void afterFirstLayout(BuildContext bcontext) {
+    ScopedModel.of<AuthenticationModel>(bcontext)
+        .getLoginStateFromSharedPreference(bcontext);
+
+    // Listen for drawer open events
+    eventBus
+      .on<ClickDrawerEvent>()
+      .listen((event) {
+        print('Got event');
+        _scaffoldKey.currentState.openDrawer();
+      });
   }
 
   @override
@@ -90,6 +100,7 @@ class _HomeScreenState extends State<HomeScreen>
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        key: _scaffoldKey,
         drawer: DrawerWidget(
           onLoginOpen: () {
             setState(() {
@@ -114,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen>
           _buildOffstageNavigator(3),
         ]),
         bottomNavigationBar: BottomNavigationBar(
+          selectedItemColor: Colors.red,
           currentIndex: selectedTab,
           onTap: (int index) {
             if (index != selectedTab) {
@@ -135,7 +147,8 @@ class _HomeScreenState extends State<HomeScreen>
           },
           items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.view_list), title: Text('Forum')),
+                activeIcon: Icon(Icons.view_list),
+                icon: Icon(Icons.view_list), title: Text('Forum'),),
             if (_isLoggedIn)
               BottomNavigationBarItem(
                   icon: Stack(

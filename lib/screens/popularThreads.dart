@@ -8,6 +8,7 @@ import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widget/SubforumPopularLatestDetailListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
+import 'package:knocky/events.dart';
 
 class PopularThreadsScreen extends StatefulWidget {
   @override
@@ -41,16 +42,25 @@ class _PopularThreadsScreenState extends State<PopularThreadsScreen>
       fetching = true;
     });
 
-    _dataSub?.cancel();
-    _dataSub =
-        KnockoutAPI().popularThreads().asStream().listen((List<SubforumThreadLatestPopular> res) {
+    Future _future = KnockoutAPI().popularThreads().then((res) {
       setState(() {
         items = res;
         fetching = false;
       });
+    }).catchError((error) {
+      setState(() {
+        fetching = false;
+      });
+
+      Scaffold.of(context).hideCurrentSnackBar();
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to get popular threads. Try again.'),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+      ));
     });
 
-    return _dataSub.asFuture();
+    return _future;
   }
 
   void onTapItem(ThreadAlert item) {
@@ -82,11 +92,15 @@ class _PopularThreadsScreenState extends State<PopularThreadsScreen>
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              eventBus.fire(ClickDrawerEvent(true));
+            }),
         title: Text('Popular threads'),
       ),
       body: RefreshIndicator(

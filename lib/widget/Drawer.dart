@@ -38,7 +38,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     super.initState();
     ScopedModel.of<AuthenticationModel>(context)
         .getLoginStateFromSharedPreference(context);
-    ScopedModel.of<SubscriptionModel>(context).getSubscriptions();
   }
 
   void onClickLogin(BuildContext context) async {

@@ -38,6 +38,7 @@ class _ThreadScreenState extends State<ThreadScreen>
   bool _bottomBarVisible = true;
   AnimationController expandController;
   Animation<double> animation;
+  BuildContext self;
 
   @override
   void initState() {
@@ -61,7 +62,6 @@ class _ThreadScreenState extends State<ThreadScreen>
       if (scrollController.position.userScrollDirection ==
           ScrollDirection.forward) {
         if (!_bottomBarVisible) {
-          
           setState(() {
             expandController.reverse();
             _bottomBarVisible = true;
@@ -82,10 +82,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       parent: expandController,
       curve: Curves.fastOutSlowIn,
     );
-    animation = Tween(begin: 1.0, end: 0.0).animate(curve)
-      ..addListener(() {
-        setState(() {});
-      });
+    animation = Tween(begin: 1.0, end: 0.0).animate(curve);
   }
 
   @override
@@ -98,11 +95,26 @@ class _ThreadScreenState extends State<ThreadScreen>
   @override
   void afterFirstLayout(BuildContext context) {
     var api = new KnockoutAPI();
-    // Calling the same function "after layout" to resolve the issue.
-    _dataSub = api
-        .getThread(widget.threadId, page: _currentPage)
-        .asStream()
-        .listen((res) {
+
+    setState(() {
+      self = context;
+    });
+
+    Future _future =
+        api.getThread(widget.threadId, page: _currentPage).catchError((error) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      Scaffold.of(self).hideCurrentSnackBar();
+      Scaffold.of(self).showSnackBar(SnackBar(
+        content: Text('Failed to load thread. Try again'),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+      ));
+    });
+
+    _dataSub = _future.asStream().listen((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -152,15 +164,29 @@ class _ThreadScreenState extends State<ThreadScreen>
       _currentPage = _currentPage + 1;
     });
 
-    scrollController.jumpTo(0);
+    if (scrollController.hasClients) {
+      scrollController.jumpTo(0);
+    }
 
     var api = new KnockoutAPI();
 
     _dataSub?.cancel();
-    _dataSub = api
-        .getThread(widget.threadId, page: _currentPage)
-        .asStream()
-        .listen((res) {
+
+    Future _future =
+        api.getThread(widget.threadId, page: _currentPage).catchError((error) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      Scaffold.of(self).hideCurrentSnackBar();
+      Scaffold.of(self).showSnackBar(SnackBar(
+        content: Text('Failed to load thread. Try again'),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+      ));
+    });
+
+    _dataSub = _future.asStream().listen((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -174,15 +200,30 @@ class _ThreadScreenState extends State<ThreadScreen>
       _isLoading = true;
       _currentPage = _currentPage - 1;
     });
-    scrollController.jumpTo(0);
+    
+    if (scrollController.hasClients) {
+      scrollController.jumpTo(0);
+    }
 
     var api = new KnockoutAPI();
 
     _dataSub?.cancel();
-    _dataSub = api
-        .getThread(widget.threadId, page: _currentPage)
-        .asStream()
-        .listen((res) {
+
+    Future _future =
+        api.getThread(widget.threadId, page: _currentPage).catchError((error) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      Scaffold.of(self).hideCurrentSnackBar();
+      Scaffold.of(self).showSnackBar(SnackBar(
+        content: Text('Failed to load thread. Try again'),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+      ));
+    });
+
+    _dataSub = _future.asStream().listen((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -197,15 +238,28 @@ class _ThreadScreenState extends State<ThreadScreen>
       _currentPage = page;
     });
 
-    scrollController.jumpTo(0);
+    if (scrollController.hasClients) {
+      scrollController.jumpTo(0);
+    }
 
     var api = new KnockoutAPI();
 
     _dataSub?.cancel();
-    _dataSub = api
-        .getThread(widget.threadId, page: _currentPage)
-        .asStream()
-        .listen((res) {
+    Future _future =
+        api.getThread(widget.threadId, page: _currentPage).catchError((error) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      Scaffold.of(self).hideCurrentSnackBar();
+      Scaffold.of(self).showSnackBar(SnackBar(
+        content: Text('Failed to load thread. Try again'),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+      ));
+    });
+
+    _dataSub = _future.asStream().listen((res) {
       setState(() {
         details = res;
         _isLoading = false;
@@ -219,8 +273,20 @@ class _ThreadScreenState extends State<ThreadScreen>
       _isLoading = true;
     });
 
-    Thread res =
-        await KnockoutAPI().getThread(widget.threadId, page: _currentPage);
+    Thread res = await KnockoutAPI()
+        .getThread(widget.threadId, page: _currentPage)
+        .catchError((error) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      Scaffold.of(self).hideCurrentSnackBar();
+      Scaffold.of(self).showSnackBar(SnackBar(
+        content: Text('Failed to load thread. Try again'),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+      ));
+    });
     setState(() {
       details = res;
       _isLoading = false;

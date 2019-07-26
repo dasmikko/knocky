@@ -9,12 +9,14 @@ import 'package:knocky/widget/CategoryListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
+import 'package:knocky/events.dart';
 
 class ForumScreen extends StatefulWidget {
   final ScaffoldState scaffoldKey;
+  final Function onMenuClick;
 
-  ForumScreen({this.scaffoldKey});
-  
+  ForumScreen({this.scaffoldKey, this.onMenuClick});
+
   @override
   _ForumScreenState createState() => _ForumScreenState();
 }
@@ -34,7 +36,7 @@ class _ForumScreenState extends State<ForumScreen>
 
   @override
   void afterFirstLayout(BuildContext context) {
-    getSubforums();
+    getSubforums(context);
     ScopedModel.of<AuthenticationModel>(context)
         .getLoginStateFromSharedPreference(context);
   }
@@ -42,23 +44,44 @@ class _ForumScreenState extends State<ForumScreen>
   @override
   void dispose() {
     _dataSub.cancel();
-    super.dispose(); 
+    super.dispose();
   }
 
-  Future<void> getSubforums() {
+  Future<void> getSubforums(context) {
     setState(() {
       _isFetching = true;
     });
 
     _dataSub?.cancel();
-    _dataSub = KnockoutAPI().getSubforums().asStream().listen((subforums) {
+    print('Gettings subforums');
+
+    Future _future = KnockoutAPI().getSubforums();
+
+    _future.catchError((error) {
+      print('error:');
+      print(error.toString());
+      setState(() {
+        _isFetching = false;
+      });
+
+      Scaffold.of(context).hideCurrentSnackBar();
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to get categories. Try again.'),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+      ));
+
+      _dataSub?.cancel();
+    });
+
+    _dataSub = _future.asStream().listen((subforums) {
       setState(() {
         _subforums = subforums;
         _isFetching = false;
       });
     });
 
-    return _dataSub.asFuture();
+    return _future;
   }
 
   Future<bool> _onWillPop() async {
@@ -96,13 +119,16 @@ class _ForumScreenState extends State<ForumScreen>
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(icon: Icon(Icons.menu), onPressed: () {
+            eventBus.fire(ClickDrawerEvent(true));
+          }),
           title: Text('Knocky'),
         ),
         body: KnockoutLoadingIndicator(
           show: _isFetching,
           child: Container(
             child: RefreshIndicator(
-              onRefresh: getSubforums,
+              onRefresh: () => getSubforums(context),
               child: ListView.builder(
                 padding: EdgeInsets.all(10.0),
                 itemCount: _subforums.length,
