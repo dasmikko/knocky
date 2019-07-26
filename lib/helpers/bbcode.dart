@@ -1,14 +1,19 @@
 import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:knocky/models/slateDocument.dart';
+import 'package:knocky/models/thread.dart';
 
 class BBCodeHandler implements bbob.NodeVisitor {
   SlateDocument document = SlateDocument(object: 'document', nodes: List());
   StringBuffer _leafContentBuffer = StringBuffer();
+  List<ThreadPost> _replyList = List();
+  Thread _thread;
 
   SlateNode _lastElement;
   List<SlateLeafMark> _leafMarks = List();
 
-  SlateObject parse(String text) {
+  SlateObject parse(String text, Thread thread, List<ThreadPost> replyList) {
+    _thread = thread;
+    _replyList = replyList;
     var ast = bbob.parse(text);
 
     for (final node in ast) {
@@ -16,7 +21,8 @@ class BBCodeHandler implements bbob.NodeVisitor {
     }
 
     // if string buffer is not empty, add a leaf
-    if (_leafContentBuffer.isNotEmpty || (_lastElement != null && _lastElement.nodes.length > 0)) {
+    if (_leafContentBuffer.isNotEmpty ||
+        (_lastElement != null && _lastElement.nodes.length > 0)) {
       // New leaf is appearing, add old leaf to node
       SlateNode textLeafNode = SlateNode(object: 'text', leaves: [
         SlateLeaf(
@@ -36,8 +42,11 @@ class BBCodeHandler implements bbob.NodeVisitor {
 
   void visitText(bbob.Text text) {
     if (_lastElement == null) {
-      _lastElement =
-          SlateNode(object: 'block', type: 'paragraph', data: SlateNodeData(), nodes: List());
+      _lastElement = SlateNode(
+          object: 'block',
+          type: 'paragraph',
+          data: SlateNodeData(),
+          nodes: List());
     }
 
     if (text.textContent == '\n') {
@@ -59,8 +68,11 @@ class BBCodeHandler implements bbob.NodeVisitor {
       document.nodes.add(_lastElement);
 
       // Paragraph ended, to reset last element
-      _lastElement =
-          SlateNode(object: 'block', type: 'paragraph', data: SlateNodeData(), nodes: List());
+      _lastElement = SlateNode(
+          object: 'block',
+          type: 'paragraph',
+          data: SlateNodeData(),
+          nodes: List());
     } else {
       _leafContentBuffer.write(text.textContent);
     }
@@ -102,8 +114,11 @@ class BBCodeHandler implements bbob.NodeVisitor {
 
     if (element.tag == 'url') {
       if (_lastElement == null) {
-        _lastElement =
-            SlateNode(object: 'block', type: 'paragraph', data: SlateNodeData(), nodes: List());
+        _lastElement = SlateNode(
+            object: 'block',
+            type: 'paragraph',
+            data: SlateNodeData(),
+            nodes: List());
       }
 
       _lastElement.nodes.add(SlateNode(
@@ -124,8 +139,11 @@ class BBCodeHandler implements bbob.NodeVisitor {
 
     if (element.tag == 'img') {
       if (_lastElement != null) {
-        _lastElement =
-            SlateNode(object: 'block', type: 'paragraph', data: SlateNodeData(), nodes: List());
+        _lastElement = SlateNode(
+            object: 'block',
+            type: 'paragraph',
+            data: SlateNodeData(),
+            nodes: List());
       }
 
       SlateNode imgNode = SlateNode(
@@ -152,44 +170,64 @@ class BBCodeHandler implements bbob.NodeVisitor {
     }
 
     if (element.tag == 'h2') {
-      _lastElement = SlateNode(
-        object: 'block',
-        type: 'heading-two',
-        data: null,
-        nodes: [
-          SlateNode(object: 'text', leaves: [],)
-        ]
-      );
+      _lastElement =
+          SlateNode(object: 'block', type: 'heading-two', data: null, nodes: [
+        SlateNode(
+          object: 'text',
+          leaves: [],
+        )
+      ]);
     }
 
     if (element.tag == 'blockquote') {
-      _lastElement = SlateNode(
-        object: 'block',
-        type: 'block-quote',
-        data: null,
-        nodes: [
-          SlateNode(object: 'text', leaves: [],)
-        ]
-      );
+      _lastElement =
+          SlateNode(object: 'block', type: 'block-quote', data: null, nodes: [
+        SlateNode(
+          object: 'text',
+          leaves: [],
+        )
+      ]);
     }
 
     if (element.tag == 'youtube') {
       _lastElement = SlateNode(
-        object: 'block',
-        type: 'block-quote',
-        data: SlateNodeData(src: element.children.first.textContent),
-        nodes: []
-      );
+          object: 'block',
+          type: 'block-quote',
+          data: SlateNodeData(src: element.children.first.textContent),
+          nodes: []);
       return false;
     }
 
     if (element.tag == 'video') {
       _lastElement = SlateNode(
-        object: 'block',
-        type: 'video',
-        data: SlateNodeData(src: element.children.first.textContent),
-        nodes: []
-      );
+          object: 'block',
+          type: 'video',
+          data: SlateNodeData(src: element.children.first.textContent),
+          nodes: []);
+      return false;
+    }
+
+    if (element.tag == 'userquote') {
+      int replyIndex = int.parse(element.children.first.textContent) - 1;
+
+      if (_replyList[replyIndex] != null) {
+        ThreadPost reply = _replyList[replyIndex];
+
+        document.nodes.add(
+          SlateNode(
+              object: 'block',
+              type: 'userquote',
+              data: SlateNodeData(
+                postData: NodeDataPostData(
+                  postId: reply.id,
+                  threadId: _thread.id,
+                  threadPage: _thread.currentPage,
+                  username: reply.user.username,
+                ),
+              ),
+              nodes: reply.content.document.nodes),
+        );
+      }
       return false;
     }
 
@@ -198,18 +236,21 @@ class BBCodeHandler implements bbob.NodeVisitor {
   }
 
   void visitElementAfter(bbob.Element element) {
-    // Tag is done, add leaf
-    SlateNode textNode = SlateNode(object: 'text', leaves: [
-      SlateLeaf(
-          text: _leafContentBuffer.toString(),
-          marks: _leafMarks,
-          object: 'leaf')
-    ]);
+    switch (element.tag) {
+      default:
+        // Tag is done, add leaf
+        SlateNode textNode = SlateNode(object: 'text', leaves: [
+          SlateLeaf(
+              text: _leafContentBuffer.toString(),
+              marks: _leafMarks,
+              object: 'leaf')
+        ]);
 
-    // Reset leaf marks
-    _leafMarks = List();
+        // Reset leaf marks
+        _leafMarks = List();
 
-    _lastElement.nodes.add(textNode);
-    _leafContentBuffer = StringBuffer();
+        _lastElement.nodes.add(textNode);
+        _leafContentBuffer = StringBuffer();
+    }
   }
 }

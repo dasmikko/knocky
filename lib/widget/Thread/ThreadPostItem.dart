@@ -14,9 +14,10 @@ class ThreadPostItem extends StatelessWidget {
   final ThreadPost postDetails;
   final GlobalKey scaffoldKey;
   final Function onPostRated;
+  final Function onPressReply;
 
 
-  ThreadPostItem({this.postDetails, this.scaffoldKey, this.onPostRated});
+  ThreadPostItem({this.postDetails, this.scaffoldKey, this.onPostRated, this.onPressReply});
 
   Widget buildRatings(List<ThreadPostRatings> ratings) {
     List<Widget> items = List();
@@ -155,6 +156,11 @@ class ThreadPostItem extends StatelessWidget {
                           FlatButton(
                             child: Text('Rate'),
                             onPressed: () => onPressRatePost(context),
+                          ),
+                        if (isLoggedIn && postDetails.user.id != ownUserId)
+                          FlatButton(
+                            child: Text('Reply'),
+                            onPressed: () => onPressReply(postDetails),
                           )
                       ],
                     ),
