@@ -15,6 +15,8 @@ class SlateDocumentParser extends StatelessWidget {
   final GlobalKey scaffoldkey;
   final BuildContext context;
 
+  List<String> imageList = List();
+
   SlateDocumentParser(
       {this.slateObject, this.onPressSpoiler, this.scaffoldkey, this.context});
 
@@ -282,11 +284,12 @@ class SlateDocumentParser extends StatelessWidget {
   }
 
   Widget handleImage(SlateNode node) {
+
     return Container(
       margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
       child: LimitedBox(
         maxHeight: 300,
-        child: ImageWidget(url: node.data.src),
+        child: ImageWidget(url: node.data.src, slateObject: slateObject),
       ),
     );
   }

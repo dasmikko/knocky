@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/screens/imageViewer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:path/path.dart';
@@ -7,14 +8,26 @@ import 'package:path/path.dart';
 class ImageWidget extends StatefulWidget {
   final String url;
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final SlateObject slateObject;
 
-  ImageWidget({this.url, this.scaffoldKey});
+  ImageWidget({this.url, this.scaffoldKey, this.slateObject});
 
   @override
   _ImageWidgetState createState() => _ImageWidgetState();
 }
 
 class _ImageWidgetState extends State<ImageWidget> {
+
+  List<String> findAllImages () {
+    List<String> urls = List();
+    this.widget.slateObject.document.nodes.forEach((item) {
+      if (item.type == 'image') {
+        urls.add(item.data.src);
+      }
+    });
+    return urls;
+  }
+
   void imageLongPress(BuildContext context, String url) async {
     String fileName = basename(url);
 
@@ -58,7 +71,7 @@ class _ImageWidgetState extends State<ImageWidget> {
       onTap: () {
         Navigator.of(context, rootNavigator: true).push(
           MaterialPageRoute(
-              builder: (context) => ImageViewerScreen(url: this.widget.url)),
+              builder: (context) => ImageViewerScreen(url: this.widget.url, urls: findAllImages(),)),
         );
       },
       child: Hero(
