@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/bbcode.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/models/thread.dart';
@@ -8,13 +9,12 @@ import 'package:knocky/helpers/api.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 
 class NewPostScreen extends StatefulWidget {
-  final int threadId;
   final ThreadPost replyTo;
   final Thread thread;
   final List<ThreadPost> replyList;
 
   NewPostScreen(
-      {@required this.threadId, this.replyTo, this.thread, this.replyList});
+      {this.replyTo, this.thread, this.replyList});
 
   @override
   _NewPostScreenState createState() => _NewPostScreenState();
@@ -38,11 +38,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void onPressPost() async {
-    print('Pressed post');
     setState(() {
       _isPosting = true;
     });
-    await KnockoutAPI().newPost(document.toJson(), this.widget.threadId);
+    await KnockoutAPI().newPost(document.toJson(), this.widget.thread.id);
     Navigator.pop(context, true);
   }
 
@@ -120,14 +119,20 @@ class _NewPostScreenState extends State<NewPostScreen> {
           new FlatButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop();
               }),
           new FlatButton(
               child: const Text('Insert'),
               onPressed: () {
-                Navigator.pop(context);
-                controller.text =
+                Navigator.of(context, rootNavigator: true).pop();
+
+                if(controller.text.endsWith('\n') || controller.text.isEmpty) {
+                  controller.text =
+                    controller.text + '[img]${imgurlController.text}[/img]';
+                } else {
+                  controller.text =
                     controller.text + '\n[img]${imgurlController.text}[/img]';
+                }
                 refreshPreview();
               })
         ],
@@ -159,14 +164,21 @@ class _NewPostScreenState extends State<NewPostScreen> {
           new FlatButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop();
               }),
           new FlatButton(
               child: const Text('Insert'),
               onPressed: () {
-                Navigator.pop(context);
-                controller.text =
+                Navigator.of(context, rootNavigator: true).pop();
+
+                if(controller.text.endsWith('\n') || controller.text.isEmpty) {
+                  controller.text =
+                    controller.text + '[url]${urlController.text}[/url]';
+                } else {
+                  controller.text =
                     controller.text + '\n[url]${urlController.text}[/url]';
+                }
+
                 refreshPreview();
               })
         ],
@@ -198,14 +210,20 @@ class _NewPostScreenState extends State<NewPostScreen> {
           new FlatButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop();
               }),
           new FlatButton(
               child: const Text('Insert'),
               onPressed: () {
-                Navigator.pop(context);
-                controller.text = controller.text +
+                Navigator.of(context, rootNavigator: true).pop();
+
+                if(controller.text.endsWith('\n') || controller.text.isEmpty) {
+                  controller.text = controller.text +
+                    '[youtube]${urlController.text}[/youtube]';
+                } else {
+                  controller.text = controller.text +
                     '\n[youtube]${urlController.text}[/youtube]';
+                }
                 refreshPreview();
               })
         ],
@@ -238,14 +256,20 @@ class _NewPostScreenState extends State<NewPostScreen> {
           new FlatButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop();
               }),
           new FlatButton(
               child: const Text('Insert'),
               onPressed: () {
-                Navigator.pop(context);
-                controller.text =
+                Navigator.of(context, rootNavigator: true).pop();
+
+                if(controller.text.endsWith('\n') || controller.text.isEmpty) {
+                  controller.text =
+                    controller.text + '[video]${urlController.text}[/video]';
+                } else {
+                  controller.text =
                     controller.text + '\n[video]${urlController.text}[/video]';
+                }
                 refreshPreview();
               })
         ],
@@ -271,8 +295,14 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 title: Text(item.user.username),
                 onTap: () {
                   Navigator.of(bcontext, rootNavigator: true).pop();
-                  controller.text =
+
+                  if(controller.text.endsWith('\n') || controller.text.isEmpty) {
+                    controller.text =
+                      controller.text + '[userquote]${index + 1}[/userquote]';
+                  } else {
+                    controller.text =
                       controller.text + '\n[userquote]${index + 1}[/userquote]';
+                  }
                   refreshPreview();
                 },
               );
@@ -316,6 +346,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         body: KnockoutLoadingIndicator(
           show: _isPosting,
           child: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -328,6 +359,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                         focusNode: textFocusNode,
                         maxLines: null,
                         keyboardType: TextInputType.multiline,
+                        textCapitalization: TextCapitalization.sentences,
                         onChanged: (text) {
                           setState(() {
                             document = BBCodeHandler().parse(text,
@@ -388,6 +420,14 @@ class _NewPostScreenState extends State<NewPostScreen> {
                             TextSelection theSelection = controller.selection;
                             addTagAtSelection(
                                 theSelection.start, theSelection.end, 'h2');
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.format_quote),
+                          onPressed: () {
+                            TextSelection theSelection = controller.selection;
+                            addTagAtSelection(
+                                theSelection.start, theSelection.end, 'blockquote');
                           },
                         ),
                         IconButton(
