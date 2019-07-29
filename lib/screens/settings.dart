@@ -12,7 +12,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 class SettingsScreen extends StatefulWidget {
   final BuildContext appContext;
-  
+
 
   SettingsScreen({
     @required this.appContext
@@ -25,7 +25,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   ThemeData selectedTheme = DarkTheme();
   String selectedEnv = 'knockout';
-  String _version = ''; 
+  String _version = '';
 
   @override
   void initState() {
@@ -48,10 +48,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    print(packageInfo.version);
-
     setState(() {
-     _version = packageInfo.version; 
+     _version = packageInfo.version;
      selectedEnv = prefs.getString('env');
     });
   }
@@ -61,7 +59,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     DynamicTheme.of(context).setThemeData(theme);
 
     setState(() {
-     selectedTheme = theme; 
+     selectedTheme = theme;
     });
   }
 
@@ -70,7 +68,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       return AlertDialog(
         title: Text('Are you sure?'),
         content: Text('If you switch environment, you will be logged out.'),
-        actions: <Widget>[  
+        actions: <Widget>[
           FlatButton(
             child: Text('No'),
             onPressed: () {
@@ -78,10 +76,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           FlatButton(
-            child: Text('Yes'), 
+            child: Text('Yes'),
             onPressed: () async {
               setState(() {
-                selectedEnv = env; 
+                selectedEnv = env;
               });
 
               SharedPreferences prefs = await SharedPreferences.getInstance();

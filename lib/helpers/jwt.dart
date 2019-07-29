@@ -11,7 +11,6 @@ Map<String, dynamic> parseJwt(String token) {
   if (payloadMap is! Map<String, dynamic>) {
     throw Exception('invalid payload');
   }
-  print(payloadMap);
   return payloadMap;
 }
 

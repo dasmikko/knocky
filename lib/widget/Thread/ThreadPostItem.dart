@@ -14,9 +14,17 @@ class ThreadPostItem extends StatelessWidget {
   final ThreadPost postDetails;
   final GlobalKey scaffoldKey;
   final Function onPostRated;
+  final Function onPressReply;
+  final Function onLongPressReply;
+  final bool isOnReplyList;
 
-
-  ThreadPostItem({this.postDetails, this.scaffoldKey, this.onPostRated});
+  ThreadPostItem(
+      {this.postDetails,
+      this.scaffoldKey,
+      this.onPostRated,
+      this.onPressReply,
+      this.isOnReplyList = false,
+      this.onLongPressReply});
 
   Widget buildRatings(List<ThreadPostRatings> ratings) {
     List<Widget> items = List();
@@ -139,15 +147,25 @@ class ThreadPostItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    if(postDetails.bans != null)
-                      Row(children: postDetails.bans.map((ban) => Flexible(child: PostBan(ban: ban,),),).toList(),),
+                    if (postDetails.bans != null)
+                      Row(
+                        children: postDetails.bans
+                            .map(
+                              (ban) => Flexible(
+                                child: PostBan(
+                                  ban: ban,
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Flexible(
                           child: FlatButton(
                             padding: EdgeInsets.all(0),
-                            onPressed: () => onPressViewRatings(context),
+                            onPressed: postDetails.ratings != null ? () => onPressViewRatings(context) : null,
                             child: buildRatings(postDetails.ratings),
                           ),
                         ),
@@ -155,7 +173,18 @@ class ThreadPostItem extends StatelessWidget {
                           FlatButton(
                             child: Text('Rate'),
                             onPressed: () => onPressRatePost(context),
-                          )
+                          ),
+                        if (isLoggedIn && postDetails.user.id != ownUserId)
+                          GestureDetector(
+                            onLongPress: () => onLongPressReply(postDetails),
+                            child: FlatButton(
+                              child: Text(
+                                  !this.isOnReplyList ? 'Reply' : 'Unreply'),
+                              onPressed: () => onPressReply(postDetails),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 0),
+                            ),
+                          ),
                       ],
                     ),
                   ],

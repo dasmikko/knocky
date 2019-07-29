@@ -44,7 +44,6 @@ class _HomeScreenState extends State<HomeScreen>
     eventBus
       .on<ClickDrawerEvent>()
       .listen((event) {
-        print('Got event');
         _scaffoldKey.currentState.openDrawer();
       });
   }

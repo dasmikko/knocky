@@ -35,7 +35,6 @@ class KnockoutAPI {
     }
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print(prefs.getString('cookieString'));
     Map<String, dynamic> mHeaders = {
       'Cookie': prefs.getString('cookieString'),
       'Access-Control-Request-Headers': 'content-format-version,content-type',
@@ -45,8 +44,6 @@ class KnockoutAPI {
 
     String mBaseurl =
         prefs.getString('env') == 'knockout' ? KNOCKOUT_URL : QA_URL;
-
-        print(mBaseurl);
 
     Dio dio = new Dio();
     dio.options.baseUrl = mBaseurl;
@@ -79,7 +76,6 @@ class KnockoutAPI {
         .map<Subforum>((json) => Subforum.fromJson(json))
         .toList();
     } on DioError catch (e) {
-      print(e.response.data);
       throw e;
     }
   }
@@ -90,7 +86,6 @@ class KnockoutAPI {
         url: 'subforum/' + id.toString() + '/' + page.toString());
     return SubforumDetails.fromJson(response.data);
     } on DioError catch (e) {
-      print(e.response.data);
       return null;
     }
   }
@@ -117,8 +112,6 @@ class KnockoutAPI {
           .map<ThreadAlert>((json) => ThreadAlert.fromJson(json))
           .toList();
     } on DioError catch (e) {
-      print(e.request.headers);
-      print(e.response.data);
       throw e;
     }
   }
@@ -128,7 +121,6 @@ class KnockoutAPI {
         new ReadThreads(lastSeen: lastseen, threadId: threadId);
     final response = await _request(
         type: 'post', url: 'readThreads', data: jsonToPost.toJson());
-    print(response.data);
   }
 
   Future<void> readThreadSubsciption(DateTime lastseen, int threadId) async {
@@ -136,7 +128,6 @@ class KnockoutAPI {
         new ReadThreads(lastSeen: lastseen, threadId: threadId);
     final response =
         await _request(type: 'post', url: 'alert', data: jsonToPost.toJson());
-    print(response.data);
   }
 
   Future<List<ThreadAlert>> getEvents() async {
@@ -150,27 +141,20 @@ class KnockoutAPI {
   }
 
   Future<void> deleteThreadAlert(int threadid) async {
-    print(threadid.toString());
-
     final response = await _request(
         url: 'alert', type: 'delete', data: {'threadId': threadid});
 
     if (response.statusCode == 200) {
-      print(response.data);
     }
   }
 
   Future<void> subscribe(DateTime lastSeen, int threadid) async {
-    print(threadid.toString());
     final response = await _request(
         url: 'alert',
         type: 'post',
         data: {'lastSeen': lastSeen.toIso8601String(), 'threadId': threadid});
 
-    print(response.data);
-
     if (response.statusCode == 200) {
-      print(response.data);
     }
   }
 
@@ -189,12 +173,10 @@ class KnockoutAPI {
         'content': json.encode(content).toString(),
         'thread_id': threadId,
       }, headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
+        'content-type': 'application/json; charset=UTF-8',
         'content-format-version': '1'
       });
     } on DioError catch (e) {
-      print(e.request.headers);
-      print(e.response.data);
     }
   }
 
@@ -203,8 +185,6 @@ class KnockoutAPI {
         type: 'post',
         url: 'post',
         data: {'content': content, 'id': postId, 'thread_id': threadId});
-
-    print(response.data);
   }
 
   Future<List<SubforumThreadLatestPopular>> latestThreads() async {

@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/bbcode.dart';
 import 'package:knocky/models/slateDocument.dart';
+import 'package:knocky/models/thread.dart';
 import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 
 class NewPostScreen extends StatefulWidget {
-  final int threadId;
+  final ThreadPost replyTo;
+  final Thread thread;
+  final List<ThreadPost> replyList;
 
-  NewPostScreen({@required this.threadId});
+  NewPostScreen(
+      {this.replyTo, this.thread, this.replyList});
 
   @override
   _NewPostScreenState createState() => _NewPostScreenState();
@@ -27,21 +32,23 @@ class _NewPostScreenState extends State<NewPostScreen> {
   @override
   void initState() {
     super.initState();
-    document = BBCodeHandler().parse(controller.text);
+
+    document = BBCodeHandler()
+        .parse(controller.text, this.widget.thread, this.widget.replyList);
   }
 
   void onPressPost() async {
-    print('Pressed post');
     setState(() {
       _isPosting = true;
     });
-    await KnockoutAPI().newPost(document.toJson(), this.widget.threadId);
+    await KnockoutAPI().newPost(document.toJson(), this.widget.thread.id);
     Navigator.pop(context, true);
   }
 
   void refreshPreview() {
     setState(() {
-      document = BBCodeHandler().parse(controller.text);
+      document = BBCodeHandler()
+          .parse(controller.text, this.widget.thread, this.widget.replyList);
     });
   }
 
@@ -94,7 +101,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
         TextEditingController(text: clipBoardText.text);
     await showDialog<String>(
       context: context,
-    
       child: new AlertDialog(
         contentPadding: const EdgeInsets.all(16.0),
         content: new Row(
@@ -113,14 +119,20 @@ class _NewPostScreenState extends State<NewPostScreen> {
           new FlatButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop();
               }),
           new FlatButton(
               child: const Text('Insert'),
               onPressed: () {
-                Navigator.pop(context);
-                controller.text =
+                Navigator.of(context, rootNavigator: true).pop();
+
+                if(controller.text.endsWith('\n') || controller.text.isEmpty) {
+                  controller.text =
+                    controller.text + '[img]${imgurlController.text}[/img]';
+                } else {
+                  controller.text =
                     controller.text + '\n[img]${imgurlController.text}[/img]';
+                }
                 refreshPreview();
               })
         ],
@@ -152,14 +164,21 @@ class _NewPostScreenState extends State<NewPostScreen> {
           new FlatButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop();
               }),
           new FlatButton(
               child: const Text('Insert'),
               onPressed: () {
-                Navigator.pop(context);
-                controller.text =
+                Navigator.of(context, rootNavigator: true).pop();
+
+                if(controller.text.endsWith('\n') || controller.text.isEmpty) {
+                  controller.text =
+                    controller.text + '[url]${urlController.text}[/url]';
+                } else {
+                  controller.text =
                     controller.text + '\n[url]${urlController.text}[/url]';
+                }
+
                 refreshPreview();
               })
         ],
@@ -191,14 +210,20 @@ class _NewPostScreenState extends State<NewPostScreen> {
           new FlatButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop();
               }),
           new FlatButton(
               child: const Text('Insert'),
               onPressed: () {
-                Navigator.pop(context);
-                controller.text = controller.text +
+                Navigator.of(context, rootNavigator: true).pop();
+
+                if(controller.text.endsWith('\n') || controller.text.isEmpty) {
+                  controller.text = controller.text +
+                    '[youtube]${urlController.text}[/youtube]';
+                } else {
+                  controller.text = controller.text +
                     '\n[youtube]${urlController.text}[/youtube]';
+                }
                 refreshPreview();
               })
         ],
@@ -231,14 +256,20 @@ class _NewPostScreenState extends State<NewPostScreen> {
           new FlatButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop();
               }),
           new FlatButton(
               child: const Text('Insert'),
               onPressed: () {
-                Navigator.pop(context);
-                controller.text =
+                Navigator.of(context, rootNavigator: true).pop();
+
+                if(controller.text.endsWith('\n') || controller.text.isEmpty) {
+                  controller.text =
+                    controller.text + '[video]${urlController.text}[/video]';
+                } else {
+                  controller.text =
                     controller.text + '\n[video]${urlController.text}[/video]';
+                }
                 refreshPreview();
               })
         ],
@@ -246,8 +277,51 @@ class _NewPostScreenState extends State<NewPostScreen> {
     );
   }
 
+  void addUserquoteDialog(bcontext) async {
+    BuildContext self = bcontext;
+    await showDialog<int>(
+      context: bcontext,
+      child: new AlertDialog(
+        title: Text('Select post'),
+        contentPadding: const EdgeInsets.all(16.0),
+        content: Container(
+          height: 400,
+          width: 200,
+          child: ListView.builder(
+            itemCount: this.widget.replyList.length,
+            itemBuilder: (BuildContext context, int index) {
+              ThreadPost item = this.widget.replyList[index];
+              return ListTile(
+                title: Text(item.user.username),
+                onTap: () {
+                  Navigator.of(bcontext, rootNavigator: true).pop();
+
+                  if(controller.text.endsWith('\n') || controller.text.isEmpty) {
+                    controller.text =
+                      controller.text + '[userquote]${index + 1}[/userquote]';
+                  } else {
+                    controller.text =
+                      controller.text + '\n[userquote]${index + 1}[/userquote]';
+                  }
+                  refreshPreview();
+                },
+              );
+            },
+          ),
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(bcontext, rootNavigator: true).pop();
+              }),
+        ],
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext wcontext) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -258,14 +332,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
             IconButton(
               onPressed: !_isPosting ? onPressPost : null,
               icon: Icon(Icons.send),
-            ),
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  _isPosting = !_isPosting;
-                });
-              },
-              icon: Icon(Icons.visibility),
             ),
           ],
           bottom: TabBar(
@@ -280,21 +346,24 @@ class _NewPostScreenState extends State<NewPostScreen> {
         body: KnockoutLoadingIndicator(
           show: _isPosting,
           child: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.all(15),
+                      padding: EdgeInsets.all(25),
                       child: TextField(
                         controller: controller,
                         focusNode: textFocusNode,
                         maxLines: null,
                         keyboardType: TextInputType.multiline,
+                        textCapitalization: TextCapitalization.sentences,
                         onChanged: (text) {
                           setState(() {
-                            document = BBCodeHandler().parse(text);
+                            document = BBCodeHandler().parse(text,
+                                this.widget.thread, this.widget.replyList);
                           });
                         },
                       ),
@@ -354,6 +423,14 @@ class _NewPostScreenState extends State<NewPostScreen> {
                           },
                         ),
                         IconButton(
+                          icon: Icon(Icons.format_quote),
+                          onPressed: () {
+                            TextSelection theSelection = controller.selection;
+                            addTagAtSelection(
+                                theSelection.start, theSelection.end, 'blockquote');
+                          },
+                        ),
+                        IconButton(
                           icon: Icon(Icons.image),
                           onPressed: () {
                             addImageDialog();
@@ -376,7 +453,19 @@ class _NewPostScreenState extends State<NewPostScreen> {
                           onPressed: () {
                             addVideoDialog();
                           },
-                        )
+                        ),
+                        if (this.widget.replyList.length > 0)
+                          Builder(
+                            builder: (BuildContext bcontext) {
+                              return IconButton(
+                                tooltip: 'Insert userquote',
+                                icon: Icon(Icons.message),
+                                onPressed: () {
+                                  addUserquoteDialog(bcontext);
+                                },
+                              );
+                            },
+                          ),
                       ],
                     ),
                   ),

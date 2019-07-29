@@ -39,6 +39,7 @@ class _ThreadScreenState extends State<ThreadScreen>
   AnimationController expandController;
   Animation<double> animation;
   BuildContext self;
+  List<ThreadPost> postsToReplyTo = List();
 
   @override
   void initState() {
@@ -128,27 +129,17 @@ class _ThreadScreenState extends State<ThreadScreen>
 
     // Check if last read is null
     if (details.readThreadLastSeen == null) {
-      print('Is null! Mark thread as read');
-      KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {
-        //print('Thread marked read!');
-      });
+      KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
     } else if (details.readThreadLastSeen.isBefore(lastPostDate)) {
-      print('last read date is before last post date! Mark thread as read');
-      KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {
-        print('Thread marked read!');
-      });
+      KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
     }
 
     if (details.isSubscribedTo != 0) {
       // Handle for subscribed thread
       // Check if last read is null
       if (details.subscriptionLastSeen == null) {
-        print('Is null! Mark thread as read');
-        KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {
-          //print('Thread marked read!');
-        });
+        KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
       } else if (details.subscriptionLastSeen.isBefore(lastPostDate)) {
-        print('last read date is before last post date! Mark thread as read');
         KnockoutAPI()
             .readThreadSubsciption(lastPostDate, details.id)
             .then((res) {
@@ -200,7 +191,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       _isLoading = true;
       _currentPage = _currentPage - 1;
     });
-    
+
     if (scrollController.hasClients) {
       scrollController.jumpTo(0);
     }
@@ -361,6 +352,99 @@ class _ThreadScreenState extends State<ThreadScreen>
     });
   }
 
+  void onPressReply(ThreadPost post) async {
+    if (postsToReplyTo.length > 0) {
+      onLongPressReply(post);
+    } else {
+      List<ThreadPost> reply = List();
+      reply.add(
+        new ThreadPost(
+            bans: post.bans,
+            content: post.content,
+            createdAt: post.createdAt,
+            id: post.id,
+            ratings: post.ratings,
+            user: post.user),
+      );
+
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NewPostScreen(
+            thread: details,
+            replyList: reply,
+          ),
+        ),
+      );
+
+      if (result != null) {
+        scaffoldkey.currentState.showSnackBar(SnackBar(
+          content: Text('Posted!'),
+          behavior: SnackBarBehavior.floating,
+        ));
+        await refreshPage();
+        print('Do the scroll');
+        scrollController.jumpTo(scrollController.positions.length.toDouble());
+      }
+    }
+  }
+
+  void onLongPressReply(ThreadPost post) {
+    if (postsToReplyTo.where((o) => o.id == post.id).length > 0) {
+      setState(() {
+        postsToReplyTo.removeWhere((o) => o.id == post.id);
+
+        Scaffold.of(context)
+            .hideCurrentSnackBar(reason: SnackBarClosedReason.hide);
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('Removed post from reply list'),
+          behavior: SnackBarBehavior.floating,
+        ));
+      });
+    } else {
+      setState(() {
+        postsToReplyTo.add(new ThreadPost(
+            bans: post.bans,
+            content: post.content,
+            createdAt: post.createdAt,
+            id: post.id,
+            ratings: post.ratings,
+            user: post.user));
+
+        Scaffold.of(context)
+            .hideCurrentSnackBar(reason: SnackBarClosedReason.hide);
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('Added post to reply list'),
+          behavior: SnackBarBehavior.floating,
+        ));
+      });
+    }
+  }
+
+  PopupMenuItem<int> overFlowItem(Icon icon, String title, int value) {
+    return PopupMenuItem<int>(
+      value: value,
+      child: Row(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(right: 15),
+            child: icon,
+          ),
+          Text(title)
+        ],
+      ),
+    );
+  }
+
+  void onSelectOverflowItem(int item) {
+    switch (item) {
+      case 1:
+        onTapSubscribe(context);
+        break;
+      default:
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final _isLoggedIn = ScopedModel.of<AuthenticationModel>(context).isLoggedIn;
@@ -370,43 +454,77 @@ class _ThreadScreenState extends State<ThreadScreen>
         leading: BackButton(),
         title: Text(widget.title),
         actions: <Widget>[
-          if (_isLoggedIn)
-            Builder(
-              builder: (BuildContext bcontext) {
-                return IconButton(
-                  tooltip: 'Subscribe to thread',
-                  icon: Icon(FontAwesomeIcons.eye),
-                  onPressed:
-                      details != null ? () => onTapSubscribe(bcontext) : null,
-                );
-              },
-            ),
+          Builder(
+            builder: (BuildContext bcontext) {
+              return PopupMenuButton(
+                onSelected: onSelectOverflowItem,
+                itemBuilder: (BuildContext context) {
+                  return [
+                    if (details != null)
+                      overFlowItem(
+                          Icon(FontAwesomeIcons.eye), 'Subscribe to thread', 1),
+                  ];
+                },
+              );
+            },
+          ),
         ],
       ),
       key: scaffoldkey,
-      drawer: DrawerWidget(),
       body: KnockoutLoadingIndicator(
         show: _isLoading,
         child: details != null
-            ? ListView.builder(
+            ? CustomScrollView(
                 controller: scrollController,
-                padding: EdgeInsets.all(10.0),
-                itemCount: details.posts.length,
-                itemBuilder: (BuildContext context, int index) {
-                  ThreadPost item = details.posts[index];
-                  return ThreadPostItem(
-                    scaffoldKey: scaffoldkey,
-                    postDetails: item,
-                    onPostRated: () {
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                        backgroundColor: Colors.green,
-                        content: Text('Post rated!'),
-                        behavior: SnackBarBehavior.floating,
-                      ));
-                      refreshPage();
-                    },
-                  );
-                },
+                slivers: <Widget>[
+                  if (postsToReplyTo.length > 0)
+                    SliverAppBar(
+                      title: Text('Replying to ${postsToReplyTo.length} posts'),
+                      automaticallyImplyLeading: false,
+                      floating: true,
+                      actions: <Widget>[
+                        IconButton(
+                            tooltip: 'Clear selected replies',
+                            icon: Icon(FontAwesomeIcons.eraser),
+                            onPressed: () {
+                              setState(() {
+                                postsToReplyTo = List();
+                              });
+                            }),
+                      ],
+                    ),
+                  SliverList(
+                    // Use a delegate to build items as they're scrolled on screen.
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        ThreadPost item = details.posts[index];
+                        return Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                          child: ThreadPostItem(
+                            scaffoldKey: scaffoldkey,
+                            postDetails: item,
+                            isOnReplyList: postsToReplyTo
+                                    .where((o) => o.id == item.id)
+                                    .length >
+                                0,
+                            onPressReply: onPressReply,
+                            onLongPressReply: onLongPressReply,
+                            onPostRated: () {
+                              Scaffold.of(context).showSnackBar(SnackBar(
+                                backgroundColor: Colors.green,
+                                content: Text('Post rated!'),
+                                behavior: SnackBarBehavior.floating,
+                              ));
+                              refreshPage();
+                            },
+                          ),
+                        );
+                      },
+                      // Builds 1000 ListTiles
+                      childCount: details.posts.length,
+                    ),
+                  ),
+                ],
               )
             : Container(),
       ),
@@ -456,7 +574,8 @@ class _ThreadScreenState extends State<ThreadScreen>
               context,
               MaterialPageRoute(
                 builder: (context) => NewPostScreen(
-                  threadId: this.widget.threadId,
+                  thread: details,
+                  replyList: postsToReplyTo,
                 ),
               ),
             );

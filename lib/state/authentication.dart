@@ -29,12 +29,11 @@ class AuthenticationModel extends Model {
   String get cookieString => _cookieString;
   bool get isBanned => _isBanned;
   String get banMessage => _banMessage;
-  int get banThreadId => _banThreadId; 
+  int get banThreadId => _banThreadId;
 
   // Get the stored auth state
   void getLoginStateFromSharedPreference(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print(prefs.getBool('isLoggedIn'));
     _isLoggedIn = prefs.getBool('isLoggedIn') != null
         ? prefs.getBool('isLoggedIn')
         : false;
@@ -82,7 +81,6 @@ class AuthenticationModel extends Model {
   }
 
   void authCheck () async {
-    print('Checking auth state...');
     dynamic authState = await KnockoutAPI().authCheck();
     print(authState);
 
@@ -105,12 +103,12 @@ class AuthenticationModel extends Model {
         _banMessage = authState['banMessage'];
         _banThreadId = authState['threadId'];
         this.logout();
-      } 
+      }
     }
   }
 
   static AuthenticationModel of(BuildContext context) {
     return ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true);
   }
-    
+
 }

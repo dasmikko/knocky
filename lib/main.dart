@@ -11,13 +11,12 @@ import 'package:knocky/state/subscriptions.dart';
 
 void main() {
   Widget rv;
-  
+
   // Set default settings
   SharedPreferences.getInstance().then((prefs) {
     prefs.setBool('showNSFWThreads', prefs.getBool('showNSFWThreads') != null ? prefs.getBool('showNSFWThreads') : false);
 
     if (prefs.getString('env').toString() == 'null') {
-      print('env is null, set it');
       prefs.setString('env', 'knockout');
     }
   });

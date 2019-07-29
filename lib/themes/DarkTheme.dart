@@ -7,6 +7,9 @@ ThemeData DarkTheme() {
     primarySwatch: Colors.red,
     accentColor: Colors.red,
     scaffoldBackgroundColor: HexColor('#111015'),
-    cardColor: HexColor('#222226')
+    cardColor: HexColor('#222226'),
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+    ),
   );
 }
