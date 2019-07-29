@@ -8,7 +8,6 @@ import 'package:after_layout/after_layout.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widget/Thread/ThreadPostItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
-import 'package:knocky/widget/Drawer.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
@@ -436,10 +435,38 @@ class _ThreadScreenState extends State<ThreadScreen>
     );
   }
 
+  void onTapRenameThread() {
+    showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          TextEditingController conteroller = new TextEditingController(
+            text: details.title
+          );
+          return Container(
+            child: Column(children: <Widget>[
+              Text('Rename thread'),
+              TextField(
+                controller: conteroller,
+                autocorrect: true,
+                textCapitalization: TextCapitalization.sentences,
+                onSubmitted: (String finalText) {
+                  Navigator.of(context).pop(finalText);
+                },
+              )
+            ],),
+          );
+        }).then((String newTitle) {
+      print(newTitle);
+    });
+  }
+
   void onSelectOverflowItem(int item) {
     switch (item) {
       case 1:
         onTapSubscribe(context);
+        break;
+      case 2:
+        onTapRenameThread();
         break;
       default:
     }
@@ -463,6 +490,8 @@ class _ThreadScreenState extends State<ThreadScreen>
                     if (details != null)
                       overFlowItem(
                           Icon(FontAwesomeIcons.eye), 'Subscribe to thread', 1),
+                    if (details != null && details.userId == ScopedModel.of<AuthenticationModel>(context).userId)
+                      overFlowItem(Icon(FontAwesomeIcons.pen), 'Rename thread', 2)
                   ];
                 },
               );

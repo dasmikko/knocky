@@ -206,4 +206,13 @@ class KnockoutAPI {
         .map<SubforumThreadLatestPopular>((json) => SubforumThreadLatestPopular.fromJson(json))
         .toList();
   }
+
+  Future<bool> renameThread(int threadId, String newTitle) async {
+    final response = await _request(
+        url: 'thread', type: 'put', data: {'id': threadId, 'title': newTitle});
+
+    bool wasRejected = response.data['isRejected'];
+
+    return wasRejected;
+  }
 }
