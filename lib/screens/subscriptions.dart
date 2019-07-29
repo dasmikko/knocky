@@ -47,7 +47,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
 
 
   void onTapItem(ThreadAlert item) {
-    print('onTapItem');
     Navigator.push(
       context,
       MaterialPageRoute(

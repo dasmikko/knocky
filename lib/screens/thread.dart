@@ -129,27 +129,17 @@ class _ThreadScreenState extends State<ThreadScreen>
 
     // Check if last read is null
     if (details.readThreadLastSeen == null) {
-      print('Is null! Mark thread as read');
-      KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {
-        //print('Thread marked read!');
-      });
+      KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
     } else if (details.readThreadLastSeen.isBefore(lastPostDate)) {
-      print('last read date is before last post date! Mark thread as read');
-      KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {
-        print('Thread marked read!');
-      });
+      KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
     }
 
     if (details.isSubscribedTo != 0) {
       // Handle for subscribed thread
       // Check if last read is null
       if (details.subscriptionLastSeen == null) {
-        print('Is null! Mark thread as read');
-        KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {
-          //print('Thread marked read!');
-        });
+        KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
       } else if (details.subscriptionLastSeen.isBefore(lastPostDate)) {
-        print('last read date is before last post date! Mark thread as read');
         KnockoutAPI()
             .readThreadSubsciption(lastPostDate, details.id)
             .then((res) {
@@ -363,9 +353,46 @@ class _ThreadScreenState extends State<ThreadScreen>
   }
 
   void onPressReply(ThreadPost post) async {
-    if (postsToReplyTo.contains(post)) {
+    if (postsToReplyTo.length > 0) {
+      onLongPressReply(post);
+    } else {
+      List<ThreadPost> reply = List();
+      reply.add(
+        new ThreadPost(
+            bans: post.bans,
+            content: post.content,
+            createdAt: post.createdAt,
+            id: post.id,
+            ratings: post.ratings,
+            user: post.user),
+      );
+
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NewPostScreen(
+            thread: details,
+            replyList: reply,
+          ),
+        ),
+      );
+
+      if (result != null) {
+        scaffoldkey.currentState.showSnackBar(SnackBar(
+          content: Text('Posted!'),
+          behavior: SnackBarBehavior.floating,
+        ));
+        await refreshPage();
+        print('Do the scroll');
+        scrollController.jumpTo(scrollController.positions.length.toDouble());
+      }
+    }
+  }
+
+  void onLongPressReply(ThreadPost post) {
+    if (postsToReplyTo.where((o) => o.id == post.id).length > 0) {
       setState(() {
-        postsToReplyTo.remove(post);
+        postsToReplyTo.removeWhere((o) => o.id == post.id);
 
         Scaffold.of(context)
             .hideCurrentSnackBar(reason: SnackBarClosedReason.hide);
@@ -392,28 +419,6 @@ class _ThreadScreenState extends State<ThreadScreen>
         ));
       });
     }
-
-    /*final result = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => NewPostScreen(
-                  threadId: this.widget.threadId,
-                  replyTo: post,
-                  thread: details,
-                ),
-              ),
-            );
-
-            if (result != null) {
-              scaffoldkey.currentState.showSnackBar(SnackBar(
-                content: Text('Posted!'),
-                behavior: SnackBarBehavior.floating,
-              ));
-              await refreshPage();
-              print('Do the scroll');
-              scrollController
-                  .jumpTo(scrollController.positions.length.toDouble());
-            }*/
   }
 
   PopupMenuItem<int> overFlowItem(Icon icon, String title, int value) {
@@ -443,8 +448,6 @@ class _ThreadScreenState extends State<ThreadScreen>
   @override
   Widget build(BuildContext context) {
     final _isLoggedIn = ScopedModel.of<AuthenticationModel>(context).isLoggedIn;
-
-    print(postsToReplyTo.length);
 
     return Scaffold(
       appBar: AppBar(
@@ -495,18 +498,26 @@ class _ThreadScreenState extends State<ThreadScreen>
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         ThreadPost item = details.posts[index];
-                        return ThreadPostItem(
-                          scaffoldKey: scaffoldkey,
-                          postDetails: item,
-                          onPressReply: onPressReply,
-                          onPostRated: () {
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                              backgroundColor: Colors.green,
-                              content: Text('Post rated!'),
-                              behavior: SnackBarBehavior.floating,
-                            ));
-                            refreshPage();
-                          },
+                        return Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                          child: ThreadPostItem(
+                            scaffoldKey: scaffoldkey,
+                            postDetails: item,
+                            isOnReplyList: postsToReplyTo
+                                    .where((o) => o.id == item.id)
+                                    .length >
+                                0,
+                            onPressReply: onPressReply,
+                            onLongPressReply: onLongPressReply,
+                            onPostRated: () {
+                              Scaffold.of(context).showSnackBar(SnackBar(
+                                backgroundColor: Colors.green,
+                                content: Text('Post rated!'),
+                                behavior: SnackBarBehavior.floating,
+                              ));
+                              refreshPage();
+                            },
+                          ),
                         );
                       },
                       // Builds 1000 ListTiles

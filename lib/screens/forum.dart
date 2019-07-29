@@ -53,13 +53,9 @@ class _ForumScreenState extends State<ForumScreen>
     });
 
     _dataSub?.cancel();
-    print('Gettings subforums');
-
     Future _future = KnockoutAPI().getSubforums();
 
     _future.catchError((error) {
-      print('error:');
-      print(error.toString());
       setState(() {
         _isFetching = false;
       });
@@ -95,14 +91,13 @@ class _ForumScreenState extends State<ForumScreen>
   bool notNull(Object o) => o != null;
 
   void onTapItem(Subforum item) {
-    print('Clicked item ' + item.id.toString());
-
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => SubforumScreen(
-                subforumModel: item,
-              )),
+        builder: (context) => SubforumScreen(
+          subforumModel: item,
+        ),
+      ),
     );
   }
 
@@ -119,9 +114,11 @@ class _ForumScreenState extends State<ForumScreen>
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
-          leading: IconButton(icon: Icon(Icons.menu), onPressed: () {
-            eventBus.fire(ClickDrawerEvent(true));
-          }),
+          leading: IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                eventBus.fire(ClickDrawerEvent(true));
+              }),
           title: Text('Knocky'),
         ),
         body: KnockoutLoadingIndicator(
