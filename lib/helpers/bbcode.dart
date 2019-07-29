@@ -190,20 +190,20 @@ class BBCodeHandler implements bbob.NodeVisitor {
     }
 
     if (element.tag == 'youtube') {
-      _lastElement = SlateNode(
+      document.nodes.add(SlateNode(
           object: 'block',
-          type: 'block-quote',
+          type: 'youtube',
           data: SlateNodeData(src: element.children.first.textContent),
-          nodes: []);
+          nodes: []));
       return false;
     }
 
     if (element.tag == 'video') {
-      _lastElement = SlateNode(
+      document.nodes.add(SlateNode(
           object: 'block',
           type: 'video',
           data: SlateNodeData(src: element.children.first.textContent),
-          nodes: []);
+          nodes: []));
       return false;
     }
 
