@@ -77,23 +77,22 @@ class CategoryListItem extends StatelessWidget {
                     Text(
                       subforum.name,
                       style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold),
+                          fontSize: 18.0, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       subforum.description,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 16.0),
+                      style: TextStyle(fontSize: 14.0),
                     ),
                   ]),
             ),
           ),
-          if (subforum.icon != '/static/faesbunch.png')
-            Container(
-              child: CachedNetworkImage(
-                imageUrl: subforum.icon,
-                width: 40.0,
-              ),
-            )
+          Container(
+            child: CachedNetworkImage(
+              imageUrl: subforum.icon,
+              width: 40.0,
+            ),
+          )
         ],
       ),
     );
