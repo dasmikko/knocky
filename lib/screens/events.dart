@@ -105,14 +105,14 @@ class _EventsScreenState extends State<EventsScreen>
         child: KnockoutLoadingIndicator(
           show: fetching,
           child: ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (BuildContext context, int index) {
-                KnockoutEvent item = items[index];
-                return EventsListItem(
-                  content: item.content,
-                );
-              },
-            ),
+            itemCount: items.length,
+            itemBuilder: (BuildContext context, int index) {
+              KnockoutEvent item = items[index];
+              return EventsListItem(
+                content: item.content,
+              );
+            },
+          ),
         ),
       ),
     );

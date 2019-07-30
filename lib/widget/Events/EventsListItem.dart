@@ -11,14 +11,9 @@ class EventsListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     Map<String, dynamic> event = jsonDecode(this.content);
     List items = event['content'];
-    print(event['content']);
-
-    print(items);
-
     List<TextSpan> widgets = List();
 
     items.forEach((item) {
-      print(item.runtimeType);
       if (item is String) {
         widgets.add(TextSpan(text: item));
       }
