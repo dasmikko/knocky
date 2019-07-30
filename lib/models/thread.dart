@@ -13,7 +13,7 @@ class Thread {
   final bool pinned;
   final int subforumId;
   final String subforumName;
-  final String title;
+  String title;
   final int totalPosts;
   @JsonKey(nullable: true)
   final DateTime readThreadLastSeen;

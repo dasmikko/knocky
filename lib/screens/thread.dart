@@ -44,7 +44,6 @@ class _ThreadScreenState extends State<ThreadScreen>
   void initState() {
     super.initState();
     _currentPage = this.widget.page;
-
     _totalPages = (widget.postCount / 20).ceil();
 
     prepareAnimations();
@@ -437,26 +436,42 @@ class _ThreadScreenState extends State<ThreadScreen>
 
   void onTapRenameThread() {
     showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          TextEditingController conteroller = new TextEditingController(
-            text: details.title
-          );
-          return Container(
-            child: Column(children: <Widget>[
-              Text('Rename thread'),
-              TextField(
-                controller: conteroller,
-                autocorrect: true,
-                textCapitalization: TextCapitalization.sentences,
-                onSubmitted: (String finalText) {
-                  Navigator.of(context).pop(finalText);
-                },
-              )
-            ],),
-          );
-        }).then((String newTitle) {
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController controller =
+            new TextEditingController(text: details.title);
+        return AlertDialog(
+          title: Text('Rename thread'),
+          contentPadding: EdgeInsets.all(25),
+          content: TextField(
+            controller: controller,
+            autocorrect: true,
+            textCapitalization: TextCapitalization.sentences,
+            onSubmitted: (String finalText) {
+              Navigator.of(context).pop(finalText);
+            },
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Rename'),
+              onPressed: () => {
+                Navigator.pop(context, controller.text)
+              },
+            )
+          ],
+        );
+      },
+    ).then((String newTitle) {
       print(newTitle);
+      KnockoutAPI().renameThread(details.id, newTitle).then((updatedThreadDetails) {
+        setState(() {
+          details.title = newTitle;
+        });
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('Thread renamed'),
+          backgroundColor: Colors.green,
+        ));
+      });
     });
   }
 
@@ -479,7 +494,7 @@ class _ThreadScreenState extends State<ThreadScreen>
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text(widget.title),
+        title: Text(details == null ? widget.title : details.title),
         actions: <Widget>[
           Builder(
             builder: (BuildContext bcontext) {
@@ -490,8 +505,11 @@ class _ThreadScreenState extends State<ThreadScreen>
                     if (details != null)
                       overFlowItem(
                           Icon(FontAwesomeIcons.eye), 'Subscribe to thread', 1),
-                    if (details != null && details.userId == ScopedModel.of<AuthenticationModel>(context).userId)
-                      overFlowItem(Icon(FontAwesomeIcons.pen), 'Rename thread', 2)
+                    if (details != null &&
+                        details.userId ==
+                            ScopedModel.of<AuthenticationModel>(context).userId)
+                      overFlowItem(
+                          Icon(FontAwesomeIcons.pen), 'Rename thread', 2)
                   ];
                 },
               );
@@ -528,7 +546,8 @@ class _ThreadScreenState extends State<ThreadScreen>
                       (context, index) {
                         ThreadPost item = details.posts[index];
                         return Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                           child: ThreadPostItem(
                             scaffoldKey: scaffoldkey,
                             postDetails: item,
