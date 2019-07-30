@@ -148,13 +148,11 @@ class ThreadPostItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     if (postDetails.bans != null)
-                      Row(
+                      Column(
                         children: postDetails.bans
                             .map(
-                              (ban) => Flexible(
-                                child: PostBan(
-                                  ban: ban,
-                                ),
+                              (ban) => PostBan(
+                                ban: ban,
                               ),
                             )
                             .toList(),
@@ -165,7 +163,9 @@ class ThreadPostItem extends StatelessWidget {
                         Flexible(
                           child: FlatButton(
                             padding: EdgeInsets.all(0),
-                            onPressed: postDetails.ratings != null ? () => onPressViewRatings(context) : null,
+                            onPressed: postDetails.ratings != null
+                                ? () => onPressViewRatings(context)
+                                : null,
                             child: buildRatings(postDetails.ratings),
                           ),
                         ),
