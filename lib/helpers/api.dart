@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:knocky/models/events.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/models/thread.dart';
@@ -130,14 +131,12 @@ class KnockoutAPI {
         await _request(type: 'post', url: 'alert', data: jsonToPost.toJson());
   }
 
-  Future<List<ThreadAlert>> getEvents() async {
-    final response = await http.get(baseurl + 'events', headers: {});
+  Future<List<KnockoutEvent>> getEvents() async {
+    final response = await _request(type: 'get', url: 'events');
 
-    final parsedJson = json.decode(response.body).cast<Map<String, dynamic>>();
-
-    return parsedJson
-        .map<ThreadAlert>((json) => ThreadAlert.fromJson(json))
-        .toList();
+    return response.data
+          .map<KnockoutEvent>((json) => KnockoutEvent.fromJson(json))
+          .toList();
   }
 
   Future<void> deleteThreadAlert(int threadid) async {
