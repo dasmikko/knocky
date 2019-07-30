@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/helpers/api.dart';
+import 'package:knocky/models/events.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/screens/thread.dart';
+import 'package:knocky/widget/Events/EventsListItem.dart';
 import 'package:knocky/widget/SubforumPopularLatestDetailListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky/events.dart';
@@ -17,7 +19,7 @@ class EventsScreen extends StatefulWidget {
 
 class _EventsScreenState extends State<EventsScreen>
     with AfterLayoutMixin<EventsScreen> {
-  List<SubforumThreadLatestPopular> items = List();
+  List<KnockoutEvent> items = List();
   bool fetching = false;
   StreamSubscription<List<SubforumThreadLatestPopular>> _dataSub;
 
@@ -28,7 +30,7 @@ class _EventsScreenState extends State<EventsScreen>
 
   @override
   void afterFirstLayout(BuildContext context) {
-    loadThreads();
+    loadEvents();
   }
 
   @override
@@ -37,12 +39,12 @@ class _EventsScreenState extends State<EventsScreen>
     super.dispose();
   }
 
-  Future<void> loadThreads() {
+  Future<void> loadEvents() {
     setState(() {
       fetching = true;
     });
 
-    Future _future = KnockoutAPI().latestThreads().then((res) {
+    Future _future = KnockoutAPI().getEvents().then((res) {
       setState(() {
         items = res;
         fetching = false;
@@ -54,7 +56,7 @@ class _EventsScreenState extends State<EventsScreen>
 
       Scaffold.of(context).hideCurrentSnackBar();
       Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to get latest threads. Try again.'),
+        content: Text('Failed to get events. Try again.'),
         backgroundColor: Colors.red,
         behavior: SnackBarBehavior.floating,
       ));
@@ -92,7 +94,6 @@ class _EventsScreenState extends State<EventsScreen>
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,19 +101,20 @@ class _EventsScreenState extends State<EventsScreen>
         title: Text('Events'),
       ),
       body: RefreshIndicator(
-          onRefresh: loadThreads,
-          child: KnockoutLoadingIndicator(
-            show: fetching,
-            child: ListView.builder(
+        onRefresh: loadEvents,
+        child: KnockoutLoadingIndicator(
+          show: fetching,
+          child: ListView.builder(
               itemCount: items.length,
               itemBuilder: (BuildContext context, int index) {
-                SubforumThreadLatestPopular item = items[index];
-                return SubforumPopularLatestDetailListItem(
-                  threadDetails: item,
+                KnockoutEvent item = items[index];
+                return EventsListItem(
+                  content: item.content,
                 );
               },
             ),
-          )),
+        ),
+      ),
     );
   }
 }

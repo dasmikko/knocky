@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:knocky/screens/events.dart';
 import 'package:knocky/screens/latestThreads.dart';
 import 'package:knocky/screens/popularThreads.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -160,6 +161,15 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     );
   }
 
+  void onTapEvents() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EventsScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool _loginState =
@@ -238,11 +248,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             enabled: _loginState,
             leading: Icon(FontAwesomeIcons.bullhorn),
             title: Text('Events'),
-            onTap: () {
-              Scaffold.of(context).showSnackBar(new SnackBar(
-                content: new Text("Not implemented yet..."),
-              ));
-            },
+            onTap: onTapEvents,
           ),
           ListTile(
             leading: Icon(FontAwesomeIcons.discord),

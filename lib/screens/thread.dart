@@ -454,24 +454,26 @@ class _ThreadScreenState extends State<ThreadScreen>
           actions: <Widget>[
             FlatButton(
               child: Text('Rename'),
-              onPressed: () => {
-                Navigator.pop(context, controller.text)
-              },
+              onPressed: () => {Navigator.pop(context, controller.text)},
             )
           ],
         );
       },
     ).then((String newTitle) {
       print(newTitle);
-      KnockoutAPI().renameThread(details.id, newTitle).then((updatedThreadDetails) {
-        setState(() {
-          details.title = newTitle;
+      if (newTitle != null) {
+        KnockoutAPI()
+            .renameThread(details.id, newTitle)
+            .then((updatedThreadDetails) {
+          setState(() {
+            details.title = newTitle;
+          });
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text('Thread renamed'),
+            backgroundColor: Colors.green,
+          ));
         });
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('Thread renamed'),
-          backgroundColor: Colors.green,
-        ));
-      });
+      }
     });
   }
 
