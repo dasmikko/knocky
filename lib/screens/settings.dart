@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/screens/Settings/filter.dart';
@@ -55,6 +56,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void onSelectTheme (dynamic theme) {
     DynamicTheme.of(context).setBrightness(theme.brightness);
     DynamicTheme.of(context).setThemeData(theme);
+
+    if (theme.brightness == Brightness.light) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+              systemNavigationBarColor: Colors.white,
+              systemNavigationBarIconBrightness: Brightness.dark));
+    } else {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+              systemNavigationBarColor: Colors.grey[900],
+              systemNavigationBarIconBrightness: Brightness.light));
+    }
 
     setState(() {
      selectedTheme = theme;
