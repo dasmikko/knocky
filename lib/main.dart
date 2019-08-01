@@ -27,25 +27,22 @@ void main() async {
   }
 
   rv = new DynamicTheme(
-    defaultBrightness: Brightness.dark,
-    data: (brightness) => darkTheme(),
-    themedWidgetBuilder: (context, theme) {
-      return MaterialApp(
-        title: 'Knocky',
-        theme: theme,
-        home: HomeScreen()
-      );
-    });
+      defaultBrightness: Brightness.dark,
+      data: (brightness) => darkTheme(),
+      themedWidgetBuilder: (context, theme) {
+        if (theme.brightness == Brightness.dark) {
+          SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+              systemNavigationBarColor: Colors.grey[900],
+              systemNavigationBarIconBrightness: Brightness.light));
+        }
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: Colors.grey[900],
-      systemNavigationBarIconBrightness: Brightness.light
+        return MaterialApp(title: 'Knocky', theme: theme, home: HomeScreen());
+      });
 
-    ));
-
-    rv = ScopedModel<AuthenticationModel>(model: AuthenticationModel(), child: rv);
-    rv = ScopedModel<SubscriptionModel>(model: SubscriptionModel(), child: rv);
-    rv = ScopedModel<AppStateModel>(model: AppStateModel(), child: rv);
+  rv =
+      ScopedModel<AuthenticationModel>(model: AuthenticationModel(), child: rv);
+  rv = ScopedModel<SubscriptionModel>(model: SubscriptionModel(), child: rv);
+  rv = ScopedModel<AppStateModel>(model: AppStateModel(), child: rv);
 
   runApp(rv);
 }
