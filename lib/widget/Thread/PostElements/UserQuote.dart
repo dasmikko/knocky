@@ -57,8 +57,6 @@ class _UserQuoteWidgetState extends State<UserQuoteWidget>
   }
 
   Widget noToggleContent() {
-    AppColors appColors = AppColors(context);
-
     return Container(
       padding: EdgeInsets.all(10),
       child: Column(
@@ -70,8 +68,6 @@ class _UserQuoteWidgetState extends State<UserQuoteWidget>
   }
 
   Widget toggleContent() {
-    AppColors appColors = AppColors(context);
-
     return SizeTransition(
       axisAlignment: -1.0,
       sizeFactor: animation,

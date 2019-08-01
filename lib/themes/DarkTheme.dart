@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/colors.dart';
 
-ThemeData DarkTheme() {
+ThemeData darkTheme() {
   return ThemeData(
     brightness: Brightness.dark,
     primarySwatch: Colors.red,
