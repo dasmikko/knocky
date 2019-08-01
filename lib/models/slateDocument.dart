@@ -79,7 +79,7 @@ class SlateNodeData {
   Map<String, dynamic> toJson() => _$SlateNodeDataToJson(this);
 }
 
-Map _nodeDataPostDataToJson(NodeDataPostData postdata) => postdata != null ? postdata.toJson() : null;
+//Map _nodeDataPostDataToJson(NodeDataPostData postdata) => postdata != null ? postdata.toJson() : null;
 
 @JsonSerializable()
 class NodeDataPostData {
