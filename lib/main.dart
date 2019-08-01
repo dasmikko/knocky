@@ -28,7 +28,7 @@ void main() async {
 
   rv = new DynamicTheme(
     defaultBrightness: Brightness.dark,
-    data: (brightness) => DarkTheme(),
+    data: (brightness) => darkTheme(),
     themedWidgetBuilder: (context, theme) {
       return MaterialApp(
         title: 'Knocky',

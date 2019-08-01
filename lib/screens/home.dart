@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen>
         ScopedModel.of<AppStateModel>(context, rebuildOnChange: true)
             .currentTab;
     if (navigatorKeys[selectedTab].currentState.canPop()) {
-      !await navigatorKeys[selectedTab].currentState.maybePop();
+      !await navigatorKeys[selectedTab].currentState.maybePop(); //ignore: unnecessary_statements
       return false;
     }
     return true;

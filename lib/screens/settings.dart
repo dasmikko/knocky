@@ -24,7 +24,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  ThemeData selectedTheme = DarkTheme();
+  ThemeData selectedTheme = darkTheme();
   String selectedEnv = 'knockout';
   String _version = '';
 
@@ -35,9 +35,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     updateAppInfo();
 
     if (DynamicTheme.of(context).brightness == Brightness.light) {
-      selectedTheme = DefaultTheme();
+      selectedTheme = defaultTheme();
     } else {
-      selectedTheme = DarkTheme();
+      selectedTheme = darkTheme();
     }
   }
 
@@ -112,11 +112,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 items: <DropdownMenuItem>[
                   DropdownMenuItem(
                     child: Text('Light theme'),
-                    value: DefaultTheme(),
+                    value: defaultTheme(),
                   ),
                   DropdownMenuItem(
                     child: Text('Dark theme'),
-                    value: DarkTheme(),
+                    value: darkTheme(),
                   )
                 ],
               ),
