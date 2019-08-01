@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:hive/hive.dart';
+import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/screens/Settings/filter.dart';
 import 'package:knocky/themes/DefaultTheme.dart';
 import 'package:knocky/themes/DarkTheme.dart';
 import 'package:package_info/package_info.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knocky/state/authentication.dart';
 import 'package:knocky/state/subscriptions.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -38,19 +39,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     } else {
       selectedTheme = DarkTheme();
     }
-
-    //selectedEnv = ScopedModel.of<SettingsModel>(context).env;
-
-
   }
 
   void updateAppInfo () async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Box box = await AppHiveBox.getBox();
+    String env = await box.get('env');
 
     setState(() {
      _version = packageInfo.version;
-     selectedEnv = prefs.getString('env');
+     selectedEnv = env;
     });
   }
 
@@ -82,8 +80,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 selectedEnv = env;
               });
 
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              prefs.setString('env', env);
+              Box box = await AppHiveBox.getBox();
+              await box.put('env', env);
+
               ScopedModel.of<AuthenticationModel>(context).logout();
               ScopedModel.of<SubscriptionModel>(context).clearList();
               Navigator.of(context).pop();

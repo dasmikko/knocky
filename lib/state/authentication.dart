@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knocky/helpers/api.dart';
 
 class AuthenticationModel extends Model {
@@ -33,16 +34,14 @@ class AuthenticationModel extends Model {
 
   // Get the stored auth state
   void getLoginStateFromSharedPreference(BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _isLoggedIn = prefs.getBool('isLoggedIn') != null
-        ? prefs.getBool('isLoggedIn')
-        : false;
-    _userId = prefs.getInt('userId');
-    _username = prefs.getString('username');
-    _avatar = prefs.getString('avatar_url');
-    _background = prefs.getString('background_url');
-    _usergroup = prefs.getInt('usergroup');
-    _cookieString = prefs.getString('cookieString');
+    Box box = await AppHiveBox.getBox();
+    _isLoggedIn = await box.get('isLoggedIn', defaultValue: false);
+    _userId = await box.get('userId');
+    _username = await box.get('username');
+    _avatar = await box.get('avatar_url');
+    _background = await box.get('background_url');
+    _usergroup = await box.get('usergroup');
+    _cookieString = await box.get('cookieString');
 
     authCheck();
     notifyListeners();
@@ -57,20 +56,20 @@ class AuthenticationModel extends Model {
     _background = background;
     _usergroup = usergroup;
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', isLoggedIn);
-    await prefs.setInt('userId', userId);
-    await prefs.setString('username', username);
-    await prefs.setString('avatar_url', avatar);
-    await prefs.setString('background_url', background);
-    await prefs.setInt('usergroup', usergroup);
+    Box box = await AppHiveBox.getBox();
+    await box.put('isLoggedIn', isLoggedIn);
+    await box.put('userId', userId);
+    await box.put('username', username);
+    await box.put('avatar_url', avatar);
+    await box.put('background_url', background);
+    await box.put('usergroup', usergroup);
 
     notifyListeners();
   }
 
   Future<void> setCookieString (String cookieString) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('cookieString', cookieString);
+    Box box = await AppHiveBox.getBox();
+    await box.put('cookieString', cookieString);
     notifyListeners();
   }
 
@@ -82,17 +81,12 @@ class AuthenticationModel extends Model {
 
   void authCheck () async {
     dynamic authState = await KnockoutAPI().authCheck();
-    print(authState);
 
     if (authState is String) {
-      print('is string');
-      print(authState);
+      // Is logged in aka, OK
     }
 
     if (authState is Map) {
-      print('is map');
-      print(authState['message']);
-
       _isBanned = false;
       _banMessage = '';
       _banThreadId = 0;

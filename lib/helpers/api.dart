@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart' as http;
+import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/models/events.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/models/threadAlert.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knocky/models/readThreads.dart';
 import 'package:dio/dio.dart';
+import 'package:hive/hive.dart';
 
 class KnockoutAPI {
   static const KNOCKOUT_URL = "https://api.knockout.chat/";
@@ -35,16 +35,18 @@ class KnockoutAPI {
       throw ('URL not set!');
     }
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Box box = await AppHiveBox.getBox();
+
     Map<String, dynamic> mHeaders = {
-      'Cookie': prefs.getString('cookieString'),
+      'Cookie': await box.get('cookieString'),
       'Access-Control-Request-Headers': 'content-format-version,content-type',
       'content-format-version': '1'
     };
     if (headers != null) mHeaders.addAll(headers);
 
     String mBaseurl =
-        prefs.getString('env') == 'knockout' ? KNOCKOUT_URL : QA_URL;
+        await box.get('env') == 'knockout' ? KNOCKOUT_URL : QA_URL;
+
 
     Dio dio = new Dio();
     dio.options.baseUrl = mBaseurl;
@@ -113,6 +115,7 @@ class KnockoutAPI {
           .map<ThreadAlert>((json) => ThreadAlert.fromJson(json))
           .toList();
     } on DioError catch (e) {
+      print(e);
       throw e;
     }
   }
