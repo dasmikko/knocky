@@ -15,8 +15,6 @@ class SlateDocumentParser extends StatelessWidget {
   final GlobalKey scaffoldkey;
   final BuildContext context;
 
-  List<String> imageList = List();
-
   SlateDocumentParser(
       {this.slateObject, this.onPressSpoiler, this.scaffoldkey, this.context});
 

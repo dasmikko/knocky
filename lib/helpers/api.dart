@@ -89,6 +89,7 @@ class KnockoutAPI {
         url: 'subforum/' + id.toString() + '/' + page.toString());
     return SubforumDetails.fromJson(response.data);
     } on DioError catch (e) {
+      print(e);
       return null;
     }
   }
@@ -123,15 +124,14 @@ class KnockoutAPI {
   Future<void> readThreads(DateTime lastseen, int threadId) async {
     ReadThreads jsonToPost =
         new ReadThreads(lastSeen: lastseen, threadId: threadId);
-    final response = await _request(
+    await _request(
         type: 'post', url: 'readThreads', data: jsonToPost.toJson());
   }
 
   Future<void> readThreadSubsciption(DateTime lastseen, int threadId) async {
     ReadThreads jsonToPost =
         new ReadThreads(lastSeen: lastseen, threadId: threadId);
-    final response =
-        await _request(type: 'post', url: 'alert', data: jsonToPost.toJson());
+    await _request(type: 'post', url: 'alert', data: jsonToPost.toJson());
   }
 
   Future<List<KnockoutEvent>> getEvents() async {
@@ -179,11 +179,12 @@ class KnockoutAPI {
         'content-format-version': '1'
       });
     } on DioError catch (e) {
+      print(e);
     }
   }
 
   Future<void> updatePost(String content, int postId, int threadId) async {
-    final response = await _request(
+    await _request(
         type: 'post',
         url: 'post',
         data: {'content': content, 'id': postId, 'thread_id': threadId});

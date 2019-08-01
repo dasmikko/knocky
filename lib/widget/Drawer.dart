@@ -9,7 +9,6 @@ import 'package:knocky/screens/events.dart';
 import 'package:knocky/screens/latestThreads.dart';
 import 'package:knocky/screens/popularThreads.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -223,7 +222,7 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
     return Drawer(
       child: ListView(
         children: <Widget>[
-          UserAccountsDrawerHeader(
+          UserAccountsDrawerHeader( //ignore: missing_required_param
             accountName: Text(_loginState ? _username : 'Not logged in'),
             currentAccountPicture: _loginState
                 ? CachedNetworkImage(

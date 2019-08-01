@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/bbcode.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/models/thread.dart';
@@ -85,10 +84,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
     String replaceWith = '';
 
     if (regExp.hasMatch(selectedText)) {
-      replaceWith = selectedText.replaceAll('[${tag}]', '');
-      replaceWith = replaceWith.replaceAll('[/${tag}]', '');
+      replaceWith = selectedText.replaceAll('[${tag}]', ''); //ignore: unnecessary_brace_in_string_interps
+      replaceWith = replaceWith.replaceAll('[/${tag}]', ''); //ignore: unnecessary_brace_in_string_interps
     } else {
-      replaceWith = newline + '[${tag}]' + selectedText + '[/${tag}]';
+      replaceWith = newline + '[${tag}]' + selectedText + '[/${tag}]'; //ignore: unnecessary_brace_in_string_interps
     }
     controller.text = controller.text.replaceRange(start, end, replaceWith);
 
@@ -278,7 +277,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addUserquoteDialog(bcontext) async {
-    BuildContext self = bcontext;
     await showDialog<int>(
       context: bcontext,
       child: new AlertDialog(

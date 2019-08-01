@@ -89,10 +89,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
   Widget build(BuildContext context) {
     var alerts = ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).subscriptions;
     bool fetching = ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).isFetching;
-    bool hasFailed = ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).hasFailed;
-
-
-    //if (hasFailed)
 
     return Scaffold(
       appBar: AppBar(

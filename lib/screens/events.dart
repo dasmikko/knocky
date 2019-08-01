@@ -8,9 +8,7 @@ import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widget/Events/EventsListItem.dart';
-import 'package:knocky/widget/SubforumPopularLatestDetailListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
-import 'package:knocky/events.dart';
 
 class EventsScreen extends StatefulWidget {
   @override
