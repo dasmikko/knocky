@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart' as http;
+import 'package:knocky/helpers/hiveHelper.dart';
+import 'package:knocky/models/events.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/models/threadAlert.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knocky/models/readThreads.dart';
 import 'package:dio/dio.dart';
+import 'package:hive/hive.dart';
 
 class KnockoutAPI {
   static const KNOCKOUT_URL = "https://api.knockout.chat/";
@@ -34,16 +35,18 @@ class KnockoutAPI {
       throw ('URL not set!');
     }
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Box box = await AppHiveBox.getBox();
+
     Map<String, dynamic> mHeaders = {
-      'Cookie': prefs.getString('cookieString'),
+      'Cookie': await box.get('cookieString'),
       'Access-Control-Request-Headers': 'content-format-version,content-type',
       'content-format-version': '1'
     };
     if (headers != null) mHeaders.addAll(headers);
 
     String mBaseurl =
-        prefs.getString('env') == 'knockout' ? KNOCKOUT_URL : QA_URL;
+        await box.get('env') == 'knockout' ? KNOCKOUT_URL : QA_URL;
+
 
     Dio dio = new Dio();
     dio.options.baseUrl = mBaseurl;
@@ -86,6 +89,7 @@ class KnockoutAPI {
         url: 'subforum/' + id.toString() + '/' + page.toString());
     return SubforumDetails.fromJson(response.data);
     } on DioError catch (e) {
+      print(e);
       return null;
     }
   }
@@ -112,6 +116,7 @@ class KnockoutAPI {
           .map<ThreadAlert>((json) => ThreadAlert.fromJson(json))
           .toList();
     } on DioError catch (e) {
+      print(e);
       throw e;
     }
   }
@@ -119,25 +124,22 @@ class KnockoutAPI {
   Future<void> readThreads(DateTime lastseen, int threadId) async {
     ReadThreads jsonToPost =
         new ReadThreads(lastSeen: lastseen, threadId: threadId);
-    final response = await _request(
+    await _request(
         type: 'post', url: 'readThreads', data: jsonToPost.toJson());
   }
 
   Future<void> readThreadSubsciption(DateTime lastseen, int threadId) async {
     ReadThreads jsonToPost =
         new ReadThreads(lastSeen: lastseen, threadId: threadId);
-    final response =
-        await _request(type: 'post', url: 'alert', data: jsonToPost.toJson());
+    await _request(type: 'post', url: 'alert', data: jsonToPost.toJson());
   }
 
-  Future<List<ThreadAlert>> getEvents() async {
-    final response = await http.get(baseurl + 'events', headers: {});
+  Future<List<KnockoutEvent>> getEvents() async {
+    final response = await _request(type: 'get', url: 'events');
 
-    final parsedJson = json.decode(response.body).cast<Map<String, dynamic>>();
-
-    return parsedJson
-        .map<ThreadAlert>((json) => ThreadAlert.fromJson(json))
-        .toList();
+    return response.data
+          .map<KnockoutEvent>((json) => KnockoutEvent.fromJson(json))
+          .toList();
   }
 
   Future<void> deleteThreadAlert(int threadid) async {
@@ -177,11 +179,12 @@ class KnockoutAPI {
         'content-format-version': '1'
       });
     } on DioError catch (e) {
+      print(e);
     }
   }
 
   Future<void> updatePost(String content, int postId, int threadId) async {
-    final response = await _request(
+    await _request(
         type: 'post',
         url: 'post',
         data: {'content': content, 'id': postId, 'thread_id': threadId});
@@ -205,5 +208,14 @@ class KnockoutAPI {
     return response.data['list']
         .map<SubforumThreadLatestPopular>((json) => SubforumThreadLatestPopular.fromJson(json))
         .toList();
+  }
+
+  Future<bool> renameThread(int threadId, String newTitle) async {
+    final response = await _request(
+        url: 'thread', type: 'put', data: {'id': threadId, 'title': newTitle});
+
+    bool wasRejected = response.data['isRejected'];
+
+    return wasRejected;
   }
 }

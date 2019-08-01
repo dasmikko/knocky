@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
+import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/screens/Settings/filter.dart';
 import 'package:knocky/themes/DefaultTheme.dart';
 import 'package:knocky/themes/DarkTheme.dart';
 import 'package:package_info/package_info.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knocky/state/authentication.dart';
 import 'package:knocky/state/subscriptions.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -23,7 +25,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  ThemeData selectedTheme = DarkTheme();
+  ThemeData selectedTheme = darkTheme();
   String selectedEnv = 'knockout';
   String _version = '';
 
@@ -34,29 +36,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
     updateAppInfo();
 
     if (DynamicTheme.of(context).brightness == Brightness.light) {
-      selectedTheme = DefaultTheme();
+      selectedTheme = defaultTheme();
     } else {
-      selectedTheme = DarkTheme();
+      selectedTheme = darkTheme();
     }
-
-    //selectedEnv = ScopedModel.of<SettingsModel>(context).env;
-
-
   }
 
   void updateAppInfo () async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Box box = await AppHiveBox.getBox();
+    String env = await box.get('env');
 
     setState(() {
      _version = packageInfo.version;
-     selectedEnv = prefs.getString('env');
+     selectedEnv = env;
     });
   }
 
   void onSelectTheme (dynamic theme) {
     DynamicTheme.of(context).setBrightness(theme.brightness);
     DynamicTheme.of(context).setThemeData(theme);
+
+    if (theme.brightness == Brightness.light) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+              systemNavigationBarColor: Colors.white,
+              systemNavigationBarIconBrightness: Brightness.dark));
+    } else {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+              systemNavigationBarColor: Colors.grey[900],
+              systemNavigationBarIconBrightness: Brightness.light));
+    }
 
     setState(() {
      selectedTheme = theme;
@@ -82,8 +91,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 selectedEnv = env;
               });
 
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              prefs.setString('env', env);
+              Box box = await AppHiveBox.getBox();
+              await box.put('env', env);
+
               ScopedModel.of<AuthenticationModel>(context).logout();
               ScopedModel.of<SubscriptionModel>(context).clearList();
               Navigator.of(context).pop();
@@ -113,11 +123,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 items: <DropdownMenuItem>[
                   DropdownMenuItem(
                     child: Text('Light theme'),
-                    value: DefaultTheme(),
+                    value: defaultTheme(),
                   ),
                   DropdownMenuItem(
                     child: Text('Dark theme'),
-                    value: DarkTheme(),
+                    value: darkTheme(),
                   )
                 ],
               ),

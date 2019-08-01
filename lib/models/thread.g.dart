@@ -8,30 +8,32 @@ part of 'thread.dart';
 
 Thread _$ThreadFromJson(Map<String, dynamic> json) {
   return Thread(
-      currentPage: json['currentPage'] as String,
-      iconId: json['iconId'] as int,
-      readThreadLastSeen: json['readThreadLastSeen'] == null
-          ? null
-          : DateTime.parse(json['readThreadLastSeen'] as String),
-      id: json['id'] as int,
-      locked: json['locked'] as bool,
-      pinned: json['pinned'] as bool,
-      title: json['title'] as String,
-      totalPosts: json['totalPosts'] as int,
-      subforumId: json['subforumId'] as int,
-      subforumName: json['subforumName'] as String,
-      posts: (json['posts'] as List)
-          ?.map((e) =>
-              e == null ? null : ThreadPost.fromJson(e as Map<String, dynamic>))
-          ?.toList(),
-      user: (json['user'] as List)
-          ?.map((e) =>
-              e == null ? null : ThreadUser.fromJson(e as Map<String, dynamic>))
-          ?.toList(),
-      subscriptionLastSeen: json['subscriptionLastSeen'] == null
-          ? null
-          : DateTime.parse(json['subscriptionLastSeen'] as String),
-      isSubscribedTo: json['isSubscribedTo'] as int ?? 0);
+    currentPage: json['currentPage'] as String,
+    iconId: json['iconId'] as int,
+    readThreadLastSeen: json['readThreadLastSeen'] == null
+        ? null
+        : DateTime.parse(json['readThreadLastSeen'] as String),
+    id: json['id'] as int,
+    locked: json['locked'] as bool,
+    pinned: json['pinned'] as bool,
+    title: json['title'] as String,
+    totalPosts: json['totalPosts'] as int,
+    subforumId: json['subforumId'] as int,
+    subforumName: json['subforumName'] as String,
+    posts: (json['posts'] as List)
+        ?.map((e) =>
+            e == null ? null : ThreadPost.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+    user: (json['user'] as List)
+        ?.map((e) =>
+            e == null ? null : ThreadUser.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+    subscriptionLastSeen: json['subscriptionLastSeen'] == null
+        ? null
+        : DateTime.parse(json['subscriptionLastSeen'] as String),
+    isSubscribedTo: json['isSubscribedTo'] as int ?? 0,
+    userId: json['userId'] as int,
+  );
 }
 
 Map<String, dynamic> _$ThreadToJson(Thread instance) => <String, dynamic>{
@@ -48,41 +50,44 @@ Map<String, dynamic> _$ThreadToJson(Thread instance) => <String, dynamic>{
       'subscriptionLastSeen': instance.subscriptionLastSeen?.toIso8601String(),
       'posts': instance.posts,
       'user': instance.user,
-      'isSubscribedTo': instance.isSubscribedTo
+      'userId': instance.userId,
+      'isSubscribedTo': instance.isSubscribedTo,
     };
 
 ThreadUser _$ThreadUserFromJson(Map<String, dynamic> json) {
   return ThreadUser(
-      usergroup: json['usergroup'] as int,
-      username: json['username'] as String);
+    usergroup: json['usergroup'] as int,
+    username: json['username'] as String,
+  );
 }
 
 Map<String, dynamic> _$ThreadUserToJson(ThreadUser instance) =>
     <String, dynamic>{
       'usergroup': instance.usergroup,
-      'username': instance.username
+      'username': instance.username,
     };
 
 ThreadPost _$ThreadPostFromJson(Map<String, dynamic> json) {
   return ThreadPost(
-      id: json['id'] as int,
-      content: _contentFromJson(json['content'] as String),
-      user: json['user'] == null
-          ? null
-          : ThreadPostUser.fromJson(json['user'] as Map<String, dynamic>),
-      ratings: (json['ratings'] as List)
-          ?.map((e) => e == null
-              ? null
-              : ThreadPostRatings.fromJson(e as Map<String, dynamic>))
-          ?.toList(),
-      createdAt: json['createdAt'] == null
-          ? null
-          : DateTime.parse(json['createdAt'] as String),
-      bans: (json['bans'] as List)
-          ?.map((e) => e == null
-              ? null
-              : ThreadPostBan.fromJson(e as Map<String, dynamic>))
-          ?.toList());
+    id: json['id'] as int,
+    content: _contentFromJson(json['content'] as String),
+    user: json['user'] == null
+        ? null
+        : ThreadPostUser.fromJson(json['user'] as Map<String, dynamic>),
+    ratings: (json['ratings'] as List)
+        ?.map((e) => e == null
+            ? null
+            : ThreadPostRatings.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+    createdAt: json['createdAt'] == null
+        ? null
+        : DateTime.parse(json['createdAt'] as String),
+    bans: (json['bans'] as List)
+        ?.map((e) => e == null
+            ? null
+            : ThreadPostBan.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+  );
 }
 
 Map<String, dynamic> _$ThreadPostToJson(ThreadPost instance) =>
@@ -92,20 +97,21 @@ Map<String, dynamic> _$ThreadPostToJson(ThreadPost instance) =>
       'content': _contentToJson(instance.content),
       'user': instance.user,
       'ratings': instance.ratings,
-      'bans': instance.bans
+      'bans': instance.bans,
     };
 
 ThreadPostBan _$ThreadPostBanFromJson(Map<String, dynamic> json) {
   return ThreadPostBan(
-      banBannedBy: json['banBannedBy'] as String,
-      banCreatedAt: json['banCreatedAt'] == null
-          ? null
-          : DateTime.parse(json['banCreatedAt'] as String),
-      banExpiresAt: json['banExpiresAt'] == null
-          ? null
-          : DateTime.parse(json['banExpiresAt'] as String),
-      banPostId: json['banPostId'] as int,
-      banReason: json['banReason'] as String);
+    banBannedBy: json['banBannedBy'] as String,
+    banCreatedAt: json['banCreatedAt'] == null
+        ? null
+        : DateTime.parse(json['banCreatedAt'] as String),
+    banExpiresAt: json['banExpiresAt'] == null
+        ? null
+        : DateTime.parse(json['banExpiresAt'] as String),
+    banPostId: json['banPostId'] as int,
+    banReason: json['banReason'] as String,
+  );
 }
 
 Map<String, dynamic> _$ThreadPostBanToJson(ThreadPostBan instance) =>
@@ -114,15 +120,16 @@ Map<String, dynamic> _$ThreadPostBanToJson(ThreadPostBan instance) =>
       'banCreatedAt': instance.banCreatedAt?.toIso8601String(),
       'banExpiresAt': instance.banExpiresAt?.toIso8601String(),
       'banPostId': instance.banPostId,
-      'banReason': instance.banReason
+      'banReason': instance.banReason,
     };
 
 ThreadPostRatings _$ThreadPostRatingsFromJson(Map<String, dynamic> json) {
   return ThreadPostRatings(
-      ratingId: json['rating_id'] as String,
-      rating: json['rating'] as String,
-      count: json['count'] as int,
-      users: (json['users'] as List)?.map((e) => e as String)?.toList());
+    ratingId: json['rating_id'] as String,
+    rating: json['rating'] as String,
+    count: json['count'] as int,
+    users: (json['users'] as List)?.map((e) => e as String)?.toList(),
+  );
 }
 
 Map<String, dynamic> _$ThreadPostRatingsToJson(ThreadPostRatings instance) =>
@@ -130,17 +137,18 @@ Map<String, dynamic> _$ThreadPostRatingsToJson(ThreadPostRatings instance) =>
       'rating_id': instance.ratingId,
       'rating': instance.rating,
       'count': instance.count,
-      'users': instance.users
+      'users': instance.users,
     };
 
 ThreadPostUser _$ThreadPostUserFromJson(Map<String, dynamic> json) {
   return ThreadPostUser(
-      id: json['id'] as int,
-      avatarUrl: json['avatar_url'] as String,
-      backgroundUrl: json['backgroundUrl'] as String,
-      isBanned: json['isBanned'] as bool,
-      usergroup: json['usergroup'] as int,
-      username: json['username'] as String);
+    id: json['id'] as int,
+    avatarUrl: json['avatar_url'] as String,
+    backgroundUrl: json['backgroundUrl'] as String,
+    isBanned: json['isBanned'] as bool,
+    usergroup: json['usergroup'] as int,
+    username: json['username'] as String,
+  );
 }
 
 Map<String, dynamic> _$ThreadPostUserToJson(ThreadPostUser instance) =>
@@ -150,5 +158,5 @@ Map<String, dynamic> _$ThreadPostUserToJson(ThreadPostUser instance) =>
       'backgroundUrl': instance.backgroundUrl,
       'isBanned': instance.isBanned,
       'usergroup': instance.usergroup,
-      'username': instance.username
+      'username': instance.username,
     };

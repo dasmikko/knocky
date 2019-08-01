@@ -41,11 +41,9 @@ class _HomeScreenState extends State<HomeScreen>
         .getLoginStateFromSharedPreference(bcontext);
 
     // Listen for drawer open events
-    eventBus
-      .on<ClickDrawerEvent>()
-      .listen((event) {
-        _scaffoldKey.currentState.openDrawer();
-      });
+    eventBus.on<ClickDrawerEvent>().listen((event) {
+      _scaffoldKey.currentState.openDrawer();
+    });
   }
 
   @override
@@ -64,7 +62,9 @@ class _HomeScreenState extends State<HomeScreen>
         ScopedModel.of<AppStateModel>(context, rebuildOnChange: true)
             .currentTab;
     if (navigatorKeys[selectedTab].currentState.canPop()) {
-      !await navigatorKeys[selectedTab].currentState.maybePop();
+      !await navigatorKeys[selectedTab]
+          .currentState
+          .maybePop(); //ignore: unnecessary_statements
       return false;
     }
     return true;
@@ -127,6 +127,10 @@ class _HomeScreenState extends State<HomeScreen>
           selectedItemColor: Colors.red,
           currentIndex: selectedTab,
           onTap: (int index) {
+            if (!_isLoggedIn && index == 1) {
+              return;
+            }
+
             if (index != selectedTab) {
               setState(() {
                 ScopedModel.of<AppStateModel>(context).setCurrentTab(index);
@@ -146,35 +150,40 @@ class _HomeScreenState extends State<HomeScreen>
           },
           items: [
             BottomNavigationBarItem(
-                activeIcon: Icon(Icons.view_list),
-                icon: Icon(Icons.view_list), title: Text('Forum'),),
-            if (_isLoggedIn)
-              BottomNavigationBarItem(
-                  icon: Stack(
-                    children: <Widget>[
-                      Container(
-                          width: 70,
-                          child: Icon(FontAwesomeIcons.solidNewspaper)),
-                      if (unreadPosts > 0)
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 2),
-                              color: Colors.red,
-                              child: Text(
-                                unreadPosts.toString(),
-                                style: TextStyle(fontSize: 12),
-                              ),
+              activeIcon: Icon(Icons.view_list),
+              icon: Icon(Icons.view_list),
+              title: Text('Forum'),
+            ),
+            BottomNavigationBarItem(
+              icon: Opacity(
+                opacity: _isLoggedIn ? 1.0 : 0.5,
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                        width: 70,
+                        child: Icon(FontAwesomeIcons.solidNewspaper)),
+                    if (unreadPosts > 0)
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 2),
+                            color: Colors.red,
+                            child: Text(
+                              unreadPosts.toString(),
+                              style: TextStyle(fontSize: 12),
                             ),
                           ),
-                        )
-                    ],
-                  ),
-                  title: Text('Subscriptions')),
+                        ),
+                      )
+                  ],
+                ),
+              ),
+              title: Text('Subscriptions'),
+            ),
             BottomNavigationBarItem(
                 icon: Icon(FontAwesomeIcons.solidClock), title: Text('Latest')),
             BottomNavigationBarItem(

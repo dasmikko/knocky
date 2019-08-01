@@ -13,7 +13,7 @@ class Thread {
   final bool pinned;
   final int subforumId;
   final String subforumName;
-  final String title;
+  String title;
   final int totalPosts;
   @JsonKey(nullable: true)
   final DateTime readThreadLastSeen;
@@ -21,6 +21,7 @@ class Thread {
   final DateTime subscriptionLastSeen;
   final List<ThreadPost> posts;
   final List<ThreadUser> user;
+  final int userId;
   @JsonKey(defaultValue: 0)
   final int isSubscribedTo;
 
@@ -39,6 +40,7 @@ class Thread {
     this.user,
     this.subscriptionLastSeen,
     this.isSubscribedTo,
+    this.userId,
   });
 
   factory Thread.fromJson(Map<String, dynamic> json) => _$ThreadFromJson(json);

@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
+import 'package:hive/hive.dart';
 import 'package:knocky/helpers/api.dart';
+import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widget/Subscription/SubscriptionListItem.dart';
@@ -24,8 +26,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
   }
 
   @override
-  void afterFirstLayout(BuildContext context) {
-    loadSubscriptions();
+  void afterFirstLayout(BuildContext context) async {
+    Box box = await AppHiveBox.getBox();
+    if(await box.get('isLoggedIn') == true) {
+      loadSubscriptions();
+    }
   }
 
   @override
@@ -89,10 +94,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
   Widget build(BuildContext context) {
     var alerts = ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).subscriptions;
     bool fetching = ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).isFetching;
-    bool hasFailed = ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).hasFailed;
-
-
-    //if (hasFailed)
 
     return Scaffold(
       appBar: AppBar(

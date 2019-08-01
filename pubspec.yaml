@@ -11,7 +11,7 @@ description: A knockout! client.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.2.5+19
+version: 1.2.6+20
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -28,7 +28,6 @@ dependencies:
   flutter_inappbrowser: ^1.2.1
   flutter_webview_plugin: ^0.3.5
   webview_flutter: ^0.3.9+1
-  shared_preferences: ^0.5.3+1
   flutter_advanced_networkimage: any
   chewie: ^0.9.7
   video_player: ^0.10.1+5
@@ -44,6 +43,10 @@ dependencies:
   sticky_headers: "^0.1.8"
   bbob_dart: ^0.1.1
   event_bus: ^1.1.0
+  hive:
+    git:
+      url: https://github.com/leisim/hive.git
+      path: hive
   flutter:
     sdk: flutter
 

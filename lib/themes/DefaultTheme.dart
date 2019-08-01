@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-ThemeData DefaultTheme() {
+ThemeData defaultTheme() {
   return ThemeData(
     brightness: Brightness.light,
     primarySwatch: Colors.red,

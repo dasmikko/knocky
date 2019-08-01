@@ -1,11 +1,14 @@
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:knocky/helpers/hiveHelper.dart';
+import 'package:knocky/screens/events.dart';
 import 'package:knocky/screens/latestThreads.dart';
 import 'package:knocky/screens/popularThreads.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -32,21 +35,27 @@ class DrawerWidget extends StatefulWidget {
   _DrawerWidgetState createState() => _DrawerWidgetState();
 }
 
-class _DrawerWidgetState extends State<DrawerWidget> {
+class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void afterFirstLayout (BuildContext context) {
     ScopedModel.of<AuthenticationModel>(context)
         .getLoginStateFromSharedPreference(context);
   }
+
 
   void onClickLogin(BuildContext context) async {
     final flutterWebviewPlugin = new FlutterWebviewPlugin();
     String loginUrl = 'login';
     String fullUrl = '';
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    fullUrl = prefs.getString('env') == 'knockout'
+    Box box = await AppHiveBox.getBox();
+
+    fullUrl = await box.get('env') == 'knockout'
         ? KnockoutAPI.KNOCKOUT_SITE_URL + loginUrl
         : KnockoutAPI.QA_SITE_URL + loginUrl;
 
@@ -58,7 +67,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     });
 
     flutterWebviewPlugin.onUrlChanged.listen((String url) async {
-      if (url.contains(prefs.getString('env') == 'knockout'
+      if (url.contains(await box.get('env') == 'knockout'
           ? KnockoutAPI.KNOCKOUT_URL + "auth/finish"
           : KnockoutAPI.QA_URL + "auth/finish")) {
         print(url);
@@ -85,7 +94,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       }
 
       if (url == KnockoutAPI.baseurlSite) {
-        String cookieUrl = prefs.getString('env') == 'knockout'
+        String cookieUrl = await box.get('env') == 'knockout'
             ? KnockoutAPI.KNOCKOUT_URL
             : KnockoutAPI.QA_URL;
 
@@ -160,6 +169,15 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     );
   }
 
+  void onTapEvents() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EventsScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool _loginState =
@@ -204,7 +222,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     return Drawer(
       child: ListView(
         children: <Widget>[
-          UserAccountsDrawerHeader(
+          UserAccountsDrawerHeader( //ignore: missing_required_param
             accountName: Text(_loginState ? _username : 'Not logged in'),
             currentAccountPicture: _loginState
                 ? CachedNetworkImage(
@@ -238,11 +256,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             enabled: _loginState,
             leading: Icon(FontAwesomeIcons.bullhorn),
             title: Text('Events'),
-            onTap: () {
-              Scaffold.of(context).showSnackBar(new SnackBar(
-                content: new Text("Not implemented yet..."),
-              ));
-            },
+            onTap: onTapEvents,
           ),
           ListTile(
             leading: Icon(FontAwesomeIcons.discord),

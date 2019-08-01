@@ -6,9 +6,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/screens/editPost.dart';
 import 'package:knocky/widget/Thread/ThreadPostItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
-import 'package:knocky/widget/Drawer.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
@@ -45,7 +45,6 @@ class _ThreadScreenState extends State<ThreadScreen>
   void initState() {
     super.initState();
     _currentPage = this.widget.page;
-
     _totalPages = (widget.postCount / 20).ceil();
 
     prepareAnimations();
@@ -384,7 +383,7 @@ class _ThreadScreenState extends State<ThreadScreen>
         ));
         await refreshPage();
         print('Do the scroll');
-        scrollController.jumpTo(scrollController.positions.length.toDouble());
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
       }
     }
   }
@@ -436,23 +435,89 @@ class _ThreadScreenState extends State<ThreadScreen>
     );
   }
 
+  void onTapRenameThread() {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController controller =
+            new TextEditingController(text: details.title);
+        return AlertDialog(
+          title: Text('Rename thread'),
+          contentPadding: EdgeInsets.all(25),
+          content: TextField(
+            controller: controller,
+            autocorrect: true,
+            textCapitalization: TextCapitalization.sentences,
+            onSubmitted: (String finalText) {
+              Navigator.of(context).pop(finalText);
+            },
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Rename'),
+              onPressed: () => {Navigator.pop(context, controller.text)},
+            )
+          ],
+        );
+      },
+    ).then((String newTitle) {
+      print(newTitle);
+      if (newTitle != null) {
+        KnockoutAPI()
+            .renameThread(details.id, newTitle)
+            .then((updatedThreadDetails) {
+          setState(() {
+            details.title = newTitle;
+          });
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text('Thread renamed'),
+            backgroundColor: Colors.green,
+          ));
+        });
+      }
+    });
+  }
+
   void onSelectOverflowItem(int item) {
     switch (item) {
       case 1:
         onTapSubscribe(context);
         break;
+      case 2:
+        onTapRenameThread();
+        break;
       default:
     }
   }
 
+  void onTapEditPost (BuildContext context, ThreadPost post) async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EditPostScreen(
+            thread: details,
+            post: post,
+          ),
+        ),
+      );
+
+      if (result != null) {
+        scaffoldkey.currentState.showSnackBar(SnackBar(
+          content: Text('Posted!'),
+          behavior: SnackBarBehavior.floating,
+        ));
+        await refreshPage();
+        print('Do the scroll');
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final _isLoggedIn = ScopedModel.of<AuthenticationModel>(context).isLoggedIn;
-
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text(widget.title),
+        title: Text(details == null ? widget.title : details.title),
         actions: <Widget>[
           Builder(
             builder: (BuildContext bcontext) {
@@ -463,6 +528,11 @@ class _ThreadScreenState extends State<ThreadScreen>
                     if (details != null)
                       overFlowItem(
                           Icon(FontAwesomeIcons.eye), 'Subscribe to thread', 1),
+                    if (details != null &&
+                        details.userId ==
+                            ScopedModel.of<AuthenticationModel>(context).userId)
+                      overFlowItem(
+                          Icon(FontAwesomeIcons.pen), 'Rename thread', 2)
                   ];
                 },
               );
@@ -499,7 +569,8 @@ class _ThreadScreenState extends State<ThreadScreen>
                       (context, index) {
                         ThreadPost item = details.posts[index];
                         return Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                           child: ThreadPostItem(
                             scaffoldKey: scaffoldkey,
                             postDetails: item,
@@ -517,6 +588,7 @@ class _ThreadScreenState extends State<ThreadScreen>
                               ));
                               refreshPage();
                             },
+                            onTapEditPost: (ThreadPost post) => onTapEditPost(context, post),
                           ),
                         );
                       },
@@ -588,7 +660,7 @@ class _ThreadScreenState extends State<ThreadScreen>
               await refreshPage();
               print('Do the scroll');
               scrollController
-                  .jumpTo(scrollController.positions.length.toDouble());
+                  .jumpTo(scrollController.position.maxScrollExtent);
             }
           },
         ),

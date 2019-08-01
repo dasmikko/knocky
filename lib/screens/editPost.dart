@@ -7,24 +7,24 @@ import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 
-class NewPostScreen extends StatefulWidget {
-  final ThreadPost replyTo;
+class EditPostScreen extends StatefulWidget {
+  final ThreadPost post;
   final Thread thread;
-  final List<ThreadPost> replyList;
 
-  NewPostScreen(
-      {this.replyTo, this.thread, this.replyList});
+  EditPostScreen(
+      {this.post, this.thread});
 
   @override
-  _NewPostScreenState createState() => _NewPostScreenState();
+  _EditPostScreenState createState() => _EditPostScreenState();
 }
 
-class _NewPostScreenState extends State<NewPostScreen> {
+class _EditPostScreenState extends State<EditPostScreen> {
   TextEditingController controller = TextEditingController(text: '');
   SlateObject document;
   GlobalKey _scaffoldKey;
   FocusNode textFocusNode = FocusNode();
   bool _isPosting = false;
+  List<ThreadPost> replyList = List();
 
   List<String> history = List();
 
@@ -32,8 +32,11 @@ class _NewPostScreenState extends State<NewPostScreen> {
   void initState() {
     super.initState();
 
+    Map<String, dynamic> bbcodeObj = BBCodeHandler().slateDocumentToBBCode(this.widget.post.content.document);
+    controller.text = bbcodeObj['bbcode'];
+
     document = BBCodeHandler()
-        .parse(controller.text, this.widget.thread, this.widget.replyList);
+        .parse(controller.text, this.widget.thread, replyList);
   }
 
   void onPressPost() async {
@@ -47,7 +50,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   void refreshPreview() {
     setState(() {
       document = BBCodeHandler()
-          .parse(controller.text, this.widget.thread, this.widget.replyList);
+          .parse(controller.text, this.widget.thread, this.replyList);
     });
   }
 
@@ -277,6 +280,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addUserquoteDialog(bcontext) async {
+    BuildContext self = bcontext;
     await showDialog<int>(
       context: bcontext,
       child: new AlertDialog(
@@ -286,9 +290,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
           height: 400,
           width: 200,
           child: ListView.builder(
-            itemCount: this.widget.replyList.length,
+            itemCount: this.replyList.length,
             itemBuilder: (BuildContext context, int index) {
-              ThreadPost item = this.widget.replyList[index];
+              ThreadPost item = this.replyList[index];
               return ListTile(
                 title: Text(item.user.username),
                 onTap: () {
@@ -361,7 +365,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                         onChanged: (text) {
                           setState(() {
                             document = BBCodeHandler().parse(text,
-                                this.widget.thread, this.widget.replyList);
+                                this.widget.thread, this.replyList);
                           });
                         },
                       ),
@@ -452,7 +456,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                             addVideoDialog();
                           },
                         ),
-                        if (this.widget.replyList.length > 0)
+                        if (this.replyList.length > 0)
                           Builder(
                             builder: (BuildContext bcontext) {
                               return IconButton(

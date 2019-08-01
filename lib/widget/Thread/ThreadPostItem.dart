@@ -17,14 +17,17 @@ class ThreadPostItem extends StatelessWidget {
   final Function onPressReply;
   final Function onLongPressReply;
   final bool isOnReplyList;
+  final Function onTapEditPost;
 
-  ThreadPostItem(
-      {this.postDetails,
-      this.scaffoldKey,
-      this.onPostRated,
-      this.onPressReply,
-      this.isOnReplyList = false,
-      this.onLongPressReply});
+  ThreadPostItem({
+    this.postDetails,
+    this.scaffoldKey,
+    this.onPostRated,
+    this.onPressReply,
+    this.isOnReplyList = false,
+    this.onLongPressReply,
+    this.onTapEditPost,
+  });
 
   Widget buildRatings(List<ThreadPostRatings> ratings) {
     List<Widget> items = List();
@@ -98,6 +101,33 @@ class ThreadPostItem extends StatelessWidget {
         });
   }
 
+  List<Widget> otherUserButton(BuildContext context) {
+    return [
+      FlatButton(
+        child: Text('Rate'),
+        onPressed: () => onPressRatePost(context),
+      ),
+      GestureDetector(
+        onLongPress: () => onLongPressReply(postDetails),
+        child: FlatButton(
+          child: Text(!this.isOnReplyList ? 'Reply' : 'Unreply'),
+          onPressed: () => onPressReply(postDetails),
+          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> ownPostButtons(BuildContext context) {
+    return [];
+    return [
+      FlatButton(
+        child: Text('Edit'),
+        onPressed: () => onTapEditPost(postDetails),
+      )
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isLoggedIn =
@@ -106,6 +136,27 @@ class ThreadPostItem extends StatelessWidget {
     final int ownUserId =
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .userId;
+
+    // Handler post footer stuff
+    List<Widget> footer = List();
+
+    footer.add(
+      Flexible(
+        child: FlatButton(
+          padding: EdgeInsets.all(0),
+          onPressed: postDetails.ratings != null
+              ? () => onPressViewRatings(context)
+              : null,
+          child: buildRatings(postDetails.ratings),
+        ),
+      ),
+    );
+
+    if (isLoggedIn && postDetails.user.id != ownUserId)
+      footer.addAll(otherUserButton(context));
+
+    if (isLoggedIn && postDetails.user.id == ownUserId)
+      footer.addAll(ownPostButtons(context));
 
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -148,45 +199,18 @@ class ThreadPostItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     if (postDetails.bans != null)
-                      Row(
+                      Column(
                         children: postDetails.bans
                             .map(
-                              (ban) => Flexible(
-                                child: PostBan(
-                                  ban: ban,
-                                ),
+                              (ban) => PostBan(
+                                ban: ban,
                               ),
                             )
                             .toList(),
                       ),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Flexible(
-                          child: FlatButton(
-                            padding: EdgeInsets.all(0),
-                            onPressed: postDetails.ratings != null ? () => onPressViewRatings(context) : null,
-                            child: buildRatings(postDetails.ratings),
-                          ),
-                        ),
-                        if (isLoggedIn && postDetails.user.id != ownUserId)
-                          FlatButton(
-                            child: Text('Rate'),
-                            onPressed: () => onPressRatePost(context),
-                          ),
-                        if (isLoggedIn && postDetails.user.id != ownUserId)
-                          GestureDetector(
-                            onLongPress: () => onLongPressReply(postDetails),
-                            child: FlatButton(
-                              child: Text(
-                                  !this.isOnReplyList ? 'Reply' : 'Unreply'),
-                              onPressed: () => onPressReply(postDetails),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 0),
-                            ),
-                          ),
-                      ],
-                    ),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: footer),
                   ],
                 )),
           ],
