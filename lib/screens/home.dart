@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hive/hive.dart';
+import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/widget/Drawer.dart';
+import 'package:quick_actions/quick_actions.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
 import 'package:knocky/state/subscriptions.dart';
@@ -33,6 +36,29 @@ class _HomeScreenState extends State<HomeScreen>
 
   void initState() {
     super.initState();
+
+    final QuickActions quickActions = new QuickActions();
+
+    quickActions.setShortcutItems(<ShortcutItem>[
+      const ShortcutItem(type: 'action_subscriptions', localizedTitle: 'Subscriptions', icon: 'icon_help'),
+      const ShortcutItem(type: 'action_popular', localizedTitle: 'Popular threads', icon: 'icon_help'),
+      const ShortcutItem(type: 'action_latest', localizedTitle: 'Latest threads', icon: 'icon_help')
+    ]);
+
+    quickActions.initialize((shortcutType) {
+      if (shortcutType == 'action_subscriptions') {
+        AppHiveBox.getBox().then((Box box) {
+          box.get('isLoggedIn', defaultValue: false).then((loginState) {
+            if (loginState) {
+              ScopedModel.of<AppStateModel>(context).setCurrentTab(1);
+            }
+          });
+        });
+      }
+      if (shortcutType == 'action_popular') ScopedModel.of<AppStateModel>(context).setCurrentTab(3);
+      if (shortcutType == 'action_latest') ScopedModel.of<AppStateModel>(context).setCurrentTab(2);
+      // More handling code...
+    });
   }
 
   @override
