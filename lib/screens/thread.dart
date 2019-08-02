@@ -20,7 +20,7 @@ class ThreadScreen extends StatefulWidget {
   final int threadId;
   final int page;
 
-  ThreadScreen({this.title, this.page = 1, this.postCount, this.threadId});
+  ThreadScreen({this.title = 'Loading thread', this.page = 1, this.postCount, this.threadId});
 
   @override
   _ThreadScreenState createState() => _ThreadScreenState();
@@ -45,7 +45,10 @@ class _ThreadScreenState extends State<ThreadScreen>
   void initState() {
     super.initState();
     _currentPage = this.widget.page;
-    _totalPages = (widget.postCount / 20).ceil();
+
+    if (widget.postCount != null) {
+      _totalPages = (widget.postCount / 20).ceil();
+    }
 
     prepareAnimations();
 
@@ -118,6 +121,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       setState(() {
         details = res;
         _isLoading = false;
+        _totalPages = (details.totalPosts / 20).ceil();
       });
       checkIfShouldMarkThreadRead();
     });

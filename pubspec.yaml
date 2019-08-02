@@ -43,6 +43,7 @@ dependencies:
   sticky_headers: "^0.1.8"
   bbob_dart: ^0.1.1
   event_bus: ^1.1.0
+  uni_links: ^0.2.0
   hive:
     git:
       url: https://github.com/leisim/hive.git
