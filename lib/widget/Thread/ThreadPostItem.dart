@@ -3,6 +3,11 @@ import 'package:knocky/models/thread.dart';
 import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
 import 'package:knocky/helpers/icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:knocky/widget/Thread/PostElements/Embed.dart';
+import 'package:knocky/widget/Thread/PostElements/Image.dart';
+import 'package:knocky/widget/Thread/PostElements/UserQuote.dart';
+import 'package:knocky/widget/Thread/PostElements/Video.dart';
+import 'package:knocky/widget/Thread/PostElements/YouTubeEmbed.dart';
 import 'package:knocky/widget/Thread/PostHeader.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
@@ -190,6 +195,112 @@ class ThreadPostItem extends StatelessWidget {
                   onPressSpoiler(context, text);
                 },
                 context: context,
+                imageWidgetHandler: (String imageUrl, slateObject) {
+                  return Container(
+                    margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                    child: LimitedBox(
+                      maxHeight: 300,
+                      child:
+                          ImageWidget(url: imageUrl, slateObject: slateObject),
+                    ),
+                  );
+                },
+                videoWidgetHandler: (String videoUrl) {
+                  return VideoElement(
+                    url: videoUrl,
+                    scaffoldKey: this.scaffoldKey,
+                  );
+                },
+                youTubeWidgetHandler: (String youTubeUrl) {
+                  return YoutubeVideoEmbed(
+                    url: youTubeUrl,
+                  );
+                },
+                twitterEmbedHandler: (String embedUrl) {
+                  return EmbedWidget(
+                    url: embedUrl,
+                  );
+                },
+                userQuoteHandler:
+                    (String username, List<Widget> widgets, bool isChild) {
+                  return UserQuoteWidget(
+                    username: username,
+                    children: widgets,
+                    isChild: isChild,
+                  );
+                },
+                bulletedListHandler: (List<Widget> listItemsContent) {
+                  List<Widget> listItems = List();
+                  // Handle block nodes
+                  listItemsContent.forEach((item) {
+                    listItems.add(
+                      Container(
+                        margin: EdgeInsets.only(bottom: 5.0),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.only(right: 10.0),
+                              height: 5.0,
+                              width: 5.0,
+                              decoration: new BoxDecoration(
+                                color: Theme.of(context).textTheme.body1.color,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            Expanded(child: item)
+                          ],
+                        ),
+                      ),
+                    );
+                  });
+
+                  return Container(
+                    margin: EdgeInsets.only(top: 10, bottom: 10),
+                    child: Column(children: listItems),
+                  );
+                },
+                numberedListHandler: (List<Widget> listItemsContent) {
+                  List<Widget> listItems = List();
+                  // Handle block nodes
+                  listItemsContent.forEach((item) {
+                    listItems.add(
+                      Container(
+                        margin: EdgeInsets.only(bottom: 5.0),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.only(right: 10.0),
+                              child: Text(
+                                (listItems.length + 1).toString(),
+                              ),
+                            ),
+                            Expanded(
+                              child: item,
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  });
+
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: Column(children: listItems),
+                  );
+                },
+                quotesHandler: (Widget content) {
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    padding: EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        left: BorderSide(color: Colors.blue, width: 3.0),
+                      ),
+                      color: Colors.grey,
+                    ),
+                    child: content,
+                  );
+                },
               ),
             ),
             Container(
