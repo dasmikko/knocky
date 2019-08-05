@@ -1,12 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/models/slateDocument.dart';
-import 'package:knocky/widget/Thread/PostElements/Video.dart';
-import 'package:knocky/widget/Thread/PostElements/YouTubeEmbed.dart';
-import 'package:knocky/widget/Thread/PostElements/Image.dart';
 import 'package:intent/intent.dart' as Intent;
 import 'package:intent/action.dart' as Action;
-import 'package:knocky/widget/Thread/PostElements/Embed.dart';
 import 'package:knocky/widget/Thread/PostElements/UserQuote.dart';
 
 class SlateDocumentParser extends StatelessWidget {
@@ -14,9 +10,30 @@ class SlateDocumentParser extends StatelessWidget {
   final Function onPressSpoiler;
   final GlobalKey scaffoldkey;
   final BuildContext context;
+  final Function imageWidgetHandler;
+  final Function videoWidgetHandler;
+  final Function youTubeWidgetHandler;
+  final Function twitterEmbedHandler;
+  final Function userQuoteHandler;
+  final Function bulletedListHandler;
+  final Function numberedListHandler;
+  final Function quotesHandler;
 
-  SlateDocumentParser(
-      {this.slateObject, this.onPressSpoiler, this.scaffoldkey, this.context});
+
+  SlateDocumentParser({
+    this.slateObject,
+    this.onPressSpoiler,
+    this.scaffoldkey,
+    this.context,
+    @required this.imageWidgetHandler,
+    @required this.videoWidgetHandler,
+    @required this.youTubeWidgetHandler,
+    @required this.twitterEmbedHandler,
+    @required this.userQuoteHandler,
+    @required this.bulletedListHandler,
+    @required this.numberedListHandler,
+    @required this.quotesHandler,
+  });
 
   Widget paragraphToWidget(SlateNode node) {
     List<TextSpan> lines = List();
@@ -148,71 +165,16 @@ class SlateDocumentParser extends StatelessWidget {
 
   Widget bulletListToWidget(SlateNode node) {
     List<Widget> listItemsContent = List();
-    List<Widget> listItems = List();
-
     listItemsContent.addAll(handleNodes(node.nodes));
 
-    // Handle block nodes
-    listItemsContent.forEach((item) {
-      listItems.add(
-        Container(
-          margin: EdgeInsets.only(bottom: 5.0),
-          child: Row(
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(right: 10.0),
-                height: 5.0,
-                width: 5.0,
-                decoration: new BoxDecoration(
-                  color: Theme.of(context).textTheme.body1.color,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              Expanded(child: item)
-            ],
-          ),
-        ),
-      );
-    });
-
-    return Container(
-      margin: EdgeInsets.only(top: 10, bottom: 10),
-      child: Column(children: listItems),
-    );
+    return this.bulletedListHandler(listItemsContent);
   }
 
   Widget numberedListToWidget(SlateNode node) {
     List<Widget> listItemsContent = List();
-    List<Widget> listItems = List();
-
     listItemsContent.addAll(handleNodes(node.nodes));
 
-    // Handle block nodes
-    listItemsContent.forEach((item) {
-      listItems.add(
-        Container(
-          margin: EdgeInsets.only(bottom: 5.0),
-          child: Row(
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(right: 10.0),
-                child: Text(
-                  (listItems.length + 1).toString(),
-                ),
-              ),
-              Expanded(
-                child: item,
-              )
-            ],
-          ),
-        ),
-      );
-    });
-
-    return Container(
-      margin: EdgeInsets.only(bottom: 10),
-      child: Column(children: listItems),
-    );
+    return this.numberedListHandler(listItemsContent);
   }
 
   Widget headingToWidget(SlateNode node) {
@@ -256,44 +218,23 @@ class SlateDocumentParser extends StatelessWidget {
     // Handle block nodes
     widgets.addAll(handleNodes(node.nodes, isChild: !isChild));
 
-    return UserQuoteWidget(
-      username: node.data.postData.username,
-      children: widgets,
-      isChild: isChild,
-    );
+    return this.userQuoteHandler(node.data.postData.username, widgets, isChild);
   }
 
   Widget youTubeToWidget(SlateNode node) {
-    return YoutubeVideoEmbed(url: node.data.src);
+    return this.youTubeWidgetHandler(node.data.src);
   }
 
   Widget handleQuotes(SlateNode node) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 10.0),
-      padding: EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        border: Border(
-          left: BorderSide(color: Colors.blue, width: 3.0),
-        ),
-        color: Colors.grey,
-      ),
-      child: paragraphToWidget(node),
-    );
+    return this.quotesHandler(paragraphToWidget(node));
   }
 
   Widget handleImage(SlateNode node) {
-
-    return Container(
-      margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-      child: LimitedBox(
-        maxHeight: 300,
-        child: ImageWidget(url: node.data.src, slateObject: slateObject),
-      ),
-    );
+    return this.imageWidgetHandler(node.data.src, slateObject);
   }
 
   Widget handleVideo(SlateNode node) {
-    return VideoElement(url: node.data.src, scaffoldKey: scaffoldkey);
+    return this.videoWidgetHandler(node.data.src);
   }
 
   List<Widget> handleNodes(List<SlateNode> nodes, {bool isChild = false}) {
@@ -333,7 +274,7 @@ class SlateDocumentParser extends StatelessWidget {
           widgets.add(handleQuotes(node));
           break;
         case 'twitter':
-          widgets.add(EmbedWidget(url: node.data.src));
+          widgets.add(this.twitterEmbedHandler(node.data.src));
           break;
         case 'video':
           widgets.add(handleVideo(node));
