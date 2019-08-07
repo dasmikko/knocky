@@ -49,6 +49,7 @@ dependencies:
       url: https://github.com/leisim/hive.git
       path: hive
   quick_actions: ^0.3.2+2
+  material_design_icons_flutter: 3.2.3895
   flutter:
     sdk: flutter
 

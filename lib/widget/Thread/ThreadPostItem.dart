@@ -1,4 +1,6 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
 import 'package:knocky/helpers/icons.dart';
@@ -14,6 +16,8 @@ import 'package:knocky/state/authentication.dart';
 import 'package:knocky/widget/Thread/RatePostContent.dart';
 import 'package:knocky/widget/Thread/ViewUsersOfRatingsContent.dart';
 import 'package:knocky/widget/Thread/PostBan.dart';
+import 'package:intent/intent.dart' as Intent;
+import 'package:intent/action.dart' as Action;
 
 class ThreadPostItem extends StatelessWidget {
   final ThreadPost postDetails;
@@ -195,7 +199,88 @@ class ThreadPostItem extends StatelessWidget {
                   onPressSpoiler(context, text);
                 },
                 context: context,
-                imageWidgetHandler: (String imageUrl, slateObject) {
+                paragraphHandler: (SlateNode node, Function leafHandler) {
+                  List<TextSpan> lines = List();
+
+                  // Handle block nodes
+                  node.nodes.forEach((line) {
+                    if (line.leaves != null) {
+                      lines.addAll(leafHandler(line.leaves));
+                    }
+
+                    // Handle inline element
+                    if (line.object == 'inline') {
+                      // Handle links
+                      if (line.type == 'link') {
+                        line.nodes.forEach((inlineNode) {
+                          inlineNode.leaves.forEach((leaf) {
+                            lines.add(TextSpan(
+                                text: leaf.text,
+                                style: TextStyle(color: Colors.blue),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Intent.Intent()
+                                      ..setAction(Action.Action.ACTION_VIEW)
+                                      ..setData(Uri.parse(line.data.href))
+                                      ..startActivity()
+                                          .catchError((e) => print(e));
+                                    print('Clicked link: ' + line.data.href);
+                                  }));
+                          });
+                        });
+                      } else {
+                        line.nodes.forEach((inlineNode) {
+                          inlineNode.leaves.forEach((leaf) {
+                            lines.add(TextSpan(text: leaf.text));
+                          });
+                        });
+                      }
+                    }
+                  });
+
+                  return Container(
+                    child: RichText(
+                      text: TextSpan(children: lines),
+                    ),
+                  );
+                },
+                headingHandler: (SlateNode node, Function inlineHandler,
+                    Function leafHandler) {
+                  List<TextSpan> lines = List();
+
+                  // Handle block nodes
+                  node.nodes.forEach((line) {
+                    if (line.leaves != null) {
+                      double headingSize = 14.0;
+
+                      if (node.type.contains('-one')) {
+                        headingSize = 30.0;
+                      }
+
+                      if (node.type.contains('-two')) {
+                        headingSize = 20.0;
+                      }
+
+                      // Handle node leaves
+                      lines.addAll(
+                          leafHandler(line.leaves, fontSize: headingSize));
+                    }
+
+                    // Handle inline element
+                    if (line.object == 'inline') {
+                      // Handle links
+                      inlineHandler(node, line);
+                    }
+                  });
+
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: RichText(
+                      text: TextSpan(children: lines),
+                    ),
+                  );
+                },
+                imageWidgetHandler: (String imageUrl, slateObject, SlateNode node) {
                   return Container(
                     margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
                     child: LimitedBox(

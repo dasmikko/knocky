@@ -1,9 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/models/slateDocument.dart';
-import 'package:intent/intent.dart' as Intent;
-import 'package:intent/action.dart' as Action;
-import 'package:knocky/widget/Thread/PostElements/UserQuote.dart';
+import 'package:knocky/widget/SlateDocumentParser/SlateDocumentController.dart';
 
 class SlateDocumentParser extends StatelessWidget {
   final SlateObject slateObject;
@@ -18,13 +16,17 @@ class SlateDocumentParser extends StatelessWidget {
   final Function bulletedListHandler;
   final Function numberedListHandler;
   final Function quotesHandler;
-
+  final Function paragraphHandler;
+  final Function headingHandler;
+  final SlateDocumentController slateDocumentController;
+  final bool asListView;
 
   SlateDocumentParser({
     this.slateObject,
     this.onPressSpoiler,
     this.scaffoldkey,
     this.context,
+    this.slateDocumentController,
     @required this.imageWidgetHandler,
     @required this.videoWidgetHandler,
     @required this.youTubeWidgetHandler,
@@ -33,51 +35,13 @@ class SlateDocumentParser extends StatelessWidget {
     @required this.bulletedListHandler,
     @required this.numberedListHandler,
     @required this.quotesHandler,
+    @required this.paragraphHandler,
+    @required this.headingHandler,
+    this.asListView,
   });
 
   Widget paragraphToWidget(SlateNode node) {
-    List<TextSpan> lines = List();
-
-    // Handle block nodes
-    node.nodes.forEach((line) {
-      if (line.leaves != null) {
-        lines.addAll(leafHandler(line.leaves));
-      }
-
-      // Handle inline element
-      if (line.object == 'inline') {
-        // Handle links
-        if (line.type == 'link') {
-          line.nodes.forEach((inlineNode) {
-            inlineNode.leaves.forEach((leaf) {
-              lines.add(TextSpan(
-                  text: leaf.text,
-                  style: TextStyle(color: Colors.blue),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      Intent.Intent()
-                        ..setAction(Action.Action.ACTION_VIEW)
-                        ..setData(Uri.parse(line.data.href))
-                        ..startActivity().catchError((e) => print(e));
-                      print('Clicked link: ' + line.data.href);
-                    }));
-            });
-          });
-        } else {
-          line.nodes.forEach((inlineNode) {
-            inlineNode.leaves.forEach((leaf) {
-              lines.add(TextSpan(text: leaf.text));
-            });
-          });
-        }
-      }
-    });
-
-    return Container(
-      child: RichText(
-        text: TextSpan(children: lines),
-      ),
-    );
+    return this.paragraphHandler(node, leafHandler);
   }
 
   List<TextSpan> leafHandler(List<SlateLeaf> leaves, {double fontSize = 14.0}) {
@@ -178,38 +142,7 @@ class SlateDocumentParser extends StatelessWidget {
   }
 
   Widget headingToWidget(SlateNode node) {
-    List<TextSpan> lines = List();
-
-    // Handle block nodes
-    node.nodes.forEach((line) {
-      if (line.leaves != null) {
-        double headingSize = 14.0;
-
-        if (node.type.contains('-one')) {
-          headingSize = 30.0;
-        }
-
-        if (node.type.contains('-two')) {
-          headingSize = 20.0;
-        }
-
-        // Handle node leaves
-        lines.addAll(leafHandler(line.leaves, fontSize: headingSize));
-      }
-
-      // Handle inline element
-      if (line.object == 'inline') {
-        // Handle links
-        inlineHandler(node, line);
-      }
-    });
-
-    return Container(
-      margin: EdgeInsets.only(bottom: 10),
-      child: RichText(
-        text: TextSpan(children: lines),
-      ),
-    );
+    return this.headingHandler(node, inlineHandler, leafHandler);
   }
 
   Widget userquoteToWidget(SlateNode node, {bool isChild = false}) {
@@ -230,7 +163,7 @@ class SlateDocumentParser extends StatelessWidget {
   }
 
   Widget handleImage(SlateNode node) {
-    return this.imageWidgetHandler(node.data.src, slateObject);
+    return this.imageWidgetHandler(node.data.src, slateObject, node);
   }
 
   Widget handleVideo(SlateNode node) {
@@ -296,12 +229,20 @@ class SlateDocumentParser extends StatelessWidget {
     return widgets;
   }
 
+  List<Widget> asWidgetList() {
+    return handleNodes(slateObject.document.nodes);
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: handleNodes(slateObject.document.nodes)));
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: handleNodes(slateObject.document.nodes),
+      ),
+    );
   }
 }
