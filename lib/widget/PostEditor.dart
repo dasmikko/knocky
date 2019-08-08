@@ -49,6 +49,58 @@ class PostEditor extends StatefulWidget {
 }
 
 class _PostEditorState extends State<PostEditor> {
+  Widget _quoteHandler(
+      SlateNode node, Function inlineHandler, Function leafHandler) {
+    List<TextSpan> lines = List();
+    // Handle block nodes
+    node.nodes.forEach((line) {
+      if (line.leaves != null) {
+        double headingSize = 14.0;
+
+        if (node.type.contains('-one')) {
+          headingSize = 30.0;
+        }
+
+        if (node.type.contains('-two')) {
+          headingSize = 20.0;
+        }
+
+        // Handle node leaves
+        lines.addAll(leafHandler(line.leaves, fontSize: headingSize));
+      }
+
+      // Handle inline element
+      if (line.object == 'inline') {
+        // Handle links
+        inlineHandler(node, line);
+      }
+    });
+
+    return ListTile(
+      onTap: () => this.widget.onTapQuoteBlock(context, node),
+      leading: Icon(Icons.format_quote),
+      title: RichText(
+        text: TextSpan(children: lines.length > 0 ? lines : [TextSpan(text: '- empty quote')]),
+      ),
+    );
+  }
+
+  Widget _youtubeHandler (String youTubeUrl, SlateNode node) {
+    return ListTile(
+      onTap: () => this.widget.onTapYouTubeBlock(youTubeUrl, node),
+      leading: Icon(Icons.ondemand_video),
+      title: Text(youTubeUrl),
+    );
+  }
+
+  Widget _videoHandler (SlateNode node) {
+    return ListTile(
+      onTap: () => this.widget.onTapVideoBlock(node),
+      leading: Icon(Icons.videocam),
+      title: Text(node.data.src),
+    );
+  }
+
   List<Widget> editorContent() {
     return SlateDocumentParser(
       slateObject: this.widget.document,
@@ -128,7 +180,9 @@ class _PostEditorState extends State<PostEditor> {
         });
 
         return ListTile(
-          leading: Icon(node.type.contains('-one') ? MdiIcons.formatHeader1 : MdiIcons.formatHeader2),
+          leading: Icon(node.type.contains('-one')
+              ? MdiIcons.formatHeader1
+              : MdiIcons.formatHeader2),
           onTap: () {
             this.widget.onTapTextBlock(context, node);
           },
@@ -151,13 +205,16 @@ class _PostEditorState extends State<PostEditor> {
           title: Container(
             margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
             child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[Text('Image block'), Text(imageUrl)],
-                ),
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[Text('Image block'), Text(imageUrl)],
+            ),
           ),
         );
       },
+      quotesHandler: _quoteHandler,
+      youTubeWidgetHandler: this._youtubeHandler,
+      videoWidgetHandler: this._videoHandler,
     )
         .asWidgetList()
         .map((widget) => Container(

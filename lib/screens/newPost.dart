@@ -108,8 +108,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   void addImageDialog() async {
     ClipboardData clipBoardText = await Clipboard.getData('text/plain');
-    TextEditingController imgurlController =
-        TextEditingController(text: clipBoardText.text);
+    TextEditingController imgurlController = TextEditingController(
+        text: clipBoardText != null ? clipBoardText.text : '');
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -227,6 +227,14 @@ class _NewPostScreenState extends State<NewPostScreen> {
           new FlatButton(
               child: const Text('Insert'),
               onPressed: () {
+                setState(() {
+                  this
+                      .document
+                      .document
+                      .nodes
+                      .add(SlateNode(type: 'youtube', data: SlateNodeData(src: urlController.text)));
+                });
+
                 Navigator.of(context, rootNavigator: true).pop();
 
                 if (controller.text.endsWith('\n') || controller.text.isEmpty) {
@@ -249,7 +257,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         TextEditingController(text: clipBoardText.text);
     await showDialog<String>(
       context: context,
-      child: new AlertDialog(
+      builder: (BuildContext context) => new AlertDialog(
         contentPadding: const EdgeInsets.all(16.0),
         content: new Row(
           children: <Widget>[
@@ -273,16 +281,16 @@ class _NewPostScreenState extends State<NewPostScreen> {
           new FlatButton(
               child: const Text('Insert'),
               onPressed: () {
-                Navigator.of(context, rootNavigator: true).pop();
+                setState(() {
+                  this.document.document.nodes.add(
+                        SlateNode(
+                          type: 'video',
+                          data: SlateNodeData(src: urlController.text),
+                        ),
+                      );
+                });
 
-                if (controller.text.endsWith('\n') || controller.text.isEmpty) {
-                  controller.text =
-                      controller.text + '[video]${urlController.text}[/video]';
-                } else {
-                  controller.text = controller.text +
-                      '\n[video]${urlController.text}[/video]';
-                }
-                refreshPreview();
+                Navigator.of(context, rootNavigator: true).pop();
               })
         ],
       ),
@@ -368,6 +376,16 @@ class _NewPostScreenState extends State<NewPostScreen> {
             );
       },
     );
+  }
+
+  void addQuoteBlock() {
+    setState(() {
+      this
+          .document
+          .document
+          .nodes
+          .add(SlateNode(type: 'block-quote', nodes: List()));
+    });
   }
 
   /*
@@ -528,6 +546,96 @@ class _NewPostScreenState extends State<NewPostScreen> {
     );
   }
 
+  void editYoutubeVideoDialog(String youTubeUrl, SlateNode node) async {
+    TextEditingController urlController =
+        TextEditingController(text: node.data.src);
+    await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                keyboardType: TextInputType.url,
+                controller: urlController,
+                decoration: new InputDecoration(labelText: 'YouTube URL'),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+                child: const Text('Remove'),
+                onPressed: () {
+                  setState(() {
+                    int index = this.document.document.nodes.indexOf(node);
+                    this.document.document.nodes.removeAt(index);
+                  });
+                  Navigator.of(context, rootNavigator: true).pop();
+                }),
+            new FlatButton(
+                child: const Text('Update'),
+                onPressed: () {
+                  setState(() {
+                    int index = this.document.document.nodes.indexOf(node);
+                    this.document.document.nodes[index].data.src =
+                        urlController.text;
+                  });
+                  Navigator.of(context, rootNavigator: true).pop();
+                })
+        ],
+      ),
+    );
+  }
+
+  void editVideoDialog() async {
+    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    TextEditingController urlController =
+        TextEditingController(text: clipBoardText.text);
+    await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                keyboardType: TextInputType.url,
+                controller: urlController,
+                decoration:
+                    new InputDecoration(labelText: 'Video URL (Webm/mp4)'),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              }),
+          new FlatButton(
+              child: const Text('Insert'),
+              onPressed: () {
+                setState(() {
+                  this.document.document.nodes.add(
+                        SlateNode(
+                          type: 'video',
+                          data: SlateNodeData(src: urlController.text),
+                        ),
+                      );
+                });
+
+                Navigator.of(context, rootNavigator: true).pop();
+              })
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext wcontext) {
     return DefaultTabController(
@@ -559,13 +667,18 @@ class _NewPostScreenState extends State<NewPostScreen> {
               PostEditor(
                 document: document,
                 // Blocks
-                onTapTextBlock: showTextEditDialog,
-                onTapImageBlock: editImageDialog,
+                onTapTextBlock: this.showTextEditDialog,
+                onTapImageBlock: this.editImageDialog,
+                onTapQuoteBlock: this.showTextEditDialog,
+                onTapYouTubeBlock: this.editYoutubeVideoDialog,
                 // Toolbar
-                onTapAddTextBlock: addTextBlock,
-                onTapAddHeadingOne: () => addHeadingBlock('one'),
-                onTapAddHeadingTwo: () => addHeadingBlock('two'),
-                onTapAddImage: addImageDialog,
+                onTapAddTextBlock: this.addTextBlock,
+                onTapAddHeadingOne: () => this.addHeadingBlock('one'),
+                onTapAddHeadingTwo: () => this.addHeadingBlock('two'),
+                onTapAddImage: this.addImageDialog,
+                onTapAddQuote: this.addQuoteBlock,
+                onTapAddYouTubeVideo: this.addYoutubeVideoDialog,
+                onTapAddVideo: this.addVideoDialog,
                 onReorderHandler: (int oldIndex, int newIndex) {
                   if (oldIndex < newIndex) {
                     // removing the item at oldIndex will shorten the list by 1.
@@ -673,13 +786,14 @@ class _NewPostScreenState extends State<NewPostScreen> {
                           ),
                         );
                       },
-                      videoWidgetHandler: (String videoUrl) {
+                      videoWidgetHandler: (SlateNode node) {
                         return VideoElement(
-                          url: videoUrl,
+                          url: node.data.src,
                           scaffoldKey: this._scaffoldKey,
                         );
                       },
-                      youTubeWidgetHandler: (String youTubeUrl) {
+                      youTubeWidgetHandler:
+                          (String youTubeUrl, SlateNode node) {
                         return YoutubeVideoEmbed(
                           url: youTubeUrl,
                         );
@@ -759,7 +873,34 @@ class _NewPostScreenState extends State<NewPostScreen> {
                           child: Column(children: listItems),
                         );
                       },
-                      quotesHandler: (Widget content) {
+                      quotesHandler: (SlateNode node, Function inlineHandler,
+                          Function leafHandler) {
+                        List<TextSpan> lines = List();
+                        // Handle block nodes
+                        node.nodes.forEach((line) {
+                          if (line.leaves != null) {
+                            double headingSize = 14.0;
+
+                            if (node.type.contains('-one')) {
+                              headingSize = 30.0;
+                            }
+
+                            if (node.type.contains('-two')) {
+                              headingSize = 20.0;
+                            }
+
+                            // Handle node leaves
+                            lines.addAll(leafHandler(line.leaves,
+                                fontSize: headingSize));
+                          }
+
+                          // Handle inline element
+                          if (line.object == 'inline') {
+                            // Handle links
+                            inlineHandler(node, line);
+                          }
+                        });
+
                         return Container(
                           margin: EdgeInsets.only(bottom: 10.0),
                           padding: EdgeInsets.all(10.0),
@@ -769,7 +910,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
                             ),
                             color: Colors.grey,
                           ),
-                          child: content,
+                          child: RichText(
+                            text: TextSpan(children: lines),
+                          ),
                         );
                       },
                     ),

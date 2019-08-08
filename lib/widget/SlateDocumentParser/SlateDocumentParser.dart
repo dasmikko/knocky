@@ -155,11 +155,11 @@ class SlateDocumentParser extends StatelessWidget {
   }
 
   Widget youTubeToWidget(SlateNode node) {
-    return this.youTubeWidgetHandler(node.data.src);
+    return this.youTubeWidgetHandler(node.data.src, node);
   }
 
   Widget handleQuotes(SlateNode node) {
-    return this.quotesHandler(paragraphToWidget(node));
+    return this.quotesHandler(node, inlineHandler, leafHandler);
   }
 
   Widget handleImage(SlateNode node) {
@@ -167,7 +167,7 @@ class SlateDocumentParser extends StatelessWidget {
   }
 
   Widget handleVideo(SlateNode node) {
-    return this.videoWidgetHandler(node.data.src);
+    return this.videoWidgetHandler(node);
   }
 
   List<Widget> handleNodes(List<SlateNode> nodes, {bool isChild = false}) {
@@ -232,8 +232,6 @@ class SlateDocumentParser extends StatelessWidget {
   List<Widget> asWidgetList() {
     return handleNodes(slateObject.document.nodes);
   }
-
-
 
   @override
   Widget build(BuildContext context) {

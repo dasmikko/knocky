@@ -280,7 +280,8 @@ class ThreadPostItem extends StatelessWidget {
                     ),
                   );
                 },
-                imageWidgetHandler: (String imageUrl, slateObject, SlateNode node) {
+                imageWidgetHandler:
+                    (String imageUrl, slateObject, SlateNode node) {
                   return Container(
                     margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
                     child: LimitedBox(
@@ -290,13 +291,13 @@ class ThreadPostItem extends StatelessWidget {
                     ),
                   );
                 },
-                videoWidgetHandler: (String videoUrl) {
+                videoWidgetHandler: (SlateNode node) {
                   return VideoElement(
-                    url: videoUrl,
+                    url: node.data.src,
                     scaffoldKey: this.scaffoldKey,
                   );
                 },
-                youTubeWidgetHandler: (String youTubeUrl) {
+                youTubeWidgetHandler: (String youTubeUrl, SlateNode node) {
                   return YoutubeVideoEmbed(
                     url: youTubeUrl,
                   );
@@ -373,7 +374,34 @@ class ThreadPostItem extends StatelessWidget {
                     child: Column(children: listItems),
                   );
                 },
-                quotesHandler: (Widget content) {
+                quotesHandler: (SlateNode node, Function inlineHandler,
+                    Function leafHandler) {
+                  List<TextSpan> lines = List();
+                  // Handle block nodes
+                  node.nodes.forEach((line) {
+                    if (line.leaves != null) {
+                      double headingSize = 14.0;
+
+                      if (node.type.contains('-one')) {
+                        headingSize = 30.0;
+                      }
+
+                      if (node.type.contains('-two')) {
+                        headingSize = 20.0;
+                      }
+
+                      // Handle node leaves
+                      lines.addAll(
+                          leafHandler(line.leaves, fontSize: headingSize));
+                    }
+
+                    // Handle inline element
+                    if (line.object == 'inline') {
+                      // Handle links
+                      inlineHandler(node, line);
+                    }
+                  });
+
                   return Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     padding: EdgeInsets.all(10.0),
@@ -383,7 +411,9 @@ class ThreadPostItem extends StatelessWidget {
                       ),
                       color: Colors.grey,
                     ),
-                    child: content,
+                    child: RichText(
+                      text: TextSpan(children: lines),
+                    ),
                   );
                 },
               ),
