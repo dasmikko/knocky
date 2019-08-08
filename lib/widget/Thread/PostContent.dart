@@ -128,7 +128,7 @@ class PostContent extends StatelessWidget {
           url: youTubeUrl,
         );
       },
-      twitterEmbedHandler: (String embedUrl) {
+      twitterEmbedHandler: (String embedUrl, SlateNode node) {
         return EmbedWidget(
           url: embedUrl,
         );

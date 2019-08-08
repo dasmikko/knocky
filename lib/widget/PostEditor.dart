@@ -27,6 +27,7 @@ class PostEditor extends StatefulWidget {
   final Function onTapAddBulletedList;
   final Function onTapAddNumberedList;
   final Function onTapAddUserQuote;
+  final Function onTapAddTwitterEmbed;
 
   PostEditor({
     this.document,
@@ -49,6 +50,8 @@ class PostEditor extends StatefulWidget {
     this.onTapAddBulletedList,
     this.onTapAddNumberedList,
     this.onTapAddUserQuote,
+    this.onTapAddTwitterEmbed,
+
   });
 
   @override
@@ -293,6 +296,14 @@ class _PostEditorState extends State<PostEditor> {
     );
   }
 
+  Widget _twitterHandler(String twitterUrl, SlateNode node) {
+    return ListTile(
+      onTap: () => this.widget.onTapTwitterBlock(twitterUrl, node),
+      leading: Icon(MdiIcons.twitter),
+      title: Text(twitterUrl),
+    );
+  }
+
   List<Widget> editorContent() {
     return SlateDocumentParser(
       slateObject: this.widget.document,
@@ -305,6 +316,7 @@ class _PostEditorState extends State<PostEditor> {
       videoWidgetHandler: this._videoHandler,
       bulletedListHandler: this._bulletedListHandler,
       numberedListHandler: this._numberedListHandler,
+      twitterEmbedHandler: this._twitterHandler,
     )
         .asWidgetList()
         .map((widget) => Container(
@@ -365,6 +377,10 @@ class _PostEditorState extends State<PostEditor> {
               IconButton(
                 icon: Icon(Icons.videocam),
                 onPressed: this.widget.onTapAddVideo,
+              ),
+              IconButton(
+                icon: Icon(MdiIcons.twitter),
+                onPressed: this.widget.onTapAddTwitterEmbed,
               ),
             ],
           ),

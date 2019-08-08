@@ -207,7 +207,7 @@ class SlateDocumentParser extends StatelessWidget {
           widgets.add(handleQuotes(node));
           break;
         case 'twitter':
-          widgets.add(this.twitterEmbedHandler(node.data.src));
+          widgets.add(this.twitterEmbedHandler(node.data.src, node));
           break;
         case 'video':
           widgets.add(handleVideo(node));

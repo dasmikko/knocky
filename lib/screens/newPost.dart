@@ -229,15 +229,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 });
 
                 Navigator.of(context, rootNavigator: true).pop();
-
-                if (controller.text.endsWith('\n') || controller.text.isEmpty) {
-                  controller.text = controller.text +
-                      '[youtube]${urlController.text}[/youtube]';
-                } else {
-                  controller.text = controller.text +
-                      '\n[youtube]${urlController.text}[/youtube]';
-                }
-                refreshPreview();
               })
         ],
       ),
@@ -390,6 +381,50 @@ class _NewPostScreenState extends State<NewPostScreen> {
           .add(SlateNode(object: 'block', type: type, nodes: List()));
     });
   }
+
+  void addTwitterEmbed() async {
+    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    TextEditingController urlController =
+        TextEditingController(text: clipBoardText.text);
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                keyboardType: TextInputType.url,
+                controller: urlController,
+                decoration: new InputDecoration(labelText: 'Twitter URL'),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              }),
+          new FlatButton(
+              child: const Text('Insert'),
+              onPressed: () {
+                setState(() {
+                  this.document.document.nodes.add(SlateNode(
+                      type: 'twitter',
+                      data: SlateNodeData(src: urlController.text)));
+                });
+
+                Navigator.of(context, rootNavigator: true).pop();
+              })
+        ],
+      ),
+    );
+  }
+
+
 
   /*
   Block tap callbacks
@@ -676,6 +711,51 @@ class _NewPostScreenState extends State<NewPostScreen> {
     );
   }
 
+  void editTwitterEmbed(String youTubeUrl, SlateNode node) async {
+    TextEditingController urlController =
+        TextEditingController(text: node.data.src);
+    await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                keyboardType: TextInputType.url,
+                controller: urlController,
+                decoration: new InputDecoration(labelText: 'Twitter URL'),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Remove'),
+              onPressed: () {
+                setState(() {
+                  int index = this.document.document.nodes.indexOf(node);
+                  this.document.document.nodes.removeAt(index);
+                });
+                Navigator.of(context, rootNavigator: true).pop();
+              }),
+          new FlatButton(
+              child: const Text('Update'),
+              onPressed: () {
+                setState(() {
+                  int index = this.document.document.nodes.indexOf(node);
+                  this.document.document.nodes[index].data.src =
+                      urlController.text;
+                });
+                Navigator.of(context, rootNavigator: true).pop();
+              })
+        ],
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext wcontext) {
     return DefaultTabController(
@@ -712,6 +792,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 onTapQuoteBlock: this.showTextEditDialog,
                 onTapYouTubeBlock: this.editYoutubeVideoDialog,
                 onTapListBlock: this.editList,
+                onTapTwitterBlock: this.editTwitterEmbed,
                 // Toolbar
                 onTapAddTextBlock: this.addTextBlock,
                 onTapAddHeadingOne: () => this.addHeadingBlock('one'),
@@ -722,6 +803,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 onTapAddVideo: this.addVideoDialog,
                 onTapAddBulletedList: () => this.addListBlock('bulleted-list'),
                 onTapAddNumberedList: () => this.addListBlock('numbered-list'),
+                onTapAddTwitterEmbed: this.addTwitterEmbed,
                 onReorderHandler: (int oldIndex, int newIndex) {
                   if (oldIndex < newIndex) {
                     // removing the item at oldIndex will shorten the list by 1.
