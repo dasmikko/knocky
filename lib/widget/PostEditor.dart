@@ -24,31 +24,39 @@ class PostEditor extends StatefulWidget {
   final Function onTapAddYouTubeVideo;
   final Function onTapAddVideo;
   final Function onReorderHandler;
+  final Function onTapAddBulletedList;
+  final Function onTapAddNumberedList;
+  final Function onTapAddUserQuote;
 
-  PostEditor(
-      {this.document,
-      this.onTapTextBlock,
-      this.onTapImageBlock,
-      this.onTapListBlock,
-      this.onTapQuoteBlock,
-      this.onTapTwitterBlock,
-      this.onTapUserQuoteBlock,
-      this.onTapVideoBlock,
-      this.onTapYouTubeBlock,
-      this.onTapAddHeadingOne,
-      this.onTapAddHeadingTwo,
-      this.onTapAddImage,
-      this.onTapAddQuote,
-      this.onTapAddTextBlock,
-      this.onTapAddVideo,
-      this.onTapAddYouTubeVideo,
-      this.onReorderHandler});
+  PostEditor({
+    this.document,
+    this.onTapTextBlock,
+    this.onTapImageBlock,
+    this.onTapListBlock,
+    this.onTapQuoteBlock,
+    this.onTapTwitterBlock,
+    this.onTapUserQuoteBlock,
+    this.onTapVideoBlock,
+    this.onTapYouTubeBlock,
+    this.onTapAddHeadingOne,
+    this.onTapAddHeadingTwo,
+    this.onTapAddImage,
+    this.onTapAddQuote,
+    this.onTapAddTextBlock,
+    this.onTapAddVideo,
+    this.onTapAddYouTubeVideo,
+    this.onReorderHandler,
+    this.onTapAddBulletedList,
+    this.onTapAddNumberedList,
+    this.onTapAddUserQuote,
+  });
 
   @override
   _PostEditorState createState() => _PostEditorState();
 }
 
 class _PostEditorState extends State<PostEditor> {
+
   Widget _quoteHandler(
       SlateNode node, Function inlineHandler, Function leafHandler) {
     List<TextSpan> lines = List();
@@ -80,12 +88,14 @@ class _PostEditorState extends State<PostEditor> {
       onTap: () => this.widget.onTapQuoteBlock(context, node),
       leading: Icon(Icons.format_quote),
       title: RichText(
-        text: TextSpan(children: lines.length > 0 ? lines : [TextSpan(text: '- empty quote')]),
+        text: TextSpan(
+            children:
+                lines.length > 0 ? lines : [TextSpan(text: '- empty quote')]),
       ),
     );
   }
 
-  Widget _youtubeHandler (String youTubeUrl, SlateNode node) {
+  Widget _youtubeHandler(String youTubeUrl, SlateNode node) {
     return ListTile(
       onTap: () => this.widget.onTapYouTubeBlock(youTubeUrl, node),
       leading: Icon(Icons.ondemand_video),
@@ -93,7 +103,7 @@ class _PostEditorState extends State<PostEditor> {
     );
   }
 
-  Widget _videoHandler (SlateNode node) {
+  Widget _videoHandler(SlateNode node) {
     return ListTile(
       onTap: () => this.widget.onTapVideoBlock(node),
       leading: Icon(Icons.videocam),
@@ -101,120 +111,200 @@ class _PostEditorState extends State<PostEditor> {
     );
   }
 
+  Widget _bulletedListHandler(List<Widget> listItemsContent, SlateNode node) {
+    List<Widget> listItems = List();
+    // Handle block nodes
+    listItemsContent.forEach((item) {
+      listItems.add(
+        Container(
+          margin: EdgeInsets.only(bottom: 5.0),
+          child: Row(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(right: 10.0),
+                height: 5.0,
+                width: 5.0,
+                decoration: new BoxDecoration(
+                  color: Theme.of(context).textTheme.body1.color,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              Expanded(child: item)
+            ],
+          ),
+        ),
+      );
+    });
+
+    return ListTile(
+      onTap: () => this.widget.onTapListBlock(node),
+      leading: Icon(Icons.format_list_bulleted),
+      title: Container(
+        margin: EdgeInsets.only(top: 10, bottom: 10),
+        child: listItems.length > 0
+            ? Text('${listItems.length} items')
+            : Text('- empty list -'),
+      ),
+    );
+  }
+
+  Widget _numberedListHandler(List<Widget> listItemsContent, SlateNode node) {
+    List<Widget> listItems = List();
+    // Handle block nodes
+    listItemsContent.forEach((item) {
+      listItems.add(
+        Container(
+          margin: EdgeInsets.only(bottom: 5.0),
+          child: Row(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(right: 10.0),
+                child: Text(
+                  (listItems.length + 1).toString(),
+                ),
+              ),
+              Expanded(
+                child: item,
+              )
+            ],
+          ),
+        ),
+      );
+    });
+
+    return ListTile(
+      onTap: () => this.widget.onTapListBlock(node),
+      leading: Icon(Icons.format_list_numbered),
+      title: Container(
+        margin: EdgeInsets.only(top: 10, bottom: 10),
+        child: listItems.length > 0
+            ? Text('${listItems.length} items')
+            : Text('- empty list -'),
+      ),
+    );
+  }
+
+  Widget _imageWidgetHandler(String imageUrl, slateObject, SlateNode node) {
+    return ListTile(
+      leading: Icon(Icons.image),
+      onTap: () {
+        this.widget.onTapImageBlock(slateObject, node);
+      },
+      title: Container(
+        margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[Text('Image block'), Text(imageUrl)],
+        ),
+      ),
+    );
+  }
+
+  Widget headingHandler(
+      SlateNode node, Function inlineHandler, Function leafHandler) {
+    List<TextSpan> lines = List();
+
+    // Handle block nodes
+    node.nodes.forEach((line) {
+      if (line.leaves != null) {
+        double headingSize = 14.0;
+
+        if (node.type.contains('-one')) {
+          headingSize = 30.0;
+        }
+
+        if (node.type.contains('-two')) {
+          headingSize = 20.0;
+        }
+
+        // Handle node leaves
+        lines.addAll(leafHandler(line.leaves, fontSize: headingSize));
+      }
+
+      // Handle inline element
+      if (line.object == 'inline') {
+        // Handle links
+        inlineHandler(node, line);
+      }
+    });
+
+    return ListTile(
+      leading: Icon(node.type.contains('-one')
+          ? MdiIcons.formatHeader1
+          : MdiIcons.formatHeader2),
+      onTap: () {
+        this.widget.onTapTextBlock(context, node);
+      },
+      title: Container(
+        margin: EdgeInsets.only(bottom: 10),
+        child: RichText(
+          text: lines.length > 0
+              ? TextSpan(children: lines)
+              : TextSpan(text: '- empty heading block -'),
+        ),
+      ),
+    );
+  }
+
+  Widget paragraphHandler(SlateNode node, Function leafHandler) {
+    List<TextSpan> lines = List();
+
+    // Handle block nodes
+    node.nodes.forEach((line) {
+      if (line.leaves != null) {
+        lines.addAll(leafHandler(line.leaves));
+      }
+
+      // Handle inline element
+      if (line.object == 'inline') {
+        // Handle links
+        if (line.type == 'link') {
+          line.nodes.forEach((inlineNode) {
+            inlineNode.leaves.forEach((leaf) {
+              lines.add(TextSpan(
+                text: leaf.text,
+                style: TextStyle(color: Colors.blue),
+              ));
+            });
+          });
+        } else {
+          line.nodes.forEach((inlineNode) {
+            inlineNode.leaves.forEach((leaf) {
+              lines.add(TextSpan(text: leaf.text));
+            });
+          });
+        }
+      }
+    });
+
+    return ListTile(
+      leading: Icon(Icons.text_format),
+      onTap: () {
+        this.widget.onTapTextBlock(context, node);
+      },
+      title: Container(
+        margin: EdgeInsets.only(bottom: 5),
+        child: RichText(
+            text: lines.length > 0
+                ? TextSpan(children: lines)
+                : TextSpan(text: '- empty text block -')),
+      ),
+    );
+  }
+
   List<Widget> editorContent() {
     return SlateDocumentParser(
       slateObject: this.widget.document,
       context: context,
-      paragraphHandler: (SlateNode node, Function leafHandler) {
-        List<TextSpan> lines = List();
-
-        // Handle block nodes
-        node.nodes.forEach((line) {
-          if (line.leaves != null) {
-            lines.addAll(leafHandler(line.leaves));
-          }
-
-          // Handle inline element
-          if (line.object == 'inline') {
-            // Handle links
-            if (line.type == 'link') {
-              line.nodes.forEach((inlineNode) {
-                inlineNode.leaves.forEach((leaf) {
-                  lines.add(TextSpan(
-                    text: leaf.text,
-                    style: TextStyle(color: Colors.blue),
-                  ));
-                });
-              });
-            } else {
-              line.nodes.forEach((inlineNode) {
-                inlineNode.leaves.forEach((leaf) {
-                  lines.add(TextSpan(text: leaf.text));
-                });
-              });
-            }
-          }
-        });
-
-        return ListTile(
-          leading: Icon(Icons.text_format),
-          onTap: () {
-            print(node);
-            this.widget.onTapTextBlock(context, node);
-          },
-          title: Container(
-            margin: EdgeInsets.only(bottom: 5),
-            child: RichText(
-                text: lines.length > 0
-                    ? TextSpan(children: lines)
-                    : TextSpan(text: '- empty text block -')),
-          ),
-        );
-      },
-      headingHandler:
-          (SlateNode node, Function inlineHandler, Function leafHandler) {
-        List<TextSpan> lines = List();
-
-        // Handle block nodes
-        node.nodes.forEach((line) {
-          if (line.leaves != null) {
-            double headingSize = 14.0;
-
-            if (node.type.contains('-one')) {
-              headingSize = 30.0;
-            }
-
-            if (node.type.contains('-two')) {
-              headingSize = 20.0;
-            }
-
-            // Handle node leaves
-            lines.addAll(leafHandler(line.leaves, fontSize: headingSize));
-          }
-
-          // Handle inline element
-          if (line.object == 'inline') {
-            // Handle links
-            inlineHandler(node, line);
-          }
-        });
-
-        return ListTile(
-          leading: Icon(node.type.contains('-one')
-              ? MdiIcons.formatHeader1
-              : MdiIcons.formatHeader2),
-          onTap: () {
-            this.widget.onTapTextBlock(context, node);
-          },
-          title: Container(
-            margin: EdgeInsets.only(bottom: 10),
-            child: RichText(
-              text: lines.length > 0
-                  ? TextSpan(children: lines)
-                  : TextSpan(text: '- empty heading block -'),
-            ),
-          ),
-        );
-      },
-      imageWidgetHandler: (String imageUrl, slateObject, SlateNode node) {
-        return ListTile(
-          leading: Icon(Icons.image),
-          onTap: () {
-            this.widget.onTapImageBlock(slateObject, node);
-          },
-          title: Container(
-            margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[Text('Image block'), Text(imageUrl)],
-            ),
-          ),
-        );
-      },
+      paragraphHandler: this.paragraphHandler,
+      headingHandler: this.headingHandler,
+      imageWidgetHandler: this._imageWidgetHandler,
       quotesHandler: _quoteHandler,
       youTubeWidgetHandler: this._youtubeHandler,
       videoWidgetHandler: this._videoHandler,
+      bulletedListHandler: this._bulletedListHandler,
+      numberedListHandler: this._numberedListHandler,
     )
         .asWidgetList()
         .map((widget) => Container(
@@ -255,6 +345,14 @@ class _PostEditorState extends State<PostEditor> {
               IconButton(
                 icon: Icon(Icons.format_quote),
                 onPressed: this.widget.onTapAddQuote,
+              ),
+              IconButton(
+                icon: Icon(Icons.format_list_bulleted),
+                onPressed: this.widget.onTapAddBulletedList,
+              ),
+              IconButton(
+                icon: Icon(Icons.format_list_numbered),
+                onPressed: this.widget.onTapAddNumberedList,
               ),
               IconButton(
                 icon: Icon(Icons.image),

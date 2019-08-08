@@ -131,14 +131,14 @@ class SlateDocumentParser extends StatelessWidget {
     List<Widget> listItemsContent = List();
     listItemsContent.addAll(handleNodes(node.nodes));
 
-    return this.bulletedListHandler(listItemsContent);
+    return this.bulletedListHandler(listItemsContent, node);
   }
 
   Widget numberedListToWidget(SlateNode node) {
     List<Widget> listItemsContent = List();
     listItemsContent.addAll(handleNodes(node.nodes));
 
-    return this.numberedListHandler(listItemsContent);
+    return this.numberedListHandler(listItemsContent, node);
   }
 
   Widget headingToWidget(SlateNode node) {

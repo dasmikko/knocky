@@ -1,20 +1,15 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/bbcode.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/widget/ListEditor.dart';
 import 'package:knocky/widget/PostEditor.dart';
-import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
-import 'package:knocky/widget/Thread/PostElements/Embed.dart';
-import 'package:knocky/widget/Thread/PostElements/Image.dart';
-import 'package:knocky/widget/Thread/PostElements/UserQuote.dart';
-import 'package:knocky/widget/Thread/PostElements/Video.dart';
-import 'package:knocky/widget/Thread/PostElements/YouTubeEmbed.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:knocky/widget/Thread/PostContent.dart';
 
 class NewPostScreen extends StatefulWidget {
   final ThreadPost replyTo;
@@ -228,11 +223,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Insert'),
               onPressed: () {
                 setState(() {
-                  this
-                      .document
-                      .document
-                      .nodes
-                      .add(SlateNode(type: 'youtube', data: SlateNodeData(src: urlController.text)));
+                  this.document.document.nodes.add(SlateNode(
+                      type: 'youtube',
+                      data: SlateNodeData(src: urlController.text)));
                 });
 
                 Navigator.of(context, rootNavigator: true).pop();
@@ -385,6 +378,16 @@ class _NewPostScreenState extends State<NewPostScreen> {
           .document
           .nodes
           .add(SlateNode(type: 'block-quote', nodes: List()));
+    });
+  }
+
+  void addListBlock(String type) {
+    setState(() {
+      this
+          .document
+          .document
+          .nodes
+          .add(SlateNode(object: 'block', type: type, nodes: List()));
     });
   }
 
@@ -567,24 +570,24 @@ class _NewPostScreenState extends State<NewPostScreen> {
         ),
         actions: <Widget>[
           new FlatButton(
-                child: const Text('Remove'),
-                onPressed: () {
-                  setState(() {
-                    int index = this.document.document.nodes.indexOf(node);
-                    this.document.document.nodes.removeAt(index);
-                  });
-                  Navigator.of(context, rootNavigator: true).pop();
-                }),
-            new FlatButton(
-                child: const Text('Update'),
-                onPressed: () {
-                  setState(() {
-                    int index = this.document.document.nodes.indexOf(node);
-                    this.document.document.nodes[index].data.src =
-                        urlController.text;
-                  });
-                  Navigator.of(context, rootNavigator: true).pop();
-                })
+              child: const Text('Remove'),
+              onPressed: () {
+                setState(() {
+                  int index = this.document.document.nodes.indexOf(node);
+                  this.document.document.nodes.removeAt(index);
+                });
+                Navigator.of(context, rootNavigator: true).pop();
+              }),
+          new FlatButton(
+              child: const Text('Update'),
+              onPressed: () {
+                setState(() {
+                  int index = this.document.document.nodes.indexOf(node);
+                  this.document.document.nodes[index].data.src =
+                      urlController.text;
+                });
+                Navigator.of(context, rootNavigator: true).pop();
+              })
         ],
       ),
     );
@@ -636,6 +639,43 @@ class _NewPostScreenState extends State<NewPostScreen> {
     );
   }
 
+  void editList(SlateNode node) async {
+    List<SlateNode> listItems = List();
+
+    node.nodes.forEach((listItem) {
+      listItems.add(listItem);
+    });
+
+    await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text('Edit list'),
+        contentPadding: const EdgeInsets.all(16.0),
+        content: ListEditor(
+          oldListItems: listItems,
+          onListUpdated: (newListItems) {
+            setState(() {
+              int index = this.document.document.nodes.indexOf(node);
+              this.document.document.nodes[index].nodes = newListItems;
+            });
+          },
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Remove'),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              }),
+          new FlatButton(
+              child: const Text('Update'),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              })
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext wcontext) {
     return DefaultTabController(
@@ -671,6 +711,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 onTapImageBlock: this.editImageDialog,
                 onTapQuoteBlock: this.showTextEditDialog,
                 onTapYouTubeBlock: this.editYoutubeVideoDialog,
+                onTapListBlock: this.editList,
                 // Toolbar
                 onTapAddTextBlock: this.addTextBlock,
                 onTapAddHeadingOne: () => this.addHeadingBlock('one'),
@@ -679,6 +720,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 onTapAddQuote: this.addQuoteBlock,
                 onTapAddYouTubeVideo: this.addYoutubeVideoDialog,
                 onTapAddVideo: this.addVideoDialog,
+                onTapAddBulletedList: () => this.addListBlock('bulleted-list'),
+                onTapAddNumberedList: () => this.addListBlock('numbered-list'),
                 onReorderHandler: (int oldIndex, int newIndex) {
                   if (oldIndex < newIndex) {
                     // removing the item at oldIndex will shorten the list by 1.
@@ -695,227 +738,12 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 child: SingleChildScrollView(
                   child: Container(
                     padding: EdgeInsets.all(15),
-                    child: SlateDocumentParser(
-                      context: context,
-                      scaffoldkey: _scaffoldKey,
-                      slateObject: document,
-                      onPressSpoiler: (content) {
-                        onPressSpoiler(context, content);
-                      },
-                      paragraphHandler: (SlateNode node, Function leafHandler) {
-                        List<TextSpan> lines = List();
-
-                        // Handle block nodes
-                        node.nodes.forEach((line) {
-                          if (line.leaves != null) {
-                            lines.addAll(leafHandler(line.leaves));
-                          }
-
-                          // Handle inline element
-                          if (line.object == 'inline') {
-                            // Handle links
-                            if (line.type == 'link') {
-                              line.nodes.forEach((inlineNode) {
-                                inlineNode.leaves.forEach((leaf) {
-                                  lines.add(TextSpan(
-                                    text: leaf.text,
-                                    style: TextStyle(color: Colors.blue),
-                                  ));
-                                });
-                              });
-                            } else {
-                              line.nodes.forEach((inlineNode) {
-                                inlineNode.leaves.forEach((leaf) {
-                                  lines.add(TextSpan(text: leaf.text));
-                                });
-                              });
-                            }
-                          }
-                        });
-
-                        return Container(
-                          child: RichText(
-                            text: TextSpan(children: lines),
-                          ),
-                        );
-                      },
-                      headingHandler: (SlateNode node, Function inlineHandler,
-                          Function leafHandler) {
-                        List<TextSpan> lines = List();
-
-                        // Handle block nodes
-                        node.nodes.forEach((line) {
-                          if (line.leaves != null) {
-                            double headingSize = 14.0;
-
-                            if (node.type.contains('-one')) {
-                              headingSize = 30.0;
-                            }
-
-                            if (node.type.contains('-two')) {
-                              headingSize = 20.0;
-                            }
-
-                            // Handle node leaves
-                            lines.addAll(leafHandler(line.leaves,
-                                fontSize: headingSize));
-                          }
-
-                          // Handle inline element
-                          if (line.object == 'inline') {
-                            // Handle links
-                            inlineHandler(node, line);
-                          }
-                        });
-
-                        return Container(
-                          margin: EdgeInsets.only(bottom: 10),
-                          child: RichText(
-                            text: TextSpan(children: lines),
-                          ),
-                        );
-                      },
-                      imageWidgetHandler:
-                          (String imageUrl, slateObject, SlateNode node) {
-                        return Container(
-                          margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                          child: LimitedBox(
-                            maxHeight: 300,
-                            child: ImageWidget(
-                                url: imageUrl, slateObject: slateObject),
-                          ),
-                        );
-                      },
-                      videoWidgetHandler: (SlateNode node) {
-                        return VideoElement(
-                          url: node.data.src,
-                          scaffoldKey: this._scaffoldKey,
-                        );
-                      },
-                      youTubeWidgetHandler:
-                          (String youTubeUrl, SlateNode node) {
-                        return YoutubeVideoEmbed(
-                          url: youTubeUrl,
-                        );
-                      },
-                      twitterEmbedHandler: (String embedUrl) {
-                        return EmbedWidget(
-                          url: embedUrl,
-                        );
-                      },
-                      userQuoteHandler: (String username, List<Widget> widgets,
-                          bool isChild) {
-                        return UserQuoteWidget(
-                          username: username,
-                          children: widgets,
-                          isChild: isChild,
-                        );
-                      },
-                      bulletedListHandler: (List<Widget> listItemsContent) {
-                        List<Widget> listItems = List();
-                        // Handle block nodes
-                        listItemsContent.forEach((item) {
-                          listItems.add(
-                            Container(
-                              margin: EdgeInsets.only(bottom: 5.0),
-                              child: Row(
-                                children: <Widget>[
-                                  Container(
-                                    margin: EdgeInsets.only(right: 10.0),
-                                    height: 5.0,
-                                    width: 5.0,
-                                    decoration: new BoxDecoration(
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .body1
-                                          .color,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  Expanded(child: item)
-                                ],
-                              ),
-                            ),
-                          );
-                        });
-
-                        return Container(
-                          margin: EdgeInsets.only(top: 10, bottom: 10),
-                          child: Column(children: listItems),
-                        );
-                      },
-                      numberedListHandler: (List<Widget> listItemsContent) {
-                        List<Widget> listItems = List();
-                        // Handle block nodes
-                        listItemsContent.forEach((item) {
-                          listItems.add(
-                            Container(
-                              margin: EdgeInsets.only(bottom: 5.0),
-                              child: Row(
-                                children: <Widget>[
-                                  Container(
-                                    margin: EdgeInsets.only(right: 10.0),
-                                    child: Text(
-                                      (listItems.length + 1).toString(),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: item,
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        });
-
-                        return Container(
-                          margin: EdgeInsets.only(bottom: 10),
-                          child: Column(children: listItems),
-                        );
-                      },
-                      quotesHandler: (SlateNode node, Function inlineHandler,
-                          Function leafHandler) {
-                        List<TextSpan> lines = List();
-                        // Handle block nodes
-                        node.nodes.forEach((line) {
-                          if (line.leaves != null) {
-                            double headingSize = 14.0;
-
-                            if (node.type.contains('-one')) {
-                              headingSize = 30.0;
-                            }
-
-                            if (node.type.contains('-two')) {
-                              headingSize = 20.0;
-                            }
-
-                            // Handle node leaves
-                            lines.addAll(leafHandler(line.leaves,
-                                fontSize: headingSize));
-                          }
-
-                          // Handle inline element
-                          if (line.object == 'inline') {
-                            // Handle links
-                            inlineHandler(node, line);
-                          }
-                        });
-
-                        return Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          padding: EdgeInsets.all(10.0),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              left: BorderSide(color: Colors.blue, width: 3.0),
-                            ),
-                            color: Colors.grey,
-                          ),
-                          child: RichText(
-                            text: TextSpan(children: lines),
-                          ),
-                        );
-                      },
-                    ),
+                    child: PostContent(
+                        content: document,
+                        onTapSpoiler: (text) {
+                          onPressSpoiler(context, text);
+                        },
+                        scaffoldKey: this._scaffoldKey),
                   ),
                 ),
               ),
