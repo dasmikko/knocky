@@ -12,11 +12,13 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:knocky/widget/Thread/PostContent.dart';
 
 class NewPostScreen extends StatefulWidget {
-  final ThreadPost replyTo;
+  final ThreadPost post;
   final Thread thread;
   final List<ThreadPost> replyList;
+  final bool editingPost;
 
-  NewPostScreen({this.replyTo, this.thread, this.replyList});
+  NewPostScreen(
+      {this.post, this.thread, this.replyList, this.editingPost = false});
 
   @override
   _NewPostScreenState createState() => _NewPostScreenState();
@@ -34,6 +36,11 @@ class _NewPostScreenState extends State<NewPostScreen> {
   @override
   void initState() {
     super.initState();
+
+    if (this.widget.editingPost) {
+      this.document = this.widget.post.content;
+    }
+
     if (this.widget.replyList.length == 1) {
       ThreadPost item = this.widget.replyList.first;
       this.document.document.nodes.add(
@@ -57,11 +64,22 @@ class _NewPostScreenState extends State<NewPostScreen> {
     setState(() {
       _isPosting = true;
     });
-    await KnockoutAPI()
-        .newPost(document.toJson(), this.widget.thread.id)
-        .catchError((error) {
-      print(error);
-    });
+
+    if (this.widget.editingPost) {
+      await KnockoutAPI()
+          .updatePost(
+              document.toJson(), this.widget.post.id, this.widget.thread.id)
+          .catchError((error) {
+        print(error);
+      });
+    } else {
+      await KnockoutAPI()
+          .newPost(document.toJson(), this.widget.thread.id)
+          .catchError((error) {
+        print(error);
+      });
+    }
+
     Navigator.pop(context, true);
   }
 
@@ -920,7 +938,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text('New post'),
+          title: Text(this.widget.editingPost ? 'Edit post ' : 'New post'),
           actions: <Widget>[
             IconButton(
               onPressed: !_isPosting ? onPressPost : null,
