@@ -120,7 +120,6 @@ class ThreadPostItem extends StatelessWidget {
   }
 
   List<Widget> ownPostButtons(BuildContext context) {
-    return [];
     return [
       FlatButton(
         child: Text('Edit'),

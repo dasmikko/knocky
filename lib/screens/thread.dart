@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/screens/editPost.dart';
 import 'package:knocky/widget/Thread/ThreadPostItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:numberpicker/numberpicker.dart';
@@ -494,13 +495,14 @@ class _ThreadScreenState extends State<ThreadScreen>
   }
 
   void onTapEditPost (BuildContext context, ThreadPost post) async {
-    /*
+
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => EditPostScreen(
             thread: details,
-            post: post,
+            postToEdit: post,
+            replyList: List(),
           ),
         ),
       );
@@ -514,7 +516,7 @@ class _ThreadScreenState extends State<ThreadScreen>
         print('Do the scroll');
         scrollController.jumpTo(scrollController.position.maxScrollExtent);
       }
-      */
+
   }
 
   @override
