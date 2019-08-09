@@ -14,6 +14,7 @@ class PostEditor extends StatefulWidget {
   final Function onTapListBlock;
   final Function onTapUserQuoteBlock;
   final Function onTapTwitterBlock;
+  final Function onTapStrawpollBlock;
 
   // Toolbar callbacks
   final Function onTapAddTextBlock;
@@ -28,6 +29,7 @@ class PostEditor extends StatefulWidget {
   final Function onTapAddNumberedList;
   final Function onTapAddUserQuote;
   final Function onTapAddTwitterEmbed;
+  final Function onTapAddStrawPollEmbed;
 
   PostEditor({
     this.document,
@@ -39,6 +41,7 @@ class PostEditor extends StatefulWidget {
     this.onTapUserQuoteBlock,
     this.onTapVideoBlock,
     this.onTapYouTubeBlock,
+    this.onTapStrawpollBlock,
     this.onTapAddHeadingOne,
     this.onTapAddHeadingTwo,
     this.onTapAddImage,
@@ -51,6 +54,7 @@ class PostEditor extends StatefulWidget {
     this.onTapAddNumberedList,
     this.onTapAddUserQuote,
     this.onTapAddTwitterEmbed,
+    this.onTapAddStrawPollEmbed,
 
   });
 
@@ -304,6 +308,14 @@ class _PostEditorState extends State<PostEditor> {
     );
   }
 
+  Widget _strawpollHandler(SlateNode node) {
+    return ListTile(
+      onTap: () => this.widget.onTapStrawpollBlock(node.data.src, node),
+      leading: Icon(MdiIcons.poll),
+      title: Text(node.data.src),
+    );
+  }
+
   List<Widget> editorContent() {
     return SlateDocumentParser(
       slateObject: this.widget.document,
@@ -317,6 +329,7 @@ class _PostEditorState extends State<PostEditor> {
       bulletedListHandler: this._bulletedListHandler,
       numberedListHandler: this._numberedListHandler,
       twitterEmbedHandler: this._twitterHandler,
+      strawpollHandler: this._strawpollHandler,
     )
         .asWidgetList()
         .map((widget) => Container(
@@ -381,6 +394,10 @@ class _PostEditorState extends State<PostEditor> {
               IconButton(
                 icon: Icon(MdiIcons.twitter),
                 onPressed: this.widget.onTapAddTwitterEmbed,
+              ),
+              IconButton(
+                icon: Icon(MdiIcons.poll),
+                onPressed: this.widget.onTapAddStrawPollEmbed,
               ),
             ],
           ),

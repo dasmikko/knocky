@@ -18,6 +18,7 @@ class SlateDocumentParser extends StatelessWidget {
   final Function quotesHandler;
   final Function paragraphHandler;
   final Function headingHandler;
+  final Function strawpollHandler;
   final SlateDocumentController slateDocumentController;
   final bool asListView;
 
@@ -37,6 +38,7 @@ class SlateDocumentParser extends StatelessWidget {
     @required this.quotesHandler,
     @required this.paragraphHandler,
     @required this.headingHandler,
+    @required this.strawpollHandler,
     this.asListView,
   });
 
@@ -211,6 +213,9 @@ class SlateDocumentParser extends StatelessWidget {
           break;
         case 'video':
           widgets.add(handleVideo(node));
+          break;
+        case 'strawpoll':
+          widgets.add(this.strawpollHandler(node));
           break;
         default:
           if (node.object == 'text') {

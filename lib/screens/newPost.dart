@@ -24,7 +24,8 @@ class NewPostScreen extends StatefulWidget {
 
 class _NewPostScreenState extends State<NewPostScreen> {
   SlateObject document = new SlateObject(
-    document: SlateDocument(nodes: List()),
+    object: 'value',
+    document: SlateDocument(object: 'document', nodes: List()),
   );
   GlobalKey _scaffoldKey;
   bool _isPosting = false;
@@ -42,7 +43,11 @@ class _NewPostScreenState extends State<NewPostScreen> {
     setState(() {
       _isPosting = true;
     });
-    await KnockoutAPI().newPost(document.toJson(), this.widget.thread.id);
+    await KnockoutAPI()
+        .newPost(document.toJson(), this.widget.thread.id)
+        .catchError((error) {
+      print(error);
+    });
     Navigator.pop(context, true);
   }
 
@@ -412,9 +417,20 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Insert'),
               onPressed: () {
                 setState(() {
-                  this.document.document.nodes.add(SlateNode(
-                      type: 'twitter',
-                      data: SlateNodeData(src: urlController.text)));
+                  this.document.document.nodes.add(
+                        SlateNode(
+                            type: 'twitter',
+                            object: 'block',
+                            data: SlateNodeData(src: urlController.text),
+                            nodes: [
+                              SlateNode(
+                                object: 'text',
+                                leaves: [
+                                  SlateLeaf(text: '', marks: [], object: 'leaf')
+                                ],
+                              ),
+                            ]),
+                      );
                 });
 
                 Navigator.of(context, rootNavigator: true).pop();
@@ -424,7 +440,58 @@ class _NewPostScreenState extends State<NewPostScreen> {
     );
   }
 
+  void addStrawpollEmbed() async {
+    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    TextEditingController urlController =
+        TextEditingController(text: clipBoardText.text);
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                keyboardType: TextInputType.url,
+                controller: urlController,
+                decoration: new InputDecoration(labelText: 'Strawpoll URL'),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              }),
+          new FlatButton(
+              child: const Text('Insert'),
+              onPressed: () {
+                setState(() {
+                  this.document.document.nodes.add(
+                        SlateNode(
+                            type: 'strawpoll',
+                            object: 'block',
+                            data: SlateNodeData(src: urlController.text),
+                            nodes: [
+                              SlateNode(
+                                object: 'text',
+                                leaves: [
+                                  SlateLeaf(text: '', marks: [], object: 'leaf')
+                                ],
+                              ),
+                            ]),
+                      );
+                });
 
+                Navigator.of(context, rootNavigator: true).pop();
+              })
+        ],
+      ),
+    );
+  }
 
   /*
   Block tap callbacks
@@ -755,6 +822,49 @@ class _NewPostScreenState extends State<NewPostScreen> {
     );
   }
 
+  void editStrawpollEmbed(SlateNode node) async {
+    TextEditingController urlController =
+        TextEditingController(text: node.data.src);
+    await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                keyboardType: TextInputType.url,
+                controller: urlController,
+                decoration: new InputDecoration(labelText: 'Strawpoll URL'),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Remove'),
+              onPressed: () {
+                setState(() {
+                  int index = this.document.document.nodes.indexOf(node);
+                  this.document.document.nodes.removeAt(index);
+                });
+                Navigator.of(context, rootNavigator: true).pop();
+              }),
+          new FlatButton(
+              child: const Text('Update'),
+              onPressed: () {
+                setState(() {
+                  int index = this.document.document.nodes.indexOf(node);
+                  this.document.document.nodes[index].data.src =
+                      urlController.text;
+                });
+                Navigator.of(context, rootNavigator: true).pop();
+              })
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext wcontext) {
@@ -804,6 +914,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 onTapAddBulletedList: () => this.addListBlock('bulleted-list'),
                 onTapAddNumberedList: () => this.addListBlock('numbered-list'),
                 onTapAddTwitterEmbed: this.addTwitterEmbed,
+                onTapAddStrawPollEmbed: this.addStrawpollEmbed,
                 onReorderHandler: (int oldIndex, int newIndex) {
                   if (oldIndex < newIndex) {
                     // removing the item at oldIndex will shorten the list by 1.

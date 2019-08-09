@@ -133,6 +133,11 @@ class PostContent extends StatelessWidget {
           url: embedUrl,
         );
       },
+      strawpollHandler: (SlateNode node) {
+        return EmbedWidget(
+          url: node.data.src,
+        );
+      },
       userQuoteHandler: (String username, List<Widget> widgets, bool isChild) {
         return UserQuoteWidget(
           username: username,

@@ -170,6 +170,8 @@ class KnockoutAPI {
   }
 
   Future<void> newPost(dynamic content, int threadId) async {
+    print(content);
+    print(threadId);
     try {
       await _request(type: 'post', url: 'post', data: {
         'content': json.encode(content).toString(),
@@ -180,6 +182,7 @@ class KnockoutAPI {
       });
     } on DioError catch (e) {
       print(e);
+      print(e.response);
     }
   }
 
