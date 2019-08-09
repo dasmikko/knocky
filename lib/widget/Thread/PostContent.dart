@@ -138,7 +138,7 @@ class PostContent extends StatelessWidget {
           url: node.data.src,
         );
       },
-      userQuoteHandler: (String username, List<Widget> widgets, bool isChild) {
+      userQuoteHandler: (String username, List<Widget> widgets, bool isChild, SlateNode node) {
         return UserQuoteWidget(
           username: username,
           children: widgets,

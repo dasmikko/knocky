@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/models/slateDocument.dart';
+import 'package:knocky/models/thread.dart';
 import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -31,38 +32,44 @@ class PostEditor extends StatefulWidget {
   final Function onTapAddTwitterEmbed;
   final Function onTapAddStrawPollEmbed;
 
-  PostEditor({
-    this.document,
-    this.onTapTextBlock,
-    this.onTapImageBlock,
-    this.onTapListBlock,
-    this.onTapQuoteBlock,
-    this.onTapTwitterBlock,
-    this.onTapUserQuoteBlock,
-    this.onTapVideoBlock,
-    this.onTapYouTubeBlock,
-    this.onTapStrawpollBlock,
-    this.onTapAddHeadingOne,
-    this.onTapAddHeadingTwo,
-    this.onTapAddImage,
-    this.onTapAddQuote,
-    this.onTapAddTextBlock,
-    this.onTapAddVideo,
-    this.onTapAddYouTubeVideo,
-    this.onReorderHandler,
-    this.onTapAddBulletedList,
-    this.onTapAddNumberedList,
-    this.onTapAddUserQuote,
-    this.onTapAddTwitterEmbed,
-    this.onTapAddStrawPollEmbed,
+  final List<ThreadPost> replyList;
 
-  });
+  PostEditor(
+      {this.document,
+      this.onTapTextBlock,
+      this.onTapImageBlock,
+      this.onTapListBlock,
+      this.onTapQuoteBlock,
+      this.onTapTwitterBlock,
+      this.onTapUserQuoteBlock,
+      this.onTapVideoBlock,
+      this.onTapYouTubeBlock,
+      this.onTapStrawpollBlock,
+      this.onTapAddHeadingOne,
+      this.onTapAddHeadingTwo,
+      this.onTapAddImage,
+      this.onTapAddQuote,
+      this.onTapAddTextBlock,
+      this.onTapAddVideo,
+      this.onTapAddYouTubeVideo,
+      this.onReorderHandler,
+      this.onTapAddBulletedList,
+      this.onTapAddNumberedList,
+      this.onTapAddUserQuote,
+      this.onTapAddTwitterEmbed,
+      this.onTapAddStrawPollEmbed,
+      this.replyList});
 
   @override
   _PostEditorState createState() => _PostEditorState();
 }
 
 class _PostEditorState extends State<PostEditor> {
+  @override
+  void initState() {
+    super.initState();
+    print(this.widget.replyList);
+  }
 
   Widget _quoteHandler(
       SlateNode node, Function inlineHandler, Function leafHandler) {
@@ -316,6 +323,15 @@ class _PostEditorState extends State<PostEditor> {
     );
   }
 
+  Widget _userquoteHandler(
+      String username, List<Widget> widgets, bool isChild, SlateNode node) {
+    return ListTile(
+      onTap: () => this.widget.onTapUserQuoteBlock(node),
+      leading: Icon(Icons.message),
+      title: Text(username),
+    );
+  }
+
   List<Widget> editorContent() {
     return SlateDocumentParser(
       slateObject: this.widget.document,
@@ -330,6 +346,7 @@ class _PostEditorState extends State<PostEditor> {
       numberedListHandler: this._numberedListHandler,
       twitterEmbedHandler: this._twitterHandler,
       strawpollHandler: this._strawpollHandler,
+      userQuoteHandler: this._userquoteHandler,
     )
         .asWidgetList()
         .map((widget) => Container(
@@ -399,6 +416,16 @@ class _PostEditorState extends State<PostEditor> {
                 icon: Icon(MdiIcons.poll),
                 onPressed: this.widget.onTapAddStrawPollEmbed,
               ),
+              if (this.widget.replyList.length > 0)
+                Builder(
+                  builder: (BuildContext bcontext) {
+                    return IconButton(
+                      tooltip: 'Insert userquote',
+                      icon: Icon(Icons.message),
+                      onPressed: this.widget.onTapAddUserQuote,
+                    );
+                  },
+                ),
             ],
           ),
         ),

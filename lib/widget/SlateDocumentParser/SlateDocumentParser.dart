@@ -153,7 +153,7 @@ class SlateDocumentParser extends StatelessWidget {
     // Handle block nodes
     widgets.addAll(handleNodes(node.nodes, isChild: !isChild));
 
-    return this.userQuoteHandler(node.data.postData.username, widgets, isChild);
+    return this.userQuoteHandler(node.data.postData.username, widgets, isChild, node);
   }
 
   Widget youTubeToWidget(SlateNode node) {

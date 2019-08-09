@@ -34,9 +34,23 @@ class _NewPostScreenState extends State<NewPostScreen> {
   @override
   void initState() {
     super.initState();
-
-    //document = BBCodeHandler()
-    //  .parse(controller.text, this.widget.thread, this.widget.replyList);
+    if (this.widget.replyList.length == 1) {
+      ThreadPost item = this.widget.replyList.first;
+      this.document.document.nodes.add(
+            SlateNode(
+                object: 'block',
+                type: 'userquote',
+                data: SlateNodeData(
+                  postData: NodeDataPostData(
+                    postId: item.id,
+                    threadId: this.widget.thread.id,
+                    threadPage: this.widget.thread.currentPage,
+                    username: item.user.username,
+                  ),
+                ),
+                nodes: item.content.document.nodes),
+          );
+    }
   }
 
   void onPressPost() async {
@@ -302,17 +316,23 @@ class _NewPostScreenState extends State<NewPostScreen> {
               return ListTile(
                 title: Text(item.user.username),
                 onTap: () {
+                  setState(() {
+                    this.document.document.nodes.add(
+                          SlateNode(
+                              object: 'block',
+                              type: 'userquote',
+                              data: SlateNodeData(
+                                postData: NodeDataPostData(
+                                  postId: item.id,
+                                  threadId: this.widget.thread.id,
+                                  threadPage: this.widget.thread.currentPage,
+                                  username: item.user.username,
+                                ),
+                              ),
+                              nodes: item.content.document.nodes),
+                        );
+                  });
                   Navigator.of(bcontext, rootNavigator: true).pop();
-
-                  if (controller.text.endsWith('\n') ||
-                      controller.text.isEmpty) {
-                    controller.text =
-                        controller.text + '[userquote]${index + 1}[/userquote]';
-                  } else {
-                    controller.text = controller.text +
-                        '\n[userquote]${index + 1}[/userquote]';
-                  }
-                  refreshPreview();
                 },
               );
             },
@@ -695,10 +715,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
     );
   }
 
-  void editVideoDialog() async {
-    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+  void editVideoDialog(SlateNode node) async {
     TextEditingController urlController =
-        TextEditingController(text: clipBoardText.text);
+        TextEditingController(text: node.data.src);
     await showDialog<String>(
       context: context,
       builder: (BuildContext context) => new AlertDialog(
@@ -718,20 +737,21 @@ class _NewPostScreenState extends State<NewPostScreen> {
         ),
         actions: <Widget>[
           new FlatButton(
-              child: const Text('Cancel'),
+              child: const Text('Remove'),
               onPressed: () {
+                setState(() {
+                  int index = this.document.document.nodes.indexOf(node);
+                  this.document.document.nodes.removeAt(index);
+                });
                 Navigator.of(context, rootNavigator: true).pop();
               }),
           new FlatButton(
-              child: const Text('Insert'),
+              child: const Text('Update'),
               onPressed: () {
                 setState(() {
-                  this.document.document.nodes.add(
-                        SlateNode(
-                          type: 'video',
-                          data: SlateNodeData(src: urlController.text),
-                        ),
-                      );
+                  int index = this.document.document.nodes.indexOf(node);
+                  this.document.document.nodes[index].data.src =
+                      urlController.text;
                 });
 
                 Navigator.of(context, rootNavigator: true).pop();
@@ -866,6 +886,33 @@ class _NewPostScreenState extends State<NewPostScreen> {
     );
   }
 
+  void editUserQuote(SlateNode node) async {
+    await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text('Remove user quote?'),
+        contentPadding: const EdgeInsets.all(16.0),
+        content: Text('Are you sure you want to remove the user quote?'),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              }),
+          new FlatButton(
+              child: const Text('Yes'),
+              onPressed: () {
+                setState(() {
+                  int index = this.document.document.nodes.indexOf(node);
+                  this.document.document.nodes.removeAt(index);
+                });
+                Navigator.of(context, rootNavigator: true).pop();
+              }),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext wcontext) {
     return DefaultTabController(
@@ -896,13 +943,16 @@ class _NewPostScreenState extends State<NewPostScreen> {
             children: [
               PostEditor(
                 document: document,
+                replyList: this.widget.replyList,
                 // Blocks
                 onTapTextBlock: this.showTextEditDialog,
                 onTapImageBlock: this.editImageDialog,
                 onTapQuoteBlock: this.showTextEditDialog,
                 onTapYouTubeBlock: this.editYoutubeVideoDialog,
+                onTapVideoBlock: this.editVideoDialog,
                 onTapListBlock: this.editList,
                 onTapTwitterBlock: this.editTwitterEmbed,
+                onTapUserQuoteBlock: this.editUserQuote,
                 // Toolbar
                 onTapAddTextBlock: this.addTextBlock,
                 onTapAddHeadingOne: () => this.addHeadingBlock('one'),
@@ -915,6 +965,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 onTapAddNumberedList: () => this.addListBlock('numbered-list'),
                 onTapAddTwitterEmbed: this.addTwitterEmbed,
                 onTapAddStrawPollEmbed: this.addStrawpollEmbed,
+                onTapAddUserQuote: () => this.addUserquoteDialog(context),
                 onReorderHandler: (int oldIndex, int newIndex) {
                   if (oldIndex < newIndex) {
                     // removing the item at oldIndex will shorten the list by 1.
