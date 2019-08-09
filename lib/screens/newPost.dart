@@ -860,7 +860,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
     );
   }
 
-  void editStrawpollEmbed(SlateNode node) async {
+  void editStrawpollEmbed(String url, SlateNode node) async {
     TextEditingController urlController =
         TextEditingController(text: node.data.src);
     await showDialog<String>(
@@ -971,6 +971,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 onTapListBlock: this.editList,
                 onTapTwitterBlock: this.editTwitterEmbed,
                 onTapUserQuoteBlock: this.editUserQuote,
+                onTapStrawpollBlock: this.editStrawpollEmbed,
                 // Toolbar
                 onTapAddTextBlock: this.addTextBlock,
                 onTapAddHeadingOne: () => this.addHeadingBlock('one'),
