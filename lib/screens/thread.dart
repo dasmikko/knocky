@@ -5,8 +5,8 @@ import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:after_layout/after_layout.dart';
+import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/models/thread.dart';
-import 'package:knocky/screens/editPost.dart';
 import 'package:knocky/widget/Thread/ThreadPostItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:numberpicker/numberpicker.dart';
@@ -20,7 +20,7 @@ class ThreadScreen extends StatefulWidget {
   final int threadId;
   final int page;
 
-  ThreadScreen({this.title, this.page = 1, this.postCount, this.threadId});
+  ThreadScreen({this.title = 'Loading thread', this.page = 1, this.postCount, this.threadId});
 
   @override
   _ThreadScreenState createState() => _ThreadScreenState();
@@ -45,7 +45,10 @@ class _ThreadScreenState extends State<ThreadScreen>
   void initState() {
     super.initState();
     _currentPage = this.widget.page;
-    _totalPages = (widget.postCount / 20).ceil();
+
+    if (widget.postCount != null) {
+      _totalPages = (widget.postCount / 20).ceil();
+    }
 
     prepareAnimations();
 
@@ -118,6 +121,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       setState(() {
         details = res;
         _isLoading = false;
+        _totalPages = (details.totalPosts / 20).ceil();
       });
       checkIfShouldMarkThreadRead();
     });
@@ -353,17 +357,11 @@ class _ThreadScreenState extends State<ThreadScreen>
 
   void onPressReply(ThreadPost post) async {
     if (postsToReplyTo.length > 0) {
-      onLongPressReply(post);
+      onLongPressReply(new ThreadPost.clone(post));
     } else {
       List<ThreadPost> reply = List();
       reply.add(
-        new ThreadPost(
-            bans: post.bans,
-            content: post.content,
-            createdAt: post.createdAt,
-            id: post.id,
-            ratings: post.ratings,
-            user: post.user),
+        new ThreadPost.clone(post),
       );
 
       final result = await Navigator.push(
@@ -480,6 +478,9 @@ class _ThreadScreenState extends State<ThreadScreen>
 
   void onSelectOverflowItem(int item) {
     switch (item) {
+      case 0:
+        refreshPage();
+        break;
       case 1:
         onTapSubscribe(context);
         break;
@@ -491,12 +492,15 @@ class _ThreadScreenState extends State<ThreadScreen>
   }
 
   void onTapEditPost (BuildContext context, ThreadPost post) async {
+
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => EditPostScreen(
+          builder: (context) => NewPostScreen(
+            editingPost: true,
             thread: details,
             post: post,
+            replyList: List(),
           ),
         ),
       );
@@ -510,6 +514,7 @@ class _ThreadScreenState extends State<ThreadScreen>
         print('Do the scroll');
         scrollController.jumpTo(scrollController.position.maxScrollExtent);
       }
+
   }
 
   @override
@@ -525,6 +530,7 @@ class _ThreadScreenState extends State<ThreadScreen>
                 onSelected: onSelectOverflowItem,
                 itemBuilder: (BuildContext context) {
                   return [
+                    overFlowItem(Icon(Icons.refresh), 'Refresh', 0),
                     if (details != null)
                       overFlowItem(
                           Icon(FontAwesomeIcons.eye), 'Subscribe to thread', 1),

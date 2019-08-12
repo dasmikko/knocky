@@ -47,7 +47,6 @@ class KnockoutAPI {
     String mBaseurl =
         await box.get('env') == 'knockout' ? KNOCKOUT_URL : QA_URL;
 
-
     Dio dio = new Dio();
     dio.options.baseUrl = mBaseurl;
     dio.options.contentType = ContentType.json;
@@ -76,8 +75,8 @@ class KnockoutAPI {
     try {
       final response2 = await _request(url: 'subforum');
       return response2.data['list']
-        .map<Subforum>((json) => Subforum.fromJson(json))
-        .toList();
+          .map<Subforum>((json) => Subforum.fromJson(json))
+          .toList();
     } on DioError catch (e) {
       throw e;
     }
@@ -86,8 +85,8 @@ class KnockoutAPI {
   Future<SubforumDetails> getSubforumDetails(int id, {int page = 1}) async {
     try {
       final response = await _request(
-        url: 'subforum/' + id.toString() + '/' + page.toString());
-    return SubforumDetails.fromJson(response.data);
+          url: 'subforum/' + id.toString() + '/' + page.toString());
+      return SubforumDetails.fromJson(response.data);
     } on DioError catch (e) {
       print(e);
       return null;
@@ -102,7 +101,8 @@ class KnockoutAPI {
 
   Future<dynamic> authCheck() async {
     try {
-      final response = await _request(url: 'user/authCheck', headers: {'content-format-version': 1});
+      final response = await _request(
+          url: 'user/authCheck', headers: {'content-format-version': 1});
       return response.data;
     } on DioError catch (e) {
       return e.response.data;
@@ -124,8 +124,7 @@ class KnockoutAPI {
   Future<void> readThreads(DateTime lastseen, int threadId) async {
     ReadThreads jsonToPost =
         new ReadThreads(lastSeen: lastseen, threadId: threadId);
-    await _request(
-        type: 'post', url: 'readThreads', data: jsonToPost.toJson());
+    await _request(type: 'post', url: 'readThreads', data: jsonToPost.toJson());
   }
 
   Future<void> readThreadSubsciption(DateTime lastseen, int threadId) async {
@@ -138,16 +137,15 @@ class KnockoutAPI {
     final response = await _request(type: 'get', url: 'events');
 
     return response.data
-          .map<KnockoutEvent>((json) => KnockoutEvent.fromJson(json))
-          .toList();
+        .map<KnockoutEvent>((json) => KnockoutEvent.fromJson(json))
+        .toList();
   }
 
   Future<void> deleteThreadAlert(int threadid) async {
     final response = await _request(
         url: 'alert', type: 'delete', data: {'threadId': threadid});
 
-    if (response.statusCode == 200) {
-    }
+    if (response.statusCode == 200) {}
   }
 
   Future<void> subscribe(DateTime lastSeen, int threadid) async {
@@ -156,8 +154,7 @@ class KnockoutAPI {
         type: 'post',
         data: {'lastSeen': lastSeen.toIso8601String(), 'threadId': threadid});
 
-    if (response.statusCode == 200) {
-    }
+    if (response.statusCode == 200) {}
   }
 
   Future<bool> ratePost(int postId, String rating) async {
@@ -170,6 +167,8 @@ class KnockoutAPI {
   }
 
   Future<void> newPost(dynamic content, int threadId) async {
+    print(content);
+    print(threadId);
     try {
       await _request(type: 'post', url: 'post', data: {
         'content': json.encode(content).toString(),
@@ -180,33 +179,38 @@ class KnockoutAPI {
       });
     } on DioError catch (e) {
       print(e);
+      print(e.response);
     }
   }
 
-  Future<void> updatePost(String content, int postId, int threadId) async {
-    await _request(
-        type: 'post',
-        url: 'post',
-        data: {'content': content, 'id': postId, 'thread_id': threadId});
+  Future<void> updatePost(dynamic content, int postId, int threadId) async {
+    try {
+      await _request(type: 'put', url: 'post', data: {
+        'content': json.encode(content).toString(),
+        'id': postId,
+        'thread_id': threadId
+      });
+    } on DioError catch (e) {
+      print(e);
+      print(e.response);
+    }
   }
 
   Future<List<SubforumThreadLatestPopular>> latestThreads() async {
-    final response = await _request(
-        type: 'get',
-        url: 'thread/latest');
+    final response = await _request(type: 'get', url: 'thread/latest');
 
     return response.data['list']
-        .map<SubforumThreadLatestPopular>((json) => SubforumThreadLatestPopular.fromJson(json))
+        .map<SubforumThreadLatestPopular>(
+            (json) => SubforumThreadLatestPopular.fromJson(json))
         .toList();
   }
 
   Future<List<SubforumThreadLatestPopular>> popularThreads() async {
-    final response = await _request(
-        type: 'get',
-        url: 'thread/popular');
+    final response = await _request(type: 'get', url: 'thread/popular');
 
     return response.data['list']
-        .map<SubforumThreadLatestPopular>((json) => SubforumThreadLatestPopular.fromJson(json))
+        .map<SubforumThreadLatestPopular>(
+            (json) => SubforumThreadLatestPopular.fromJson(json))
         .toList();
   }
 

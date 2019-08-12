@@ -89,7 +89,7 @@ class CategoryListItem extends StatelessWidget {
           ),
           Container(
             child: CachedNetworkImage(
-              imageUrl: subforum.icon,
+              imageUrl: !subforum.icon.contains('static') ? subforum.icon : 'https://knockout.chat' + subforum.icon,
               width: 40.0,
             ),
           )

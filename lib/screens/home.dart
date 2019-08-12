@@ -2,15 +2,25 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hive/hive.dart';
+import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:after_layout/after_layout.dart';
+import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widget/Drawer.dart';
+import 'package:quick_actions/quick_actions.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
 import 'package:knocky/state/subscriptions.dart';
 import 'package:knocky/state/appState.dart';
 import 'package:knocky/widget/tab-navigator.dart';
 import 'package:knocky/events.dart';
+
+import 'dart:async';
+import 'dart:io';
+
+import 'package:uni_links/uni_links.dart';
+import 'package:flutter/services.dart' show PlatformException;
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -30,9 +40,46 @@ class _HomeScreenState extends State<HomeScreen>
     2: GlobalKey<NavigatorState>(),
     3: GlobalKey<NavigatorState>(),
   };
+  StreamSubscription _sub;
 
   void initState() {
     super.initState();
+
+    initUniLinks();
+
+    final QuickActions quickActions = new QuickActions();
+
+    quickActions.setShortcutItems(<ShortcutItem>[
+      const ShortcutItem(
+          type: 'action_subscriptions',
+          localizedTitle: 'Subscriptions',
+          icon: 'icon_help'),
+      const ShortcutItem(
+          type: 'action_popular',
+          localizedTitle: 'Popular threads',
+          icon: 'icon_help'),
+      const ShortcutItem(
+          type: 'action_latest',
+          localizedTitle: 'Latest threads',
+          icon: 'icon_help')
+    ]);
+
+    quickActions.initialize((shortcutType) {
+      if (shortcutType == 'action_subscriptions') {
+        AppHiveBox.getBox().then((Box box) {
+          box.get('isLoggedIn', defaultValue: false).then((loginState) {
+            if (loginState) {
+              ScopedModel.of<AppStateModel>(context).setCurrentTab(1);
+            }
+          });
+        });
+      }
+      if (shortcutType == 'action_popular')
+        ScopedModel.of<AppStateModel>(context).setCurrentTab(3);
+      if (shortcutType == 'action_latest')
+        ScopedModel.of<AppStateModel>(context).setCurrentTab(2);
+      // More handling code...
+    });
   }
 
   @override
@@ -49,7 +96,53 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void dispose() {
     _dataSub.cancel();
+    _sub.cancel();
     super.dispose();
+  }
+
+  Future<Null> initUniLinks() async {
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      Uri initialUri = await getInitialUri();
+      print(initialUri.toString());
+      if (initialUri != null) handleLink(initialUri);
+      // Parse the link and warn the user, if it is not correct,
+      // but keep in mind it could be `null`.
+    } on PlatformException {
+      // Handle exception by warning the user their action did not succeed
+      // return?
+    }
+
+    // Attach a listener to the stream
+    _sub = getUriLinksStream().listen((Uri uri) {
+      handleLink(uri);
+      // Use the uri and warn the user, if it is not correct
+    }, onError: (err) {
+      // Handle exception by warning the user their action did not succeed
+    });
+  }
+
+  void handleLink (Uri uri) {
+    print(uri.toString());
+    print(uri.pathSegments.length);
+
+    // Handle thread links
+    if (uri.pathSegments.length > 0) {
+      if (uri.pathSegments[0] == 'thread') {
+        int threadId = int.tryParse(uri.pathSegments[1]);
+
+        if (threadId != null) {
+          navigatorKeys[0].currentState.push(MaterialPageRoute(
+              builder: (context) => ThreadScreen(
+                threadId: int.parse(uri.pathSegments[1]),
+              ),
+            ),);
+        }
+      }
+    }
+    uri.pathSegments.forEach((segment) {
+      print(segment);
+    });
   }
 
   Future<bool> _onWillPop() async {
