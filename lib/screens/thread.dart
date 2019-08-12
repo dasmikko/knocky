@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:after_layout/after_layout.dart';
+import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widget/Thread/ThreadPostItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
@@ -356,17 +357,11 @@ class _ThreadScreenState extends State<ThreadScreen>
 
   void onPressReply(ThreadPost post) async {
     if (postsToReplyTo.length > 0) {
-      onLongPressReply(post);
+      onLongPressReply(new ThreadPost.clone(post));
     } else {
       List<ThreadPost> reply = List();
       reply.add(
-        new ThreadPost(
-            bans: post.bans,
-            content: post.content,
-            createdAt: post.createdAt,
-            id: post.id,
-            ratings: post.ratings,
-            user: post.user),
+        new ThreadPost.clone(post),
       );
 
       final result = await Navigator.push(
