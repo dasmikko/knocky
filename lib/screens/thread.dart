@@ -483,6 +483,9 @@ class _ThreadScreenState extends State<ThreadScreen>
 
   void onSelectOverflowItem(int item) {
     switch (item) {
+      case 0:
+        refreshPage();
+        break;
       case 1:
         onTapSubscribe(context);
         break;
@@ -532,6 +535,7 @@ class _ThreadScreenState extends State<ThreadScreen>
                 onSelected: onSelectOverflowItem,
                 itemBuilder: (BuildContext context) {
                   return [
+                    overFlowItem(Icon(Icons.refresh), 'Refresh', 0),
                     if (details != null)
                       overFlowItem(
                           Icon(FontAwesomeIcons.eye), 'Subscribe to thread', 1),
