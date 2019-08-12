@@ -32,17 +32,24 @@ class _NewPostScreenState extends State<NewPostScreen> {
   GlobalKey _scaffoldKey;
   bool _isPosting = false;
   TextEditingController controller = TextEditingController();
+  List<ThreadPost> replyListConverted = List();
 
   @override
   void initState() {
     super.initState();
 
+    this.replyListConverted = this.widget.replyList;
+
     if (this.widget.editingPost) {
       this.document = this.widget.post.content;
+    } else {
+      if (this.replyListConverted.length > 0) {
+        this.convertReplyEmbedsToText();
+      }
     }
 
-    if (this.widget.replyList.length == 1) {
-      ThreadPost item = this.widget.replyList.first;
+    if (this.replyListConverted.length == 1) {
+      ThreadPost item = this.replyListConverted.first;
       this.document.document.nodes.add(
             SlateNode(
                 object: 'block',
@@ -58,6 +65,38 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 nodes: item.content.document.nodes),
           );
     }
+  }
+
+  void convertReplyEmbedsToText() {
+    print('Convert embeds');
+    setState(() {
+      this.replyListConverted.forEach((reply) {
+        reply.content.document.nodes.forEach((node) {
+          switch (node.type) {
+            case 'image':
+            case 'youtube':
+            case 'video':
+            case 'strawpoll':
+            case 'twitter':
+              print('Should be convertet');
+              int replyindex = this.replyListConverted.indexOf(reply);
+              int nodeIndex = reply.content.document.nodes.indexOf(node);
+
+              this.replyListConverted[replyindex].content.document.nodes.removeAt(nodeIndex);
+              this.replyListConverted[replyindex].content.document.nodes.insert(nodeIndex, embedConverter(node.type, node.data.src));
+              break;
+          }
+        });
+      });
+    });
+  }
+
+  SlateNode embedConverter(String type, String url) {
+    return new SlateNode(type: 'paragraph', object: 'block', nodes: [
+      SlateNode(object: 'text', leaves: [
+        SlateLeaf(text: '[${type}: ${url}]', marks: [], object: 'leaf')
+      ])
+    ]);
   }
 
   void onPressPost() async {
@@ -328,9 +367,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
           height: 400,
           width: 200,
           child: ListView.builder(
-            itemCount: this.widget.replyList.length,
+            itemCount: this.replyListConverted.length,
             itemBuilder: (BuildContext context, int index) {
-              ThreadPost item = this.widget.replyList[index];
+              ThreadPost item = this.replyListConverted[index];
               return ListTile(
                 title: Text(item.user.username),
                 onTap: () {
@@ -961,7 +1000,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
             children: [
               PostEditor(
                 document: document,
-                replyList: this.widget.replyList,
+                replyList: this.replyListConverted,
                 // Blocks
                 onTapTextBlock: this.showTextEditDialog,
                 onTapImageBlock: this.editImageDialog,
