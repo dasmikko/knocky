@@ -12,6 +12,8 @@ class SlateObject {
 
   factory SlateObject.fromJson(Map<String, dynamic> json) => _$SlateObjectFromJson(json);
   Map<String, dynamic> toJson() => _$SlateObjectToJson(this);
+
+  SlateObject.clone(SlateObject slateObject): this(object: slateObject.object, document: slateObject.document);
 }
 
 Map _documentToJson(SlateDocument document) => document.toJson();
