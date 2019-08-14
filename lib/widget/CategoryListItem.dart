@@ -16,37 +16,40 @@ class CategoryListItem extends StatelessWidget {
         return Color.fromRGBO(98, 61, 210, 1);
         break;
       case 2:
-        return Color.fromRGBO(41, 212, 78, 1);
+        return Color.fromRGBO(239, 36, 36, 1);
         break;
       case 3:
         return Color.fromRGBO(245, 170, 32, 1);
         break;
       case 4:
-        return Color.fromRGBO(239, 36, 36, 1);
-        break;
-      case 5:
-        return Color.fromRGBO(97, 217, 250, 1);
-        break;
-      case 6:
-        return Color.fromRGBO(239, 134, 101, 1);
-        break;
-      case 7:
-        return Color.fromRGBO(98, 61, 210, 1);
-        break;
-      case 8:
         return Color.fromRGBO(41, 212, 78, 1);
         break;
-      case 9:
-        return Color.fromRGBO(245, 170, 32, 1);
+      case 5:
+        return Color.fromRGBO(41, 212, 78, 1);
         break;
-      case 10:
+      case 6:
+        return Color.fromRGBO(98, 61, 210, 1);
+        break;
+      case 7:
         return Color.fromRGBO(239, 36, 36, 1);
         break;
-      case 11:
+      case 8:
+        return Color.fromRGBO(245, 170, 32, 1);
+        break;
+      case 9:
         return Color.fromRGBO(97, 217, 250, 1);
         break;
-      case 12:
+      case 10:
         return Color.fromRGBO(239, 134, 101, 1);
+        break;
+      case 11:
+        return Color.fromRGBO(239, 134, 101, 1);
+        break;
+      case 12:
+        return Color.fromRGBO(98, 61, 210, 1);
+        break;
+      case 13:
+        return Color.fromRGBO(97, 217, 250, 1);
         break;
       default:
         return Colors.white;
