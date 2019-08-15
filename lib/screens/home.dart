@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive/hive.dart';
 import 'package:knocky/helpers/hiveHelper.dart';
+import 'package:knocky/helpers/twitterApi.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/screens/thread.dart';
@@ -46,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
 
     initUniLinks();
+    TwitterHelper().getBearerToken();
 
     final QuickActions quickActions = new QuickActions();
 

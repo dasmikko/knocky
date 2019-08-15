@@ -33,6 +33,18 @@ class AppColors {
         ? HexColor('28282c')
         : HexColor('ebedef');
   }
+
+  Color twitterEmbedBackground() {
+    return this.currentBrightness == Brightness.dark
+        ? HexColor('000000')
+        : HexColor('ffffff');
+  }
+
+  Color twitterEmbedText() {
+    return this.currentBrightness == Brightness.dark
+        ? HexColor('ffffff')
+        : HexColor('000000');
+  }
 }
 
 class HexColor extends Color {
