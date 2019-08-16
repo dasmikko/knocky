@@ -32,26 +32,22 @@ class _AudioElementState extends State<AudioElement> {
     audioPlayer.onDurationChanged.listen((Duration p) {
       if (audioDuration == null) {
         setState(() {
-         audioDuration = p;
+          audioDuration = p;
         });
       }
-      print('Full duration: ' + p.inSeconds.toString());
     });
     audioPlayer.onAudioPositionChanged.listen((Duration p) {
       if (audioDuration != null) {
-        print((p.inMilliseconds / audioDuration.inMilliseconds));
         setState(() {
-         currentPlayPosition = (p.inMilliseconds / audioDuration.inMilliseconds);
+          currentPlayPosition =
+              (p.inMilliseconds / audioDuration.inMilliseconds);
         });
       }
-      print('current duration: ' + p.inSeconds.toString());
-
     });
     audioPlayer.onPlayerStateChanged.listen((AudioPlayerState state) {
       setState(() {
-       currentState = state;
-
-       if (state == AudioPlayerState.COMPLETED) currentPlayPosition = 1.0;
+        currentState = state;
+        if (state == AudioPlayerState.COMPLETED) currentPlayPosition = 1.0;
       });
     });
   }
@@ -75,13 +71,13 @@ class _AudioElementState extends State<AudioElement> {
                 onPressed: () {
                   Navigator.pop(context, 1);
                 },
-                child: const Text('Copy video link'),
+                child: const Text('Copy audio link'),
               ),
               SimpleDialogOption(
                 onPressed: () {
                   Navigator.pop(context, 2);
                 },
-                child: const Text('Download video'),
+                child: const Text('Download audio file'),
               ),
             ],
           );
@@ -89,7 +85,7 @@ class _AudioElementState extends State<AudioElement> {
       case 1:
         Clipboard.setData(new ClipboardData(text: url));
         this.widget.scaffoldKey.currentState.showSnackBar(new SnackBar(
-              content: Text('Image link copied to clipboard'),
+              content: Text('Link copied to clipboard'),
             ));
         break;
       case 2:
@@ -98,7 +94,7 @@ class _AudioElementState extends State<AudioElement> {
     }
   }
 
-  IconData playIcon () {
+  IconData playIcon() {
     switch (currentState) {
       case AudioPlayerState.PAUSED:
       case AudioPlayerState.STOPPED:
@@ -116,43 +112,66 @@ class _AudioElementState extends State<AudioElement> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 8.0),
-      child: GestureDetector(
-        onLongPress: () => this.onLongPress(context, this.widget.url),
+      margin: EdgeInsets.only(bottom: 15.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(50),
         child: Container(
+          color: Colors.grey[800],
+          padding: EdgeInsets.all(8),
+          child: Container(
             child: Row(
-          children: <Widget>[
-            IconButton(
-              icon: Icon(
-                playIcon(),
-                size: 50,
-              ),
-              onPressed: () {
-                print(currentState.toString());
-                switch (currentState) {
-                  case AudioPlayerState.STOPPED:
-                    audioPlayer.play(this.widget.url);
-                    break;
-                  case AudioPlayerState.PAUSED:
-                    audioPlayer.resume();
-                    break;
-                  case AudioPlayerState.PLAYING:
-                    audioPlayer.pause();
-                    break;
-                  case AudioPlayerState.COMPLETED:
-                    audioPlayer.play(this.widget.url);
-                    break;
-                }
-
-              },
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    playIcon(),
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    switch (currentState) {
+                      case AudioPlayerState.STOPPED:
+                        audioPlayer.play(this.widget.url);
+                        break;
+                      case AudioPlayerState.PAUSED:
+                        audioPlayer.resume();
+                        break;
+                      case AudioPlayerState.PLAYING:
+                        audioPlayer.pause();
+                        break;
+                      case AudioPlayerState.COMPLETED:
+                        audioPlayer.seek(Duration(milliseconds: 0));
+                        audioPlayer.resume();
+                        break;
+                    }
+                  },
+                ),
+                Flexible(
+                  child: SeekBar(
+                    value: currentPlayPosition,
+                    onProgressChanged: (double position) {
+                      if (audioDuration != null) {
+                        int positionInPercent = (position * 100).ceil();
+                        double onePercent =
+                            (audioDuration.inMilliseconds / 100);
+                        int newMiliseconds =
+                            (onePercent * positionInPercent).floor();
+                        audioPlayer
+                            .seek(Duration(milliseconds: newMiliseconds));
+                      }
+                    },
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.more_vert,
+                    size: 30,
+                  ),
+                  onPressed: () => onLongPress(context, this.widget.url),
+                  highlightColor: Colors.white,
+                ),
+              ],
             ),
-            Flexible(
-              child: SeekBar(
-                value: currentPlayPosition,
-              ),
-            ),
-          ],
-        )),
+          ),
+        ),
       ),
     );
   }
