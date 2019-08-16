@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/screens/imageViewer.dart';
 import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
+import 'package:knocky/widget/Thread/PostElements/Audio.dart';
 import 'package:knocky/widget/Thread/PostElements/Embed.dart';
 import 'package:knocky/widget/Thread/PostElements/Image.dart';
 import 'package:knocky/widget/Thread/PostElements/Twitter.dart';
@@ -120,6 +121,10 @@ class PostContent extends StatelessWidget {
         );
       },
       videoWidgetHandler: (SlateNode node) {
+        if (node.data.src.endsWith('.wav') || node.data.src.endsWith('.mp3') || node.data.src.endsWith('.ogg')) {
+          return AudioElement(url: node.data.src, scaffoldKey: this.scaffoldKey,);
+        }
+
         return VideoElement(
           url: node.data.src,
           scaffoldKey: this.scaffoldKey,

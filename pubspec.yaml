@@ -50,9 +50,9 @@ dependencies:
       path: hive
   quick_actions: ^0.3.2+2
   material_design_icons_flutter: 3.2.3895
-  tweet_ui:
-    git:
-      url: https://github.com/dasmikko/tweet_ui.git
+  tweet_ui: ^0.1.1
+  audioplayers: ^0.13.1
+  seekbar: ^0.0.2
   flutter:
     sdk: flutter
 
