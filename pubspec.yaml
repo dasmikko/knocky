@@ -41,6 +41,7 @@ dependencies:
   scoped_model: ^1.0.1
   package_info: ^0.4.0+4
   sticky_headers: "^0.1.8"
+  path_provider_ex: ^1.0.1
   bbob_dart: ^0.1.1
   event_bus: ^1.1.0
   uni_links: ^0.2.0
