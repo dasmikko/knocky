@@ -10,7 +10,7 @@ class AppHiveBox {
   }
 
   static Future<Box> getBox() async {
-    return Hive.box('knockyBox', compactionStrategy: (entries, deletedEntries) {
+    return Hive.openBox('knockyBox', compactionStrategy: (entries, deletedEntries) {
       return deletedEntries > 50;
     });
   }
