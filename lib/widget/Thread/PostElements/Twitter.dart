@@ -18,6 +18,7 @@ class TwitterEmbedWidget extends StatefulWidget {
 class _TwitterEmbedWidgetState extends State<TwitterEmbedWidget>
     with AfterLayoutMixin<TwitterEmbedWidget> {
   bool _isLoading = true;
+  bool _failed = false;
   Map _twitterJson;
 
   @override
@@ -29,10 +30,24 @@ class _TwitterEmbedWidgetState extends State<TwitterEmbedWidget>
     Uri url = Uri.parse(this.widget.twitterUrl);
     int tweetId = int.parse(url.pathSegments.last);
     Map<String, dynamic> twitterJson = await TwitterHelper().getTweet(tweetId);
-    setState(() {
-      _isLoading = false;
-      _twitterJson = twitterJson;
-    });
+    print(twitterJson);
+
+    if (twitterJson['errors'] != null) {
+      if (this.mounted) {
+        setState(() {
+          _isLoading = false;
+          _failed = true;
+          _twitterJson = twitterJson;
+        });
+      }
+    } else {
+      if (this.mounted) {
+        setState(() {
+          _isLoading = false;
+          _twitterJson = twitterJson;
+        });
+      }
+    }
   }
 
   @override
@@ -40,20 +55,32 @@ class _TwitterEmbedWidgetState extends State<TwitterEmbedWidget>
     Color backgroundColor = AppColors(context).twitterEmbedBackground();
 
     if (!_isLoading) {
-      return Card(
-        clipBehavior: Clip.antiAlias,
-        color: backgroundColor,
-        child: Container(
-          padding: EdgeInsets.only(bottom: 10),
-          child: TweetView.fromTweet(
-            Tweet.fromJson(_twitterJson),
-            useVideoPlayer: true,
-            backgroundColor: backgroundColor,
-            textStyle: TextStyle(color: AppColors(context).twitterEmbedText()),
-            onTapImage: this.widget.onTapImage,
+      if (!_failed) {
+        return Card(
+          clipBehavior: Clip.antiAlias,
+          color: backgroundColor,
+          child: Container(
+            padding: EdgeInsets.only(bottom: 10),
+            child: TweetView.fromTweet(
+              Tweet.fromJson(_twitterJson),
+              useVideoPlayer: true,
+              backgroundColor: backgroundColor,
+              textStyle:
+                  TextStyle(color: AppColors(context).twitterEmbedText()),
+              onTapImage: this.widget.onTapImage,
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        return Card(
+          clipBehavior: Clip.antiAlias,
+          color: backgroundColor,
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Text('Error fetching tweet: ' + _twitterJson['errors'][0]['message']),
+          ),
+        );
+      }
     } else {
       return CircularProgressIndicator();
     }
