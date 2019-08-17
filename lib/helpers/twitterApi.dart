@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:knocky/helpers/hiveHelper.dart';
 
 class TwitterHelper {
-  final String _consumerKey = 'qXC7OJ0rq2VzNjXwn0SQgq9N1';
-  final String _consumerSecret = 'HfSJty2qZEBCDXo7cJ4CMHWLLqWv0blMoFutveGzmVqEEdEGlZ';
+  final String _consumerKey = DotEnv().env['TWITTER_CONSUMER'];
+  final String _consumerSecret = DotEnv().env['TWITTER_SECRET'];
 
   void getBearerToken () async {
     var bytes = utf8.encode(_consumerKey + ':' + _consumerSecret);
