@@ -60,7 +60,6 @@ class _TwitterEmbedWidgetState extends State<TwitterEmbedWidget>
           clipBehavior: Clip.antiAlias,
           color: backgroundColor,
           child: Container(
-            padding: EdgeInsets.only(bottom: 10),
             child: TweetView.fromTweet(
               Tweet.fromJson(_twitterJson),
               useVideoPlayer: true,
