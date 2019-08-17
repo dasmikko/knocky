@@ -1,5 +1,10 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:knocky/helpers/ImgurHelper.dart';
 import 'package:knocky/helpers/bbcode.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/models/thread.dart';
@@ -8,6 +13,7 @@ import 'package:knocky/widget/PostEditor.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widget/Thread/PostContent.dart';
+import 'package:knocky/widget/UploadProgressDialogContent.dart';
 
 class NewPostScreen extends StatefulWidget {
   final ThreadPost post;
@@ -80,8 +86,18 @@ class _NewPostScreenState extends State<NewPostScreen> {
               int replyindex = this.replyListConverted.indexOf(reply);
               int nodeIndex = reply.content.document.nodes.indexOf(node);
 
-              this.replyListConverted[replyindex].content.document.nodes.removeAt(nodeIndex);
-              this.replyListConverted[replyindex].content.document.nodes.insert(nodeIndex, embedConverter(node.type, node.data.src));
+              this
+                  .replyListConverted[replyindex]
+                  .content
+                  .document
+                  .nodes
+                  .removeAt(nodeIndex);
+              this
+                  .replyListConverted[replyindex]
+                  .content
+                  .document
+                  .nodes
+                  .insert(nodeIndex, embedConverter(node.type, node.data.src));
               break;
           }
         });
@@ -176,6 +192,81 @@ class _NewPostScreenState extends State<NewPostScreen> {
    */
 
   void addImageDialog() async {
+    await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => new SimpleDialog(
+        title: Text('Add image'),
+        children: <Widget>[
+          SimpleDialogOption(
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.camera_alt),
+                Container(margin: EdgeInsets.only(left: 10), child: Text('Take picture and upload to Imgur')),
+              ],
+            ),
+            onPressed: () async {
+              File image =
+                  await ImagePicker.pickImage(source: ImageSource.camera);
+              Navigator.of(context, rootNavigator: true).pop();
+              if (image != null) showUploadProgressDialog(image);
+            },
+          ),
+          SimpleDialogOption(
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.file_upload),
+                Container(margin: EdgeInsets.only(left: 10), child: Text('Upload existing image to Imgur')),
+              ],
+            ),
+            onPressed: () async {
+              File image =
+                  await ImagePicker.pickImage(source: ImageSource.gallery);
+              Navigator.of(context, rootNavigator: true).pop();
+              if (image != null) showUploadProgressDialog(image);
+            },
+          ),
+          SimpleDialogOption(
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.insert_link),
+                Container(margin: EdgeInsets.only(left: 10), child: Text('Image url')),
+              ],
+            ),
+            onPressed: () async {
+              this.addImageUrlDialog();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  void showUploadProgressDialog(File selectedFile) async {
+    await showDialog<String>(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) => new AlertDialog(
+        title: Text('Uploading image'),
+        content: UploadProgressDialogContent(
+          selectedFile: selectedFile,
+          onFinishedUploading: (String imageLink) {
+            Navigator.of(context, rootNavigator: true).pop();
+            setState(() {
+              document.document.nodes.add(
+                SlateNode(
+                  object: 'block',
+                  type: 'image',
+                  data: SlateNodeData(src: imageLink),
+                ),
+              );
+            });
+          },
+        ),
+      ),
+    );
+  }
+
+  void addImageUrlDialog() async {
     ClipboardData clipBoardText = await Clipboard.getData('text/plain');
     TextEditingController imgurlController = TextEditingController(
         text: clipBoardText != null ? clipBoardText.text : '');
