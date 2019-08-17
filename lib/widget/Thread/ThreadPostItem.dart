@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/helpers/icons.dart';
@@ -53,7 +52,10 @@ class ThreadPostItem extends StatelessWidget {
       });
     }
 
-    return Row(children: items);
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(children: items),
+    );
   }
 
   void onPressSpoiler(BuildContext context, String content) {
@@ -141,13 +143,15 @@ class ThreadPostItem extends StatelessWidget {
     List<Widget> footer = List();
 
     footer.add(
-      Flexible(
-        child: FlatButton(
-          padding: EdgeInsets.all(0),
-          onPressed: postDetails.ratings != null
+      Expanded(
+        child: GestureDetector(
+          onTap: postDetails.ratings != null
               ? () => onPressViewRatings(context)
               : null,
-          child: buildRatings(postDetails.ratings),
+          child: Container(
+            padding: EdgeInsets.all(0),
+            child: buildRatings(postDetails.ratings),
+          ),
         ),
       ),
     );

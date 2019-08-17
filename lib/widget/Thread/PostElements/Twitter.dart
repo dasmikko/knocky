@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
+import 'package:knocky/helpers/colors.dart';
+import 'package:knocky/helpers/twitterApi.dart';
+import 'package:tweet_ui/models/api/tweet.dart';
+import 'package:tweet_ui/tweet_view.dart';
 
 class TwitterEmbedWidget extends StatefulWidget {
   final String twitterUrl;
+  final Function onTapImage;
 
-  TwitterEmbedWidget({this.twitterUrl});
+  TwitterEmbedWidget({this.twitterUrl, this.onTapImage});
 
   @override
   _TwitterEmbedWidgetState createState() => _TwitterEmbedWidgetState();
@@ -16,7 +18,8 @@ class TwitterEmbedWidget extends StatefulWidget {
 class _TwitterEmbedWidgetState extends State<TwitterEmbedWidget>
     with AfterLayoutMixin<TwitterEmbedWidget> {
   bool _isLoading = true;
-  String _embedHtml;
+  bool _failed = false;
+  Map _twitterJson;
 
   @override
   void afterFirstLayout(BuildContext context) {
@@ -24,35 +27,59 @@ class _TwitterEmbedWidgetState extends State<TwitterEmbedWidget>
   }
 
   void fetchTwitterJson() async {
-    String twitterApi = "https://publish.twitter.com/oembed?url=";
+    Uri url = Uri.parse(this.widget.twitterUrl);
+    int tweetId = int.parse(url.pathSegments.last);
+    Map<String, dynamic> twitterJson = await TwitterHelper().getTweet(tweetId);
+    print(twitterJson);
 
-    final response = await http.get(twitterApi + this.widget.twitterUrl);
-
-    setState(() {
-     _isLoading = false;
-     _embedHtml = json.decode(response.body)['html']; 
-    });
+    if (twitterJson['errors'] != null) {
+      if (this.mounted) {
+        setState(() {
+          _isLoading = false;
+          _failed = true;
+          _twitterJson = twitterJson;
+        });
+      }
+    } else {
+      if (this.mounted) {
+        setState(() {
+          _isLoading = false;
+          _twitterJson = twitterJson;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-        
+    Color backgroundColor = AppColors(context).twitterEmbedBackground();
 
     if (!_isLoading) {
-      final String contentBase64 =
-        base64Encode(const Utf8Encoder().convert(_embedHtml));
-
-      return LimitedBox(
-        maxHeight: 600,
-        child: InAppWebView(
-          initialOptions: {
-            'useWideViewPort': false,
-            'javaScriptEnabled': true,
-            'transparentBackground': true
-          },
-          initialUrl: 'data:text/html;base64,$contentBase64',
-        ),
-      );
+      if (!_failed) {
+        return Card(
+          clipBehavior: Clip.antiAlias,
+          color: backgroundColor,
+          child: Container(
+            child: TweetView.fromTweet(
+              Tweet.fromJson(_twitterJson),
+              useVideoPlayer: true,
+              backgroundColor: backgroundColor,
+              textStyle:
+                  TextStyle(color: AppColors(context).twitterEmbedText()),
+              onTapImage: this.widget.onTapImage,
+            ),
+          ),
+        );
+      } else {
+        return Card(
+          clipBehavior: Clip.antiAlias,
+          color: backgroundColor,
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Text('Error fetching tweet: ' + _twitterJson['errors'][0]['message']),
+          ),
+        );
+      }
     } else {
       return CircularProgressIndicator();
     }
