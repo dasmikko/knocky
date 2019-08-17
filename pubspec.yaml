@@ -51,6 +51,7 @@ dependencies:
   tweet_ui: ^0.1.1
   audioplayers: ^0.13.1
   seekbar: ^0.0.2
+  path_provider: ^1.2.0
   flutter:
     sdk: flutter
 
