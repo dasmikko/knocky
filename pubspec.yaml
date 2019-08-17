@@ -45,10 +45,7 @@ dependencies:
   bbob_dart: ^0.1.1
   event_bus: ^1.1.0
   uni_links: ^0.2.0
-  hive:
-    git:
-      url: https://github.com/leisim/hive.git
-      path: hive
+  hive: ^0.4.0
   quick_actions: ^0.3.2+2
   material_design_icons_flutter: 3.2.3895
   tweet_ui: ^0.1.1
@@ -62,8 +59,7 @@ dependencies:
   cupertino_icons: ^0.1.2
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
+  test: ^1.6.4
   build_runner: ^1.6.0
   json_serializable: ^3.0.0
 
