@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/bbcode.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/models/thread.dart';
@@ -8,7 +7,6 @@ import 'package:knocky/widget/ListEditor.dart';
 import 'package:knocky/widget/PostEditor.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:knocky/widget/Thread/PostContent.dart';
 
 class NewPostScreen extends StatefulWidget {

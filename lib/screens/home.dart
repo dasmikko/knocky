@@ -16,10 +16,6 @@ import 'package:knocky/state/subscriptions.dart';
 import 'package:knocky/state/appState.dart';
 import 'package:knocky/widget/tab-navigator.dart';
 import 'package:knocky/events.dart';
-
-import 'dart:async';
-import 'dart:io';
-
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter/services.dart' show PlatformException;
 
