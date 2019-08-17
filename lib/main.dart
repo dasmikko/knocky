@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/state/appState.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -12,6 +13,9 @@ import 'package:hive/hive.dart';
 
 void main() async {
   Widget rv;
+
+  // Init dotenv
+  await DotEnv().load('.env');
 
   // Init hive
   await AppHiveBox.initHive();
