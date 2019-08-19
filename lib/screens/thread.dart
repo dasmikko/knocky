@@ -5,7 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:knocky/models/slateDocument.dart';
+import 'package:knocky/state/subscriptions.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widget/Thread/ThreadPostItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
@@ -127,29 +127,30 @@ class _ThreadScreenState extends State<ThreadScreen>
     });
   }
 
-  void checkIfShouldMarkThreadRead() {
+  void checkIfShouldMarkThreadRead() async {
     DateTime lastPostDate = details.posts.last.createdAt;
 
     // Check if last read is null
     if (details.readThreadLastSeen == null) {
-      KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
+      await KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
     } else if (details.readThreadLastSeen.isBefore(lastPostDate)) {
-      KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
+      await KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
     }
 
     if (details.isSubscribedTo != 0) {
       // Handle for subscribed thread
       // Check if last read is null
       if (details.subscriptionLastSeen == null) {
-        KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
+        await KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
       } else if (details.subscriptionLastSeen.isBefore(lastPostDate)) {
-        KnockoutAPI()
+        await KnockoutAPI()
             .readThreadSubsciption(lastPostDate, details.id)
             .then((res) {
-          print('Subscribed Thread marked read!');
+
         });
       }
     }
+    ScopedModel.of<SubscriptionModel>(context).getSubscriptions();
   }
 
   void navigateToNextPage() {
