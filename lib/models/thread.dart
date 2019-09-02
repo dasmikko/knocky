@@ -7,7 +7,7 @@ part 'thread.g.dart';
 @JsonSerializable()
 class Thread {
   final int id;
-  final String currentPage;
+  final int currentPage;
   final int iconId;
   final bool locked;
   final bool pinned;

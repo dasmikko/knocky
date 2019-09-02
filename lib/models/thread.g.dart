@@ -8,7 +8,7 @@ part of 'thread.dart';
 
 Thread _$ThreadFromJson(Map<String, dynamic> json) {
   return Thread(
-    currentPage: json['currentPage'] as String,
+    currentPage: json['currentPage'] as int,
     iconId: json['iconId'] as int,
     readThreadLastSeen: json['readThreadLastSeen'] == null
         ? null
