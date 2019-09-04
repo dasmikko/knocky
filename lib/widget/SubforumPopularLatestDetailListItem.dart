@@ -220,6 +220,7 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
                 ),
               ),
             ),
+            if (threadDetails.lastPost.id != null)
             Container(
               width: 110,
               padding: EdgeInsets.all(10),
