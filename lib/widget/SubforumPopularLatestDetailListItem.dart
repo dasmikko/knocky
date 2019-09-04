@@ -137,7 +137,10 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
         .firstWhere((IconListItem item) => item.id == threadDetails.iconId)
         .url : '';
 
-
+    Color userColor = AppColors(context).normalUserColor(); // User
+    if (threadDetails.user.usergroup == 2) userColor = AppColors(context).goldUserColor(); // Gold
+    if (threadDetails.user.usergroup == 3) userColor = AppColors(context).modUserColor(); // Mod
+    if (threadDetails.user.usergroup == 4) userColor = AppColors(context).adminUserColor(); // Admin
 
     return Card(
       color: Color.fromRGBO(45, 45, 48, 1),
@@ -211,7 +214,7 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
                             newPostsSubscriptionButton(context),
                           Text(
                             threadDetails.user.username,
-                            style: TextStyle(color: Colors.blue),
+                            style: TextStyle(color: userColor, fontWeight: FontWeight.bold),
                           )
                         ],
                       ),
@@ -245,7 +248,7 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
                     margin: EdgeInsets.only(bottom: 4),
                     child: Text(
                       threadDetails.lastPost.user.username,
-                      style: TextStyle(color: Colors.blue, fontSize: 11),
+                      style: TextStyle(color: AppColors(context).userGroupToColor(threadDetails.lastPost.user.usergroup), fontSize: 11),
                     ),
                   ),
                   Container(
@@ -262,101 +265,5 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
         ),
       ),
     );
-
-    /*return Card(
-      margin: EdgeInsets.only(bottom: 5.0, top: 10.0),
-      child: InkWell(
-        onTap: () {
-          print('Clicked item ' + threadDetails.id.toString());
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ThreadScreen(
-                    title: threadDetails.title,
-                    postCount: threadDetails.postCount,
-                    threadId: threadDetails.id,
-                  ),
-            ),
-          );
-        },
-        child: Container(
-          padding: EdgeInsets.all(10.0),
-          child: Row(
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(right: 10.0),
-                child: CachedNetworkImage(
-                  width: 40,
-                  imageUrl: _iconUrl,
-                ),
-              ),
-              Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          if (threadDetails.locked == 1)
-                            Container(
-                              margin: EdgeInsets.only(right: 5),
-                              child: Icon(
-                                FontAwesomeIcons.lock,
-                                size: 14,
-                                color: HexColor('b38d4f'),
-                              ),
-                            ),
-                          if (threadDetails.pinned == 1)
-                            Container(
-                              margin: EdgeInsets.only(right: 5),
-                              child: Icon(
-                                FontAwesomeIcons.solidStickyNote,
-                                size: 14,
-                                color: HexColor('b4e42d'),
-                              ),
-                            ),
-                          Flexible(
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  bottom:
-                                      threadDetails.readThreadUnreadPosts > 0
-                                          ? 10
-                                          : 0),
-                              child: Text(threadDetails.title),
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (threadDetails.readThreadUnreadPosts > 0)
-                        Container(
-                          margin: EdgeInsets.only(bottom: 5),
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(5),
-                              ),
-                              clipBehavior: Clip.antiAlias,
-                              child: InkWellOverWidget(
-                                child: Container(
-                                  padding: EdgeInsets.all(5),
-                                  color: Color.fromRGBO(255, 201, 63, 1),
-                                  child: Text(
-                                    '${threadDetails.readThreadUnreadPosts} new posts',
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                ),
-                                onTap: () {
-                                  onTapNewPostsButton(context, threadDetails);
-                                },
-                              )),
-                        ),
-                    ],
-                  )),
-            ],
-          ),
-        ),
-      ),
-    );*/
   }
 }

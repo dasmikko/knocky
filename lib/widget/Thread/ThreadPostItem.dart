@@ -176,6 +176,7 @@ class ThreadPostItem extends StatelessWidget {
                 children: <Widget>[
                   Expanded(
                     child: PostHeader(
+                      userGroup: postDetails.user.usergroup,
                       userId: postDetails.user.id,
                       username: postDetails.user.username,
                       avatarUrl: postDetails.user.avatarUrl,

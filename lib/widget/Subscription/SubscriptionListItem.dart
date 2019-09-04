@@ -133,7 +133,7 @@ class SubscriptionListItem extends StatelessWidget {
                               ),
                             Text(
                               item.threadUsername,
-                              style: TextStyle(color: Colors.blue),
+                              style: TextStyle(color: AppColors(context).userGroupToColor(item.threadUserUsergroup)),
                             )
                           ],
                         ),
@@ -167,7 +167,7 @@ class SubscriptionListItem extends StatelessWidget {
                       margin: EdgeInsets.only(bottom: 4),
                       child: Text(
                         item.lastPost.user.username,
-                        style: TextStyle(color: Colors.blue, fontSize: 11),
+                        style: TextStyle(color: AppColors(context).userGroupToColor(item.lastPost.user.usergroup), fontSize: 11),
                       ),
                     ),
                     Container(

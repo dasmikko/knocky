@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:scoped_model/scoped_model.dart';
@@ -8,16 +9,18 @@ import 'package:knocky/state/authentication.dart';
 class PostHeader extends StatelessWidget {
   final BuildContext context;
   final int userId;
+  final int userGroup;
   final String username;
   final String avatarUrl;
   final String backgroundUrl;
   final ThreadPost threadPost;
 
   PostHeader(
-      {this.avatarUrl, this.backgroundUrl, this.username, this.userId, this.threadPost, this.context});
+      {this.avatarUrl, this.backgroundUrl, this.username, this.userId, this.userGroup, this.threadPost, this.context});
 
   @override
   Widget build(BuildContext context) {
+    print(userGroup);
     //print('avatar: ' +  avatarUrl);
     //print('background : ' + backgroundUrl);
     final int ownUserId =
@@ -28,6 +31,11 @@ class PostHeader extends StatelessWidget {
         backgroundUrl != '' ||
         backgroundUrl != 'none.webp');
     bool hasAvatar = (avatarUrl != null || avatarUrl != '');
+
+    Color userColor = AppColors(context).normalUserColor(); // User
+    if (userGroup == 2) userColor = AppColors(context).goldUserColor(); // Gold
+    if (userGroup == 3) userColor = AppColors(context).modUserColor(); // Mod
+    if (userGroup == 4) userColor = AppColors(context).adminUserColor(); // Admin
 
     return Column(
       children: <Widget>[
@@ -60,7 +68,7 @@ class PostHeader extends StatelessWidget {
                 ),
               Text(
                 username,
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontWeight: FontWeight.bold, color: userColor),
               ),
             ],
           ),

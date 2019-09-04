@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -149,7 +150,7 @@ class CategoryListItem extends StatelessWidget {
                                       TextSpan(
                                         text: subforum.lastPost.user.username +
                                             ' ',
-                                        style: TextStyle(color: Colors.blue),
+                                        style: TextStyle(color: AppColors(context).userGroupToColor(subforum.lastPost.user.usergroup)),
                                       ),
                                       TextSpan(
                                           text: timeago
