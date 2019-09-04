@@ -2,21 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:scoped_model/scoped_model.dart';
+import 'package:knocky/state/authentication.dart';
 
 class PostHeader extends StatelessWidget {
   final BuildContext context;
+  final int userId;
   final String username;
   final String avatarUrl;
   final String backgroundUrl;
   final ThreadPost threadPost;
 
   PostHeader(
-      {this.avatarUrl, this.backgroundUrl, this.username, this.threadPost, this.context});
+      {this.avatarUrl, this.backgroundUrl, this.username, this.userId, this.threadPost, this.context});
 
   @override
   Widget build(BuildContext context) {
     //print('avatar: ' +  avatarUrl);
     //print('background : ' + backgroundUrl);
+    final int ownUserId =
+        ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
+            .userId;
 
     bool hasBg = (backgroundUrl != null ||
         backgroundUrl != '' ||
@@ -28,6 +34,7 @@ class PostHeader extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
+            border: ownUserId == userId ? Border(left: BorderSide(color: Color.fromRGBO(255, 216, 23, 1), width: 2)) : null,
               image: hasBg != null
                   ? DecorationImage(
                       alignment: Alignment.center,
