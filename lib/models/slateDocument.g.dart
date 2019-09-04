@@ -113,7 +113,7 @@ Map<String, dynamic> _$SlateNodeDataToJson(SlateNodeData instance) {
   }
 
   writeNotNull('src', instance.src);
-  writeNotNull('postData', instance.postData);
+  writeNotNull('postData', _nodeDataPostDataToJson(instance.postData));
   writeNotNull('href', instance.href);
   return val;
 }

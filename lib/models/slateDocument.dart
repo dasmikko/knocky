@@ -70,7 +70,7 @@ Map _nodeDataToJson(SlateNodeData data) => data != null ? data.toJson() : null;
 class SlateNodeData {
   @JsonKey(includeIfNull: false)
   String src;
-  @JsonKey(includeIfNull: false)
+  @JsonKey(includeIfNull: false, toJson: _nodeDataPostDataToJson)
   NodeDataPostData postData;
   @JsonKey(includeIfNull: false)
   String href;
@@ -81,7 +81,7 @@ class SlateNodeData {
   Map<String, dynamic> toJson() => _$SlateNodeDataToJson(this);
 }
 
-//Map _nodeDataPostDataToJson(NodeDataPostData postdata) => postdata != null ? postdata.toJson() : null;
+Map _nodeDataPostDataToJson(NodeDataPostData postdata) => postdata != null ? postdata.toJson() : null;
 
 @JsonSerializable()
 class NodeDataPostData {
