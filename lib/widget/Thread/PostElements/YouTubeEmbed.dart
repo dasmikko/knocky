@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_youtube/flutter_youtube.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:hive/hive.dart';
+import 'package:knocky/helpers/hiveHelper.dart';
+import 'package:intent/intent.dart' as Intent;
+import 'package:intent/action.dart' as Action;
 
 class YoutubeVideoEmbed extends StatefulWidget {
   final String url;
@@ -33,13 +37,21 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
     res = 'max';
   }
 
-  void playYouTubeVideo(String url) {
-    FlutterYoutube.playYoutubeVideoByUrl(
-      apiKey: "AIzaSyBehHEbtDN5ExcdWydEBp5R8EYlB6cf6nM",
-      videoUrl: url,
-      autoPlay: true, //default falase
-      fullScreen: false //default false
-    );
+  void playYouTubeVideo(String url) async {
+    Box box = await AppHiveBox.getBox();
+    if(box.get('useInlineYoutubePlayer', defaultValue: true)) {
+      FlutterYoutube.playYoutubeVideoByUrl(
+        apiKey: "AIzaSyBehHEbtDN5ExcdWydEBp5R8EYlB6cf6nM",
+        videoUrl: url,
+        autoPlay: true, //default falase
+        fullScreen: false //default false
+      );
+    } else {
+      Intent.Intent()
+        ..setAction(Action.Action.ACTION_VIEW)
+        ..setData(Uri.parse(url))
+        ..startActivity().catchError((e) => print(e));
+    }
   }
 
   void switchRes (String newRes) {
