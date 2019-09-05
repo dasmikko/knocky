@@ -74,8 +74,10 @@ class SlateNodeData {
   NodeDataPostData postData;
   @JsonKey(includeIfNull: false)
   String href;
+  @JsonKey(includeIfNull: false)
+  bool isThumbnail;
 
-  SlateNodeData({this.src, this.postData, this.href});
+  SlateNodeData({this.src, this.postData, this.href, this.isThumbnail});
 
   factory SlateNodeData.fromJson(Map<String, dynamic> json) => _$SlateNodeDataFromJson(json);
   Map<String, dynamic> toJson() => _$SlateNodeDataToJson(this);
