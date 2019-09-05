@@ -127,7 +127,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           padding: EdgeInsets.only(top: 8, bottom: 8),
           children: <Widget>[
             ListTile(
-              title: Text('General'),
+              title: Text('General', style: TextStyle(color: Colors.grey),),
               dense: true,
             ),
             ListTile(
@@ -181,7 +181,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               color: Colors.grey,
             ),
             ListTile(
-              title: Text('Embed settings'),
+              title: Text('Embed settings', style: TextStyle(color: Colors.grey),),
               dense: true,
             ),
             SwitchListTile(
@@ -201,7 +201,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               color: Colors.grey,
             ),
             ListTile(
-              title: Text('App info'),
+              title: Text('App info', style: TextStyle(color: Colors.grey),),
               dense: true,
             ),
             ListTile(
