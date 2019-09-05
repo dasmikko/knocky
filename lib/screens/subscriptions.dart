@@ -28,7 +28,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
   @override
   void afterFirstLayout(BuildContext context) async {
     Box box = await AppHiveBox.getBox();
-    if(await box.get('isLoggedIn') == true) {
+    if (await box.get('isLoggedIn') == true) {
       loadSubscriptions();
     }
   }
@@ -38,8 +38,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
     super.dispose();
   }
 
-  Future <void> loadSubscriptions() async {
-    ScopedModel.of<SubscriptionModel>(context).getSubscriptions(errorCallback: () {
+  Future<void> loadSubscriptions() async {
+    ScopedModel.of<SubscriptionModel>(context).getSubscriptions(
+        errorCallback: () {
       Scaffold.of(context).hideCurrentSnackBar();
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text('Failed to get subscriptions. Try again.'),
@@ -48,8 +49,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
       ));
     });
   }
-
-
 
   void onTapItem(ThreadAlert item) {
     Navigator.push(
@@ -92,33 +91,40 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
 
   @override
   Widget build(BuildContext context) {
-    var alerts = ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).subscriptions;
-    bool fetching = ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).isFetching;
+    var alerts =
+        ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
+            .subscriptions;
+    bool fetching =
+        ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
+            .isFetching;
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(icon: Icon(Icons.menu), onPressed: () {
-            eventBus.fire(ClickDrawerEvent(true));
-          }),
+        leading: IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              eventBus.fire(ClickDrawerEvent(true));
+            }),
         title: Text('Subscriptions'),
       ),
       body: RefreshIndicator(
-          onRefresh: loadSubscriptions,
-          child: KnockoutLoadingIndicator(
-            show: fetching,
-            child: ListView.builder(
-              itemCount: alerts.length,
-              itemBuilder: (BuildContext context, int index) {
-                ThreadAlert item = alerts[index];
-                return SubscriptionListItem(
-                  item: item,
-                  onTapItem: onTapItem,
-                  onTapNewPostButton: onTapNewPostsButton,
-                  onUnsubscribe: () => onTapUnsubscribe(context, item),
-                );
-              },
-            ),
-          )),
+        onRefresh: loadSubscriptions,
+        child: KnockoutLoadingIndicator(
+          show: fetching,
+          child: ListView.builder(
+            itemCount: alerts.length,
+            itemBuilder: (BuildContext context, int index) {
+              ThreadAlert item = alerts[index];
+              return SubscriptionListItem(
+                item: item,
+                onTapItem: onTapItem,
+                onTapNewPostButton: onTapNewPostsButton,
+                onUnsubscribe: () => onTapUnsubscribe(context, item),
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 }
