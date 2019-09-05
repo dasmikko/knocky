@@ -26,6 +26,10 @@ void main() async {
     await box.put('showNSFWThreads', false);
   }
 
+  if (await box.get('useInlineYoutubePlayer') == null) {
+    await box.put('useInlineYoutubePlayer', true);
+  }
+
   if (await box.get('env') == null) {
     await box.put('env', 'knockout');
   }
