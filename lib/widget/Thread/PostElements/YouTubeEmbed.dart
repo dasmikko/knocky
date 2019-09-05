@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_youtube/flutter_youtube.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -5,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:intent/intent.dart' as Intent;
 import 'package:intent/action.dart' as Action;
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class YoutubeVideoEmbed extends StatefulWidget {
   final String url;
@@ -20,6 +24,7 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
   String sdResThumbnail;
   String defaultThumbnail;
   String res;
+  String _title;
 
   @override
   void initState() {
@@ -31,21 +36,35 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
       id = this.widget.url.split("/").last.split('?').first;
     }
 
-    maxResThumbnail = "https://img.youtube.com/vi/${id}/0.jpg"; //ignore: unnecessary_brace_in_string_interps
-    sdResThumbnail = "https://img.youtube.com/vi/${id}/sddefault.jpg"; //ignore: unnecessary_brace_in_string_interps
-    defaultThumbnail = "https://img.youtube.com/vi/${id}/default.jpg"; //ignore: unnecessary_brace_in_string_interps
+    maxResThumbnail =
+        "https://img.youtube.com/vi/${id}/0.jpg"; //ignore: unnecessary_brace_in_string_interps
+    sdResThumbnail =
+        "https://img.youtube.com/vi/${id}/sddefault.jpg"; //ignore: unnecessary_brace_in_string_interps
+    defaultThumbnail =
+        "https://img.youtube.com/vi/${id}/default.jpg"; //ignore: unnecessary_brace_in_string_interps
     res = 'max';
+
+    this.getVideoInfo(this.widget.url);
+  }
+
+  void getVideoInfo(String url) async {
+    Dio().get('https://noembed.com/embed?url=${url}').then((res) {
+      Map jsonData = jsonDecode(res.toString());
+      setState(() {
+        _title = jsonData['title'];
+      });
+    });
   }
 
   void playYouTubeVideo(String url) async {
     Box box = await AppHiveBox.getBox();
-    if(box.get('useInlineYoutubePlayer', defaultValue: true)) {
+    if (box.get('useInlineYoutubePlayer', defaultValue: true)) {
       FlutterYoutube.playYoutubeVideoByUrl(
-        apiKey: "AIzaSyBehHEbtDN5ExcdWydEBp5R8EYlB6cf6nM",
-        videoUrl: url,
-        autoPlay: true, //default falase
-        fullScreen: false //default false
-      );
+          apiKey: "AIzaSyBehHEbtDN5ExcdWydEBp5R8EYlB6cf6nM",
+          videoUrl: url,
+          autoPlay: true, //default falase
+          fullScreen: false //default false
+          );
     } else {
       Intent.Intent()
         ..setAction(Action.Action.ACTION_VIEW)
@@ -54,7 +73,7 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
     }
   }
 
-  void switchRes (String newRes) {
+  void switchRes(String newRes) {
     setState(() {
       res = newRes;
     });
@@ -90,8 +109,25 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
               placeholder: (BuildContext context, String url) =>
                   CircularProgressIndicator(),
             ),
+            if (_title != null)
+              Positioned.fill(
+                top: 10,
+                left: 10,
+                child: Text(
+                  _title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 2.0,
+                        offset: Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             Icon(
-              Icons.play_circle_outline,
+              MdiIcons.youtube,
               color: Colors.white,
               size: 124.0,
             ),
