@@ -55,9 +55,6 @@ class PostHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(userGroup);
-    //print('avatar: ' +  avatarUrl);
-    //print('background : ' + backgroundUrl);
     final int ownUserId =
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .userId;
