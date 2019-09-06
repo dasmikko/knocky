@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:after_layout/after_layout.dart';
@@ -488,6 +489,15 @@ class _ThreadScreenState extends State<ThreadScreen>
       case 2:
         onTapRenameThread();
         break;
+      case 3:
+        navigateToPage(1);
+        break;
+      case 4:
+        navigateToPage(_totalPages);
+        break;
+      case 5:
+        Clipboard.setData(new ClipboardData(text: 'https://knockout.chat/thread/${details.id}/${_currentPage}'));
+        break;
       default:
     }
   }
@@ -525,21 +535,33 @@ class _ThreadScreenState extends State<ThreadScreen>
         leading: BackButton(),
         title: Text(details == null ? widget.title : details.title),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.refresh),
+            tooltip: 'Refresh',
+            onPressed: () => refreshPage(),
+          ),
           Builder(
             builder: (BuildContext bcontext) {
               return PopupMenuButton(
                 onSelected: onSelectOverflowItem,
                 itemBuilder: (BuildContext context) {
                   return [
-                    overFlowItem(Icon(Icons.refresh), 'Refresh', 0),
                     if (details != null)
                       overFlowItem(
-                          Icon(FontAwesomeIcons.eye), 'Subscribe to thread', 1),
+                          Icon(FontAwesomeIcons.eye, size: 18,), 'Subscribe to thread', 1),
                     if (details != null &&
                         details.userId ==
                             ScopedModel.of<AuthenticationModel>(context).userId)
                       overFlowItem(
-                          Icon(FontAwesomeIcons.pen), 'Rename thread', 2)
+                          Icon(FontAwesomeIcons.pen, size: 18,), 'Rename thread', 2),
+                    overFlowItem(
+                          Icon(Icons.content_copy, size: 18,), 'Copy link to thread', 5),
+
+                    PopupMenuItem(enabled: false, value: 0, child: PopupMenuDivider(),),
+                    overFlowItem(
+                          Icon(FontAwesomeIcons.undo, size: 18,), 'Jump to first page', 3),
+                    overFlowItem(
+                          Icon(FontAwesomeIcons.redo, size: 18,), 'Jump to last page', 4)
                   ];
                 },
               );
@@ -580,6 +602,8 @@ class _ThreadScreenState extends State<ThreadScreen>
                               EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                           child: ThreadPostItem(
                             scaffoldKey: scaffoldkey,
+                            thread: details,
+                            currentPage: _currentPage,
                             postDetails: item,
                             isOnReplyList: postsToReplyTo
                                     .where((o) => o.id == item.id)

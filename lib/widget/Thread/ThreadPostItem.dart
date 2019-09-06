@@ -18,6 +18,8 @@ class ThreadPostItem extends StatelessWidget {
   final Function onLongPressReply;
   final bool isOnReplyList;
   final Function onTapEditPost;
+  final Thread thread;
+  final int currentPage;
 
   ThreadPostItem({
     this.postDetails,
@@ -27,6 +29,8 @@ class ThreadPostItem extends StatelessWidget {
     this.isOnReplyList = false,
     this.onLongPressReply,
     this.onTapEditPost,
+    this.thread,
+    this.currentPage,
   });
 
   Widget buildRatings(List<ThreadPostRatings> ratings) {
@@ -183,6 +187,8 @@ class ThreadPostItem extends StatelessWidget {
                       backgroundUrl: postDetails.user.backgroundUrl,
                       threadPost: postDetails,
                       context: context,
+                      thread: thread,
+                      currentPage: currentPage
                     ),
                   )
                 ],
