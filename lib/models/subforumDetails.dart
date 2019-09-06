@@ -72,8 +72,8 @@ class SubforumThreadLatestPopular {
   final DateTime createdAt;
   final int iconId;
   final int id;
-  final int locked;
-  final int pinned;
+  final bool locked;
+  final bool pinned;
   final int postCount;
   @JsonKey(defaultValue: 0)
   final int readThreadUnreadPosts;

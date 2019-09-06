@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/screens/Settings/filter.dart';
 import 'package:knocky/themes/DefaultTheme.dart';
@@ -28,18 +29,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
   ThemeData selectedTheme = darkTheme();
   String selectedEnv = 'knockout';
   String _version = '';
+  bool _useInlineYoutubePlayer = true;
 
   @override
   void initState() {
     super.initState();
 
     updateAppInfo();
+    getEmbedSettings();
 
     if (DynamicTheme.of(context).brightness == Brightness.light) {
       selectedTheme = defaultTheme();
     } else {
       selectedTheme = darkTheme();
     }
+  }
+
+  void getEmbedSettings () async {
+    // Init hive
+    Box box = await AppHiveBox.getBox();
+
+    setState(() {
+     _useInlineYoutubePlayer = box.get('useInlineYoutubePlayer', defaultValue: true);
+    });
   }
 
   void updateAppInfo () async {
@@ -115,6 +127,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           padding: EdgeInsets.only(top: 8, bottom: 8),
           children: <Widget>[
             ListTile(
+              title: Text('General', style: TextStyle(color: Colors.grey),),
+              dense: true,
+            ),
+            ListTile(
               enabled: true,
               title: Text('Theme'),
               trailing: DropdownButton(
@@ -160,6 +176,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   MaterialPageRoute(builder: (context) => FilterScreen()),
                 );
               },
+            ),
+            Divider(
+              color: Colors.grey,
+            ),
+            ListTile(
+              title: Text('Embed settings', style: TextStyle(color: Colors.grey),),
+              dense: true,
+            ),
+            SwitchListTile(
+              activeColor: AppColors(context).switchColor(),
+              title: Text('Use inline YouTube player'),
+              subtitle: Text('When disabled, it will try to open app that can handle the YouTube link.'),
+              onChanged: (bool value) async {
+                Box box = await AppHiveBox.getBox();
+                box.put('useInlineYoutubePlayer', value);
+                setState(() {
+                 _useInlineYoutubePlayer = value;
+                });
+              },
+              value: _useInlineYoutubePlayer,
+            ),
+            Divider(
+              color: Colors.grey,
+            ),
+            ListTile(
+              title: Text('App info', style: TextStyle(color: Colors.grey),),
+              dense: true,
             ),
             ListTile(
               title: Text('Version'),

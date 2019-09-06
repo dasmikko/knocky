@@ -136,6 +136,10 @@ class SubforumDetailListItem extends StatelessWidget {
         .firstWhere((IconListItem item) => item.id == threadDetails.iconId)
         .url : '';
 
+    Color userColor = AppColors(context).normalUserColor(); // User
+    if (threadDetails.user.usergroup == 2) userColor = AppColors(context).goldUserColor(); // Gold
+    if (threadDetails.user.usergroup == 3) userColor = AppColors(context).modUserColor(); // Mod
+    if (threadDetails.user.usergroup == 4) userColor = AppColors(context).adminUserColor(); // Admin
 
 
     return Card(
@@ -210,7 +214,7 @@ class SubforumDetailListItem extends StatelessWidget {
                             newPostsSubscriptionButton(context),
                           Text(
                             threadDetails.user.username,
-                            style: TextStyle(color: Colors.blue),
+                            style: TextStyle(color: userColor, fontWeight: FontWeight.bold),
                           )
                         ],
                       ),
@@ -244,7 +248,7 @@ class SubforumDetailListItem extends StatelessWidget {
                     margin: EdgeInsets.only(bottom: 4),
                     child: Text(
                       threadDetails.lastPost.user.username,
-                      style: TextStyle(color: Colors.blue, fontSize: 11),
+                      style: TextStyle(color: AppColors(context).userGroupToColor(threadDetails.lastPost.user.usergroup), fontSize: 11),
                     ),
                   ),
                   Container(

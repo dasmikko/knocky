@@ -111,7 +111,6 @@ class _SubforumPagenState extends State<SubforumPage>
       onRefresh: loadPage,
       child: details == null ? Container() : ListView.builder(
         controller: scrollController,
-        padding: EdgeInsets.all(10.0),
         itemCount: details.threads.length,
         itemBuilder: (BuildContext context, int index) {
           var item = details.threads[index];

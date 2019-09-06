@@ -7,7 +7,7 @@ part 'thread.g.dart';
 @JsonSerializable()
 class Thread {
   final int id;
-  final String currentPage;
+  final int currentPage;
   final int iconId;
   final bool locked;
   final bool pinned;
@@ -24,6 +24,8 @@ class Thread {
   final int userId;
   @JsonKey(defaultValue: 0)
   final int isSubscribedTo;
+  final String threadBackgroundType;
+  final String threadBackgroundUrl;
 
   Thread({
     this.currentPage,
@@ -41,6 +43,8 @@ class Thread {
     this.subscriptionLastSeen,
     this.isSubscribedTo,
     this.userId,
+    this.threadBackgroundType,
+    this.threadBackgroundUrl
   });
 
   factory Thread.fromJson(Map<String, dynamic> json) => _$ThreadFromJson(json);

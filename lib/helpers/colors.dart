@@ -45,6 +45,45 @@ class AppColors {
         ? HexColor('ffffff')
         : HexColor('000000');
   }
+
+  Color normalUserColor () {
+    return HexColor('3facff');
+  }
+
+  Color modUserColor () {
+    return HexColor('08f760');
+  }
+
+  Color goldUserColor () {
+    return HexColor('ffb100');
+  }
+
+  Color adminUserColor () {
+    return HexColor('c448ff');
+  }
+
+  Color devUserColor () {
+    return HexColor('ff6cb4');
+  }
+
+  Color userGroupToColor (int usergroup) {
+    switch (usergroup) {
+      case 1:
+        return normalUserColor();
+      case 2:
+        return goldUserColor();
+      case 3:
+        return modUserColor();
+      case 4:
+        return adminUserColor();
+      case 5:
+        return devUserColor();
+      default:
+        return normalUserColor();
+    }
+  }
+
+
 }
 
 class HexColor extends Color {

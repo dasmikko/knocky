@@ -127,7 +127,7 @@ class _ForumScreenState extends State<ForumScreen>
             child: RefreshIndicator(
               onRefresh: () => getSubforums(context),
               child: ListView.builder(
-                padding: EdgeInsets.all(10.0),
+                padding: EdgeInsets.all(0.0),
                 itemCount: _subforums.length,
                 itemBuilder: (BuildContext context, int index) {
                   Subforum item = _subforums[index];

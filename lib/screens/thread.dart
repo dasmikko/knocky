@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:knocky/models/slateDocument.dart';
+import 'package:knocky/state/subscriptions.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widget/Thread/ThreadPostItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
@@ -20,7 +22,11 @@ class ThreadScreen extends StatefulWidget {
   final int threadId;
   final int page;
 
-  ThreadScreen({this.title = 'Loading thread', this.page = 1, this.postCount, this.threadId});
+  ThreadScreen(
+      {this.title = 'Loading thread',
+      this.page = 1,
+      this.postCount,
+      this.threadId});
 
   @override
   _ThreadScreenState createState() => _ThreadScreenState();
@@ -127,29 +133,30 @@ class _ThreadScreenState extends State<ThreadScreen>
     });
   }
 
-  void checkIfShouldMarkThreadRead() {
+  void checkIfShouldMarkThreadRead() async {
     DateTime lastPostDate = details.posts.last.createdAt;
 
     // Check if last read is null
     if (details.readThreadLastSeen == null) {
-      KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
+      await KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
     } else if (details.readThreadLastSeen.isBefore(lastPostDate)) {
-      KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
+      await KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
     }
 
     if (details.isSubscribedTo != 0) {
       // Handle for subscribed thread
       // Check if last read is null
       if (details.subscriptionLastSeen == null) {
-        KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
+        await KnockoutAPI()
+            .readThreads(lastPostDate, details.id)
+            .then((res) {});
       } else if (details.subscriptionLastSeen.isBefore(lastPostDate)) {
-        KnockoutAPI()
+        await KnockoutAPI()
             .readThreadSubsciption(lastPostDate, details.id)
-            .then((res) {
-          print('Subscribed Thread marked read!');
-        });
+            .then((res) {});
       }
     }
+    ScopedModel.of<SubscriptionModel>(context).getSubscriptions();
   }
 
   void navigateToNextPage() {
@@ -459,7 +466,6 @@ class _ThreadScreenState extends State<ThreadScreen>
         );
       },
     ).then((String newTitle) {
-      print(newTitle);
       if (newTitle != null) {
         KnockoutAPI()
             .renameThread(details.id, newTitle)
@@ -487,34 +493,43 @@ class _ThreadScreenState extends State<ThreadScreen>
       case 2:
         onTapRenameThread();
         break;
+      case 3:
+        navigateToPage(1);
+        break;
+      case 4:
+        navigateToPage(_totalPages);
+        break;
+      case 5:
+        Clipboard.setData(new ClipboardData(
+            text:
+                'https://knockout.chat/thread/${details.id}/${_currentPage}'));
+        break;
       default:
     }
   }
 
-  void onTapEditPost (BuildContext context, ThreadPost post) async {
-
+  void onTapEditPost(BuildContext context, ThreadPost post) async {
     final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => NewPostScreen(
-            editingPost: true,
-            thread: details,
-            post: post,
-            replyList: List(),
-          ),
+      context,
+      MaterialPageRoute(
+        builder: (context) => NewPostScreen(
+          editingPost: true,
+          thread: details,
+          post: post,
+          replyList: List(),
         ),
-      );
+      ),
+    );
 
-      if (result != null) {
-        scaffoldkey.currentState.showSnackBar(SnackBar(
-          content: Text('Posted!'),
-          behavior: SnackBarBehavior.floating,
-        ));
-        await refreshPage();
-        print('Do the scroll');
-        scrollController.jumpTo(scrollController.position.maxScrollExtent);
-      }
-
+    if (result != null) {
+      scaffoldkey.currentState.showSnackBar(SnackBar(
+        content: Text('Posted!'),
+        behavior: SnackBarBehavior.floating,
+      ));
+      await refreshPage();
+      print('Do the scroll');
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    }
   }
 
   @override
@@ -524,21 +539,61 @@ class _ThreadScreenState extends State<ThreadScreen>
         leading: BackButton(),
         title: Text(details == null ? widget.title : details.title),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.refresh),
+            tooltip: 'Refresh',
+            onPressed: () => refreshPage(),
+          ),
           Builder(
             builder: (BuildContext bcontext) {
               return PopupMenuButton(
                 onSelected: onSelectOverflowItem,
                 itemBuilder: (BuildContext context) {
                   return [
-                    overFlowItem(Icon(Icons.refresh), 'Refresh', 0),
                     if (details != null)
                       overFlowItem(
-                          Icon(FontAwesomeIcons.eye), 'Subscribe to thread', 1),
+                          Icon(
+                            FontAwesomeIcons.eye,
+                            size: 18,
+                          ),
+                          'Subscribe to thread',
+                          1),
                     if (details != null &&
                         details.userId ==
                             ScopedModel.of<AuthenticationModel>(context).userId)
                       overFlowItem(
-                          Icon(FontAwesomeIcons.pen), 'Rename thread', 2)
+                          Icon(
+                            FontAwesomeIcons.pen,
+                            size: 18,
+                          ),
+                          'Rename thread',
+                          2),
+                    overFlowItem(
+                        Icon(
+                          Icons.content_copy,
+                          size: 18,
+                        ),
+                        'Copy link to thread',
+                        5),
+                    PopupMenuItem(
+                      enabled: false,
+                      value: 0,
+                      child: PopupMenuDivider(),
+                    ),
+                    overFlowItem(
+                        Icon(
+                          FontAwesomeIcons.undo,
+                          size: 18,
+                        ),
+                        'Jump to first page',
+                        3),
+                    overFlowItem(
+                        Icon(
+                          FontAwesomeIcons.redo,
+                          size: 18,
+                        ),
+                        'Jump to last page',
+                        4)
                   ];
                 },
               );
@@ -549,62 +604,81 @@ class _ThreadScreenState extends State<ThreadScreen>
       key: scaffoldkey,
       body: KnockoutLoadingIndicator(
         show: _isLoading,
-        child: details != null
-            ? CustomScrollView(
-                controller: scrollController,
-                slivers: <Widget>[
-                  if (postsToReplyTo.length > 0)
-                    SliverAppBar(
-                      title: Text('Replying to ${postsToReplyTo.length} posts'),
-                      automaticallyImplyLeading: false,
-                      floating: true,
-                      actions: <Widget>[
-                        IconButton(
-                            tooltip: 'Clear selected replies',
-                            icon: Icon(FontAwesomeIcons.eraser),
-                            onPressed: () {
-                              setState(() {
-                                postsToReplyTo = List();
-                              });
-                            }),
-                      ],
-                    ),
-                  SliverList(
-                    // Use a delegate to build items as they're scrolled on screen.
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        ThreadPost item = details.posts[index];
-                        return Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                          child: ThreadPostItem(
-                            scaffoldKey: scaffoldkey,
-                            postDetails: item,
-                            isOnReplyList: postsToReplyTo
-                                    .where((o) => o.id == item.id)
-                                    .length >
-                                0,
-                            onPressReply: onPressReply,
-                            onLongPressReply: onLongPressReply,
-                            onPostRated: () {
-                              Scaffold.of(context).showSnackBar(SnackBar(
-                                backgroundColor: Colors.green,
-                                content: Text('Post rated!'),
-                                behavior: SnackBarBehavior.floating,
-                              ));
-                              refreshPage();
-                            },
-                            onTapEditPost: (ThreadPost post) => onTapEditPost(context, post),
-                          ),
-                        );
-                      },
-                      // Builds 1000 ListTiles
-                      childCount: details.posts.length,
-                    ),
-                  ),
-                ],
-              )
-            : Container(),
+        child: Stack(
+          children: <Widget>[
+            if (details != null && details.threadBackgroundUrl != null)
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(details.threadBackgroundUrl),
+                    fit: BoxFit.cover,
+                    colorFilter: new ColorFilter.mode(
+                          Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                  )
+                ),
+              ),
+            details != null
+                ? CustomScrollView(
+                    controller: scrollController,
+                    slivers: <Widget>[
+                      if (postsToReplyTo.length > 0)
+                        SliverAppBar(
+                          title: Text(
+                              'Replying to ${postsToReplyTo.length} posts'),
+                          automaticallyImplyLeading: false,
+                          floating: true,
+                          actions: <Widget>[
+                            IconButton(
+                                tooltip: 'Clear selected replies',
+                                icon: Icon(FontAwesomeIcons.eraser),
+                                onPressed: () {
+                                  setState(() {
+                                    postsToReplyTo = List();
+                                  });
+                                }),
+                          ],
+                        ),
+                      SliverList(
+                        // Use a delegate to build items as they're scrolled on screen.
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            ThreadPost item = details.posts[index];
+                            return Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 0),
+                              child: ThreadPostItem(
+                                scaffoldKey: scaffoldkey,
+                                thread: details,
+                                currentPage: _currentPage,
+                                postDetails: item,
+                                isOnReplyList: postsToReplyTo
+                                        .where((o) => o.id == item.id)
+                                        .length >
+                                    0,
+                                onPressReply: onPressReply,
+                                onLongPressReply: onLongPressReply,
+                                onPostRated: () {
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    backgroundColor: Colors.green,
+                                    content: Text('Post rated!'),
+                                    behavior: SnackBarBehavior.floating,
+                                  ));
+                                  refreshPage();
+                                },
+                                onTapEditPost: (ThreadPost post) =>
+                                    onTapEditPost(context, post),
+                              ),
+                            );
+                          },
+                          // Builds 1000 ListTiles
+                          childCount: details.posts.length,
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(),
+          ],
+        ),
       ),
       extendBody: false,
       bottomNavigationBar: SizeTransition(
@@ -664,7 +738,6 @@ class _ThreadScreenState extends State<ThreadScreen>
                 behavior: SnackBarBehavior.floating,
               ));
               await refreshPage();
-              print('Do the scroll');
               scrollController
                   .jumpTo(scrollController.position.maxScrollExtent);
             }
