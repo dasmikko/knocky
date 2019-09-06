@@ -12,10 +12,11 @@ class SubscriptionListItem extends StatelessWidget {
   final ThreadAlert item;
   final Function onTapItem;
   final Function onTapNewPostButton;
+  final Function onLongPress;
   final Function onUnsubscribe;
 
   SubscriptionListItem(
-      {this.item, this.onTapItem, this.onTapNewPostButton, this.onUnsubscribe});
+      {this.item, this.onTapItem, this.onTapNewPostButton, this.onUnsubscribe, this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +65,7 @@ class SubscriptionListItem extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () => onTapItem(item),
+                      onLongPress: () => onLongPress(item),
                       child: Container(
                         padding: EdgeInsets.all(10),
                         child: Column(

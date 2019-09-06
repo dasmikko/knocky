@@ -10,6 +10,7 @@ import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widget/Subscription/SubscriptionListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky/state/subscriptions.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/events.dart';
 
@@ -61,6 +62,38 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
         ),
       ),
     );
+  }
+
+  void onLongPressItem(ThreadAlert item) {
+    showJumpDialog(context, item);
+  }
+
+  void showJumpDialog(BuildContext context, ThreadAlert item) {
+    int totalPages = (item.threadPostCount / 20).ceil();
+    showDialog<int>(
+        context: context,
+        builder: (BuildContext context) {
+          return new NumberPickerDialog.integer(
+            minValue: 1,
+            maxValue: totalPages,
+            title: new Text("Jump to page"),
+            initialIntegerValue: 1,
+          );
+        }).then((int value) {
+      if (value != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ThreadScreen(
+              title: item.threadTitle,
+              postCount: item.threadPostCount,
+              threadId: item.threadId,
+              page: value,
+            ),
+          ),
+        );
+      }
+    });
   }
 
   void onTapNewPostsButton(ThreadAlert item) {
@@ -119,6 +152,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
                 item: item,
                 onTapItem: onTapItem,
                 onTapNewPostButton: onTapNewPostsButton,
+                onLongPress: onLongPressItem,
                 onUnsubscribe: () => onTapUnsubscribe(context, item),
               );
             },
