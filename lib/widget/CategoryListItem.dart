@@ -228,7 +228,6 @@ class CategoryListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.only(bottom: 5.0, top: 10.0),
       child: InkWell(
         onTap: () => onTapItem(subforum),
         child: Column(
