@@ -33,6 +33,8 @@ Thread _$ThreadFromJson(Map<String, dynamic> json) {
         : DateTime.parse(json['subscriptionLastSeen'] as String),
     isSubscribedTo: json['isSubscribedTo'] as int ?? 0,
     userId: json['userId'] as int,
+    threadBackgroundType: json['threadBackgroundType'] as String,
+    threadBackgroundUrl: json['threadBackgroundUrl'] as String,
   );
 }
 
@@ -52,6 +54,8 @@ Map<String, dynamic> _$ThreadToJson(Thread instance) => <String, dynamic>{
       'user': instance.user,
       'userId': instance.userId,
       'isSubscribedTo': instance.isSubscribedTo,
+      'threadBackgroundType': instance.threadBackgroundType,
+      'threadBackgroundUrl': instance.threadBackgroundUrl,
     };
 
 ThreadUser _$ThreadUserFromJson(Map<String, dynamic> json) {
