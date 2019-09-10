@@ -17,11 +17,13 @@ class PostContent extends StatelessWidget {
   final SlateObject content;
   final Function onTapSpoiler;
   final GlobalKey scaffoldKey;
+  final bool textSelectable;
 
   PostContent({
     this.onTapSpoiler,
     this.content,
     this.scaffoldKey,
+    this.textSelectable = false
   });
 
   @override
@@ -40,6 +42,8 @@ class PostContent extends StatelessWidget {
           if (line.leaves != null) {
             lines.addAll(leafHandler(line.leaves));
           }
+
+
 
           // Handle inline element
           if (line.object == 'inline') {
@@ -71,7 +75,9 @@ class PostContent extends StatelessWidget {
         });
 
         return Container(
-          child: RichText(
+          child: this.textSelectable ? SelectableText.rich(
+            TextSpan(children: lines),
+          ) : RichText(
             text: TextSpan(children: lines),
           ),
         );
@@ -106,7 +112,9 @@ class PostContent extends StatelessWidget {
 
         return Container(
           margin: EdgeInsets.only(bottom: 10),
-          child: RichText(
+          child: this.textSelectable ? SelectableText.rich(
+            TextSpan(children: lines),
+          ) : RichText(
             text: TextSpan(children: lines),
           ),
         );

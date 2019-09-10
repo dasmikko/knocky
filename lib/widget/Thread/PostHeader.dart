@@ -18,6 +18,8 @@ class PostHeader extends StatelessWidget {
   final ThreadPost threadPost;
   final Thread thread;
   final int currentPage;
+  final bool textSelectable;
+  final Function onTextSelectableChanged;
 
   PostHeader(
       {this.avatarUrl,
@@ -28,7 +30,9 @@ class PostHeader extends StatelessWidget {
       this.threadPost,
       this.context,
       this.thread,
-      this.currentPage});
+      this.currentPage,
+      this.textSelectable,
+      this.onTextSelectableChanged});
 
   void onSelectOverflowItem(int item) {
     switch (item) {
@@ -36,6 +40,9 @@ class PostHeader extends StatelessWidget {
         Clipboard.setData(new ClipboardData(
             text:
                 'https://knockout.chat/thread/${thread.id}/${currentPage}#post-${threadPost.id}'));
+        break;
+      case 99:
+        this.onTextSelectableChanged(!this.textSelectable);
         break;
       default:
     }
@@ -55,15 +62,18 @@ class PostHeader extends StatelessWidget {
   PopupMenuItem<int> overFlowItem(Icon icon, String title, int value) {
     return PopupMenuItem<int>(
       value: value,
-      child: Row(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(right: 15),
-            child: icon,
-          ),
-          Text(title)
-        ],
-      ),
+      child: ListTile(
+        title: Text(title),
+        leading: icon,
+      )
+    );
+  }
+
+  PopupMenuItem<int> overFlowItemCheckbox(String title) {
+    return CheckedPopupMenuItem(
+      checked: this.textSelectable,
+      value: 99,
+      child: Text(title),
     );
   }
 
@@ -139,6 +149,8 @@ class PostHeader extends StatelessWidget {
                       return [
                         overFlowItem(
                             Icon(Icons.content_copy), 'Copy post link', 0),
+                        overFlowItemCheckbox(
+                            'Make text selectable'),
                       ];
                     },
                   ),
