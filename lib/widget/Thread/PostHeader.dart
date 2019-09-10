@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/screens/userProfile.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
@@ -32,10 +33,23 @@ class PostHeader extends StatelessWidget {
   void onSelectOverflowItem(int item) {
     switch (item) {
       case 0:
-        Clipboard.setData(new ClipboardData(text: 'https://knockout.chat/thread/${thread.id}/${currentPage}#post-${threadPost.id}'));
+        Clipboard.setData(new ClipboardData(
+            text:
+                'https://knockout.chat/thread/${thread.id}/${currentPage}#post-${threadPost.id}'));
         break;
       default:
     }
+  }
+
+  void onTapUsername(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => UserProfileScreen(
+              userId: this.userId,
+              username: this.username,
+              avatarUrl: this.avatarUrl,
+              backgroundUrl: this.backgroundUrl,
+            ));
   }
 
   PopupMenuItem<int> overFlowItem(Icon icon, String title, int value) {
@@ -92,20 +106,28 @@ class PostHeader extends StatelessWidget {
                   : null),
           child: Row(
             children: <Widget>[
-              if (hasAvatar)
-                Container(
-                  margin: EdgeInsets.only(right: 10),
-                  width: 40,
-                  height: 40,
-                  child: CachedNetworkImage(
-                    imageUrl:
-                        'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
-                            avatarUrl,
-                  ),
+              GestureDetector(
+                onTap: () => onTapUsername(context),
+                child: Row(
+                  children: <Widget>[
+                    if (hasAvatar)
+                      Container(
+                        margin: EdgeInsets.only(right: 10),
+                        width: 40,
+                        height: 40,
+                        child: CachedNetworkImage(
+                          imageUrl:
+                              'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
+                                  avatarUrl,
+                        ),
+                      ),
+                    Text(
+                      username,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: userColor),
+                    ),
+                  ],
                 ),
-              Text(
-                username,
-                style: TextStyle(fontWeight: FontWeight.bold, color: userColor),
               ),
               Flexible(
                 flex: 1,
@@ -115,7 +137,8 @@ class PostHeader extends StatelessWidget {
                     onSelected: onSelectOverflowItem,
                     itemBuilder: (BuildContext context) {
                       return [
-                        overFlowItem(Icon(Icons.content_copy), 'Copy post link', 0),
+                        overFlowItem(
+                            Icon(Icons.content_copy), 'Copy post link', 0),
                       ];
                     },
                   ),
