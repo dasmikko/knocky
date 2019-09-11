@@ -268,9 +268,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addImageUrlDialog() async {
-    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    //ClipboardData clipBoardText = await Clipboard.getData('text/plain');
     TextEditingController imgurlController = TextEditingController(
-        text: clipBoardText != null ? clipBoardText.text : '');
+        text: '');
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -313,9 +313,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addLinkDialog(TextEditingController mainController) async {
-    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    //ClipboardData clipBoardText = await Clipboard.getData('text/plain');
     TextEditingController urlController =
-        TextEditingController(text: clipBoardText.text);
+        TextEditingController(text: '');
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -360,9 +360,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addYoutubeVideoDialog() async {
-    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    //ClipboardData clipBoardText = await Clipboard.getData('text/plain');
     TextEditingController urlController =
-        TextEditingController(text: clipBoardText.text);
+        TextEditingController(text: '');
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -402,9 +402,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addVideoDialog() async {
-    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    //ClipboardData clipBoardText = await Clipboard.getData('text/plain');
     TextEditingController urlController =
-        TextEditingController(text: clipBoardText.text);
+        TextEditingController(text: '');
     await showDialog<String>(
       context: context,
       builder: (BuildContext context) => new AlertDialog(
@@ -555,9 +555,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addTwitterEmbed() async {
-    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    //ClipboardData clipBoardText = await Clipboard.getData('text/plain');
     TextEditingController urlController =
-        TextEditingController(text: clipBoardText.text);
+        TextEditingController(text: '');
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -608,9 +608,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addStrawpollEmbed() async {
-    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    //ClipboardData clipBoardText = await Clipboard.getData('text/plain');
     TextEditingController urlController =
-        TextEditingController(text: clipBoardText.text);
+        TextEditingController(text: '');
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
