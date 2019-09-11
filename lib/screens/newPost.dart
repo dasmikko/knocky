@@ -715,6 +715,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   child: Wrap(
                     children: <Widget>[
                       IconButton(
+                        tooltip: 'Bold',
                         icon: Icon(Icons.format_bold),
                         onPressed: () {
                           TextSelection theSelection =
@@ -724,6 +725,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                         },
                       ),
                       IconButton(
+                        tooltip: 'Italic',
                         icon: Icon(Icons.format_italic),
                         onPressed: () {
                           TextSelection theSelection =
@@ -733,6 +735,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                         },
                       ),
                       IconButton(
+                        tooltip: 'Underlined',
                         icon: Icon(Icons.format_underlined),
                         onPressed: () {
                           TextSelection theSelection =
@@ -742,6 +745,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                         },
                       ),
                       IconButton(
+                        tooltip: 'Code',
                         icon: Icon(Icons.code),
                         onPressed: () {
                           TextSelection theSelection =
@@ -751,6 +755,17 @@ class _NewPostScreenState extends State<NewPostScreen> {
                         },
                       ),
                       IconButton(
+                        tooltip: 'Spoiler',
+                        icon: Icon(Icons.visibility_off),
+                        onPressed: () {
+                          TextSelection theSelection =
+                              textEditingController.selection;
+                          addTagAtSelection(textEditingController,
+                              theSelection.start, theSelection.end, 'spoiler');
+                        },
+                      ),
+                      IconButton(
+                        tooltip: 'Link',
                         icon: Icon(Icons.link),
                         onPressed: () {
                           addLinkDialog(textEditingController);

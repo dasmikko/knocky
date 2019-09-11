@@ -373,46 +373,57 @@ class _PostEditorState extends State<PostEditor> {
           child: Wrap(
             children: <Widget>[
               IconButton(
+                tooltip: 'Text block',
                 icon: Icon(MdiIcons.textbox),
                 onPressed: this.widget.onTapAddTextBlock,
               ),
               IconButton(
+                tooltip: 'Very large text',
                 icon: Icon(MdiIcons.formatHeader1),
                 onPressed: this.widget.onTapAddHeadingOne,
               ),
               IconButton(
+                tooltip: 'Large text',
                 icon: Icon(MdiIcons.formatHeader2),
                 onPressed: this.widget.onTapAddHeadingTwo,
               ),
               IconButton(
+                tooltip: 'Quote',
                 icon: Icon(Icons.format_quote),
                 onPressed: this.widget.onTapAddQuote,
               ),
               IconButton(
+                tooltip: 'Bulleted list',
                 icon: Icon(Icons.format_list_bulleted),
                 onPressed: this.widget.onTapAddBulletedList,
               ),
               IconButton(
+                tooltip: 'Numbered list',
                 icon: Icon(Icons.format_list_numbered),
                 onPressed: this.widget.onTapAddNumberedList,
               ),
               IconButton(
+                tooltip: 'Image',
                 icon: Icon(Icons.image),
                 onPressed: this.widget.onTapAddImage,
               ),
               IconButton(
+                tooltip: 'YouTube video',
                 icon: Icon(Icons.ondemand_video),
                 onPressed: this.widget.onTapAddYouTubeVideo,
               ),
               IconButton(
+                tooltip: 'Video',
                 icon: Icon(Icons.videocam),
                 onPressed: this.widget.onTapAddVideo,
               ),
               IconButton(
+                tooltip: 'Twitter embed',
                 icon: Icon(MdiIcons.twitter),
                 onPressed: this.widget.onTapAddTwitterEmbed,
               ),
               IconButton(
+                tooltip: 'Strawpoll',
                 icon: Icon(MdiIcons.poll),
                 onPressed: this.widget.onTapAddStrawPollEmbed,
               ),
