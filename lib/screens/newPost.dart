@@ -233,6 +233,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
               ],
             ),
             onPressed: () async {
+              Navigator.of(context, rootNavigator: true).pop();
               this.addImageUrlDialog();
             },
           )
