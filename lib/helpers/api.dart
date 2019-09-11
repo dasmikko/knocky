@@ -10,6 +10,7 @@ import 'package:knocky/models/readThreads.dart';
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import 'package:knocky/models/userProfile.dart';
+import 'package:knocky/models/userProfilePosts.dart';
 
 class KnockoutAPI {
   static const KNOCKOUT_URL = "https://api.knockout.chat/";
@@ -233,5 +234,12 @@ class KnockoutAPI {
         url: 'user/${userId}', type: 'get',);
 
     return UserProfile.fromJson(response.data);
+  }
+
+  Future<UserProfilePosts> getUserProfilePosts(int userId) async {
+    final response = await _request(
+        url: 'user/${userId}/posts', type: 'get',);
+
+    return UserProfilePosts.fromJson(response.data);
   }
 }

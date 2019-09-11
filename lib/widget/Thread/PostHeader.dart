@@ -49,24 +49,26 @@ class PostHeader extends StatelessWidget {
   }
 
   void onTapUsername(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => UserProfileScreen(
-              userId: this.userId,
-              username: this.username,
-              avatarUrl: this.avatarUrl,
-              backgroundUrl: this.backgroundUrl,
-            ));
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => UserProfileScreen(
+          userId: this.userId,
+          username: this.username,
+          avatarUrl: this.avatarUrl,
+          backgroundUrl: this.backgroundUrl,
+        ),
+      ),
+    );
   }
 
   PopupMenuItem<int> overFlowItem(Icon icon, String title, int value) {
     return PopupMenuItem<int>(
-      value: value,
-      child: ListTile(
-        title: Text(title),
-        leading: icon,
-      )
-    );
+        value: value,
+        child: ListTile(
+          title: Text(title),
+          leading: icon,
+        ));
   }
 
   PopupMenuItem<int> overFlowItemCheckbox(String title) {
@@ -149,8 +151,7 @@ class PostHeader extends StatelessWidget {
                       return [
                         overFlowItem(
                             Icon(Icons.content_copy), 'Copy post link', 0),
-                        overFlowItemCheckbox(
-                            'Make text selectable'),
+                        overFlowItemCheckbox('Make text selectable'),
                       ];
                     },
                   ),

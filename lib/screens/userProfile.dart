@@ -2,7 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/api.dart';
+import 'package:knocky/models/thread.dart';
 import 'package:knocky/models/userProfile.dart';
+import 'package:knocky/models/userProfilePosts.dart';
+import 'package:knocky/widget/Thread/ThreadPostItem.dart';
+import 'package:knocky/widget/UserProfilePostListItem.dart';
 
 class UserProfileScreen extends StatefulWidget {
   final int userId;
@@ -21,11 +25,21 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   UserProfile _profile;
   bool _fetched = false;
   int _sharedValue = 0;
+  UserProfilePosts _posts;
 
   @override
   void initState() {
     super.initState();
     getProfile();
+    fetchPostsList();
+  }
+
+  void fetchPostsList() async {
+    UserProfilePosts items =
+        await KnockoutAPI().getUserProfilePosts(this.widget.userId);
+    setState(() {
+      _posts = items;
+    });
   }
 
   void getProfile() async {
@@ -38,29 +52,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     print(profile);
   }
 
-  Widget contentLoaded(BuildContext context) {
-    return Container(
-      child: Stack(
-        children: <Widget>[
-          dialogCard(),
-          Positioned(
-            left: 16,
-            right: 16,
-            child: CachedNetworkImage(
-              imageUrl:
-                  'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
-                      this.widget.avatarUrl,
-            ),
-          ),
-        ],
-      ),
-    );
+  List<Widget> contentLoaded(BuildContext context) {
+    return <Widget>[];
   }
 
   Widget dialogCard() {
     return Container(
-      width: 300,
-      height: 400,
       padding: EdgeInsets.only(
         top: 80,
         bottom: 32,
@@ -109,13 +106,108 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
+    return Scaffold(
+      body: DefaultTabController(
+        length: 2,
+        child: NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverAppBar(
+                  expandedHeight: 400,
+                  pinned: true,
+                  elevation: 0,
+                  flexibleSpace: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.parallax,
+                    title: Text(this.widget.username),
+                    background: Stack(
+                      fit: StackFit.passthrough,
+                      children: <Widget>[
+                        CachedNetworkImage(
+                          color: Colors.grey,
+                          colorBlendMode: BlendMode.darken,
+                          fit: BoxFit.fitWidth,
+                          alignment: Alignment.topCenter,
+                          imageUrl:
+                              'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
+                                  this.widget.backgroundUrl,
+                        ),
+                        Positioned(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
+                                      this.widget.avatarUrl,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SliverPersistentHeader(
+                  delegate: _SliverAppBarDelegate(
+                    TabBar(
+                      labelColor: Colors.white,
+                      unselectedLabelColor: Colors.grey,
+                      tabs: [
+                        Tab(icon: Icon(Icons.message), text: "Posts"),
+                        Tab(
+                            icon: Icon(Icons.insert_drive_file),
+                            text: "Threads"),
+                      ],
+                    ),
+                  ),
+                  pinned: true,
+                ),
+              ];
+            },
+            body: TabBarView(
+              children: <Widget>[
+                Container(
+                    child: ListView.builder(
+                  itemCount: _posts != null ? _posts.posts.length : 0,
+                  itemBuilder: (BuildContext bcontext, int index) {
+                    return Card(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: UserProfilePostListItem(
+                          post: _posts.posts[index],
+                        ),
+                      ),
+                    );
+                  },
+                )),
+                Container(child: Text('Threads'))
+              ],
+            )),
       ),
-      elevation: 0.0,
-      backgroundColor: Colors.transparent,
-      child: contentLoaded(context),
     );
+  }
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate(this._tabBar);
+
+  final TabBar _tabBar;
+
+  @override
+  double get minExtent => _tabBar.preferredSize.height;
+  @override
+  double get maxExtent => _tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return new Container(
+      color: Colors.grey[900],
+      child: _tabBar,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
   }
 }

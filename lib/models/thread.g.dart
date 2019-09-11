@@ -129,7 +129,7 @@ Map<String, dynamic> _$ThreadPostBanToJson(ThreadPostBan instance) =>
 
 ThreadPostRatings _$ThreadPostRatingsFromJson(Map<String, dynamic> json) {
   return ThreadPostRatings(
-    ratingId: json['rating_id'] as String,
+    ratingId: _ratingIdHandler(json['rating_id']),
     rating: json['rating'] as String,
     count: json['count'] as int,
     users: (json['users'] as List)?.map((e) => e as String)?.toList(),
