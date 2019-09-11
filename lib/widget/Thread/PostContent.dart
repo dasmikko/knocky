@@ -259,7 +259,7 @@ class PostContent extends StatelessWidget {
             border: Border(
               left: BorderSide(color: Colors.blue, width: 3.0),
             ),
-            color: Colors.grey,
+            color: Color.fromRGBO(128, 128, 128, 0.1),
           ),
           child: RichText(
             text: TextSpan(children: lines),
