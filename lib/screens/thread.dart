@@ -609,13 +609,13 @@ class _ThreadScreenState extends State<ThreadScreen>
             if (details != null && details.threadBackgroundUrl != null)
               Container(
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: CachedNetworkImageProvider(details.threadBackgroundUrl),
-                    fit: BoxFit.cover,
-                    colorFilter: new ColorFilter.mode(
-                          Colors.black.withOpacity(0.5), BlendMode.dstATop),
-                  )
-                ),
+                    image: DecorationImage(
+                  image:
+                      CachedNetworkImageProvider(details.threadBackgroundUrl),
+                  fit: BoxFit.cover,
+                  colorFilter: new ColorFilter.mode(
+                      Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                )),
               ),
             details != null
                 ? CustomScrollView(
