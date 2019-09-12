@@ -5,6 +5,9 @@ import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/models/userProfile.dart';
 import 'package:knocky/models/userProfilePosts.dart';
+import 'package:knocky/models/userProfileThreads.dart';
+import 'package:knocky/widget/SubforumDetailListItem.dart';
+import 'package:knocky/widget/SubforumPopularLatestDetailListItem.dart';
 import 'package:knocky/widget/Thread/ThreadPostItem.dart';
 import 'package:knocky/widget/UserProfilePostListItem.dart';
 
@@ -13,9 +16,10 @@ class UserProfileScreen extends StatefulWidget {
   final String username;
   final String avatarUrl;
   final String backgroundUrl;
+  final int postId;
 
   UserProfileScreen(
-      {this.userId, this.username, this.avatarUrl, this.backgroundUrl});
+      {this.userId, this.username, this.avatarUrl, this.backgroundUrl, this.postId});
 
   @override
   _UserProfileScreenState createState() => _UserProfileScreenState();
@@ -26,12 +30,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   bool _fetched = false;
   int _sharedValue = 0;
   UserProfilePosts _posts;
+  UserProfileThreads _threads;
 
   @override
   void initState() {
     super.initState();
     getProfile();
     fetchPostsList();
+    fetchThreadsList();
   }
 
   void fetchPostsList() async {
@@ -39,6 +45,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         await KnockoutAPI().getUserProfilePosts(this.widget.userId);
     setState(() {
       _posts = items;
+    });
+  }
+
+  void fetchThreadsList() async {
+    UserProfileThreads items =
+        await KnockoutAPI().getUserProfileThreads(this.widget.userId);
+    setState(() {
+      _threads = items;
     });
   }
 
@@ -50,58 +64,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       _fetched = true;
     });
     print(profile);
-  }
-
-  List<Widget> contentLoaded(BuildContext context) {
-    return <Widget>[];
-  }
-
-  Widget dialogCard() {
-    return Container(
-      padding: EdgeInsets.only(
-        top: 80,
-        bottom: 32,
-        left: 36,
-        right: 36,
-      ),
-      margin: EdgeInsets.only(top: 130),
-      decoration: new BoxDecoration(
-        image: DecorationImage(
-          image: CachedNetworkImageProvider(
-              'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
-                  this.widget.backgroundUrl),
-          fit: BoxFit.cover,
-          colorFilter: new ColorFilter.mode(
-              Colors.black.withOpacity(0.2), BlendMode.dstATop),
-        ),
-        color: Colors.grey[800],
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 10.0,
-            offset: const Offset(0.0, 10.0),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment:
-            CrossAxisAlignment.stretch, // To make the card compact
-        children: <Widget>[
-          Align(
-            child: Text(
-              this.widget.username,
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -135,10 +97,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         Positioned(
                           child: Align(
                             alignment: Alignment.center,
-                            child: CachedNetworkImage(
-                              imageUrl:
-                                  'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
-                                      this.widget.avatarUrl,
+                            child: Hero(
+                              tag: this.widget.avatarUrl + this.widget.postId.toString(),
+                              child: CachedNetworkImage(
+                                imageUrl:
+                                    'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
+                                        this.widget.avatarUrl,
+                              ),
                             ),
                           ),
                         ),
@@ -152,10 +117,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       labelColor: Colors.white,
                       unselectedLabelColor: Colors.grey,
                       tabs: [
-                        Tab(icon: Icon(Icons.message), text: "Posts"),
+                        Tab(
+                            icon: Icon(Icons.message),
+                            text: _posts == null
+                                ? "Posts"
+                                : 'Posts (${_posts.posts.length})'),
                         Tab(
                             icon: Icon(Icons.insert_drive_file),
-                            text: "Threads"),
+                            text: _threads == null
+                                ? "Threads"
+                                : 'Threads (${_threads.threads.length})'),
                       ],
                     ),
                   ),
@@ -166,20 +137,30 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             body: TabBarView(
               children: <Widget>[
                 Container(
-                    child: ListView.builder(
-                  itemCount: _posts != null ? _posts.posts.length : 0,
-                  itemBuilder: (BuildContext bcontext, int index) {
-                    return Card(
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        child: UserProfilePostListItem(
-                          post: _posts.posts[index],
+                  child: ListView.builder(
+                    itemCount: _posts != null ? _posts.posts.length : 0,
+                    itemBuilder: (BuildContext bcontext, int index) {
+                      return Card(
+                        clipBehavior: Clip.antiAlias,
+                        child: Container(
+                          child: UserProfilePostListItem(
+                            post: _posts.posts[index],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                )),
-                Container(child: Text('Threads'))
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  child: ListView.builder(
+                    itemCount: _threads != null ? _threads.threads.length : 0,
+                    itemBuilder: (BuildContext bcontext, int index) {
+                      return SubforumPopularLatestDetailListItem(
+                        threadDetails: _threads.threads[index],
+                      );
+                    },
+                  ),
+                )
               ],
             )),
       ),

@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import 'package:knocky/models/userProfile.dart';
 import 'package:knocky/models/userProfilePosts.dart';
+import 'package:knocky/models/userProfileThreads.dart';
 
 class KnockoutAPI {
   static const KNOCKOUT_URL = "https://api.knockout.chat/";
@@ -241,5 +242,12 @@ class KnockoutAPI {
         url: 'user/${userId}/posts', type: 'get',);
 
     return UserProfilePosts.fromJson(response.data);
+  }
+
+  Future<UserProfileThreads> getUserProfileThreads(int userId) async {
+    final response = await _request(
+        url: 'user/${userId}/threads', type: 'get',);
+
+    return UserProfileThreads.fromJson(response.data);
   }
 }

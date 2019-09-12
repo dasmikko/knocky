@@ -49,14 +49,14 @@ class PostHeader extends StatelessWidget {
   }
 
   void onTapUsername(BuildContext context) {
-    Navigator.push(
-      context,
+    Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (context) => UserProfileScreen(
           userId: this.userId,
           username: this.username,
           avatarUrl: this.avatarUrl,
           backgroundUrl: this.backgroundUrl,
+          postId: this.threadPost.id,
         ),
       ),
     );
@@ -127,10 +127,13 @@ class PostHeader extends StatelessWidget {
                         margin: EdgeInsets.only(right: 10),
                         width: 40,
                         height: 40,
-                        child: CachedNetworkImage(
-                          imageUrl:
-                              'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
-                                  avatarUrl,
+                        child: Hero(
+                          tag: avatarUrl + threadPost.id.toString(),
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
+                                    avatarUrl,
+                          ),
                         ),
                       ),
                     Text(
