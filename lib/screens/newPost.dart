@@ -390,6 +390,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
               onPressed: () {
                 setState(() {
                   this.document.document.nodes.add(SlateNode(
+                      object: 'block',
                       type: 'youtube',
                       data: SlateNodeData(src: urlController.text)));
                 });
@@ -434,6 +435,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 setState(() {
                   this.document.document.nodes.add(
                         SlateNode(
+                          object: 'block',
                           type: 'video',
                           data: SlateNodeData(src: urlController.text),
                         ),
@@ -1077,6 +1079,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   @override
   Widget build(BuildContext wcontext) {
+    print(document.toJson());
     return DefaultTabController(
       length: 2,
       child: Scaffold(
