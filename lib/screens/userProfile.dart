@@ -6,6 +6,7 @@ import 'package:knocky/models/thread.dart';
 import 'package:knocky/models/userProfile.dart';
 import 'package:knocky/models/userProfilePosts.dart';
 import 'package:knocky/models/userProfileThreads.dart';
+import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widget/SubforumDetailListItem.dart';
 import 'package:knocky/widget/SubforumPopularLatestDetailListItem.dart';
 import 'package:knocky/widget/Thread/ThreadPostItem.dart';
@@ -19,7 +20,11 @@ class UserProfileScreen extends StatefulWidget {
   final int postId;
 
   UserProfileScreen(
-      {this.userId, this.username, this.avatarUrl, this.backgroundUrl, this.postId});
+      {this.userId,
+      this.username,
+      this.avatarUrl,
+      this.backgroundUrl,
+      this.postId});
 
   @override
   _UserProfileScreenState createState() => _UserProfileScreenState();
@@ -98,7 +103,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           child: Align(
                             alignment: Alignment.center,
                             child: Hero(
-                              tag: this.widget.avatarUrl + this.widget.postId.toString(),
+                              tag: this.widget.avatarUrl +
+                                  this.widget.postId.toString(),
                               child: CachedNetworkImage(
                                 imageUrl:
                                     'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
@@ -136,31 +142,37 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             },
             body: TabBarView(
               children: <Widget>[
-                Container(
-                  child: ListView.builder(
-                    itemCount: _posts != null ? _posts.posts.length : 0,
-                    itemBuilder: (BuildContext bcontext, int index) {
-                      return Card(
-                        clipBehavior: Clip.antiAlias,
-                        child: Container(
-                          child: UserProfilePostListItem(
-                            post: _posts.posts[index],
+                KnockoutLoadingIndicator(
+                  show: _posts != null ? false : true,
+                  child: Container(
+                    child: ListView.builder(
+                      itemCount: _posts != null ? _posts.posts.length : 0,
+                      itemBuilder: (BuildContext bcontext, int index) {
+                        return Card(
+                          clipBehavior: Clip.antiAlias,
+                          child: Container(
+                            child: UserProfilePostListItem(
+                              post: _posts.posts[index],
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
-                Container(
-                  child: ListView.builder(
-                    itemCount: _threads != null ? _threads.threads.length : 0,
-                    itemBuilder: (BuildContext bcontext, int index) {
-                      return SubforumPopularLatestDetailListItem(
-                        threadDetails: _threads.threads[index],
-                      );
-                    },
+                KnockoutLoadingIndicator(
+                  show: _threads != null ? false : true,
+                  child: Container(
+                    child: ListView.builder(
+                      itemCount: _threads != null ? _threads.threads.length : 0,
+                      itemBuilder: (BuildContext bcontext, int index) {
+                        return SubforumPopularLatestDetailListItem(
+                          threadDetails: _threads.threads[index],
+                        );
+                      },
+                    ),
                   ),
-                )
+                ),
               ],
             )),
       ),
