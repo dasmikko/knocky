@@ -90,12 +90,6 @@ class PostHeader extends StatelessWidget {
         backgroundUrl != 'none.webp');
     bool hasAvatar = (avatarUrl != null || avatarUrl != '');
 
-    Color userColor = AppColors(context).normalUserColor(); // User
-    if (userGroup == 2) userColor = AppColors(context).goldUserColor(); // Gold
-    if (userGroup == 3) userColor = AppColors(context).modUserColor(); // Mod
-    if (userGroup == 4)
-      userColor = AppColors(context).adminUserColor(); // Admin
-
     return Column(
       children: <Widget>[
         Container(
@@ -139,7 +133,7 @@ class PostHeader extends StatelessWidget {
                     Text(
                       username,
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, color: userColor),
+                          fontWeight: FontWeight.bold, color: AppColors(context).userGroupToColor(userGroup)),
                     ),
                   ],
                 ),
