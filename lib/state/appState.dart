@@ -8,7 +8,7 @@ class AppStateModel extends Model {
   int _currentTab = 0;
   int get currentTab => _currentTab;
 
-  List<SyncDataMentionModel> _mentions;
+  List<SyncDataMentionModel> _mentions = List();
   List<SyncDataMentionModel> get mentions => _mentions;
 
   int mentionsCount () {

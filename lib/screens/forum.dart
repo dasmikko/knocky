@@ -93,6 +93,7 @@ class _ForumScreenState extends State<ForumScreen>
   bool notNull(Object o) => o != null;
 
   void onTapItem(Subforum item) {
+    ScopedModel.of<AppStateModel>(context).updateSyncData();
     Navigator.push(
       context,
       MaterialPageRoute(

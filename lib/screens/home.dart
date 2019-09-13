@@ -78,6 +78,8 @@ class _HomeScreenState extends State<HomeScreen>
         ScopedModel.of<AppStateModel>(context).setCurrentTab(2);
       // More handling code...
     });
+
+    ScopedModel.of<AppStateModel>(context).updateSyncData();
   }
 
   @override
