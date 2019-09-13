@@ -75,7 +75,7 @@ class _ThreadPostItemState extends State<ThreadPostItem> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          content: new Text(content),
+          content: new SelectableText(content),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(

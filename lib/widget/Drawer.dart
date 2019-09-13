@@ -5,9 +5,11 @@ import 'package:knocky/helpers/api.dart';
 import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:knocky/helpers/hiveHelper.dart';
+import 'package:knocky/models/syncData.dart';
 import 'package:knocky/screens/events.dart';
 import 'package:knocky/screens/latestThreads.dart';
 import 'package:knocky/screens/popularThreads.dart';
+import 'package:knocky/screens/thread.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'dart:convert';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,6 +19,7 @@ import 'package:intent/action.dart' as Action;
 import 'package:knocky/screens/subscriptions.dart';
 import 'package:knocky/screens/settings.dart';
 import 'package:knocky/state/authentication.dart';
+import 'package:knocky/state/appState.dart';
 import 'package:knocky/state/subscriptions.dart';
 
 class DrawerWidget extends StatefulWidget {
@@ -42,11 +45,12 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
   }
 
   @override
-  void afterFirstLayout (BuildContext context) {
+  void afterFirstLayout(BuildContext context) {
     ScopedModel.of<AuthenticationModel>(context)
         .getLoginStateFromSharedPreference(context);
-  }
 
+    ScopedModel.of<AppStateModel>(context).updateSyncData();
+  }
 
   void onClickLogin(BuildContext context) async {
     final flutterWebviewPlugin = new FlutterWebviewPlugin();
@@ -178,6 +182,20 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
     );
   }
 
+  void onTapOnMention(SyncDataMentionModel mention) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ThreadScreen(
+          page: mention.threadPage,
+          threadId: mention.threadId,
+          postCount: mention.threadPage * 20,
+        ),
+      ),
+    );
+    ScopedModel.of<AppStateModel>(context).updateSyncData();
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool _loginState =
@@ -201,6 +219,9 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .banMessage;
 
+    final List<SyncDataMentionModel> mentions =
+        ScopedModel.of<AppStateModel>(context, rebuildOnChange: true).mentions;
+
     /*final int banThreadId =
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .banThreadId;*/
@@ -222,7 +243,8 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
     return Drawer(
       child: ListView(
         children: <Widget>[
-          UserAccountsDrawerHeader( //ignore: missing_required_param
+          UserAccountsDrawerHeader(
+            //ignore: missing_required_param
             accountName: Text(_loginState ? _username : 'Not logged in'),
             currentAccountPicture: _loginState
                 ? CachedNetworkImage(
@@ -281,7 +303,31 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
                 ScopedModel.of<AuthenticationModel>(context).logout();
                 ScopedModel.of<SubscriptionModel>(context).clearList();
               },
-            )
+            ),
+          Divider(
+            color: Colors.grey,
+          ),
+          if (_loginState)
+            ListTile(
+              title: Text('Mentions'),
+              trailing: mentions != null && mentions.length > 0
+                  ? Chip(
+                      backgroundColor: Colors.red,
+                      label: Text(mentions.length.toString()),
+                    )
+                  : null,
+            ),
+          if (_loginState)
+            for (var item in mentions)
+              ListTile(
+                title: Text(item.content),
+                onTap: () => onTapOnMention(item),
+              ),
+          if (_loginState && mentions != null && mentions.length == 0)
+            ListTile(
+                title: Text('You have no new mentions', style: TextStyle(color: Colors.grey),),
+                dense: true,
+              )
         ],
       ),
     );

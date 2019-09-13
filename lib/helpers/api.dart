@@ -4,6 +4,7 @@ import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/models/events.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:knocky/models/subforumDetails.dart';
+import 'package:knocky/models/syncData.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/models/readThreads.dart';
@@ -249,5 +250,20 @@ class KnockoutAPI {
         url: 'user/${userId}/threads', type: 'get',);
 
     return UserProfileThreads.fromJson(response.data);
+  }
+
+  Future<SyncDataModel> getSyncData() async {
+    final response = await _request(
+        url: 'user/syncData', type: 'get',);
+
+    return SyncDataModel.fromJson(response.data);
+  }
+
+  Future<bool> markMentionsAsRead(List<int> postIds) async {
+    final response = await _request(
+        url: 'mentions', type: 'put', data: {'postIds': postIds});
+
+    if (response.statusCode == 200) return true;
+    return false;
   }
 }
