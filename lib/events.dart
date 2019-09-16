@@ -9,3 +9,10 @@ class ClickDrawerEvent {
 
   ClickDrawerEvent(this.clicked);
 }
+
+/// Event A.
+class HideBottomNavbarEvent {
+  bool state;
+
+  HideBottomNavbarEvent(this.state);
+}
