@@ -35,7 +35,7 @@ class PostContent extends StatelessWidget {
       },
       context: context,
       paragraphHandler: (SlateNode node, Function leafHandler) {
-        List<TextSpan> lines = List();
+        List<InlineSpan> lines = List();
 
         // Handle block nodes
         node.nodes.forEach((line) {
@@ -51,7 +51,10 @@ class PostContent extends StatelessWidget {
             if (line.type == 'link') {
               line.nodes.forEach((inlineNode) {
                 inlineNode.leaves.forEach((leaf) {
-                  lines.add(TextSpan(
+                  if (line.data.isSmartLink) {
+                    lines.add(WidgetSpan(child: EmbedWidget(url: line.data.href,) ));
+                  } else {
+                    lines.add(TextSpan(
                       text: leaf.text,
                       style: TextStyle(color: Colors.blue),
                       recognizer: TapGestureRecognizer()
@@ -62,6 +65,7 @@ class PostContent extends StatelessWidget {
                             ..startActivity().catchError((e) => print(e));
                           print('Clicked link: ' + line.data.href);
                         }));
+                  }
                 });
               });
             } else {
@@ -155,9 +159,9 @@ class PostContent extends StatelessWidget {
         );
       },
       strawpollHandler: (SlateNode node) {
-        return EmbedWidget(
-          url: node.data.src,
-        );
+          return EmbedWidget(
+            url: node.data.src,
+          );
       },
       userQuoteHandler: (String username, List<Widget> widgets, bool isChild, SlateNode node) {
         return UserQuoteWidget(
