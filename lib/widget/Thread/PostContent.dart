@@ -51,7 +51,7 @@ class PostContent extends StatelessWidget {
             if (line.type == 'link') {
               line.nodes.forEach((inlineNode) {
                 inlineNode.leaves.forEach((leaf) {
-                  if (line.data.isSmartLink) {
+                  if (line.data.isSmartLink != null && line.data.isSmartLink) {
                     lines.add(WidgetSpan(child: EmbedWidget(url: line.data.href,) ));
                   } else {
                     lines.add(TextSpan(
