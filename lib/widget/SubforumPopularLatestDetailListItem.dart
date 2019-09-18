@@ -3,9 +3,11 @@ import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:knocky/helpers/icons.dart';
+import 'package:knocky/state/appState.dart';
 import 'package:knocky/widget/InkWellOnWidget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/colors.dart';
+import 'package:scoped_model/scoped_model.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'dart:ui' as ui;
 import 'package:numberpicker/numberpicker.dart';
@@ -18,6 +20,8 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
   void onTapNewPostsButton(BuildContext context, SubforumThreadLatestPopular item) {
     double pagenumber =
         (item.postCount - (item.readThreadUnreadPosts - 1)) / 20;
+
+    ScopedModel.of<AppStateModel>(context).updateSyncData();
 
     Navigator.push(
       context,

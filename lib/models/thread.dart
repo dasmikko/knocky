@@ -118,7 +118,7 @@ class ThreadPostBan {
 
 @JsonSerializable()
 class ThreadPostRatings {
-  @JsonKey(name: 'rating_id')
+  @JsonKey(name: 'rating_id', fromJson: _ratingIdHandler)
   final String ratingId;
   final String rating;
   final int count;
@@ -134,6 +134,11 @@ class ThreadPostRatings {
   factory ThreadPostRatings.fromJson(Map<String, dynamic> json) =>
       _$ThreadPostRatingsFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadPostRatingsToJson(this);
+}
+
+String _ratingIdHandler(dynamic id) {
+  if (id is int) return id.toString();
+  return id;
 }
 
 @JsonSerializable()

@@ -101,6 +101,7 @@ SlateNodeData _$SlateNodeDataFromJson(Map<String, dynamic> json) {
         : NodeDataPostData.fromJson(json['postData'] as Map<String, dynamic>),
     href: json['href'] as String,
     isThumbnail: json['isThumbnail'] as bool,
+    isSmartLink: json['isSmartLink'] as bool,
   );
 }
 
@@ -117,6 +118,7 @@ Map<String, dynamic> _$SlateNodeDataToJson(SlateNodeData instance) {
   writeNotNull('postData', _nodeDataPostDataToJson(instance.postData));
   writeNotNull('href', instance.href);
   writeNotNull('isThumbnail', instance.isThumbnail);
+  writeNotNull('isSmartLink', instance.isSmartLink);
   return val;
 }
 

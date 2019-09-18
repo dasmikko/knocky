@@ -79,7 +79,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
       paragraph.nodes.add(SlateNode(
           object: 'inline',
           type: 'link',
-          data: SlateNodeData(href: element.children.first.textContent),
+          data: SlateNodeData(href: element.children.first.textContent, isSmartLink: element.attributes['rich'] != null ? true : false),
           nodes: [
             SlateNode(object: 'text', leaves: [
               SlateLeaf(
@@ -121,7 +121,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
     StringBuffer content = new StringBuffer();
 
     if (node.type == 'link') {
-      content.write('[url]');
+      content.write(node.data.isSmartLink ? '[url rich=true]' : '[url]');
       node.nodes.forEach((inlineNode) {
         inlineNode.leaves.forEach((leaf) {
           content.write(leaf.text);
@@ -154,7 +154,13 @@ class BBCodeHandler implements bbob.NodeVisitor {
         if (line.type == 'link') {
           line.nodes.forEach((inlineNode) {
             inlineNode.leaves.forEach((leaf) {
-              content.write('[url]' + leaf.text + '[/url]');
+              String linktext = '';
+              if (line.data.isSmartLink != null && line.data.isSmartLink) {
+                linktext = '[url rich=true]' + leaf.text + '[/url]';
+              } else {
+                linktext = '[url]' + leaf.text + '[/url]';
+              }
+              content.write(linktext);
             });
           });
         } else {

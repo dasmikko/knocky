@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/subforumDetails.dart';
+import 'package:knocky/models/syncData.dart';
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/screens/thread.dart';
+import 'package:knocky/state/appState.dart';
 import 'package:knocky/widget/SubforumPopularLatestDetailListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky/events.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class PopularThreadsScreen extends StatefulWidget {
   @override
@@ -94,10 +97,37 @@ class _PopularThreadsScreenState extends State<PopularThreadsScreen>
 
   @override
   Widget build(BuildContext context) {
+    final List<SyncDataMentionModel> mentions =
+        ScopedModel.of<AppStateModel>(context, rebuildOnChange: true).mentions;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            icon: Icon(Icons.menu),
+            icon: Stack(
+              overflow: Overflow.visible,
+              children: <Widget>[
+                Icon(Icons.menu),
+                if (mentions != null &&
+                    mentions.length >
+                        0) // Show a little indicator that you have mentions
+                  Positioned(
+                    top: -5,
+                    right: -5,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                        color: Colors.red,
+                        child: Text(
+                          '1',
+                          style: TextStyle(fontSize: 10),
+                        ),
+                      ),
+                    ),
+                  )
+              ],
+            ),
             onPressed: () {
               eventBus.fire(ClickDrawerEvent(true));
             }),

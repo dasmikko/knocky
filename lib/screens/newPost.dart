@@ -8,6 +8,7 @@ import 'package:knocky/helpers/ImgurHelper.dart';
 import 'package:knocky/helpers/bbcode.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/widget/LinkDialogContent.dart';
 import 'package:knocky/widget/ListEditor.dart';
 import 'package:knocky/widget/PostEditor.dart';
 import 'package:knocky/helpers/api.dart';
@@ -201,7 +202,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
             child: Row(
               children: <Widget>[
                 Icon(Icons.camera_alt),
-                Container(margin: EdgeInsets.only(left: 10), child: Text('Take picture and upload to Imgur')),
+                Container(
+                    margin: EdgeInsets.only(left: 10),
+                    child: Text('Take picture and upload to Imgur')),
               ],
             ),
             onPressed: () async {
@@ -215,7 +218,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
             child: Row(
               children: <Widget>[
                 Icon(Icons.file_upload),
-                Container(margin: EdgeInsets.only(left: 10), child: Text('Upload existing image to Imgur')),
+                Container(
+                    margin: EdgeInsets.only(left: 10),
+                    child: Text('Upload existing image to Imgur')),
               ],
             ),
             onPressed: () async {
@@ -229,10 +234,13 @@ class _NewPostScreenState extends State<NewPostScreen> {
             child: Row(
               children: <Widget>[
                 Icon(Icons.insert_link),
-                Container(margin: EdgeInsets.only(left: 10), child: Text('Image url')),
+                Container(
+                    margin: EdgeInsets.only(left: 10),
+                    child: Text('Image url')),
               ],
             ),
             onPressed: () async {
+              Navigator.of(context, rootNavigator: true).pop();
               this.addImageUrlDialog();
             },
           )
@@ -267,9 +275,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addImageUrlDialog() async {
-    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
-    TextEditingController imgurlController = TextEditingController(
-        text: clipBoardText != null ? clipBoardText.text : '');
+    //ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    TextEditingController imgurlController = TextEditingController(text: '');
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -312,23 +319,33 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addLinkDialog(TextEditingController mainController) async {
-    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
-    TextEditingController urlController =
-        TextEditingController(text: clipBoardText.text);
+    //ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    TextEditingController urlController = TextEditingController(text: '');
+    bool isRichLink = false;
+
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
         contentPadding: const EdgeInsets.all(16.0),
-        content: new Row(
+        content: new Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            new Expanded(
-              child: new TextField(
-                autofocus: true,
-                keyboardType: TextInputType.url,
-                controller: urlController,
-                decoration: new InputDecoration(labelText: 'Url'),
+            new TextField(
+              autofocus: true,
+              keyboardType: TextInputType.url,
+              controller: urlController,
+              decoration: new InputDecoration(labelText: 'Url'),
+            ),
+            Flexible(
+              flex: 0,
+              child: LinkDialogWidget(
+                onChanged: (bool value) {
+                  isRichLink = value;
+                },
               ),
-            )
+            ),
           ],
         ),
         actions: <Widget>[
@@ -341,14 +358,15 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Insert'),
               onPressed: () {
                 Navigator.of(context, rootNavigator: true).pop();
-
+                print('isRichLink: ' + isRichLink.toString());
+                String richTextAttribute = isRichLink ? 'rich=true' : '';
                 if (mainController.text.endsWith('\n') ||
                     controller.text.isEmpty) {
                   mainController.text =
-                      mainController.text + '[url]${urlController.text}[/url]';
+                      mainController.text + '[url ${richTextAttribute}]${urlController.text}[/url]';
                 } else {
                   mainController.text = mainController.text +
-                      '\n[url]${urlController.text}[/url]';
+                      '\n[url ${richTextAttribute}]${urlController.text}[/url]';
                 }
 
                 refreshPreview();
@@ -359,9 +377,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addYoutubeVideoDialog() async {
-    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
-    TextEditingController urlController =
-        TextEditingController(text: clipBoardText.text);
+    //ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    TextEditingController urlController = TextEditingController(text: '');
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -389,6 +406,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
               onPressed: () {
                 setState(() {
                   this.document.document.nodes.add(SlateNode(
+                      object: 'block',
                       type: 'youtube',
                       data: SlateNodeData(src: urlController.text)));
                 });
@@ -401,9 +419,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addVideoDialog() async {
-    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
-    TextEditingController urlController =
-        TextEditingController(text: clipBoardText.text);
+    //ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    TextEditingController urlController = TextEditingController(text: '');
     await showDialog<String>(
       context: context,
       builder: (BuildContext context) => new AlertDialog(
@@ -433,6 +450,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 setState(() {
                   this.document.document.nodes.add(
                         SlateNode(
+                          object: 'block',
                           type: 'video',
                           data: SlateNodeData(src: urlController.text),
                         ),
@@ -554,9 +572,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addTwitterEmbed() async {
-    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
-    TextEditingController urlController =
-        TextEditingController(text: clipBoardText.text);
+    //ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    TextEditingController urlController = TextEditingController(text: '');
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -607,9 +624,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void addStrawpollEmbed() async {
-    ClipboardData clipBoardText = await Clipboard.getData('text/plain');
-    TextEditingController urlController =
-        TextEditingController(text: clipBoardText.text);
+    //ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    TextEditingController urlController = TextEditingController(text: '');
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -714,6 +730,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   child: Wrap(
                     children: <Widget>[
                       IconButton(
+                        tooltip: 'Bold',
                         icon: Icon(Icons.format_bold),
                         onPressed: () {
                           TextSelection theSelection =
@@ -723,6 +740,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                         },
                       ),
                       IconButton(
+                        tooltip: 'Italic',
                         icon: Icon(Icons.format_italic),
                         onPressed: () {
                           TextSelection theSelection =
@@ -732,6 +750,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                         },
                       ),
                       IconButton(
+                        tooltip: 'Underlined',
                         icon: Icon(Icons.format_underlined),
                         onPressed: () {
                           TextSelection theSelection =
@@ -741,6 +760,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                         },
                       ),
                       IconButton(
+                        tooltip: 'Code',
                         icon: Icon(Icons.code),
                         onPressed: () {
                           TextSelection theSelection =
@@ -750,6 +770,17 @@ class _NewPostScreenState extends State<NewPostScreen> {
                         },
                       ),
                       IconButton(
+                        tooltip: 'Spoiler',
+                        icon: Icon(Icons.visibility_off),
+                        onPressed: () {
+                          TextSelection theSelection =
+                              textEditingController.selection;
+                          addTagAtSelection(textEditingController,
+                              theSelection.start, theSelection.end, 'spoiler');
+                        },
+                      ),
+                      IconButton(
+                        tooltip: 'Link',
                         icon: Icon(Icons.link),
                         onPressed: () {
                           addLinkDialog(textEditingController);
@@ -1061,6 +1092,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   @override
   Widget build(BuildContext wcontext) {
+    print(document.toJson());
     return DefaultTabController(
       length: 2,
       child: Scaffold(

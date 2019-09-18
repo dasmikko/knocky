@@ -30,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen>
   final navigatorKey = GlobalKey<NavigatorState>();
   bool _loginIsOpen = false;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool hideBottomNavBar = false;
 
   Map<int, GlobalKey<NavigatorState>> navigatorKeys = {
     0: GlobalKey<NavigatorState>(),
@@ -78,6 +79,8 @@ class _HomeScreenState extends State<HomeScreen>
         ScopedModel.of<AppStateModel>(context).setCurrentTab(2);
       // More handling code...
     });
+
+    ScopedModel.of<AppStateModel>(context).updateSyncData();
   }
 
   @override
@@ -88,6 +91,12 @@ class _HomeScreenState extends State<HomeScreen>
     // Listen for drawer open events
     eventBus.on<ClickDrawerEvent>().listen((event) {
       _scaffoldKey.currentState.openDrawer();
+    });
+
+    eventBus.on<HideBottomNavbarEvent>().listen((event) {
+      setState(() {
+       hideBottomNavBar = event.state;
+      });
     });
   }
 
@@ -214,7 +223,7 @@ class _HomeScreenState extends State<HomeScreen>
           _buildOffstageNavigator(2),
           _buildOffstageNavigator(3),
         ]),
-        bottomNavigationBar: BottomNavigationBar(
+        bottomNavigationBar: hideBottomNavBar == true ? null : BottomNavigationBar(
           selectedItemColor: Colors.red,
           currentIndex: selectedTab,
           onTap: (int index) {

@@ -4,11 +4,15 @@ import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/models/events.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:knocky/models/subforumDetails.dart';
+import 'package:knocky/models/syncData.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/models/readThreads.dart';
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
+import 'package:knocky/models/userProfile.dart';
+import 'package:knocky/models/userProfilePosts.dart';
+import 'package:knocky/models/userProfileThreads.dart';
 
 class KnockoutAPI {
   static const KNOCKOUT_URL = "https://api.knockout.chat/";
@@ -225,5 +229,41 @@ class KnockoutAPI {
     bool wasRejected = response.data['isRejected'];
 
     return wasRejected;
+  }
+
+  Future<UserProfile> getUserProfile(int userId) async {
+    final response = await _request(
+        url: 'user/${userId}', type: 'get',);
+
+    return UserProfile.fromJson(response.data);
+  }
+
+  Future<UserProfilePosts> getUserProfilePosts(int userId) async {
+    final response = await _request(
+        url: 'user/${userId}/posts', type: 'get',);
+
+    return UserProfilePosts.fromJson(response.data);
+  }
+
+  Future<UserProfileThreads> getUserProfileThreads(int userId) async {
+    final response = await _request(
+        url: 'user/${userId}/threads', type: 'get',);
+
+    return UserProfileThreads.fromJson(response.data);
+  }
+
+  Future<SyncDataModel> getSyncData() async {
+    final response = await _request(
+        url: 'user/syncData', type: 'get',);
+
+    return SyncDataModel.fromJson(response.data);
+  }
+
+  Future<bool> markMentionsAsRead(List<int> postIds) async {
+    final response = await _request(
+        url: 'mentions', type: 'put', data: {'postIds': postIds});
+
+    if (response.statusCode == 200) return true;
+    return false;
   }
 }

@@ -10,7 +10,7 @@ import 'package:knocky/widget/Thread/ViewUsersOfRatingsContent.dart';
 import 'package:knocky/widget/Thread/PostBan.dart';
 import 'package:knocky/widget/Thread/PostContent.dart';
 
-class ThreadPostItem extends StatelessWidget {
+class ThreadPostItem extends StatefulWidget {
   final ThreadPost postDetails;
   final GlobalKey scaffoldKey;
   final Function onPostRated;
@@ -32,6 +32,13 @@ class ThreadPostItem extends StatelessWidget {
     this.thread,
     this.currentPage,
   });
+
+  @override
+  _ThreadPostItemState createState() => _ThreadPostItemState();
+}
+
+class _ThreadPostItemState extends State<ThreadPostItem> {
+  bool textSelectable = false;
 
   Widget buildRatings(List<ThreadPostRatings> ratings) {
     List<Widget> items = List();
@@ -68,7 +75,7 @@ class ThreadPostItem extends StatelessWidget {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          content: new Text(content),
+          content: new SelectableText(content),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
@@ -90,8 +97,8 @@ class ThreadPostItem extends StatelessWidget {
         builder: (BuildContext bContext) {
           return RatePostContent(
             buildContext: context,
-            postId: postDetails.id,
-            onPostRated: onPostRated,
+            postId: widget.postDetails.id,
+            onPostRated: widget.onPostRated,
           );
         });
   }
@@ -103,7 +110,7 @@ class ThreadPostItem extends StatelessWidget {
         builder: (BuildContext bContext) {
           return ViewUsersOfRatingsContent(
             buildContext: context,
-            ratings: postDetails.ratings,
+            ratings: widget.postDetails.ratings,
           );
         });
   }
@@ -115,10 +122,10 @@ class ThreadPostItem extends StatelessWidget {
         onPressed: () => onPressRatePost(context),
       ),
       GestureDetector(
-        onLongPress: () => onLongPressReply(postDetails),
+        onLongPress: () => widget.onLongPressReply(widget.postDetails),
         child: FlatButton(
-          child: Text(!this.isOnReplyList ? 'Reply' : 'Unreply'),
-          onPressed: () => onPressReply(postDetails),
+          child: Text(!this.widget.isOnReplyList ? 'Reply' : 'Unreply'),
+          onPressed: () => widget.onPressReply(widget.postDetails),
           padding: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
         ),
       ),
@@ -129,7 +136,7 @@ class ThreadPostItem extends StatelessWidget {
     return [
       FlatButton(
         child: Text('Edit'),
-        onPressed: () => onTapEditPost(postDetails),
+        onPressed: () => widget.onTapEditPost(widget.postDetails),
       )
     ];
   }
@@ -149,21 +156,21 @@ class ThreadPostItem extends StatelessWidget {
     footer.add(
       Expanded(
         child: GestureDetector(
-          onTap: postDetails.ratings != null
+          onTap: widget.postDetails.ratings != null
               ? () => onPressViewRatings(context)
               : null,
           child: Container(
             padding: EdgeInsets.all(0),
-            child: buildRatings(postDetails.ratings),
+            child: buildRatings(widget.postDetails.ratings),
           ),
         ),
       ),
     );
 
-    if (isLoggedIn && postDetails.user.id != ownUserId)
+    if (isLoggedIn && widget.postDetails.user.id != ownUserId)
       footer.addAll(otherUserButton(context));
 
-    if (isLoggedIn && postDetails.user.id == ownUserId)
+    if (isLoggedIn && widget.postDetails.user.id == ownUserId)
       footer.addAll(ownPostButtons(context));
 
     return Card(
@@ -180,16 +187,21 @@ class ThreadPostItem extends StatelessWidget {
                 children: <Widget>[
                   Expanded(
                     child: PostHeader(
-                      userGroup: postDetails.user.usergroup,
-                      userId: postDetails.user.id,
-                      username: postDetails.user.username,
-                      avatarUrl: postDetails.user.avatarUrl,
-                      backgroundUrl: postDetails.user.backgroundUrl,
-                      threadPost: postDetails,
-                      context: context,
-                      thread: thread,
-                      currentPage: currentPage
-                    ),
+                        userGroup: widget.postDetails.user.usergroup,
+                        userId: widget.postDetails.user.id,
+                        username: widget.postDetails.user.username,
+                        avatarUrl: widget.postDetails.user.avatarUrl,
+                        backgroundUrl: widget.postDetails.user.backgroundUrl,
+                        threadPost: widget.postDetails,
+                        context: context,
+                        thread: widget.thread,
+                        currentPage: widget.currentPage,
+                        textSelectable: this.textSelectable,
+                        onTextSelectableChanged: (newVal) {
+                          setState(() {
+                            textSelectable = newVal;
+                          });
+                        }),
                   )
                 ],
               ),
@@ -197,11 +209,12 @@ class ThreadPostItem extends StatelessWidget {
             Container(
               padding: EdgeInsets.only(left: 10, right: 10),
               child: PostContent(
-                  content: postDetails.content,
+                  textSelectable: this.textSelectable,
+                  content: widget.postDetails.content,
                   onTapSpoiler: (text) {
                     onPressSpoiler(context, text);
                   },
-                  scaffoldKey: this.scaffoldKey),
+                  scaffoldKey: this.widget.scaffoldKey),
             ),
             Container(
                 padding:
@@ -209,9 +222,9 @@ class ThreadPostItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    if (postDetails.bans != null)
+                    if (widget.postDetails.bans != null)
                       Column(
-                        children: postDetails.bans
+                        children: widget.postDetails.bans
                             .map(
                               (ban) => PostBan(
                                 ban: ban,

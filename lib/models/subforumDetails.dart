@@ -66,6 +66,7 @@ class SubforumThread {
   Map<String, dynamic> toJson() => _$SubforumThreadToJson(this);
 }
 
+
 @JsonSerializable()
 class SubforumThreadLatestPopular {
   final int firstUnreadId;

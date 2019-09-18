@@ -30,7 +30,6 @@ class _TwitterEmbedWidgetState extends State<TwitterEmbedWidget>
     Uri url = Uri.parse(this.widget.twitterUrl);
     int tweetId = int.parse(url.pathSegments.last);
     Map<String, dynamic> twitterJson = await TwitterHelper().getTweet(tweetId);
-    print(twitterJson);
 
     if (twitterJson['errors'] != null) {
       if (this.mounted) {

@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:after_layout/after_layout.dart';
+import 'package:knocky/models/syncData.dart';
+import 'package:knocky/state/appState.dart';
 import 'package:knocky/state/subscriptions.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widget/Thread/ThreadPostItem.dart';
@@ -157,6 +159,26 @@ class _ThreadScreenState extends State<ThreadScreen>
       }
     }
     ScopedModel.of<SubscriptionModel>(context).getSubscriptions();
+
+    // Handle mentions too!
+    final List<SyncDataMentionModel> mentions =
+        ScopedModel.of<AppStateModel>(context, rebuildOnChange: true).mentions;
+
+    List<int> mentionsPostIds = mentions.map((o) => o.postId).toList();
+    List<int> threadPostIds = details.posts.map((o) => o.id).toList();
+    List<int> idsToMarkRead = List();
+
+    mentionsPostIds.forEach((postId) {
+      if (threadPostIds.contains(postId)) {
+        idsToMarkRead.add(postId);
+      }
+    });
+
+    if (idsToMarkRead.length > 0) {
+      KnockoutAPI().markMentionsAsRead(idsToMarkRead).then((wasMarkedRead) {
+        ScopedModel.of<AppStateModel>(context).updateSyncData();
+      });
+    }
   }
 
   void navigateToNextPage() {
@@ -293,7 +315,6 @@ class _ThreadScreenState extends State<ThreadScreen>
       _isLoading = false;
     });
     checkIfShouldMarkThreadRead();
-    print('Finish refreshing');
   }
 
   void onCancelSubscription(BuildContext scaffoldcontext) {
@@ -609,13 +630,13 @@ class _ThreadScreenState extends State<ThreadScreen>
             if (details != null && details.threadBackgroundUrl != null)
               Container(
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: CachedNetworkImageProvider(details.threadBackgroundUrl),
-                    fit: BoxFit.cover,
-                    colorFilter: new ColorFilter.mode(
-                          Colors.black.withOpacity(0.5), BlendMode.dstATop),
-                  )
-                ),
+                    image: DecorationImage(
+                  image:
+                      CachedNetworkImageProvider(details.threadBackgroundUrl),
+                  fit: BoxFit.cover,
+                  colorFilter: new ColorFilter.mode(
+                      Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                )),
               ),
             details != null
                 ? CustomScrollView(

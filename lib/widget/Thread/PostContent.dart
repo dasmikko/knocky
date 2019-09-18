@@ -17,11 +17,13 @@ class PostContent extends StatelessWidget {
   final SlateObject content;
   final Function onTapSpoiler;
   final GlobalKey scaffoldKey;
+  final bool textSelectable;
 
   PostContent({
     this.onTapSpoiler,
     this.content,
     this.scaffoldKey,
+    this.textSelectable = false
   });
 
   @override
@@ -33,7 +35,7 @@ class PostContent extends StatelessWidget {
       },
       context: context,
       paragraphHandler: (SlateNode node, Function leafHandler) {
-        List<TextSpan> lines = List();
+        List<InlineSpan> lines = List();
 
         // Handle block nodes
         node.nodes.forEach((line) {
@@ -41,13 +43,18 @@ class PostContent extends StatelessWidget {
             lines.addAll(leafHandler(line.leaves));
           }
 
+
+
           // Handle inline element
           if (line.object == 'inline') {
             // Handle links
             if (line.type == 'link') {
               line.nodes.forEach((inlineNode) {
                 inlineNode.leaves.forEach((leaf) {
-                  lines.add(TextSpan(
+                  if (line.data.isSmartLink != null && line.data.isSmartLink) {
+                    lines.add(WidgetSpan(child: EmbedWidget(url: line.data.href,) ));
+                  } else {
+                    lines.add(TextSpan(
                       text: leaf.text,
                       style: TextStyle(color: Colors.blue),
                       recognizer: TapGestureRecognizer()
@@ -58,6 +65,7 @@ class PostContent extends StatelessWidget {
                             ..startActivity().catchError((e) => print(e));
                           print('Clicked link: ' + line.data.href);
                         }));
+                  }
                 });
               });
             } else {
@@ -71,7 +79,9 @@ class PostContent extends StatelessWidget {
         });
 
         return Container(
-          child: RichText(
+          child: this.textSelectable ? SelectableText.rich(
+            TextSpan(children: lines),
+          ) : RichText(
             text: TextSpan(children: lines),
           ),
         );
@@ -106,7 +116,9 @@ class PostContent extends StatelessWidget {
 
         return Container(
           margin: EdgeInsets.only(bottom: 10),
-          child: RichText(
+          child: this.textSelectable ? SelectableText.rich(
+            TextSpan(children: lines),
+          ) : RichText(
             text: TextSpan(children: lines),
           ),
         );
@@ -147,9 +159,9 @@ class PostContent extends StatelessWidget {
         );
       },
       strawpollHandler: (SlateNode node) {
-        return EmbedWidget(
-          url: node.data.src,
-        );
+          return EmbedWidget(
+            url: node.data.src,
+          );
       },
       userQuoteHandler: (String username, List<Widget> widgets, bool isChild, SlateNode node) {
         return UserQuoteWidget(
@@ -251,7 +263,7 @@ class PostContent extends StatelessWidget {
             border: Border(
               left: BorderSide(color: Colors.blue, width: 3.0),
             ),
-            color: Colors.grey,
+            color: Color.fromRGBO(128, 128, 128, 0.1),
           ),
           child: RichText(
             text: TextSpan(children: lines),

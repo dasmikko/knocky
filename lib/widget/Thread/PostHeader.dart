@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/screens/userProfile.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
@@ -17,6 +18,8 @@ class PostHeader extends StatelessWidget {
   final ThreadPost threadPost;
   final Thread thread;
   final int currentPage;
+  final bool textSelectable;
+  final Function onTextSelectableChanged;
 
   PostHeader(
       {this.avatarUrl,
@@ -27,29 +30,52 @@ class PostHeader extends StatelessWidget {
       this.threadPost,
       this.context,
       this.thread,
-      this.currentPage});
+      this.currentPage,
+      this.textSelectable,
+      this.onTextSelectableChanged});
 
   void onSelectOverflowItem(int item) {
     switch (item) {
       case 0:
-        Clipboard.setData(new ClipboardData(text: 'https://knockout.chat/thread/${thread.id}/${currentPage}#post-${threadPost.id}'));
+        Clipboard.setData(new ClipboardData(
+            text:
+                'https://knockout.chat/thread/${thread.id}/${currentPage}#post-${threadPost.id}'));
+        break;
+      case 99:
+        this.onTextSelectableChanged(!this.textSelectable);
         break;
       default:
     }
   }
 
+  void onTapUsername(BuildContext context) {
+    Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute(
+        builder: (context) => UserProfileScreen(
+          userId: this.userId,
+          username: this.username,
+          avatarUrl: this.avatarUrl,
+          backgroundUrl: this.backgroundUrl,
+          postId: this.threadPost.id,
+        ),
+      ),
+    );
+  }
+
   PopupMenuItem<int> overFlowItem(Icon icon, String title, int value) {
     return PopupMenuItem<int>(
-      value: value,
-      child: Row(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(right: 15),
-            child: icon,
-          ),
-          Text(title)
-        ],
-      ),
+        value: value,
+        child: ListTile(
+          title: Text(title),
+          leading: icon,
+        ));
+  }
+
+  PopupMenuItem<int> overFlowItemCheckbox(String title) {
+    return CheckedPopupMenuItem(
+      checked: this.textSelectable,
+      value: 99,
+      child: Text(title),
     );
   }
 
@@ -63,12 +89,6 @@ class PostHeader extends StatelessWidget {
         backgroundUrl != '' ||
         backgroundUrl != 'none.webp');
     bool hasAvatar = (avatarUrl != null || avatarUrl != '');
-
-    Color userColor = AppColors(context).normalUserColor(); // User
-    if (userGroup == 2) userColor = AppColors(context).goldUserColor(); // Gold
-    if (userGroup == 3) userColor = AppColors(context).modUserColor(); // Mod
-    if (userGroup == 4)
-      userColor = AppColors(context).adminUserColor(); // Admin
 
     return Column(
       children: <Widget>[
@@ -92,20 +112,31 @@ class PostHeader extends StatelessWidget {
                   : null),
           child: Row(
             children: <Widget>[
-              if (hasAvatar)
-                Container(
-                  margin: EdgeInsets.only(right: 10),
-                  width: 40,
-                  height: 40,
-                  child: CachedNetworkImage(
-                    imageUrl:
-                        'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
-                            avatarUrl,
-                  ),
+              GestureDetector(
+                onTap: () => onTapUsername(context),
+                child: Row(
+                  children: <Widget>[
+                    if (hasAvatar)
+                      Container(
+                        margin: EdgeInsets.only(right: 10),
+                        width: 40,
+                        height: 40,
+                        child: Hero(
+                          tag: avatarUrl + threadPost.id.toString(),
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
+                                    avatarUrl,
+                          ),
+                        ),
+                      ),
+                    Text(
+                      username,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: AppColors(context).userGroupToColor(userGroup)),
+                    ),
+                  ],
                 ),
-              Text(
-                username,
-                style: TextStyle(fontWeight: FontWeight.bold, color: userColor),
               ),
               Flexible(
                 flex: 1,
@@ -115,7 +146,9 @@ class PostHeader extends StatelessWidget {
                     onSelected: onSelectOverflowItem,
                     itemBuilder: (BuildContext context) {
                       return [
-                        overFlowItem(Icon(Icons.content_copy), 'Copy post link', 0),
+                        overFlowItem(
+                            Icon(Icons.content_copy), 'Copy post link', 0),
+                        overFlowItemCheckbox('Make text selectable'),
                       ];
                     },
                   ),
