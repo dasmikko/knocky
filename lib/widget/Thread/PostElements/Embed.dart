@@ -28,6 +28,7 @@ class _EmbedWidgetState extends State<EmbedWidget> {
   @override
   void initState() {
     super.initState();
+    if (widget.url == null) return null;
     _dataSub = http
         .get('https://ograph.knockout.chat/?url=' + widget.url,
             headers: {'Origin': 'https://knockout.chat'})
@@ -114,7 +115,7 @@ class _EmbedWidgetState extends State<EmbedWidget> {
                         child:
                             Text(_description, style: TextStyle(fontSize: 12)),
                       ),
-                      Text(this.widget.url, style: TextStyle(fontSize: 12, color: Colors.blue)),
+                      Text(this.widget.url != null ? this.widget.url : 'wtf no url', style: TextStyle(fontSize: 12, color: Colors.blue)),
                     ],
                   ),
                 ),

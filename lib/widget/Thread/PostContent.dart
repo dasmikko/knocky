@@ -43,8 +43,6 @@ class PostContent extends StatelessWidget {
             lines.addAll(leafHandler(line.leaves));
           }
 
-
-
           // Handle inline element
           if (line.object == 'inline') {
             // Handle links
@@ -52,7 +50,11 @@ class PostContent extends StatelessWidget {
               line.nodes.forEach((inlineNode) {
                 inlineNode.leaves.forEach((leaf) {
                   if (line.data.isSmartLink != null && line.data.isSmartLink) {
-                    lines.add(WidgetSpan(child: EmbedWidget(url: line.data.href,) ));
+                    if (line.data.href == null) {
+                      lines.add(WidgetSpan(child: EmbedWidget(url: line.nodes.first.leaves.first.text,) ));
+                    } else {
+                      lines.add(WidgetSpan(child: EmbedWidget(url: line.data.href,) ));
+                    }
                   } else {
                     lines.add(TextSpan(
                       text: leaf.text,
@@ -78,6 +80,7 @@ class PostContent extends StatelessWidget {
           }
         });
 
+        print(lines.first);
         return Container(
           child: this.textSelectable ? SelectableText.rich(
             TextSpan(children: lines),
