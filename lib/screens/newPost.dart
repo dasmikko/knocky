@@ -358,15 +358,15 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Insert'),
               onPressed: () {
                 Navigator.of(context, rootNavigator: true).pop();
-                print('isRichLink: ' + isRichLink.toString());
-                String richTextAttribute = isRichLink ? 'rich=true' : '';
+
+                String richTextAttribute = isRichLink ? ' rich=true' : '';
                 if (mainController.text.endsWith('\n') ||
                     controller.text.isEmpty) {
-                  mainController.text =
-                      mainController.text + '[url ${richTextAttribute}]${urlController.text}[/url]';
+                  mainController.text = mainController.text +
+                      '[url${richTextAttribute}]${urlController.text}[/url]';
                 } else {
                   mainController.text = mainController.text +
-                      '\n[url ${richTextAttribute}]${urlController.text}[/url]';
+                      '\n[url${richTextAttribute}]${urlController.text}[/url]';
                 }
 
                 refreshPreview();
@@ -715,13 +715,20 @@ class _NewPostScreenState extends State<NewPostScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(bottom: 10),
-                  child: TextField(
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    textCapitalization: TextCapitalization.sentences,
-                    controller: textEditingController,
+                Flexible(
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                      ),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      textCapitalization: TextCapitalization.sentences,
+                      controller: textEditingController,
+                      expands: false,
+                    ),
                   ),
                 ),
                 Container(
