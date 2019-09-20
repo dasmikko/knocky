@@ -36,26 +36,28 @@ class _EmbedWidgetState extends State<EmbedWidget> {
         .listen((response) {
           print('body' + response.body);
           compute(parseJson, response.body).then((data) {
-            setState(() {
-              if (data['title'] != null) {
-                _title = data['title'];
-              }
+            if (this.mounted) {
+              setState(() {
+                if (data['title'] != null) {
+                  _title = data['title'];
+                }
 
-              if (data['description'] != null) {
-                _description = data['description'];
-              }
+                if (data['description'] != null) {
+                  _description = data['description'];
+                }
 
-              if (data['image'] != null) {
-                _imageUrl = data['image'];
-              }
-            });
+                if (data['image'] != null) {
+                  _imageUrl = data['image'];
+                }
+              });
+            }
           });
         });
   }
 
   @override
   void dispose() {
-    _dataSub.cancel();
+    _dataSub?.cancel();
     super.dispose();
   }
 
@@ -115,7 +117,11 @@ class _EmbedWidgetState extends State<EmbedWidget> {
                         child:
                             Text(_description, style: TextStyle(fontSize: 12)),
                       ),
-                      Text(this.widget.url != null ? this.widget.url : 'wtf no url', style: TextStyle(fontSize: 12, color: Colors.blue)),
+                      Text(
+                          this.widget.url != null
+                              ? this.widget.url
+                              : 'wtf no url',
+                          style: TextStyle(fontSize: 12, color: Colors.blue)),
                     ],
                   ),
                 ),

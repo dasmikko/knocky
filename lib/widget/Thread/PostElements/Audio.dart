@@ -29,17 +29,21 @@ class _AudioElementState extends State<AudioElement> {
     audioPlayer = AudioPlayer();
     audioPlayer.onDurationChanged.listen((Duration p) {
       if (audioDuration == null) {
-        setState(() {
-          audioDuration = p;
-        });
+        if (this.mounted) {
+          setState(() {
+            audioDuration = p;
+          });
+        }
       }
     });
     audioPlayer.onAudioPositionChanged.listen((Duration p) {
       if (audioDuration != null) {
-        setState(() {
-          currentPlayPosition =
-              (p.inMilliseconds / audioDuration.inMilliseconds);
-        });
+        if (this.mounted) {
+          setState(() {
+            currentPlayPosition =
+                (p.inMilliseconds / audioDuration.inMilliseconds);
+          });
+        }
       }
     });
     audioPlayer.onPlayerStateChanged.listen((AudioPlayerState state) {

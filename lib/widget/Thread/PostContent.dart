@@ -79,8 +79,6 @@ class PostContent extends StatelessWidget {
             }
           }
         });
-
-        print(lines.first);
         return Container(
           child: this.textSelectable ? SelectableText.rich(
             TextSpan(children: lines),
