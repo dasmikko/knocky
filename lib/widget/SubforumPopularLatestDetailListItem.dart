@@ -23,6 +23,8 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
 
     ScopedModel.of<AppStateModel>(context).updateSyncData();
 
+    print('new posts tapped');
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -31,6 +33,7 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
           postCount: item.postCount,
           threadId: item.id,
           page: pagenumber.ceil(),
+          postIdToJumpTo: item.firstUnreadId,
         ),
       ),
     );

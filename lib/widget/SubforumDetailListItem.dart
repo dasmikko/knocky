@@ -26,6 +26,7 @@ class SubforumDetailListItem extends StatelessWidget {
           postCount: item.postCount,
           threadId: item.id,
           page: pagenumber.ceil(),
+          postIdToJumpTo: item.firstUnreadId,
         ),
       ),
     );

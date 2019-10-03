@@ -19,12 +19,11 @@ class PostContent extends StatelessWidget {
   final GlobalKey scaffoldKey;
   final bool textSelectable;
 
-  PostContent({
-    this.onTapSpoiler,
-    this.content,
-    this.scaffoldKey,
-    this.textSelectable = false
-  });
+  PostContent(
+      {this.onTapSpoiler,
+      this.content,
+      this.scaffoldKey,
+      this.textSelectable = false});
 
   @override
   Widget build(BuildContext context) {
@@ -51,22 +50,28 @@ class PostContent extends StatelessWidget {
                 inlineNode.leaves.forEach((leaf) {
                   if (line.data.isSmartLink != null && line.data.isSmartLink) {
                     if (line.data.href == null) {
-                      lines.add(WidgetSpan(child: EmbedWidget(url: line.nodes.first.leaves.first.text,) ));
+                      lines.add(WidgetSpan(
+                          child: EmbedWidget(
+                        url: line.nodes.first.leaves.first.text,
+                      )));
                     } else {
-                      lines.add(WidgetSpan(child: EmbedWidget(url: line.data.href,) ));
+                      lines.add(WidgetSpan(
+                          child: EmbedWidget(
+                        url: line.data.href,
+                      )));
                     }
                   } else {
                     lines.add(TextSpan(
-                      text: leaf.text,
-                      style: TextStyle(color: Colors.blue),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          Intent.Intent()
-                            ..setAction(Action.Action.ACTION_VIEW)
-                            ..setData(Uri.parse(line.data.href))
-                            ..startActivity().catchError((e) => print(e));
-                          print('Clicked link: ' + line.data.href);
-                        }));
+                        text: leaf.text,
+                        style: TextStyle(color: Colors.blue),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Intent.Intent()
+                              ..setAction(Action.Action.ACTION_VIEW)
+                              ..setData(Uri.parse(line.data.href))
+                              ..startActivity().catchError((e) => print(e));
+                            print('Clicked link: ' + line.data.href);
+                          }));
                   }
                 });
               });
@@ -80,11 +85,13 @@ class PostContent extends StatelessWidget {
           }
         });
         return Container(
-          child: this.textSelectable ? SelectableText.rich(
-            TextSpan(children: lines),
-          ) : RichText(
-            text: TextSpan(children: lines),
-          ),
+          child: this.textSelectable
+              ? SelectableText.rich(
+                  TextSpan(children: lines),
+                )
+              : RichText(
+                  text: TextSpan(children: lines),
+                ),
         );
       },
       headingHandler:
@@ -117,25 +124,30 @@ class PostContent extends StatelessWidget {
 
         return Container(
           margin: EdgeInsets.only(bottom: 10),
-          child: this.textSelectable ? SelectableText.rich(
-            TextSpan(children: lines),
-          ) : RichText(
-            text: TextSpan(children: lines),
-          ),
+          child: this.textSelectable
+              ? SelectableText.rich(
+                  TextSpan(children: lines),
+                )
+              : RichText(
+                  text: TextSpan(children: lines),
+                ),
         );
       },
       imageWidgetHandler: (String imageUrl, slateObject, SlateNode node) {
         return Container(
+          height: 300,
           margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-          child: LimitedBox(
-            maxHeight: 300,
-            child: ImageWidget(url: imageUrl, slateObject: slateObject),
-          ),
+          child: ImageWidget(url: imageUrl, slateObject: slateObject),
         );
       },
       videoWidgetHandler: (SlateNode node) {
-        if (node.data.src.endsWith('.wav') || node.data.src.endsWith('.mp3') || node.data.src.endsWith('.ogg')) {
-          return AudioElement(url: node.data.src, scaffoldKey: this.scaffoldKey,);
+        if (node.data.src.endsWith('.wav') ||
+            node.data.src.endsWith('.mp3') ||
+            node.data.src.endsWith('.ogg')) {
+          return AudioElement(
+            url: node.data.src,
+            scaffoldKey: this.scaffoldKey,
+          );
         }
 
         return VideoElement(
@@ -151,20 +163,25 @@ class PostContent extends StatelessWidget {
       twitterEmbedHandler: (String embedUrl, SlateNode node) {
         return TwitterEmbedWidget(
           twitterUrl: embedUrl,
-          onTapImage: (List<String> allPhotos, int photoIndex, String hashcode) {
+          onTapImage:
+              (List<String> allPhotos, int photoIndex, String hashcode) {
             Navigator.of(context, rootNavigator: true).push(
-          MaterialPageRoute(
-              builder: (context) => ImageViewerScreen(url: allPhotos[photoIndex], urls: allPhotos,)),
-        );
+              MaterialPageRoute(
+                  builder: (context) => ImageViewerScreen(
+                        url: allPhotos[photoIndex],
+                        urls: allPhotos,
+                      )),
+            );
           },
         );
       },
       strawpollHandler: (SlateNode node) {
-          return EmbedWidget(
-            url: node.data.src,
-          );
+        return EmbedWidget(
+          url: node.data.src,
+        );
       },
-      userQuoteHandler: (String username, List<Widget> widgets, bool isChild, SlateNode node) {
+      userQuoteHandler: (String username, List<Widget> widgets, bool isChild,
+          SlateNode node) {
         return UserQuoteWidget(
           username: username,
           children: widgets,

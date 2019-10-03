@@ -109,6 +109,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
           postCount: item.lastPost.thread.postCount,
           threadId: item.threadId,
           page: pagenumber.ceil(),
+          postIdToJumpTo: item.firstUnreadId,
         ),
       ),
     );
