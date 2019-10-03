@@ -122,15 +122,12 @@ class _VideoElementState extends State<VideoElement> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: MediaQuery.of(context).size.height / 2,
       margin: EdgeInsets.only(bottom: 8.0),
       child: GestureDetector(
         onLongPress: () => this.onLongPress(context, this.widget.url),
-        child: ConstrainedBox(
-          constraints:
-              BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 2),
-          child: Chewie(
-            controller: chewieController,
-          ),
+        child: Chewie(
+          controller: chewieController,
         ),
       ),
     );
