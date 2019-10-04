@@ -11,10 +11,10 @@ import 'package:knocky/models/syncData.dart';
 import 'package:knocky/state/appState.dart';
 import 'package:knocky/state/subscriptions.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/widget/Drawer.dart';
 import 'package:knocky/widget/Thread/ThreadPostItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widget/scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:list_view_item_builder/list_view_item_builder.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
@@ -608,6 +608,7 @@ class _ThreadScreenState extends State<ThreadScreen>
           ),
         ],
       ),
+      drawer: DrawerWidget(),
       key: scaffoldkey,
       body: KnockoutLoadingIndicator(
         show: _isLoading,

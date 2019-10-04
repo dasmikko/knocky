@@ -47,7 +47,7 @@ class PostContent extends StatelessWidget {
             // Handle links
             if (line.type == 'link') {
               line.nodes.forEach((inlineNode) {
-                inlineNode.leaves.forEach((leaf) {
+                inlineNode.leaves?.forEach((leaf) {
                   if (line.data.isSmartLink != null && line.data.isSmartLink) {
                     if (line.data.href == null) {
                       lines.add(WidgetSpan(

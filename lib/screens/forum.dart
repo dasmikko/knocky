@@ -8,10 +8,10 @@ import 'package:knocky/models/syncData.dart';
 import 'package:knocky/screens/subforum.dart';
 import 'package:knocky/state/appState.dart';
 import 'package:knocky/widget/CategoryListItem.dart';
+import 'package:knocky/widget/Drawer.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
-import 'package:knocky/events.dart';
 
 class ForumScreen extends StatefulWidget {
   final ScaffoldState scaffoldKey;
@@ -25,6 +25,7 @@ class ForumScreen extends StatefulWidget {
 
 class _ForumScreenState extends State<ForumScreen>
     with AfterLayoutMixin<ForumScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Subforum> _subforums = new List<Subforum>();
   bool _loginIsOpen;
   bool _isFetching = false;
@@ -119,6 +120,7 @@ class _ForumScreenState extends State<ForumScreen>
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           leading: IconButton(
               icon: Stack(
@@ -145,9 +147,26 @@ class _ForumScreenState extends State<ForumScreen>
                 ],
               ),
               onPressed: () {
-                eventBus.fire(ClickDrawerEvent(true));
+                _scaffoldKey.currentState.openDrawer();
               }),
           title: Text('Knocky'),
+        ),
+        drawer: DrawerWidget(
+          onLoginOpen: () {
+            setState(() {
+              _loginIsOpen = true;
+            });
+          },
+          onLoginCloses: () {
+            setState(() {
+              _loginIsOpen = false;
+            });
+          },
+          onLoginFinished: () {
+            setState(() {
+              _loginIsOpen = false;
+            });
+          },
         ),
         body: KnockoutLoadingIndicator(
           show: _isFetching,

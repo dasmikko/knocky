@@ -7,6 +7,7 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/models/syncData.dart';
 import 'package:knocky/screens/events.dart';
+import 'package:knocky/screens/forum.dart';
 import 'package:knocky/screens/latestThreads.dart';
 import 'package:knocky/screens/popularThreads.dart';
 import 'package:knocky/screens/thread.dart';
@@ -39,6 +40,8 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
+  double _iconSize = 18.0;
+
   @override
   void initState() {
     super.initState();
@@ -135,6 +138,15 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
     );
   }
 
+  void onTapForum() {
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ForumScreen(),
+        ),
+        ModalRoute.withName('/'));
+  }
+
   void onTapSubsriptions() {
     Navigator.push(
       context,
@@ -222,6 +234,10 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
     final List<SyncDataMentionModel> mentions =
         ScopedModel.of<AppStateModel>(context, rebuildOnChange: true).mentions;
 
+    final int unreadPosts =
+        ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
+            .totalUnreadPosts;
+
     /*final int banThreadId =
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .banThreadId;*/
@@ -266,9 +282,62 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
                 ],
               ),
             ),
+          ListTile(
+            enabled: _loginState,
+            leading: Icon(
+              Icons.view_list,
+              size: _iconSize,
+            ),
+            title: Text('Forum'),
+            onTap: onTapForum,
+          ),
+          ListTile(
+            enabled: _loginState,
+            leading: Icon(
+              FontAwesomeIcons.solidNewspaper,
+              size: _iconSize,
+            ),
+            trailing: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                color: Colors.red,
+                child: Text(
+                  unreadPosts.toString(),
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
+            ),
+            title: Text('Subscriptions'),
+            onTap: onTapSubsriptions,
+          ),
+          ListTile(
+            enabled: _loginState,
+            leading: Icon(
+              FontAwesomeIcons.solidClock,
+              size: _iconSize,
+            ),
+            title: Text('Latest'),
+            onTap: onTapLatestThreads,
+          ),
+          ListTile(
+            enabled: _loginState,
+            leading: Icon(
+              FontAwesomeIcons.fire,
+              size: _iconSize,
+            ),
+            title: Text('Popular'),
+            onTap: onTapPopulaThreads,
+          ),
+          Divider(
+            color: Colors.grey,
+          ),
           if (!_loginState)
             ListTile(
-              leading: Icon(FontAwesomeIcons.signInAlt),
+              leading: Icon(
+                FontAwesomeIcons.signInAlt,
+                size: _iconSize,
+              ),
               title: Text('Login'),
               onTap: () {
                 onClickLogin(context);
@@ -276,12 +345,18 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
             ),
           ListTile(
             enabled: _loginState,
-            leading: Icon(FontAwesomeIcons.bullhorn),
+            leading: Icon(
+              FontAwesomeIcons.bullhorn,
+              size: _iconSize,
+            ),
             title: Text('Events'),
             onTap: onTapEvents,
           ),
           ListTile(
-            leading: Icon(FontAwesomeIcons.discord),
+            leading: Icon(
+              FontAwesomeIcons.discord,
+              size: _iconSize,
+            ),
             title: Text('Discord'),
             onTap: () {
               Intent.Intent()
@@ -291,13 +366,19 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
             },
           ),
           ListTile(
-            leading: Icon(FontAwesomeIcons.cog),
+            leading: Icon(
+              FontAwesomeIcons.cog,
+              size: _iconSize,
+            ),
             title: Text('Settings'),
             onTap: onTapSettings,
           ),
           if (_loginState)
             ListTile(
-              leading: Icon(FontAwesomeIcons.lockOpen),
+              leading: Icon(
+                FontAwesomeIcons.lockOpen,
+                size: _iconSize,
+              ),
               title: Text('Logout'),
               onTap: () async {
                 ScopedModel.of<AuthenticationModel>(context).logout();
@@ -325,9 +406,12 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
               ),
           if (_loginState && mentions != null && mentions.length == 0)
             ListTile(
-                title: Text('You have no new mentions', style: TextStyle(color: Colors.grey),),
-                dense: true,
-              )
+              title: Text(
+                'You have no new mentions',
+                style: TextStyle(color: Colors.grey),
+              ),
+              dense: true,
+            )
         ],
       ),
     );

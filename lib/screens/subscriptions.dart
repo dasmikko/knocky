@@ -9,6 +9,7 @@ import 'package:knocky/models/syncData.dart';
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/state/appState.dart';
+import 'package:knocky/widget/Drawer.dart';
 import 'package:knocky/widget/Subscription/SubscriptionListItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky/state/subscriptions.dart';
@@ -140,36 +141,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            icon: Stack(
-              overflow: Overflow.visible,
-              children: <Widget>[
-                Icon(Icons.menu),
-                if (mentions != null &&
-                    mentions.length >
-                        0) // Show a little indicator that you have mentions
-                  Positioned(
-                    top: -5,
-                    right: -5,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                        color: Colors.red,
-                        child: Text(
-                          '1',
-                          style: TextStyle(fontSize: 10),
-                        ),
-                      ),
-                    ),
-                  )
-              ],
-            ),
-            onPressed: () {
-              eventBus.fire(ClickDrawerEvent(true));
-            }),
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
         title: Text('Subscriptions'),
       ),
+      drawer: DrawerWidget(),
       body: RefreshIndicator(
         onRefresh: loadSubscriptions,
         child: KnockoutLoadingIndicator(
