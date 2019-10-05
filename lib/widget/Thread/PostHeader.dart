@@ -97,7 +97,7 @@ class PostHeader extends StatelessWidget {
       );
     }
 
-    if (thread.readThreadLastSeen.isBefore(threadPost.createdAt)) {
+    if (thread.readThreadLastSeen != null && thread.readThreadLastSeen.isBefore(threadPost.createdAt)) {
       return Border(
         left: BorderSide(color: Color.fromRGBO(67, 104, 173, 1), width: 2),
       );

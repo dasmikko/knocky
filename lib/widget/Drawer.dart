@@ -297,7 +297,7 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
               FontAwesomeIcons.solidNewspaper,
               size: _iconSize,
             ),
-            trailing: ClipRRect(
+            trailing: unreadPosts > 0 ? ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(10)),
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
@@ -307,7 +307,7 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
                   style: TextStyle(fontSize: 12),
                 ),
               ),
-            ),
+            ) : null,
             title: Text('Subscriptions'),
             onTap: onTapSubsriptions,
           ),
@@ -317,7 +317,7 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
               FontAwesomeIcons.solidClock,
               size: _iconSize,
             ),
-            title: Text('Latest'),
+            title: Text('Latest threads'),
             onTap: onTapLatestThreads,
           ),
           ListTile(
@@ -326,7 +326,7 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
               FontAwesomeIcons.fire,
               size: _iconSize,
             ),
-            title: Text('Popular'),
+            title: Text('Popular threads'),
             onTap: onTapPopulaThreads,
           ),
           Divider(
