@@ -594,13 +594,6 @@ class _ThreadScreenState extends State<ThreadScreen>
                         ),
                         'Jump to last page',
                         4),
-                    overFlowItem(
-                        Icon(
-                          FontAwesomeIcons.pen,
-                          size: 18,
-                        ),
-                        'Jump to fourth item',
-                        10),
                   ];
                 },
               );
