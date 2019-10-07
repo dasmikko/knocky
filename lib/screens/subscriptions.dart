@@ -43,6 +43,20 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
   }
 
   Future<void> loadSubscriptions() async {
+    if (ScopedModel.of<SubscriptionModel>(context).subscriptions.length == 0) {
+      ScopedModel.of<SubscriptionModel>(context).getSubscriptions(
+          errorCallback: () {
+        Scaffold.of(context).hideCurrentSnackBar();
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('Failed to get subscriptions. Try again.'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ));
+      });
+    }
+  }
+
+  Future<void> forceLoadSubscriptions() async {
     ScopedModel.of<SubscriptionModel>(context).getSubscriptions(
         errorCallback: () {
       Scaffold.of(context).hideCurrentSnackBar();
@@ -122,7 +136,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
         behavior: SnackBarBehavior.floating,
         content: Text('Removed subscription'),
       ));
-      loadSubscriptions();
+      forceLoadSubscriptions();
     });
   }
 
@@ -150,7 +164,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
       ),
       drawer: DrawerWidget(),
       body: RefreshIndicator(
-        onRefresh: loadSubscriptions,
+        onRefresh: forceLoadSubscriptions,
         child: KnockoutLoadingIndicator(
           show: fetching,
           child: ListView.builder(
