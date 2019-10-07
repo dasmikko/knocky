@@ -19,6 +19,11 @@ import 'package:knocky/events.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter/services.dart' show PlatformException;
 
+/**
+ * THIS FILE IS DEPRECATED
+ */
+
+
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();

@@ -32,24 +32,26 @@ class _VideoElementState extends State<VideoElement> {
 
     vidController
       ..initialize().then((onValue) {
-        setState(() {
-          size = vidController.value.size;
-          chewieController = ChewieController(
-              videoPlayerController: vidController,
-              aspectRatio: size.width / size.height,
-              autoInitialize: false,
-              deviceOrientationsDuringFullScreen: [
-                DeviceOrientation.landscapeLeft,
-                DeviceOrientation.landscapeRight,
-                DeviceOrientation.portraitDown,
-                DeviceOrientation.portraitUp
-              ],
-              looping: true,
-              autoPlay: false);
+        if (this.mounted) {
+          setState(() {
+            size = vidController.value.size;
+            chewieController = ChewieController(
+                videoPlayerController: vidController,
+                aspectRatio: size.width / size.height,
+                autoInitialize: false,
+                deviceOrientationsDuringFullScreen: [
+                  DeviceOrientation.landscapeLeft,
+                  DeviceOrientation.landscapeRight,
+                  DeviceOrientation.portraitDown,
+                  DeviceOrientation.portraitUp
+                ],
+                looping: true,
+                autoPlay: false);
 
-          chewieController.removeListener(chewieListener);
-          chewieController.addListener(chewieListener);
-        });
+            chewieController.removeListener(chewieListener);
+            chewieController.addListener(chewieListener);
+          });
+        }
       });
 
     chewieController = ChewieController(
@@ -77,6 +79,8 @@ class _VideoElementState extends State<VideoElement> {
   void dispose() {
     super.dispose();
     chewieController.removeListener(chewieListener);
+    chewieController.dispose();
+    vidController.dispose();
   }
 
   void onLongPress(BuildContext context, String url) async {
@@ -118,16 +122,12 @@ class _VideoElementState extends State<VideoElement> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: MediaQuery.of(context).size.height / 2,
       margin: EdgeInsets.only(bottom: 8.0),
       child: GestureDetector(
         onLongPress: () => this.onLongPress(context, this.widget.url),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height / 2
-          ),
-          child: Chewie(
-            controller: chewieController,
-          ),
+        child: Chewie(
+          controller: chewieController,
         ),
       ),
     );

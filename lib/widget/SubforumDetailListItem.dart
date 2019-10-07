@@ -26,6 +26,7 @@ class SubforumDetailListItem extends StatelessWidget {
           postCount: item.postCount,
           threadId: item.id,
           page: pagenumber.ceil(),
+          postIdToJumpTo: item.firstUnreadId,
         ),
       ),
     );
@@ -132,15 +133,19 @@ class SubforumDetailListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String _iconUrl = threadDetails.iconId != null ? iconList
-        .firstWhere((IconListItem item) => item.id == threadDetails.iconId)
-        .url : '';
+    String _iconUrl = threadDetails.iconId != null
+        ? iconList
+            .firstWhere((IconListItem item) => item.id == threadDetails.iconId)
+            .url
+        : '';
 
     Color userColor = AppColors(context).normalUserColor(); // User
-    if (threadDetails.user.usergroup == 2) userColor = AppColors(context).goldUserColor(); // Gold
-    if (threadDetails.user.usergroup == 3) userColor = AppColors(context).modUserColor(); // Mod
-    if (threadDetails.user.usergroup == 4) userColor = AppColors(context).adminUserColor(); // Admin
-
+    if (threadDetails.user.usergroup == 2)
+      userColor = AppColors(context).goldUserColor(); // Gold
+    if (threadDetails.user.usergroup == 3)
+      userColor = AppColors(context).modUserColor(); // Mod
+    if (threadDetails.user.usergroup == 4)
+      userColor = AppColors(context).adminUserColor(); // Admin
 
     return Card(
       color: Color.fromRGBO(45, 45, 48, 1),
@@ -149,16 +154,20 @@ class SubforumDetailListItem extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  CachedNetworkImage(
-                    width: 25,
-                    imageUrl: _iconUrl,
-                  ),
-                ],
+            InkWell(
+              onTap: () => onTapItem(context, threadDetails),
+              onLongPress: () => showJumpDialog(context),
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    CachedNetworkImage(
+                      width: 25,
+                      imageUrl: _iconUrl,
+                    ),
+                  ],
+                ),
               ),
             ),
             Flexible(
@@ -208,13 +217,16 @@ class SubforumDetailListItem extends StatelessWidget {
                               ]),
                             ),
                           ),
-                          if (threadDetails.readThreadUnreadPosts > 0 && threadDetails.unreadType == 1)
+                          if (threadDetails.readThreadUnreadPosts > 0 &&
+                              threadDetails.unreadType == 1)
                             newPostsButton(context),
-                          if (threadDetails.unreadPostCount > 0 && threadDetails.unreadType == 0)
+                          if (threadDetails.unreadPostCount > 0 &&
+                              threadDetails.unreadType == 0)
                             newPostsSubscriptionButton(context),
                           Text(
                             threadDetails.user.username,
-                            style: TextStyle(color: userColor, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                color: userColor, fontWeight: FontWeight.bold),
                           )
                         ],
                       ),
@@ -248,7 +260,10 @@ class SubforumDetailListItem extends StatelessWidget {
                     margin: EdgeInsets.only(bottom: 4),
                     child: Text(
                       threadDetails.lastPost.user.username,
-                      style: TextStyle(color: AppColors(context).userGroupToColor(threadDetails.lastPost.user.usergroup), fontSize: 11),
+                      style: TextStyle(
+                          color: AppColors(context).userGroupToColor(
+                              threadDetails.lastPost.user.usergroup),
+                          fontSize: 11),
                     ),
                   ),
                   Container(

@@ -8,6 +8,7 @@ import 'package:knocky/helpers/ImgurHelper.dart';
 import 'package:knocky/helpers/bbcode.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/screens/Modals/editTextBlock.dart';
 import 'package:knocky/widget/LinkDialogContent.dart';
 import 'package:knocky/widget/ListEditor.dart';
 import 'package:knocky/widget/PostEditor.dart';
@@ -358,15 +359,15 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Insert'),
               onPressed: () {
                 Navigator.of(context, rootNavigator: true).pop();
-                print('isRichLink: ' + isRichLink.toString());
-                String richTextAttribute = isRichLink ? 'rich=true' : '';
+
+                String richTextAttribute = isRichLink ? ' rich=true' : '';
                 if (mainController.text.endsWith('\n') ||
                     controller.text.isEmpty) {
-                  mainController.text =
-                      mainController.text + '[url ${richTextAttribute}]${urlController.text}[/url]';
+                  mainController.text = mainController.text +
+                      '[url${richTextAttribute}]${urlController.text}[/url]';
                 } else {
                   mainController.text = mainController.text +
-                      '\n[url ${richTextAttribute}]${urlController.text}[/url]';
+                      '\n[url${richTextAttribute}]${urlController.text}[/url]';
                 }
 
                 refreshPreview();
@@ -678,128 +679,24 @@ class _NewPostScreenState extends State<NewPostScreen> {
   /*
   Block tap callbacks
   */
-  void showTextEditDialog(BuildContext context, SlateNode node) {
-    String bbcodeText = BBCodeHandler().slateParagraphToBBCode(node);
-    TextEditingController textEditingController =
-        TextEditingController(text: bbcodeText);
+  void showTextEditDialog(BuildContext context, SlateNode node) async {
+    var result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => EditTextBlockModal(node: node,),
+      ),
+    );
 
-    showDialog(
-        context: context,
-        builder: (BuildContext bcontext) {
-          return AlertDialog(
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Remove'),
-                onPressed: () {
-                  setState(() {
-                    int index = this.document.document.nodes.indexOf(node);
-                    this.document.document.nodes.removeAt(index);
-                  });
-                  Navigator.pop(bcontext);
-                },
-              ),
-              FlatButton(
-                child: Text('Save'),
-                onPressed: () {
-                  SlateNode newNode = BBCodeHandler()
-                      .parse(textEditingController.text, type: node.type);
-                  print(BBCodeHandler().slateParagraphToBBCode(newNode));
-                  print(newNode.toJson());
-                  Navigator.pop(bcontext, newNode);
-                },
-              )
-            ],
-            title: Text('Edit text block'),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(bottom: 10),
-                  child: TextField(
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    textCapitalization: TextCapitalization.sentences,
-                    controller: textEditingController,
-                  ),
-                ),
-                Container(
-                  color: Colors.grey[600],
-                  padding: EdgeInsets.all(0),
-                  child: Wrap(
-                    children: <Widget>[
-                      IconButton(
-                        tooltip: 'Bold',
-                        icon: Icon(Icons.format_bold),
-                        onPressed: () {
-                          TextSelection theSelection =
-                              textEditingController.selection;
-                          addTagAtSelection(textEditingController,
-                              theSelection.start, theSelection.end, 'b');
-                        },
-                      ),
-                      IconButton(
-                        tooltip: 'Italic',
-                        icon: Icon(Icons.format_italic),
-                        onPressed: () {
-                          TextSelection theSelection =
-                              textEditingController.selection;
-                          addTagAtSelection(textEditingController,
-                              theSelection.start, theSelection.end, 'i');
-                        },
-                      ),
-                      IconButton(
-                        tooltip: 'Underlined',
-                        icon: Icon(Icons.format_underlined),
-                        onPressed: () {
-                          TextSelection theSelection =
-                              textEditingController.selection;
-                          addTagAtSelection(textEditingController,
-                              theSelection.start, theSelection.end, 'u');
-                        },
-                      ),
-                      IconButton(
-                        tooltip: 'Code',
-                        icon: Icon(Icons.code),
-                        onPressed: () {
-                          TextSelection theSelection =
-                              textEditingController.selection;
-                          addTagAtSelection(textEditingController,
-                              theSelection.start, theSelection.end, 'code');
-                        },
-                      ),
-                      IconButton(
-                        tooltip: 'Spoiler',
-                        icon: Icon(Icons.visibility_off),
-                        onPressed: () {
-                          TextSelection theSelection =
-                              textEditingController.selection;
-                          addTagAtSelection(textEditingController,
-                              theSelection.start, theSelection.end, 'spoiler');
-                        },
-                      ),
-                      IconButton(
-                        tooltip: 'Link',
-                        icon: Icon(Icons.link),
-                        onPressed: () {
-                          addLinkDialog(textEditingController);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        }).then((newNode) {
+    if (result is SlateNode) {
+      int index = this.document.document.nodes.indexOf(node);
+      this.document.document.nodes[index] = result;
+    }
+
+    if (result is bool && result == false) {
       setState(() {
-        if (newNode != null) {
-          int index = this.document.document.nodes.indexOf(node);
-          this.document.document.nodes[index] = newNode;
-        }
+        int index = this.document.document.nodes.indexOf(node);
+        this.document.document.nodes.removeAt(index);
       });
-    });
+    }
   }
 
   void editImageDialog(slateObject, SlateNode node) async {

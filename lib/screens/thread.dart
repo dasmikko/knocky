@@ -11,8 +11,10 @@ import 'package:knocky/models/syncData.dart';
 import 'package:knocky/state/appState.dart';
 import 'package:knocky/state/subscriptions.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/widget/Drawer.dart';
 import 'package:knocky/widget/Thread/ThreadPostItem.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
+import 'package:knocky/widget/scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky/state/authentication.dart';
@@ -23,12 +25,14 @@ class ThreadScreen extends StatefulWidget {
   final int postCount;
   final int threadId;
   final int page;
+  final int postIdToJumpTo;
 
   ThreadScreen(
       {this.title = 'Loading thread',
       this.page = 1,
       this.postCount,
-      this.threadId});
+      this.threadId,
+      this.postIdToJumpTo});
 
   @override
   _ThreadScreenState createState() => _ThreadScreenState();
@@ -41,7 +45,9 @@ class _ThreadScreenState extends State<ThreadScreen>
   int _totalPages = 0;
   bool _isLoading = true;
   final scaffoldkey = new GlobalKey<ScaffoldState>();
-  ScrollController scrollController = ScrollController();
+  final ItemScrollController scrollController = ItemScrollController();
+  final ItemPositionsListener itemPositionListener =
+      ItemPositionsListener.create();
   StreamSubscription<Thread> _dataSub;
   bool _bottomBarVisible = true;
   AnimationController expandController;
@@ -59,31 +65,6 @@ class _ThreadScreenState extends State<ThreadScreen>
     }
 
     prepareAnimations();
-
-    scrollController.addListener(() {
-      if (scrollController.position.userScrollDirection ==
-          ScrollDirection.reverse) {
-        if (_bottomBarVisible) {
-          setState(() {
-            expandController.forward();
-            _bottomBarVisible = false;
-          });
-        }
-      }
-      if (scrollController.position.userScrollDirection ==
-          ScrollDirection.forward) {
-        if (!_bottomBarVisible) {
-          setState(() {
-            expandController.reverse();
-            _bottomBarVisible = true;
-          });
-        }
-      }
-
-      if (scrollController.position.atEdge) {
-        expandController.reverse();
-      }
-    });
   }
 
   void prepareAnimations() {
@@ -131,6 +112,7 @@ class _ThreadScreenState extends State<ThreadScreen>
         _isLoading = false;
         _totalPages = (details.totalPosts / 20).ceil();
       });
+
       checkIfShouldMarkThreadRead();
     });
   }
@@ -187,9 +169,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       _currentPage = _currentPage + 1;
     });
 
-    if (scrollController.hasClients) {
-      scrollController.jumpTo(0);
-    }
+    scrollController.jumpTo(index: 0);
 
     var api = new KnockoutAPI();
 
@@ -224,9 +204,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       _currentPage = _currentPage - 1;
     });
 
-    if (scrollController.hasClients) {
-      scrollController.jumpTo(0);
-    }
+    scrollController.jumpTo(index: 0);
 
     var api = new KnockoutAPI();
 
@@ -261,9 +239,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       _currentPage = page;
     });
 
-    if (scrollController.hasClients) {
-      scrollController.jumpTo(0);
-    }
+    scrollController.jumpTo(index: 0);
 
     var api = new KnockoutAPI();
 
@@ -409,7 +385,7 @@ class _ThreadScreenState extends State<ThreadScreen>
         ));
         await refreshPage();
         print('Do the scroll');
-        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        //scrollController.jumpTo(scrollController.position.maxScrollExtent);
       }
     }
   }
@@ -525,6 +501,9 @@ class _ThreadScreenState extends State<ThreadScreen>
             text:
                 'https://knockout.chat/thread/${details.id}/${_currentPage}'));
         break;
+      case 10:
+        scrollController.jumpTo(index: 3);
+        break;
       default:
     }
   }
@@ -549,7 +528,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       ));
       await refreshPage();
       print('Do the scroll');
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      scrollController.jumpTo(index: details.posts.length-1);
     }
   }
 
@@ -614,7 +593,14 @@ class _ThreadScreenState extends State<ThreadScreen>
                           size: 18,
                         ),
                         'Jump to last page',
-                        4)
+                        4),
+                    overFlowItem(
+                        Icon(
+                          FontAwesomeIcons.pen,
+                          size: 18,
+                        ),
+                        'Jump to fourth item',
+                        10),
                   ];
                 },
               );
@@ -622,6 +608,7 @@ class _ThreadScreenState extends State<ThreadScreen>
           ),
         ],
       ),
+      drawer: DrawerWidget(),
       key: scaffoldkey,
       body: KnockoutLoadingIndicator(
         show: _isLoading,
@@ -639,63 +626,76 @@ class _ThreadScreenState extends State<ThreadScreen>
                 )),
               ),
             details != null
-                ? CustomScrollView(
-                    controller: scrollController,
-                    slivers: <Widget>[
-                      if (postsToReplyTo.length > 0)
-                        SliverAppBar(
-                          title: Text(
-                              'Replying to ${postsToReplyTo.length} posts'),
-                          automaticallyImplyLeading: false,
-                          floating: true,
-                          actions: <Widget>[
-                            IconButton(
-                                tooltip: 'Clear selected replies',
-                                icon: Icon(FontAwesomeIcons.eraser),
-                                onPressed: () {
-                                  setState(() {
-                                    postsToReplyTo = List();
-                                  });
-                                }),
-                          ],
-                        ),
-                      SliverList(
-                        // Use a delegate to build items as they're scrolled on screen.
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            ThreadPost item = details.posts[index];
-                            return Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 0),
-                              child: ThreadPostItem(
-                                scaffoldKey: scaffoldkey,
-                                thread: details,
-                                currentPage: _currentPage,
-                                postDetails: item,
-                                isOnReplyList: postsToReplyTo
-                                        .where((o) => o.id == item.id)
-                                        .length >
-                                    0,
-                                onPressReply: onPressReply,
-                                onLongPressReply: onLongPressReply,
-                                onPostRated: () {
-                                  Scaffold.of(context).showSnackBar(SnackBar(
-                                    backgroundColor: Colors.green,
-                                    content: Text('Post rated!'),
-                                    behavior: SnackBarBehavior.floating,
-                                  ));
-                                  refreshPage();
-                                },
-                                onTapEditPost: (ThreadPost post) =>
-                                    onTapEditPost(context, post),
-                              ),
-                            );
+                ? ScrollablePositionedList.builder(
+                    itemCount: details.posts.length,
+                    itemBuilder: (context, index) {
+                      ThreadPost item = details.posts[index];
+                      return Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                        child: ThreadPostItem(
+                          scaffoldKey: scaffoldkey,
+                          thread: details,
+                          currentPage: _currentPage,
+                          postDetails: item,
+                          isOnReplyList: postsToReplyTo
+                                  .where((o) => o.id == item.id)
+                                  .length >
+                              0,
+                          onPressReply: onPressReply,
+                          onLongPressReply: onLongPressReply,
+                          onPostRated: () {
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                              backgroundColor: Colors.green,
+                              content: Text('Post rated!'),
+                              behavior: SnackBarBehavior.floating,
+                            ));
+                            refreshPage();
                           },
-                          // Builds 1000 ListTiles
-                          childCount: details.posts.length,
+                          onTapEditPost: (ThreadPost post) =>
+                              onTapEditPost(context, post),
                         ),
-                      ),
-                    ],
+                      );
+                    },
+                    itemScrollController: scrollController,
+                    itemPositionsListener: itemPositionListener,
+                    didAttach:
+                        (ScrollController scrollControllerFromListView) async {
+                      /*scrollControllerFromListView.addListener(() {
+                        if (scrollControllerFromListView
+                                .position.userScrollDirection ==
+                            ScrollDirection.reverse) {
+
+                          if (expandController.isDismissed) {
+                            print('Forward');
+                              expandController.forward();
+                          }
+                        }
+                        if (scrollControllerFromListView
+                                .position.userScrollDirection ==
+                            ScrollDirection.forward) {
+                          if (expandController.isCompleted) {
+                            print('reverse');
+                              expandController.reverse();
+                          }
+                        }
+
+                        if (scrollControllerFromListView.position.atEdge) {
+                          expandController.reverse();
+                        }
+                      });*/
+
+                      // The delayed if a huge stupid fucking hack, to make it work while in debug mode.
+                      await Future.delayed(Duration(milliseconds: 100));
+                      if (this.widget.postIdToJumpTo != null) {
+                        int postIndex = details.posts.indexWhere(
+                            (o) => o.id == this.widget.postIdToJumpTo);
+                        scrollController.jumpTo(
+                            index: postIndex == -1 ? 0 : postIndex);
+                      }
+                    },
+                    onScroll: (ScrollPosition position) async {
+                    },
                   )
                 : Container(),
           ],
@@ -759,8 +759,8 @@ class _ThreadScreenState extends State<ThreadScreen>
                 behavior: SnackBarBehavior.floating,
               ));
               await refreshPage();
-              scrollController
-                  .jumpTo(scrollController.position.maxScrollExtent);
+              /*scrollController
+                  .jumpTo(scrollController.position.maxScrollExtent);*/
             }
           },
         ),

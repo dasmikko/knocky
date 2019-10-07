@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:knocky/helpers/hiveHelper.dart';
+import 'package:knocky/screens/forum.dart';
 import 'package:knocky/state/appState.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
@@ -44,7 +45,7 @@ void main() async {
               systemNavigationBarIconBrightness: Brightness.light));
         }
 
-        return MaterialApp(title: 'Knocky', theme: theme, home: HomeScreen());
+        return MaterialApp(title: 'Knocky', theme: theme, home: ForumScreen());
       });
 
   rv =

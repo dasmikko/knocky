@@ -79,6 +79,33 @@ class PostHeader extends StatelessWidget {
     );
   }
 
+  Border postHeaderBorder() {
+    final int ownUserId =
+        ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
+            .userId;
+
+    if (ownUserId == userId) {
+      return Border(
+        left: BorderSide(color: Color.fromRGBO(255, 216, 23, 1), width: 2),
+      );
+    }
+
+
+    if (thread.isSubscribedTo == 1 && thread.subscriptionLastSeen.isBefore(threadPost.createdAt)) {
+      return Border(
+        left: BorderSide(color: Color.fromRGBO(67, 104, 173, 1), width: 2),
+      );
+    }
+
+    if (thread.readThreadLastSeen != null && thread.readThreadLastSeen.isBefore(threadPost.createdAt)) {
+      return Border(
+        left: BorderSide(color: Color.fromRGBO(67, 104, 173, 1), width: 2),
+      );
+    }
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final int ownUserId =
@@ -95,11 +122,7 @@ class PostHeader extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
-              border: ownUserId == userId
-                  ? Border(
-                      left: BorderSide(
-                          color: Color.fromRGBO(255, 216, 23, 1), width: 2))
-                  : null,
+              border: postHeaderBorder(),
               image: hasBg != null
                   ? DecorationImage(
                       alignment: Alignment.center,
@@ -133,7 +156,9 @@ class PostHeader extends StatelessWidget {
                     Text(
                       username,
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, color: AppColors(context).userGroupToColor(userGroup)),
+                          fontWeight: FontWeight.bold,
+                          color:
+                              AppColors(context).userGroupToColor(userGroup)),
                     ),
                   ],
                 ),
