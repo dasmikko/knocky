@@ -1,5 +1,6 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:hive/hive.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
@@ -53,6 +54,7 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
         .getLoginStateFromSharedPreference(context);
 
     ScopedModel.of<AppStateModel>(context).updateSyncData();
+    ScopedModel.of<SubscriptionModel>(context).getSubscriptions();
   }
 
   void onClickLogin(BuildContext context) async {
@@ -238,6 +240,10 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
         ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
             .totalUnreadPosts;
 
+    final bool isFetchingSubscriptions =
+        ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
+            .isFetching;
+
     /*final int banThreadId =
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .banThreadId;*/
@@ -297,17 +303,34 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
               FontAwesomeIcons.solidNewspaper,
               size: _iconSize,
             ),
-            trailing: unreadPosts > 0 ? ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                color: Colors.red,
-                child: Text(
-                  unreadPosts.toString(),
-                  style: TextStyle(fontSize: 12),
-                ),
-              ),
-            ) : null,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                if (isFetchingSubscriptions)
+                  Container(
+                      height: 15,
+                      width: 15,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      )),
+                if (unreadPosts > 0)
+                  Container(
+                    margin: EdgeInsets.only(left: 10),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                        color: Colors.red,
+                        child: Text(
+                          unreadPosts.toString(),
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
             title: Text('Subscriptions'),
             onTap: onTapSubsriptions,
           ),
