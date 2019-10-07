@@ -135,7 +135,6 @@ class PostContent extends StatelessWidget {
       },
       imageWidgetHandler: (String imageUrl, slateObject, SlateNode node) {
         return Container(
-          height: 300,
           margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
           child: ImageWidget(url: imageUrl, slateObject: slateObject),
         );
