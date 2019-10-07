@@ -12,6 +12,7 @@ import 'package:knocky/models/syncData.dart';
 import 'package:knocky/screens/subforum.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/state/appState.dart';
+import 'package:knocky/state/subscriptions.dart';
 import 'package:knocky/widget/CategoryListItem.dart';
 import 'package:knocky/widget/Drawer.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
@@ -212,6 +213,9 @@ class _ForumScreenState extends State<ForumScreen>
     final List<SyncDataMentionModel> mentions =
         ScopedModel.of<AppStateModel>(context, rebuildOnChange: true).mentions;
 
+    final int totalUnreadPosts =
+        ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).totalUnreadPosts;
+
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -222,8 +226,8 @@ class _ForumScreenState extends State<ForumScreen>
                 overflow: Overflow.visible,
                 children: <Widget>[
                   Icon(Icons.menu),
-                  if (mentions != null &&
-                      mentions.length >
+                  if (totalUnreadPosts != null &&
+                      totalUnreadPosts >
                           0) // Show a little indicator that you have mentions
                     Positioned(
                       top: -5,
@@ -235,7 +239,7 @@ class _ForumScreenState extends State<ForumScreen>
                               EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                           color: Colors.red,
                           child: Text(
-                            '1',
+                            totalUnreadPosts.toString(),
                             style: TextStyle(fontSize: 10),
                           ),
                         ),
