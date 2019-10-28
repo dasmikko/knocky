@@ -56,6 +56,7 @@ dependencies:
   path_provider: ^1.2.0
   flutter_dotenv: ^2.0.1
   image_picker: ^0.6.1+3
+  zefyr: ^0.8.0
   flutter:
     sdk: flutter
 
