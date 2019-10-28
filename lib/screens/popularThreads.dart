@@ -111,6 +111,7 @@ class _PopularThreadsScreenState extends State<PopularThreadsScreen>
         ),
         title: Text('Popular threads'),
       ),
+      drawerEdgeDragWidth: 30.0,
       drawer: DrawerWidget(),
       body: RefreshIndicator(
           onRefresh: loadThreads,

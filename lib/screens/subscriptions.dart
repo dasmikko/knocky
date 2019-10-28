@@ -162,6 +162,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
         ),
         title: Text('Subscriptions'),
       ),
+      drawerEdgeDragWidth: 30.0,
       drawer: DrawerWidget(),
       body: RefreshIndicator(
         onRefresh: forceLoadSubscriptions,

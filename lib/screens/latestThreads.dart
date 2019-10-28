@@ -111,6 +111,7 @@ class _LatestThreadsScreenState extends State<LatestThreadsScreen>
         ),
         title: Text('Latest threads'),
       ),
+      drawerEdgeDragWidth: 30.0,
       drawer: DrawerWidget(),
       body: RefreshIndicator(
           onRefresh: loadThreads,

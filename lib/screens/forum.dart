@@ -252,6 +252,7 @@ class _ForumScreenState extends State<ForumScreen>
               }),
           title: Text('Knocky'),
         ),
+        drawerEdgeDragWidth: 30.0,
         drawer: DrawerWidget(
           onLoginOpen: () {
             setState(() {

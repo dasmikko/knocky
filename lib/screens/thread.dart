@@ -601,6 +601,7 @@ class _ThreadScreenState extends State<ThreadScreen>
           ),
         ],
       ),
+      drawerEdgeDragWidth: 30.0,
       drawer: DrawerWidget(),
       key: scaffoldkey,
       body: KnockoutLoadingIndicator(

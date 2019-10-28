@@ -122,6 +122,7 @@ class _SubforumScreenState extends State<SubforumScreen>
         leading: BackButton(),
       ),
       body: content(context),
+      drawerEdgeDragWidth: 30.0,
       drawer: DrawerWidget(),
       extendBody: false,
       bottomNavigationBar: SizeTransition(
