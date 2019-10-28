@@ -47,19 +47,31 @@ class _ThreadPostItemState extends State<ThreadPostItem> {
       ratings.sort((a, b) => b.count.compareTo(a.count));
       ratings.forEach((rating) {
         RatingistItem icon =
-            ratingsIconList.where((icon) => icon.id == rating.rating).first;
+            ratingsIconList.firstWhere((icon) => icon.id == rating.rating);
 
-        items.add(
-          Container(
-            margin: EdgeInsets.only(right: 5.0),
-            child: Column(children: <Widget>[
-              CachedNetworkImage(
-                imageUrl: icon.url,
-              ),
-              Text(rating.count.toString())
-            ]),
-          ),
-        );
+        if (icon != null) {
+          items.add(
+            Container(
+              margin: EdgeInsets.only(right: 5.0),
+              child: Column(children: <Widget>[
+                CachedNetworkImage(
+                  imageUrl: icon.url,
+                ),
+                Text(rating.count.toString())
+              ]),
+            ),
+          );
+        } else {
+          items.add(
+            Container(
+              margin: EdgeInsets.only(right: 5.0),
+              child: Column(children: <Widget>[
+                Text('?'),
+                Text(rating.count.toString())
+              ]),
+            ),
+          );
+        }
       });
     }
 
