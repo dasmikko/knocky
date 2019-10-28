@@ -33,7 +33,7 @@ class AuthenticationModel extends Model {
   int get banThreadId => _banThreadId;
 
   // Get the stored auth state
-  void getLoginStateFromSharedPreference(BuildContext context) async {
+  Future<void> getLoginStateFromSharedPreference(BuildContext context) async {
     Box box = await AppHiveBox.getBox();
     _isLoggedIn = await box.get('isLoggedIn', defaultValue: false);
     _userId = await box.get('userId');

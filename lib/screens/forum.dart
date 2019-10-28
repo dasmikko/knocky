@@ -9,7 +9,10 @@ import 'package:knocky/helpers/twitterApi.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/models/syncData.dart';
+import 'package:knocky/screens/latestThreads.dart';
+import 'package:knocky/screens/popularThreads.dart';
 import 'package:knocky/screens/subforum.dart';
+import 'package:knocky/screens/subscriptions.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/state/appState.dart';
 import 'package:knocky/state/subscriptions.dart';
@@ -64,19 +67,35 @@ class _ForumScreenState extends State<ForumScreen>
     ]);
 
     quickActions.initialize((shortcutType) {
+      print('shortcut: ' + shortcutType);
       if (shortcutType == 'action_subscriptions') {
         AppHiveBox.getBox().then((Box box) {
           box.get('isLoggedIn', defaultValue: false).then((loginState) {
             if (loginState) {
-              ScopedModel.of<AppStateModel>(context).setCurrentTab(1);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SubscriptionScreen(),
+                ),
+              );
             }
           });
         });
       }
       if (shortcutType == 'action_popular')
-        ScopedModel.of<AppStateModel>(context).setCurrentTab(3);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PopularThreadsScreen(),
+          ),
+        );
       if (shortcutType == 'action_latest')
-        ScopedModel.of<AppStateModel>(context).setCurrentTab(2);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LatestThreadsScreen(),
+          ),
+        );
       // More handling code...
     });
 
@@ -133,10 +152,14 @@ class _ForumScreenState extends State<ForumScreen>
   }
 
   @override
-  void afterFirstLayout(BuildContext context) {
+  void afterFirstLayout(BuildContext context) async {
     getSubforums(context);
-    ScopedModel.of<AuthenticationModel>(context)
+    await ScopedModel.of<AuthenticationModel>(context)
         .getLoginStateFromSharedPreference(context);
+
+    if (ScopedModel.of<AuthenticationModel>(context).isLoggedIn) {
+      ScopedModel.of<SubscriptionModel>(context).getSubscriptions();
+    }
   }
 
   @override
@@ -214,7 +237,8 @@ class _ForumScreenState extends State<ForumScreen>
         ScopedModel.of<AppStateModel>(context, rebuildOnChange: true).mentions;
 
     final int totalUnreadPosts =
-        ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true).totalUnreadPosts;
+        ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
+            .totalUnreadPosts;
 
     return WillPopScope(
       onWillPop: _onWillPop,

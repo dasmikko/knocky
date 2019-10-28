@@ -53,21 +53,6 @@ class _HomeScreenState extends State<HomeScreen>
 
     final QuickActions quickActions = new QuickActions();
 
-    quickActions.setShortcutItems(<ShortcutItem>[
-      const ShortcutItem(
-          type: 'action_subscriptions',
-          localizedTitle: 'Subscriptions',
-          icon: 'icon_help'),
-      const ShortcutItem(
-          type: 'action_popular',
-          localizedTitle: 'Popular threads',
-          icon: 'icon_help'),
-      const ShortcutItem(
-          type: 'action_latest',
-          localizedTitle: 'Latest threads',
-          icon: 'icon_help')
-    ]);
-
     quickActions.initialize((shortcutType) {
       if (shortcutType == 'action_subscriptions') {
         AppHiveBox.getBox().then((Box box) {
@@ -84,6 +69,21 @@ class _HomeScreenState extends State<HomeScreen>
         ScopedModel.of<AppStateModel>(context).setCurrentTab(2);
       // More handling code...
     });
+
+    quickActions.setShortcutItems(<ShortcutItem>[
+      const ShortcutItem(
+          type: 'action_subscriptions',
+          localizedTitle: 'Subscriptions',
+          icon: 'icon_help'),
+      const ShortcutItem(
+          type: 'action_popular',
+          localizedTitle: 'Popular threads',
+          icon: 'icon_help'),
+      const ShortcutItem(
+          type: 'action_latest',
+          localizedTitle: 'Latest threads',
+          icon: 'icon_help')
+    ]);
 
     ScopedModel.of<AppStateModel>(context).updateSyncData();
   }

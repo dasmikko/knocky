@@ -9,6 +9,7 @@ import 'package:knocky/helpers/bbcode.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/screens/Modals/editTextBlock.dart';
+import 'package:knocky/screens/editorPage.dart';
 import 'package:knocky/widget/LinkDialogContent.dart';
 import 'package:knocky/widget/ListEditor.dart';
 import 'package:knocky/widget/PostEditor.dart';
@@ -682,7 +683,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
   void showTextEditDialog(BuildContext context, SlateNode node) async {
     var result = await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => EditTextBlockModal(node: node,),
+        builder: (context) => EditTextBlockModal(
+          node: node,
+        ),
       ),
     );
 
@@ -1000,6 +1003,17 @@ class _NewPostScreenState extends State<NewPostScreen> {
             IconButton(
               onPressed: !_isPosting ? onPressPost : null,
               icon: Icon(Icons.send),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditorPage(),
+                  ),
+                );
+              },
+              icon: Icon(Icons.keyboard),
             ),
           ],
           bottom: TabBar(
