@@ -39,8 +39,8 @@ SubforumThread _$SubforumThreadFromJson(Map<String, dynamic> json) {
     firstUnreadId: json['firstUnreadId'] as int,
     iconId: json['icon_id'] as int,
     id: json['id'] as int,
-    locked: json['locked'] as int,
-    pinned: json['pinned'] as int,
+    locked: json['locked'] as bool,
+    pinned: json['pinned'] as bool,
     postCount: json['postCount'] as int,
     readThreadUnreadPosts: json['readThreadUnreadPosts'] as int ?? 0,
     unreadPostCount: json['unreadPostCount'] as int ?? 0,
@@ -52,6 +52,8 @@ SubforumThread _$SubforumThreadFromJson(Map<String, dynamic> json) {
     lastPost: json['lastPost'] == null
         ? null
         : SubforumLastPost.fromJson(json['lastPost'] as Map<String, dynamic>),
+    hasRead: json['hasRead'] as bool,
+    subscribed: json['subscribed'] as bool,
   );
 }
 
@@ -70,6 +72,8 @@ Map<String, dynamic> _$SubforumThreadToJson(SubforumThread instance) =>
       'unreadType': instance.unreadType,
       'user': instance.user,
       'lastPost': instance.lastPost,
+      'hasRead': instance.hasRead,
+      'subscribed': instance.subscribed,
     };
 
 SubforumThreadLatestPopular _$SubforumThreadLatestPopularFromJson(

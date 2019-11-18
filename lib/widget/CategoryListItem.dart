@@ -114,15 +114,12 @@ class CategoryListItem extends StatelessWidget {
                     onTap: () {
                       print('Clicked on last post');
 
-                      int page =
-                          (subforum.lastPost.thread.postCount / 20).ceil();
+                      int page = subforum.lastPost.page;
 
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ThreadScreen(
-                            title: subforum.lastPost.thread.title,
-                            postCount: subforum.lastPost.thread.postCount,
                             page: page,
                             threadId: subforum.lastPost.thread.id,
                           ),

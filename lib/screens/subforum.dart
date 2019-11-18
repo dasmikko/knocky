@@ -87,7 +87,7 @@ class _SubforumScreenState extends State<SubforumScreen>
           subforumModel: widget.subforumModel,
           page: position + 1,
           bottomBarVisible: _bottomBarVisible,
-          onError: () => onFetchError(sContext),
+          onError: () => onFetchError(context),
           isScrollingUp: () {
             expandController.reverse();
             setState(() {

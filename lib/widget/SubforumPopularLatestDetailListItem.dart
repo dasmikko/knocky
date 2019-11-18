@@ -186,7 +186,7 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
                             margin: EdgeInsets.only(bottom: 5),
                             child: RichText(
                               text: TextSpan(children: <InlineSpan>[
-                                if (threadDetails.locked == 1)
+                                if (threadDetails.locked)
                                   WidgetSpan(
                                     child: Container(
                                       margin: EdgeInsets.only(right: 5),
@@ -197,7 +197,7 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                if (threadDetails.pinned == 1)
+                                if (threadDetails.pinned)
                                   WidgetSpan(
                                     alignment: ui.PlaceholderAlignment.bottom,
                                     child: Container(

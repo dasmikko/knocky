@@ -217,11 +217,10 @@ class SubforumDetailListItem extends StatelessWidget {
                               ]),
                             ),
                           ),
-                          if (threadDetails.readThreadUnreadPosts > 0 &&
-                              threadDetails.unreadType == 1)
+                          if (threadDetails.readThreadUnreadPosts > 0 && threadDetails.hasRead && !threadDetails.subscribed)
                             newPostsButton(context),
                           if (threadDetails.unreadPostCount > 0 &&
-                              threadDetails.unreadType == 0)
+                              !threadDetails.hasRead && threadDetails.subscribed)
                             newPostsSubscriptionButton(context),
                           Text(
                             threadDetails.user.username,

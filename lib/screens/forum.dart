@@ -298,7 +298,7 @@ class _ForumScreenState extends State<ForumScreen>
           show: _isFetching,
           child: Container(
             child: RefreshIndicator(
-              onRefresh: () => getSubforums(context),
+              onRefresh: () => getSubforums(this.context),
               child: ListView.builder(
                 padding: EdgeInsets.all(0.0),
                 itemCount: _subforums.length,

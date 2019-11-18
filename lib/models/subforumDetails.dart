@@ -33,8 +33,8 @@ class SubforumThread {
   @JsonKey(name: 'icon_id')
   final int iconId;
   final int id;
-  final int locked;
-  final int pinned;
+  final bool locked;
+  final bool pinned;
   final int postCount;
   @JsonKey(defaultValue: 0)
   final int readThreadUnreadPosts;
@@ -44,6 +44,8 @@ class SubforumThread {
   final int unreadType;
   final SubforumThreadUser user;
   final SubforumLastPost lastPost;
+  final bool hasRead;
+  final bool subscribed;
 
   SubforumThread({
     this.createdAt,
@@ -59,6 +61,8 @@ class SubforumThread {
     this.unreadType,
     this.user,
     this.lastPost,
+    this.hasRead,
+    this.subscribed,
   });
 
   factory SubforumThread.fromJson(Map<String, dynamic> json) =>

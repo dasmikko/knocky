@@ -1004,7 +1004,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
               onPressed: !_isPosting ? onPressPost : null,
               icon: Icon(Icons.send),
             ),
-            IconButton(
+            /*IconButton(
               onPressed: () {
                 Navigator.push(
                   context,
@@ -1014,7 +1014,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 );
               },
               icon: Icon(Icons.keyboard),
-            ),
+            ),*/
           ],
           bottom: TabBar(
             tabs: [

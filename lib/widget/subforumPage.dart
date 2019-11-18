@@ -81,6 +81,8 @@ class _SubforumPagenState extends State<SubforumPage>
     Future _future = KnockoutAPI()
         .getSubforumDetails(widget.subforumModel.id, page: widget.page)
         .catchError((error) {
+          throw(error);
+        print(error);
       this.widget.onError();
       setState(() {
         _isFetching = false;
