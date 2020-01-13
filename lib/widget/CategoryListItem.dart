@@ -113,7 +113,7 @@ class CategoryListItem extends StatelessWidget {
                 ? InkWell(
                     onTap: () {
                       print('Clicked on last post');
-
+                      
                       int page = subforum.lastPost.page;
 
                       Navigator.push(
@@ -145,8 +145,8 @@ class CategoryListItem extends StatelessWidget {
                                     children: <InlineSpan>[
                                       TextSpan(text: 'Last post by '),
                                       TextSpan(
-                                        text: subforum.lastPost.user.username +
-                                            ' ',
+                                        text: subforum.lastPost.user.username != null ? subforum.lastPost.user.username +
+                                            ' ' : ' ',
                                         style: TextStyle(color: AppColors(context).userGroupToColor(subforum.lastPost.user.usergroup)),
                                       ),
                                       TextSpan(

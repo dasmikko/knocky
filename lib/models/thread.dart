@@ -68,7 +68,7 @@ class ThreadPost {
   final int id;
   final DateTime createdAt;
   @JsonKey(fromJson: _contentFromJson, toJson: _contentToJson)
-  final SlateObject content;
+  final dynamic content;
   final ThreadPostUser user;
   final List<ThreadPostRatings> ratings;
   @JsonKey(nullable: true)
@@ -89,8 +89,13 @@ class ThreadPost {
   ThreadPost.clone(ThreadPost post): this(id: post.id, content: SlateObject.fromJson(post.content.toJson()), user: post.user, ratings: post.ratings, createdAt: post.createdAt, bans: post.bans);
 }
 
-SlateObject _contentFromJson(String jsonString) {
-  return SlateObject.fromJson(json.decode(jsonString));
+dynamic _contentFromJson(String jsonString) {
+  try {
+    SlateObject content = SlateObject.fromJson(json.decode(jsonString));
+    return content;
+  } catch(err) {
+    return jsonString;
+  }
 }
 
 Map _contentToJson(SlateObject slateObject) => slateObject.toJson();

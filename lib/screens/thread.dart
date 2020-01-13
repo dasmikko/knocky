@@ -94,16 +94,17 @@ class _ThreadScreenState extends State<ThreadScreen>
 
     Future _future =
         api.getThread(widget.threadId, page: _currentPage).catchError((error) {
+          throw(error);
       setState(() {
         _isLoading = false;
       });
 
-      Scaffold.of(self).hideCurrentSnackBar();
-      Scaffold.of(self).showSnackBar(SnackBar(
+      /*Scaffold.of(context).hideCurrentSnackBar();
+      Scaffold.of(context).showSnackBar(SnackBar(
         content: Text('Failed to load thread. Try again'),
         backgroundColor: Colors.red,
         behavior: SnackBarBehavior.floating,
-      ));
+      ));*/
     });
 
     _dataSub = _future.asStream().listen((res) {
