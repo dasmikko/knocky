@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:knocky/helpers/api.dart';
+import 'package:knocky/helpers/bbcodeparser.dart';
 import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/helpers/twitterApi.dart';
 import 'package:knocky/models/subforum.dart';
@@ -67,7 +68,6 @@ class _ForumScreenState extends State<ForumScreen>
     ]);
 
     quickActions.initialize((shortcutType) {
-      print('shortcut: ' + shortcutType);
       if (shortcutType == 'action_subscriptions') {
         AppHiveBox.getBox().then((Box box) {
           box.get('isLoggedIn', defaultValue: false).then((loginState) {
@@ -108,7 +108,6 @@ class _ForumScreenState extends State<ForumScreen>
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       Uri initialUri = await getInitialUri();
-      print(initialUri.toString());
       if (initialUri != null) handleLink(initialUri);
       // Parse the link and warn the user, if it is not correct,
       // but keep in mind it could be `null`.
@@ -127,9 +126,6 @@ class _ForumScreenState extends State<ForumScreen>
   }
 
   void handleLink(Uri uri) {
-    print(uri.toString());
-    print(uri.pathSegments.length);
-
     // Handle thread links
     if (uri.pathSegments.length > 0) {
       if (uri.pathSegments[0] == 'thread') {
@@ -147,7 +143,6 @@ class _ForumScreenState extends State<ForumScreen>
       }
     }
     uri.pathSegments.forEach((segment) {
-      print(segment);
     });
   }
 

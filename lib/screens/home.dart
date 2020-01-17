@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive/hive.dart';
+import 'package:knocky/helpers/bbcodeparser.dart';
 import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/helpers/twitterApi.dart';
 import 'package:knocky/models/subforum.dart';
@@ -116,7 +117,6 @@ class _HomeScreenState extends State<HomeScreen>
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       Uri initialUri = await getInitialUri();
-      print(initialUri.toString());
       if (initialUri != null) handleLink(initialUri);
       // Parse the link and warn the user, if it is not correct,
       // but keep in mind it could be `null`.

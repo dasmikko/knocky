@@ -1,21 +1,21 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
+import 'package:after_layout/after_layout.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:knocky/helpers/ImgurHelper.dart';
-import 'package:knocky/helpers/bbcode.dart';
+import 'package:knocky/helpers/bbcodeparser.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/screens/Modals/editTextBlock.dart';
-import 'package:knocky/screens/editorPage.dart';
+import 'package:knocky/screens/Modals/knockoutDocument.dart';
 import 'package:knocky/widget/LinkDialogContent.dart';
 import 'package:knocky/widget/ListEditor.dart';
-import 'package:knocky/widget/PostEditor.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
-import 'package:knocky/widget/Thread/PostContent.dart';
+import 'package:knocky/widget/PostEditorBBCode.dart';
+import 'package:knocky/widget/Thread/PostElements/Image.dart';
 import 'package:knocky/widget/UploadProgressDialogContent.dart';
 
 class NewPostScreen extends StatefulWidget {
@@ -31,7 +31,8 @@ class NewPostScreen extends StatefulWidget {
   _NewPostScreenState createState() => _NewPostScreenState();
 }
 
-class _NewPostScreenState extends State<NewPostScreen> {
+class _NewPostScreenState extends State<NewPostScreen>
+    with AfterLayoutMixin<NewPostScreen>, SingleTickerProviderStateMixin {
   SlateObject document = new SlateObject(
     object: 'value',
     document: SlateDocument(object: 'document', nodes: List()),
@@ -40,6 +41,14 @@ class _NewPostScreenState extends State<NewPostScreen> {
   bool _isPosting = false;
   TextEditingController controller = TextEditingController();
   List<ThreadPost> replyListConverted = List();
+  //String postBBcode =
+    //  'Hello [i][b]inacio world[/b][/i] here is an image [img]https://i.redd.it/lvwmx2t34sa41.jpg[/img] here is text after it';
+
+  String postBBcode =
+      'Hello [b]this[/b] is an [b][i]simple[/i][/b] text! [b]DONE![/b] I can do what i fucking want bitch';
+
+  BBCodeParser bbCodeParser;
+  KnockoutDocument knockoutDocument;
 
   @override
   void initState() {
@@ -72,6 +81,71 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 nodes: item.content.document.nodes),
           );
     }
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) async {
+    // setup the parser
+    this.bbCodeParser = new BBCodeParser();
+
+    // Parse the bbcode
+    KnockoutDocument document = bbCodeParser.parse(postBBcode);
+
+    print('done parsing, going through the document now...');
+    //print(document);
+
+    document.nodes.forEach((node) {
+        //print(node);
+        print(node.type);
+        if (node.url != null) print(node.url);
+
+        node.children.forEach((leaf) {
+          print('leaf: ' + leaf.toString());
+        });
+    });
+
+    setState(() {
+      this.knockoutDocument = document;
+    });
+  }
+
+  TextSpan bbCodeTextHandler(String text, bool isBold, bool isItalic,
+      bool isUnderlined, bool isCode, bool isSpoiler) {
+    TextStyle textStyle = Theme.of(context).textTheme.body1.copyWith(
+          fontFamily: isCode ? 'RobotoMono' : 'Roboto',
+          decoration:
+              isUnderlined ? TextDecoration.underline : TextDecoration.none,
+          fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+          fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
+        );
+
+    TextStyle spoilerStyle = textStyle.copyWith(
+        background: Paint()..color = Theme.of(context).textTheme.body1.color,
+        color: Theme.of(context).textTheme.body1.color);
+
+    if (isSpoiler) {
+      return TextSpan(
+        text: text,
+        recognizer: TapGestureRecognizer()
+          ..onTap = () {
+            print('Clicked spoiler');
+            this.onPressSpoiler(context, text);
+          },
+        style: spoilerStyle,
+      );
+    } else {
+      return TextSpan(text: text, style: textStyle);
+    }
+  }
+
+  Widget bbCodeImageHandler(String url) {
+    return Container(
+      margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
+      child: ImageWidget(
+        url: url,
+        bbcode: postBBcode,
+      ),
+    );
   }
 
   void convertReplyEmbedsToText() {
@@ -992,7 +1066,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   @override
   Widget build(BuildContext wcontext) {
-    print(document.toJson());
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -1030,19 +1103,20 @@ class _NewPostScreenState extends State<NewPostScreen> {
           child: TabBarView(
             physics: NeverScrollableScrollPhysics(),
             children: [
-              PostEditor(
-                document: document,
+              PostEditorBBCode(
+                postBBCode: postBBcode,
                 replyList: this.replyListConverted,
-                // Blocks
-                onTapTextBlock: this.showTextEditDialog,
-                onTapImageBlock: this.editImageDialog,
-                onTapQuoteBlock: this.showTextEditDialog,
-                onTapYouTubeBlock: this.editYoutubeVideoDialog,
-                onTapVideoBlock: this.editVideoDialog,
-                onTapListBlock: this.editList,
-                onTapTwitterBlock: this.editTwitterEmbed,
-                onTapUserQuoteBlock: this.editUserQuote,
-                onTapStrawpollBlock: this.editStrawpollEmbed,
+                onInputChange: (String newBBcode) {
+                  print('new bbcode: ' + newBBcode);
+                  KnockoutDocument doc = this.bbCodeParser.parse(newBBcode);
+
+                  print(doc);
+
+                  setState(() {
+                    this.postBBcode = newBBcode;
+                    this.knockoutDocument = doc;
+                  });
+                },
                 // Toolbar
                 onTapAddTextBlock: this.addTextBlock,
                 onTapAddHeadingOne: () => this.addHeadingBlock('one'),
@@ -1072,12 +1146,21 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 child: SingleChildScrollView(
                   child: Container(
                     padding: EdgeInsets.all(15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [],
+
+                      /*Container(
+                    padding: EdgeInsets.all(15),
                     child: PostContent(
                         content: document,
                         onTapSpoiler: (text) {
                           onPressSpoiler(context, text);
                         },
                         scaffoldKey: this._scaffoldKey),
+                  ),*/
+                    ),
                   ),
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:knocky/helpers/bbcodehelper.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/screens/imageViewer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -9,8 +10,9 @@ class ImageWidget extends StatefulWidget {
   final String url;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final SlateObject slateObject;
+  final String bbcode;
 
-  ImageWidget({this.url, this.scaffoldKey, this.slateObject});
+  ImageWidget({this.url, this.scaffoldKey, this.slateObject, this.bbcode});
 
   @override
   _ImageWidgetState createState() => _ImageWidgetState();
@@ -20,11 +22,18 @@ class _ImageWidgetState extends State<ImageWidget> {
 
   List<String> findAllImages () {
     List<String> urls = List();
-    this.widget.slateObject.document.nodes.forEach((item) {
-      if (item.type == 'image') {
-        urls.add(item.data.src);
-      }
-    });
+
+    if (this.widget.slateObject == null) {
+      urls = BBCodeHelper().getUrls(this.widget.bbcode);
+    } else {
+      this.widget.slateObject.document.nodes.forEach((item) {
+        if (item.type == 'image') {
+          urls.add(item.data.src);
+        }
+      });
+    }
+
+    
     return urls;
   }
 
@@ -77,6 +86,9 @@ class _ImageWidgetState extends State<ImageWidget> {
       child: Hero(
         tag: this.widget.url,
         child: CachedNetworkImage(
+          placeholder: (BuildContext context, String url) {
+              return CircularProgressIndicator();
+          },
           imageUrl: this.widget.url,
         ),
       ),
