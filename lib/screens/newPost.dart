@@ -44,8 +44,11 @@ class _NewPostScreenState extends State<NewPostScreen>
   //String postBBcode =
     //  'Hello [i][b]inacio world[/b][/i] here is an image [img]https://i.redd.it/lvwmx2t34sa41.jpg[/img] here is text after it';
 
-  String postBBcode =
-      'Hello [b]this[/b] is an [b][i]simple[/i][/b] text! [b]DONE![/b] I can do what i fucking want bitch';
+  //String postBBcode =
+    //  '[h1]Hello[/h1] [blockquote][b]this[/b] is[/blockquote] an [b][i]simple[/i][/b] text! [img]https://knockout.chat/static/logo.svg[/img] [b]DONE![/b] here is a link: [url smart href="https://knockout.chat]knockout[/url] link has ended';
+
+  String postBBcode = 
+    '[ul][li]hello world[/li][/ul]';
 
   BBCodeParser bbCodeParser;
   KnockoutDocument knockoutDocument;
@@ -95,13 +98,30 @@ class _NewPostScreenState extends State<NewPostScreen>
     //print(document);
 
     document.nodes.forEach((node) {
-        //print(node);
         print(node.type);
         if (node.url != null) print(node.url);
 
-        node.children.forEach((leaf) {
-          print('leaf: ' + leaf.toString());
-        });
+        if (node.children != null) {
+          node.children.forEach((leaf) {
+            print('leaf: ' + leaf.toString());
+          });
+        }
+        
+        // Go through nodes
+        if (node.nodes != null) {
+          node.nodes.forEach((nodeChild) {
+            print(nodeChild.type);
+            nodeChild.children.forEach((leaf) {
+              print('leaf: ' + leaf.toString());
+            });
+          });
+
+          if (node.children != null) {
+            node.children.forEach((leaf) {
+              print('leaf: ' + leaf.toString());
+            });
+          }
+        }
     });
 
     setState(() {
