@@ -32,29 +32,6 @@ class KnockoutDocumentNode {
   });
 }
 
-class KnockoutDocumentMarks {
-  String url;
-  bool bold;
-  bool italic;
-  bool underlined;
-  bool spoiler;
-  bool code;
-  bool smartLink;
-  bool h1;
-  bool h2;
-
-  KnockoutDocumentMarks({
-    this.url,
-    this.bold,
-    this.code,
-    this.italic,
-    this.spoiler,
-    this.underlined,
-    this.smartLink,
-    this.h1,
-    this.h2
-  });
-}
 
 class KnockoutDocumentLeaf {
   String text;

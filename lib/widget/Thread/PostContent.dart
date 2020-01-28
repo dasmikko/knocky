@@ -4,6 +4,7 @@ import 'package:knocky/helpers/bbcode.dart';
 import 'package:knocky/helpers/bbcodeparser.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/screens/imageViewer.dart';
+import 'package:knocky/widget/BBcodeRenderer/BBcodeRenderer.dart';
 import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
 import 'package:knocky/widget/Thread/PostElements/Audio.dart';
 import 'package:knocky/widget/Thread/PostElements/Embed.dart';
@@ -295,8 +296,7 @@ class PostContent extends StatelessWidget {
     } else {
       print('parse bbcode');
       var bbcodeParsed = BBCodeParser().parse(content);
-      print(bbcodeParsed);
-      return Text(content);
+      return BBcodeRenderer(bbcode: content, parentContext: context,);
     }
   }
 }

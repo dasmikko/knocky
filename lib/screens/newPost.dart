@@ -10,6 +10,7 @@ import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/screens/Modals/editTextBlock.dart';
 import 'package:knocky/screens/Modals/knockoutDocument.dart';
+import 'package:knocky/widget/BBcodeRenderer/BBcodeRenderer.dart';
 import 'package:knocky/widget/LinkDialogContent.dart';
 import 'package:knocky/widget/ListEditor.dart';
 import 'package:knocky/helpers/api.dart';
@@ -17,6 +18,7 @@ import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widget/PostEditorBBCode.dart';
 import 'package:knocky/widget/Thread/PostElements/Image.dart';
 import 'package:knocky/widget/UploadProgressDialogContent.dart';
+import 'package:bbob_dart/bbob_dart.dart' as bbob;
 
 class NewPostScreen extends StatefulWidget {
   final ThreadPost post;
@@ -42,13 +44,12 @@ class _NewPostScreenState extends State<NewPostScreen>
   TextEditingController controller = TextEditingController();
   List<ThreadPost> replyListConverted = List();
   //String postBBcode =
-    //  'Hello [i][b]inacio world[/b][/i] here is an image [img]https://i.redd.it/lvwmx2t34sa41.jpg[/img] here is text after it';
+  //  'Hello [i][b]inacio world[/b][/i] here is an image [img]https://i.redd.it/lvwmx2t34sa41.jpg[/img] here is text after it';
 
-  //String postBBcode =
-    //  '[h1]Hello[/h1] [blockquote][b]this[/b] is[/blockquote] an [b][i]simple[/i][/b] text! [img]https://knockout.chat/static/logo.svg[/img] [b]DONE![/b] here is a link: [url smart href="https://knockout.chat]knockout[/url] link has ended';
+  String postBBcode =
+    '[h1]Hello[/h1] [blockquote][b]this[/b] is[/blockquote] an [b][i]simple[/i][/b] text! [img]https://flutter.dev/assets/flutter-lockup-c13da9c9303e26b8d5fc208d2a1fa20c1ef47eb021ecadf27046dea04c0cebf6.png[/img] [b]DONE![/b] here is a link: [url href="https://knockout.chat]knockout[/url] link has ended';
 
-  String postBBcode = 
-    '[ul][li]hello world[/li][/ul]';
+  //String postBBcode = '[ul][li]hello world[/li][/ul]';
 
   BBCodeParser bbCodeParser;
   KnockoutDocument knockoutDocument;
@@ -88,45 +89,7 @@ class _NewPostScreenState extends State<NewPostScreen>
 
   @override
   void afterFirstLayout(BuildContext context) async {
-    // setup the parser
-    this.bbCodeParser = new BBCodeParser();
-
     // Parse the bbcode
-    KnockoutDocument document = bbCodeParser.parse(postBBcode);
-
-    print('done parsing, going through the document now...');
-    //print(document);
-
-    document.nodes.forEach((node) {
-        print(node.type);
-        if (node.url != null) print(node.url);
-
-        if (node.children != null) {
-          node.children.forEach((leaf) {
-            print('leaf: ' + leaf.toString());
-          });
-        }
-        
-        // Go through nodes
-        if (node.nodes != null) {
-          node.nodes.forEach((nodeChild) {
-            print(nodeChild.type);
-            nodeChild.children.forEach((leaf) {
-              print('leaf: ' + leaf.toString());
-            });
-          });
-
-          if (node.children != null) {
-            node.children.forEach((leaf) {
-              print('leaf: ' + leaf.toString());
-            });
-          }
-        }
-    });
-
-    setState(() {
-      this.knockoutDocument = document;
-    });
   }
 
   TextSpan bbCodeTextHandler(String text, bool isBold, bool isItalic,
@@ -1127,14 +1090,8 @@ class _NewPostScreenState extends State<NewPostScreen>
                 postBBCode: postBBcode,
                 replyList: this.replyListConverted,
                 onInputChange: (String newBBcode) {
-                  print('new bbcode: ' + newBBcode);
-                  KnockoutDocument doc = this.bbCodeParser.parse(newBBcode);
-
-                  print(doc);
-
                   setState(() {
                     this.postBBcode = newBBcode;
-                    this.knockoutDocument = doc;
                   });
                 },
                 // Toolbar
@@ -1169,7 +1126,13 @@ class _NewPostScreenState extends State<NewPostScreen>
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [],
+                      children: [
+                        BBcodeRenderer(
+                          bbcode: postBBcode,
+                          parentContext: context,
+                          scaffoldKey: _scaffoldKey,
+                        ),
+                      ],
 
                       /*Container(
                     padding: EdgeInsets.all(15),

@@ -21,8 +21,13 @@ class BBCodeParser implements bbob.NodeVisitor {
   bool _isH2 = false;
   int _tagLevel = 0; 
 
-  KnockoutDocument parse(String text) {
+  List<bbob.Node> parse(String text) {
     var ast = bbob.parse(text);
+    return ast;
+
+    for (bbob.Element node in ast) {
+      print(node);
+    }
 
     for (final node in ast) {
       node.accept(this);
@@ -37,8 +42,6 @@ class BBCodeParser implements bbob.NodeVisitor {
       document.nodes.add(_lastNode);
       _lastNode = null;
     }
-
-    return document;
   }
 
   void visitText(bbob.Text text) {
@@ -105,7 +108,7 @@ class BBCodeParser implements bbob.NodeVisitor {
         break;
       case 'spoiler':
         _tagLevel++;
-        _isCode = true;
+        _isSpoiler = true;
 
         removeLastChildIfEmpty();
         addEmptyLeafToChildren();
@@ -114,12 +117,34 @@ class BBCodeParser implements bbob.NodeVisitor {
         _tagLevel++;
         _isH1 = true;
 
+        if (_lastNode != null) {
+          document.nodes.add(_lastNode);
+        }
+
+        document.nodes.add(
+          new KnockoutDocumentNode(
+            type: 'header-one',
+            children: List()
+          )
+        );
+
         removeLastChildIfEmpty();
         addEmptyLeafToChildren();
         break;
       case 'h2':
         _tagLevel++;
         _isH2 = true;
+
+        if (_lastNode != null) {
+          document.nodes.add(_lastNode);
+        }
+
+        document.nodes.add(
+          new KnockoutDocumentNode(
+            type: 'header-two',
+            children: List()
+          )
+        );
 
         removeLastChildIfEmpty();
         addEmptyLeafToChildren();
@@ -184,6 +209,62 @@ class BBCodeParser implements bbob.NodeVisitor {
           children: List()
         );
         break;
+      case 'video':
+        if (_lastNode != null) {
+          document.nodes.add(_lastNode);
+        }
+
+        document.nodes.add(
+          new KnockoutDocumentNode(
+            type: 'video',
+            url: element.children.first.textContent
+          )
+        );
+        _lastNode = null;
+        return false; // Ignore child elements
+        break; 
+      case 'youtube':
+        if (_lastNode != null) {
+          document.nodes.add(_lastNode);
+        }
+
+        document.nodes.add(
+          new KnockoutDocumentNode(
+            type: 'youtube',
+            url: element.children.first.textContent
+          )
+        );
+        _lastNode = null;
+        return false; // Ignore child elements
+        break; 
+      case 'strawpoll':
+        if (_lastNode != null) {
+          document.nodes.add(_lastNode);
+        }
+
+        document.nodes.add(
+          new KnockoutDocumentNode(
+            type: 'strawpoll',
+            url: element.children.first.textContent
+          )
+        );
+        _lastNode = null;
+        return false; // Ignore child elements
+        break; 
+      case 'twitter':
+        if (_lastNode != null) {
+          document.nodes.add(_lastNode);
+        }
+
+        document.nodes.add(
+          new KnockoutDocumentNode(
+            type: 'twitter',
+            url: element.children.first.textContent
+          )
+        );
+        _lastNode = null;
+        return false; // Ignore child elements
+        break; 
     } 
 
     // Handle children
@@ -235,16 +316,14 @@ class BBCodeParser implements bbob.NodeVisitor {
       case 'h1':
         _tagLevel--;
         _isH1 = false;
-        if (_tagLevel == 0) {
-          addEmptyLeafToChildren();
-        }
+        document.nodes.add(_lastNode);
+        _lastNode = null;
         break;
       case 'h2':
         _tagLevel--;
         _isH2 = false;
-        if (_tagLevel == 0) {
-          addEmptyLeafToChildren();
-        }
+        document.nodes.add(_lastNode);
+        _lastNode = null;
         break;
       case 'url':
         _tagLevel--;
@@ -254,6 +333,10 @@ class BBCodeParser implements bbob.NodeVisitor {
         break;
       // Block elements
       case 'img':
+      case 'video':
+      case 'youtube':
+      case 'twitter':
+      case 'strawpoll':
         break;  
       case 'blockquote':
         document.nodes.add(_lastNode);
