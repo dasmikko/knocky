@@ -3,12 +3,14 @@ import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/bbcodeparser.dart';
+import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/screens/Modals/knockoutDocument.dart';
 import 'package:knocky/screens/imageViewer.dart';
 import 'package:knocky/widget/Thread/PostElements/Audio.dart';
 import 'package:knocky/widget/Thread/PostElements/Image.dart';
 import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:knocky/widget/Thread/PostElements/Twitter.dart';
+import 'package:knocky/widget/Thread/PostElements/UserQuote.dart';
 import 'package:knocky/widget/Thread/PostElements/Video.dart';
 import 'package:knocky/widget/Thread/PostElements/YouTubeEmbed.dart';
 import 'package:intent/intent.dart' as Intent;
@@ -25,6 +27,7 @@ class BBcodeRenderer extends StatelessWidget {
     if (isRoot) {
       return RichText(
         text: TextSpan(
+          style: TextStyle(height: 2),
           text: node.textContent,
         ),
       );
@@ -74,6 +77,92 @@ class BBcodeRenderer extends StatelessWidget {
                   )),
         );
       },
+    );
+  }
+
+  // TODO: Move out to own file
+  Widget userQuoteHandler(bbob.Element node) {
+    AppColors appColors = AppColors(this.parentContext);
+
+    return Container(
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.black),
+          color: appColors.userQuoteBodyBackground(),
+          borderRadius: BorderRadius.all(Radius.circular(5.0))),
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                color: appColors.userQuoteHeaderBackground(),
+                border: Border(
+                  bottom: BorderSide(color: Colors.black, width: 1),
+                ),
+              ),
+              padding: EdgeInsets.all(10.0),
+              child: Text(node.attributes['username'] + ' posted:',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Container(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: nodeChildrenHandler(node.children),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget listItemHandler(node) {
+    if (node is bbob.Text) {
+      return Container(
+        child: RichText(
+          text: TextSpan(
+            text: node.text,
+            style: TextStyle(height: 2),
+          ),
+        ),
+      );
+    }
+
+    if (node is bbob.Element) {
+      return Container(
+        child: Column(children: nodeChildrenHandler(node.children)),
+      );
+    }
+  }
+
+  Widget unorderedListHandler(bbob.Element node) {
+    List<Widget> listItems = List();
+
+    node.children.where((item) => item.textContent != "").forEach((item) {
+      listItems.add(
+        Row(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(right: 10.0),
+              height: 5.0,
+              width: 5.0,
+              decoration: new BoxDecoration(
+                color: Theme.of(parentContext).textTheme.body1.color,
+                shape: BoxShape.circle,
+              ),
+            ),
+            listItemHandler(item)
+          ],
+        ),
+      );
+    });
+
+    return Container(
+      margin: EdgeInsets.only(left: 15),
+      child: Column(children: listItems),
     );
   }
 
@@ -135,16 +224,15 @@ class BBcodeRenderer extends StatelessWidget {
     return TextSpan(style: currentTextStyle, children: textSpans);
   }
 
-  @override
-  Widget build(BuildContext context) {
+  List<Widget> nodeChildrenHandler(List<bbob.Node> nodes) {
     List<Widget> widgetList = List();
-    List<bbob.Node> nodes = new BBCodeParser().parse(this.bbcode);
 
     List<TextSpan> richTextContent = List();
 
     // Convert the nodes to widgets
     nodes.forEach((node) {
       if (node is bbob.Element) {
+        print(node.tag);
         switch (node.tag) {
           case 'h1':
             if (richTextContent.isNotEmpty) {
@@ -283,6 +371,24 @@ class BBcodeRenderer extends StatelessWidget {
 
             widgetList.add(twitterHandler(node));
             break;
+          case 'quote':
+            if (richTextContent.isNotEmpty) {
+              widgetList.add(
+                  RichText(text: TextSpan(children: richTextContent.toList())));
+              richTextContent.clear();
+            }
+
+            widgetList.add(userQuoteHandler(node));
+            break;
+          case 'ul':
+            if (richTextContent.isNotEmpty) {
+              widgetList.add(
+                  RichText(text: TextSpan(children: richTextContent.toList())));
+              richTextContent.clear();
+            }
+
+            widgetList.add(unorderedListHandler(node));
+            break;
           default:
         }
       }
@@ -296,6 +402,16 @@ class BBcodeRenderer extends StatelessWidget {
       widgetList
           .add(RichText(text: TextSpan(children: richTextContent.toList())));
     }
+
+    return widgetList;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> widgetList = List();
+    List<bbob.Node> nodes = new BBCodeParser().parse(this.bbcode);
+
+    widgetList = nodeChildrenHandler(nodes);
 
     return Container(
       child: Column(
