@@ -71,3 +71,4 @@
 pubspec.lock
 android/key.properties
 .env
+.flutter-plugins-dependencies
