@@ -133,11 +133,18 @@ class SubforumDetailListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String _iconUrl = threadDetails.iconId != null
+    String _iconUrl;
+    
+    try {
+      _iconUrl = threadDetails.iconId != null
         ? iconList
             .firstWhere((IconListItem item) => item.id == threadDetails.iconId)
             .url
         : '';
+    } catch (err) {
+      _iconUrl = iconList.first.url;
+    }
+
 
     Color userColor = AppColors(context).normalUserColor(); // User
     if (threadDetails.user.usergroup == 2)
