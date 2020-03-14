@@ -98,7 +98,12 @@ class _SubforumPagenState extends State<SubforumPage>
           if (prefs.getBool('showNSFWThreads') == null ||
               !prefs.getBool('showNSFWThreads')) {
             details.threads = details.threads
-                .where((item) => !item.title.contains('NSFW'))
+                .where((item) {
+                  if (item.tags == null) return true;
+                  if (item.tags.first['1'] != 'NSFW') return true;
+                  
+                  return false;
+                })
                 .toList();
           }
         }
