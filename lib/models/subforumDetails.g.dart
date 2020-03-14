@@ -54,6 +54,7 @@ SubforumThread _$SubforumThreadFromJson(Map<String, dynamic> json) {
         : SubforumLastPost.fromJson(json['lastPost'] as Map<String, dynamic>),
     hasRead: json['hasRead'] as bool,
     subscribed: json['subscribed'] as bool,
+    tags: json['tags'] as List,
   );
 }
 
@@ -74,6 +75,7 @@ Map<String, dynamic> _$SubforumThreadToJson(SubforumThread instance) =>
       'lastPost': instance.lastPost,
       'hasRead': instance.hasRead,
       'subscribed': instance.subscribed,
+      'tags': instance.tags,
     };
 
 SubforumThreadLatestPopular _$SubforumThreadLatestPopularFromJson(

@@ -46,6 +46,7 @@ class SubforumThread {
   final SubforumLastPost lastPost;
   final bool hasRead;
   final bool subscribed;
+  final List<dynamic> tags;
 
   SubforumThread({
     this.createdAt,
@@ -63,13 +64,13 @@ class SubforumThread {
     this.lastPost,
     this.hasRead,
     this.subscribed,
+    this.tags
   });
 
   factory SubforumThread.fromJson(Map<String, dynamic> json) =>
       _$SubforumThreadFromJson(json);
   Map<String, dynamic> toJson() => _$SubforumThreadToJson(this);
 }
-
 
 @JsonSerializable()
 class SubforumThreadLatestPopular {

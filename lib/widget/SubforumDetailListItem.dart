@@ -75,6 +75,30 @@ class SubforumDetailListItem extends StatelessWidget {
     });
   }
 
+  Widget nsfwTag(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(bottom: 5),
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(
+              Radius.circular(5),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Container(
+              padding: EdgeInsets.all(5),
+              color: Colors.red,
+              child: Text(
+                'NSFW',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget newPostsButton(BuildContext context) {
     return Stack(
       children: <Widget>[
@@ -134,17 +158,27 @@ class SubforumDetailListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String _iconUrl;
-    
+
+    bool isNSFWThread = false;
+
+    if (threadDetails.tags != null) {
+      threadDetails.tags.forEach((item) {
+        print(item['1']);
+
+        if (item['1'] == 'NSFW') isNSFWThread = true;
+      });
+    }
+
     try {
       _iconUrl = threadDetails.iconId != null
-        ? iconList
-            .firstWhere((IconListItem item) => item.id == threadDetails.iconId)
-            .url
-        : '';
+          ? iconList
+              .firstWhere(
+                  (IconListItem item) => item.id == threadDetails.iconId)
+              .url
+          : '';
     } catch (err) {
       _iconUrl = iconList.first.url;
     }
-
 
     Color userColor = AppColors(context).normalUserColor(); // User
     if (threadDetails.user.usergroup == 2)
@@ -224,10 +258,15 @@ class SubforumDetailListItem extends StatelessWidget {
                               ]),
                             ),
                           ),
-                          if (threadDetails.readThreadUnreadPosts > 0 && threadDetails.hasRead && !threadDetails.subscribed)
+                          if (isNSFWThread)
+                            nsfwTag(context),
+                          if (threadDetails.readThreadUnreadPosts > 0 &&
+                              threadDetails.hasRead &&
+                              !threadDetails.subscribed)
                             newPostsButton(context),
                           if (threadDetails.unreadPostCount > 0 &&
-                              !threadDetails.hasRead && threadDetails.subscribed)
+                              !threadDetails.hasRead &&
+                              threadDetails.subscribed)
                             newPostsSubscriptionButton(context),
                           Text(
                             threadDetails.user.username,
