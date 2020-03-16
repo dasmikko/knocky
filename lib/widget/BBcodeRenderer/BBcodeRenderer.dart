@@ -295,7 +295,7 @@ class BBcodeRenderer extends StatelessWidget {
               print(url);
 
               richTextContent.add(TextSpan(
-                  text: node.textContent,
+                  text: node.textContent.isNotEmpty ? node.textContent : node.attributes['href'],
                   style: TextStyle(color: Colors.blue),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
