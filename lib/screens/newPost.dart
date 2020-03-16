@@ -18,7 +18,6 @@ import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widget/PostEditorBBCode.dart';
 import 'package:knocky/widget/Thread/PostElements/Image.dart';
 import 'package:knocky/widget/UploadProgressDialogContent.dart';
-import 'package:bbob_dart/bbob_dart.dart' as bbob;
 
 class NewPostScreen extends StatefulWidget {
   final ThreadPost post;
@@ -35,19 +34,13 @@ class NewPostScreen extends StatefulWidget {
 
 class _NewPostScreenState extends State<NewPostScreen>
     with AfterLayoutMixin<NewPostScreen>, SingleTickerProviderStateMixin {
-  SlateObject document = new SlateObject(
-    object: 'value',
-    document: SlateDocument(object: 'document', nodes: List()),
-  );
   GlobalKey _scaffoldKey;
   bool _isPosting = false;
   TextEditingController controller = TextEditingController();
   List<ThreadPost> replyListConverted = List();
-  //String postBBcode =
-  //  'Hello [i][b]inacio world[/b][/i] here is an image [img]https://i.redd.it/lvwmx2t34sa41.jpg[/img] here is text after it';
+  SlateDocument document;
 
-  String postBBcode =
-    '[h1]Hello[/h1] [blockquote][b]this[/b] is[/blockquote] an [b][i]simple[/i][/b] text! [img]https://flutter.dev/assets/flutter-lockup-c13da9c9303e26b8d5fc208d2a1fa20c1ef47eb021ecadf27046dea04c0cebf6.png[/img] [b]DONE![/b] here is a link: [url href="https://knockout.chat]knockout[/url] link has ended';
+  String postBBcode = '';
 
   //String postBBcode = '[ul][li]hello world[/li][/ul]';
 
@@ -61,7 +54,7 @@ class _NewPostScreenState extends State<NewPostScreen>
     this.replyListConverted = this.widget.replyList;
 
     if (this.widget.editingPost) {
-      this.document = this.widget.post.content;
+      this.postBBcode = this.widget.post.content;
     } else {
       if (this.replyListConverted.length > 0) {
         this.convertReplyEmbedsToText();
@@ -69,21 +62,7 @@ class _NewPostScreenState extends State<NewPostScreen>
     }
 
     if (this.replyListConverted.length == 1) {
-      ThreadPost item = this.replyListConverted.first;
-      this.document.document.nodes.add(
-            SlateNode(
-                object: 'block',
-                type: 'userquote',
-                data: SlateNodeData(
-                  postData: NodeDataPostData(
-                    postId: item.id,
-                    threadId: this.widget.thread.id,
-                    threadPage: this.widget.thread.currentPage,
-                    username: item.user.username,
-                  ),
-                ),
-                nodes: item.content.document.nodes),
-          );
+      
     }
   }
 
@@ -181,13 +160,13 @@ class _NewPostScreenState extends State<NewPostScreen>
     if (this.widget.editingPost) {
       await KnockoutAPI()
           .updatePost(
-              document.toJson(), this.widget.post.id, this.widget.thread.id)
+              this.postBBcode, this.widget.post.id, this.widget.thread.id)
           .catchError((error) {
         print(error);
       });
     } else {
       await KnockoutAPI()
-          .newPost(document.toJson(), this.widget.thread.id)
+          .newPost(this.postBBcode, this.widget.thread.id)
           .catchError((error) {
         print(error);
       });
@@ -319,13 +298,7 @@ class _NewPostScreenState extends State<NewPostScreen>
           onFinishedUploading: (String imageLink) {
             Navigator.of(context, rootNavigator: true).pop();
             setState(() {
-              document.document.nodes.add(
-                SlateNode(
-                  object: 'block',
-                  type: 'image',
-                  data: SlateNodeData(src: imageLink),
-                ),
-              );
+              
             });
           },
         ),
@@ -363,13 +336,7 @@ class _NewPostScreenState extends State<NewPostScreen>
               onPressed: () {
                 Navigator.of(context, rootNavigator: true).pop();
                 setState(() {
-                  document.document.nodes.add(
-                    SlateNode(
-                      object: 'block',
-                      type: 'image',
-                      data: SlateNodeData(src: imgurlController.text),
-                    ),
-                  );
+                  
                 });
               })
         ],
@@ -464,11 +431,11 @@ class _NewPostScreenState extends State<NewPostScreen>
               child: const Text('Insert'),
               onPressed: () {
                 setState(() {
-                  this.document.document.nodes.add(SlateNode(
+                  /*this.document.document.nodes.add(SlateNode(
                       object: 'block',
                       type: 'youtube',
                       data: SlateNodeData(src: urlController.text)));
-                });
+                */});
 
                 Navigator.of(context, rootNavigator: true).pop();
               })
@@ -507,13 +474,13 @@ class _NewPostScreenState extends State<NewPostScreen>
               child: const Text('Insert'),
               onPressed: () {
                 setState(() {
-                  this.document.document.nodes.add(
+                  /*this.document.document.nodes.add(
                         SlateNode(
                           object: 'block',
                           type: 'video',
                           data: SlateNodeData(src: urlController.text),
                         ),
-                      );
+                      );*/
                 });
 
                 Navigator.of(context, rootNavigator: true).pop();
@@ -540,7 +507,7 @@ class _NewPostScreenState extends State<NewPostScreen>
                 title: Text(item.user.username),
                 onTap: () {
                   setState(() {
-                    this.document.document.nodes.add(
+                    /*this.document.document.nodes.add(
                           SlateNode(
                               object: 'block',
                               type: 'userquote',
@@ -553,7 +520,7 @@ class _NewPostScreenState extends State<NewPostScreen>
                                 ),
                               ),
                               nodes: item.content.document.nodes),
-                        );
+                        );*/
                   });
                   Navigator.of(bcontext, rootNavigator: true).pop();
                 },
@@ -575,7 +542,7 @@ class _NewPostScreenState extends State<NewPostScreen>
   void addTextBlock() {
     setState(
       () {
-        this.document.document.nodes.add(
+        /*this.document.document.nodes.add(
               SlateNode(
                 type: 'paragraph',
                 object: 'block',
@@ -586,7 +553,7 @@ class _NewPostScreenState extends State<NewPostScreen>
                   ),
                 ],
               ),
-            );
+            );*/
       },
     );
   }
@@ -594,7 +561,7 @@ class _NewPostScreenState extends State<NewPostScreen>
   void addHeadingBlock(String type) {
     setState(
       () {
-        this.document.document.nodes.add(
+        /*this.document.document.nodes.add(
               SlateNode(
                 type: 'heading-' + type,
                 object: 'block',
@@ -605,28 +572,28 @@ class _NewPostScreenState extends State<NewPostScreen>
                   ),
                 ],
               ),
-            );
+            );*/
       },
     );
   }
 
   void addQuoteBlock() {
     setState(() {
-      this
-          .document
-          .document
-          .nodes
-          .add(SlateNode(type: 'block-quote', nodes: List()));
+      // this
+      //     .document
+      //     .document
+      //     .nodes
+      //     .add(SlateNode(type: 'block-quote', nodes: List()));
     });
   }
 
   void addListBlock(String type) {
     setState(() {
-      this
-          .document
-          .document
-          .nodes
-          .add(SlateNode(object: 'block', type: type, nodes: List()));
+      // this
+      //     .document
+      //     .document
+      //     .nodes
+      //     .add(SlateNode(object: 'block', type: type, nodes: List()));
     });
   }
 
@@ -659,20 +626,20 @@ class _NewPostScreenState extends State<NewPostScreen>
               child: const Text('Insert'),
               onPressed: () {
                 setState(() {
-                  this.document.document.nodes.add(
-                        SlateNode(
-                            type: 'twitter',
-                            object: 'block',
-                            data: SlateNodeData(src: urlController.text),
-                            nodes: [
-                              SlateNode(
-                                object: 'text',
-                                leaves: [
-                                  SlateLeaf(text: '', marks: [], object: 'leaf')
-                                ],
-                              ),
-                            ]),
-                      );
+                  // this.document.document.nodes.add(
+                  //       SlateNode(
+                  //           type: 'twitter',
+                  //           object: 'block',
+                  //           data: SlateNodeData(src: urlController.text),
+                  //           nodes: [
+                  //             SlateNode(
+                  //               object: 'text',
+                  //               leaves: [
+                  //                 SlateLeaf(text: '', marks: [], object: 'leaf')
+                  //               ],
+                  //             ),
+                  //           ]),
+                  //     );
                 });
 
                 Navigator.of(context, rootNavigator: true).pop();
@@ -711,20 +678,20 @@ class _NewPostScreenState extends State<NewPostScreen>
               child: const Text('Insert'),
               onPressed: () {
                 setState(() {
-                  this.document.document.nodes.add(
-                        SlateNode(
-                            type: 'strawpoll',
-                            object: 'block',
-                            data: SlateNodeData(src: urlController.text),
-                            nodes: [
-                              SlateNode(
-                                object: 'text',
-                                leaves: [
-                                  SlateLeaf(text: '', marks: [], object: 'leaf')
-                                ],
-                              ),
-                            ]),
-                      );
+                  // this.document.document.nodes.add(
+                  //       SlateNode(
+                  //           type: 'strawpoll',
+                  //           object: 'block',
+                  //           data: SlateNodeData(src: urlController.text),
+                  //           nodes: [
+                  //             SlateNode(
+                  //               object: 'text',
+                  //               leaves: [
+                  //                 SlateLeaf(text: '', marks: [], object: 'leaf')
+                  //               ],
+                  //             ),
+                  //           ]),
+                  //     );
                 });
 
                 Navigator.of(context, rootNavigator: true).pop();
@@ -747,14 +714,14 @@ class _NewPostScreenState extends State<NewPostScreen>
     );
 
     if (result is SlateNode) {
-      int index = this.document.document.nodes.indexOf(node);
-      this.document.document.nodes[index] = result;
+      // int index = this.document.document.nodes.indexOf(node);
+      // this.document.document.nodes[index] = result;
     }
 
     if (result is bool && result == false) {
       setState(() {
-        int index = this.document.document.nodes.indexOf(node);
-        this.document.document.nodes.removeAt(index);
+        // int index = this.document.document.nodes.indexOf(node);
+        // this.document.document.nodes.removeAt(index);
       });
     }
   }
@@ -784,8 +751,8 @@ class _NewPostScreenState extends State<NewPostScreen>
                 child: const Text('Remove'),
                 onPressed: () {
                   setState(() {
-                    int index = this.document.document.nodes.indexOf(node);
-                    this.document.document.nodes.removeAt(index);
+                    // int index = this.document.document.nodes.indexOf(node);
+                    // this.document.document.nodes.removeAt(index);
                   });
                   Navigator.of(context, rootNavigator: true).pop();
                 }),
@@ -793,9 +760,9 @@ class _NewPostScreenState extends State<NewPostScreen>
                 child: const Text('Update'),
                 onPressed: () {
                   setState(() {
-                    int index = this.document.document.nodes.indexOf(node);
-                    this.document.document.nodes[index].data.src =
-                        imgurlController.text;
+                    // int index = this.document.document.nodes.indexOf(node);
+                    // this.document.document.nodes[index].data.src =
+                    //     imgurlController.text;
                   });
                   Navigator.of(context, rootNavigator: true).pop();
                 })
@@ -829,8 +796,8 @@ class _NewPostScreenState extends State<NewPostScreen>
               child: const Text('Remove'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes.removeAt(index);
+                  // int index = this.document.document.nodes.indexOf(node);
+                  // this.document.document.nodes.removeAt(index);
                 });
                 Navigator.of(context, rootNavigator: true).pop();
               }),
@@ -838,9 +805,9 @@ class _NewPostScreenState extends State<NewPostScreen>
               child: const Text('Update'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes[index].data.src =
-                      urlController.text;
+                  // int index = this.document.document.nodes.indexOf(node);
+                  // this.document.document.nodes[index].data.src =
+                  //     urlController.text;
                 });
                 Navigator.of(context, rootNavigator: true).pop();
               })
@@ -874,8 +841,8 @@ class _NewPostScreenState extends State<NewPostScreen>
               child: const Text('Remove'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes.removeAt(index);
+                  // int index = this.document.document.nodes.indexOf(node);
+                  // this.document.document.nodes.removeAt(index);
                 });
                 Navigator.of(context, rootNavigator: true).pop();
               }),
@@ -883,9 +850,9 @@ class _NewPostScreenState extends State<NewPostScreen>
               child: const Text('Update'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes[index].data.src =
-                      urlController.text;
+                  // int index = this.document.document.nodes.indexOf(node);
+                  // this.document.document.nodes[index].data.src =
+                      // urlController.text;
                 });
 
                 Navigator.of(context, rootNavigator: true).pop();
@@ -911,8 +878,8 @@ class _NewPostScreenState extends State<NewPostScreen>
           oldListItems: listItems,
           onListUpdated: (newListItems) {
             setState(() {
-              int index = this.document.document.nodes.indexOf(node);
-              this.document.document.nodes[index].nodes = newListItems;
+              // int index = this.document.document.nodes.indexOf(node);
+              // this.document.document.nodes[index].nodes = newListItems;
             });
           },
         ),
@@ -956,8 +923,7 @@ class _NewPostScreenState extends State<NewPostScreen>
               child: const Text('Remove'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes.removeAt(index);
+                 
                 });
                 Navigator.of(context, rootNavigator: true).pop();
               }),
@@ -965,9 +931,7 @@ class _NewPostScreenState extends State<NewPostScreen>
               child: const Text('Update'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes[index].data.src =
-                      urlController.text;
+                
                 });
                 Navigator.of(context, rootNavigator: true).pop();
               })
@@ -1000,8 +964,7 @@ class _NewPostScreenState extends State<NewPostScreen>
               child: const Text('Remove'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes.removeAt(index);
+                
                 });
                 Navigator.of(context, rootNavigator: true).pop();
               }),
@@ -1009,9 +972,7 @@ class _NewPostScreenState extends State<NewPostScreen>
               child: const Text('Update'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes[index].data.src =
-                      urlController.text;
+                  
                 });
                 Navigator.of(context, rootNavigator: true).pop();
               })
@@ -1037,8 +998,8 @@ class _NewPostScreenState extends State<NewPostScreen>
               child: const Text('Yes'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes.removeAt(index);
+                  // int index = this.document.document.nodes.indexOf(node);
+                  // this.document.document.nodes.removeAt(index);
                 });
                 Navigator.of(context, rootNavigator: true).pop();
               }),
@@ -1060,17 +1021,6 @@ class _NewPostScreenState extends State<NewPostScreen>
               onPressed: !_isPosting ? onPressPost : null,
               icon: Icon(Icons.send),
             ),
-            /*IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditorPage(),
-                  ),
-                );
-              },
-              icon: Icon(Icons.keyboard),
-            ),*/
           ],
           bottom: TabBar(
             tabs: [
@@ -1107,17 +1057,6 @@ class _NewPostScreenState extends State<NewPostScreen>
                 onTapAddTwitterEmbed: this.addTwitterEmbed,
                 onTapAddStrawPollEmbed: this.addStrawpollEmbed,
                 onTapAddUserQuote: () => this.addUserquoteDialog(context),
-                onReorderHandler: (int oldIndex, int newIndex) {
-                  if (oldIndex < newIndex) {
-                    // removing the item at oldIndex will shorten the list by 1.
-                    newIndex -= 1;
-                  }
-                  setState(() {
-                    final SlateNode element =
-                        document.document.nodes.removeAt(oldIndex);
-                    document.document.nodes.insert(newIndex, element);
-                  });
-                },
               ),
               Container(
                 child: SingleChildScrollView(
