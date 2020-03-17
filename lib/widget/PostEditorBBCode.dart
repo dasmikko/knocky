@@ -91,6 +91,17 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
     this.widget.onInputChange(controller.text);
   }
 
+  ///
+  /// Add a tag with content at cursor position
+  ///
+  void addTag(TextEditingController controller, String tag, String content) {
+    String tagToAdd = '[${tag}]' + content + '[/${tag}]'; //ignore: unnecessary_brace_in_string_interps
+    if (controller.text.isNotEmpty) controller.text = controller.text + '\n' + tagToAdd; // Add new line if content is not empty
+    if (controller.text.isEmpty) controller.text = controller.text + tagToAdd; 
+
+    this.widget.onInputChange(controller.text);
+  }
+
   void addLinkDialog(
       TextEditingController mainController, BuildContext context) async {
     //ClipboardData clipBoardText = await Clipboard.getData('text/plain');
@@ -175,9 +186,7 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
               onPressed: () {
                 Navigator.of(context, rootNavigator: true).pop();
                 var controller = _textEditingController;
-                controller.text = controller.text +
-                    '\n[img]${imgurlController.text}[/img]'; //ignore: unnecessary_brace_in_string_interps
-                this.widget.onInputChange(_textEditingController.text);
+                addTag(controller, 'youtube', imgurlController.text);
               })
         ],
       ),
@@ -195,9 +204,7 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
           onFinishedUploading: (String imageLink) {
             Navigator.of(context, rootNavigator: true).pop();
             var controller = _textEditingController;
-            controller.text = controller.text +
-                '\n[img]${imageLink}[/img]'; //ignore: unnecessary_brace_in_string_interps
-            this.widget.onInputChange(_textEditingController.text);
+            addTag(controller, 'img', imageLink); 
           },
         ),
       ),
@@ -261,6 +268,155 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
     );
   }
 
+  void addYoutubeVideoDialog() async {
+    TextEditingController urlController = TextEditingController(text: '');
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                keyboardType: TextInputType.url,
+                controller: urlController,
+                decoration: new InputDecoration(labelText: 'YouTube URL'),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              }),
+          new FlatButton(
+              child: const Text('Insert'),
+              onPressed: () {
+                var controller = _textEditingController;
+                addTag(controller, 'youtube', urlController.text);
+                Navigator.of(context, rootNavigator: true).pop();
+              })
+        ],
+      ),
+    );
+  }
+
+  void addVideoDialog() async {
+    //ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    TextEditingController urlController = TextEditingController(text: '');
+    await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                keyboardType: TextInputType.url,
+                controller: urlController,
+                decoration:
+                    new InputDecoration(labelText: 'Video URL (Webm/mp4)'),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              }),
+          new FlatButton(
+              child: const Text('Insert'),
+              onPressed: () {
+                var controller = _textEditingController;
+                addTag(controller, 'video', urlController.text);
+                Navigator.of(context, rootNavigator: true).pop();
+              })
+        ],
+      ),
+    );
+  }
+
+  void addTwitterEmbed() async {
+    //ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    TextEditingController urlController = TextEditingController(text: '');
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                keyboardType: TextInputType.url,
+                controller: urlController,
+                decoration: new InputDecoration(labelText: 'Twitter URL'),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              }),
+          new FlatButton(
+              child: const Text('Insert'),
+              onPressed: () {
+                var controller = _textEditingController;
+                addTag(controller, 'twitter', urlController.text);
+                Navigator.of(context, rootNavigator: true).pop();
+              })
+        ],
+      ),
+    );
+  }
+
+  void addStrawpollEmbed() async {
+    //ClipboardData clipBoardText = await Clipboard.getData('text/plain');
+    TextEditingController urlController = TextEditingController(text: '');
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                keyboardType: TextInputType.url,
+                controller: urlController,
+                decoration: new InputDecoration(labelText: 'Strawpoll URL'),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              }),
+          new FlatButton(
+              child: const Text('Insert'),
+              onPressed: () {
+                var controller = _textEditingController;
+                addTag(controller, 'strawpoll', urlController.text);
+
+                Navigator.of(context, rootNavigator: true).pop();
+              })
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -268,7 +424,7 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
       children: <Widget>[
         Expanded(
             child: TextField(
-              autofocus: true,
+          autofocus: true,
           controller: _textEditingController,
           textInputAction: TextInputAction.newline,
           maxLines: null,
@@ -386,22 +542,22 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
               IconButton(
                 tooltip: 'YouTube video',
                 icon: Icon(Icons.ondemand_video),
-                onPressed: this.widget.onTapAddYouTubeVideo,
+                onPressed: this.addYoutubeVideoDialog,
               ),
               IconButton(
                 tooltip: 'Video',
                 icon: Icon(Icons.videocam),
-                onPressed: this.widget.onTapAddVideo,
+                onPressed: this.addVideoDialog,
               ),
               IconButton(
                 tooltip: 'Twitter embed',
                 icon: Icon(MdiIcons.twitter),
-                onPressed: this.widget.onTapAddTwitterEmbed,
+                onPressed: this.addTwitterEmbed,
               ),
               IconButton(
                 tooltip: 'Strawpoll',
                 icon: Icon(MdiIcons.poll),
-                onPressed: this.widget.onTapAddStrawPollEmbed,
+                onPressed: this.addStrawpollEmbed,
               ),
               if (this.widget.replyList.length > 0)
                 Builder(
