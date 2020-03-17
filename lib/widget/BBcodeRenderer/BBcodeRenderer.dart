@@ -103,7 +103,7 @@ class BBcodeRenderer extends StatelessWidget {
                 ),
               ),
               padding: EdgeInsets.all(10.0),
-              child: Text(node.attributes['username'] + ' posted:',
+              child: Text(node.attributes['username'] != null ? node.attributes['username'] : 'User'  + ' posted:',
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             Container(
