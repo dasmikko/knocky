@@ -294,8 +294,6 @@ class PostContent extends StatelessWidget {
         },
       );
     } else {
-      print('parse bbcode');
-      var bbcodeParsed = BBCodeParser().parse(content);
       return BBcodeRenderer(bbcode: content, parentContext: context,);
     }
   }

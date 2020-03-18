@@ -232,7 +232,6 @@ class BBcodeRenderer extends StatelessWidget {
     // Convert the nodes to widgets
     nodes.forEach((node) {
       if (node is bbob.Element) {
-        print(node.tag);
         switch (node.tag) {
           case 'h1':
             if (richTextContent.isNotEmpty) {
@@ -291,8 +290,6 @@ class BBcodeRenderer extends StatelessWidget {
               } else {
                 url = node.textContent;
               }
-
-              print(url);
 
               richTextContent.add(TextSpan(
                   text: node.textContent.isNotEmpty ? node.textContent : node.attributes['href'],
