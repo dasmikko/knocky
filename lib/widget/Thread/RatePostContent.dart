@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:knocky/helpers/icons.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:knocky/models/thread.dart';
 
 class RatePostContent extends StatefulWidget {
   final int postId;
   final BuildContext buildContext;
   final Function onPostRated;
+  final Thread thread;
 
-  RatePostContent({this.buildContext, this.postId, this.onPostRated});
+  RatePostContent({this.buildContext, this.postId, this.onPostRated, this.thread});
 
   @override
   _RatePostContentState createState() => _RatePostContentState();
@@ -31,6 +33,12 @@ class _RatePostContentState extends State<RatePostContent> {
                 Expanded(
                   child: ListView(
                     children: ratingsIconList
+                        .where((item) {
+                          // Only show ratings that has no ids in allow list and those who are allowed
+                          if (item.allowedSubforums == null) return true;
+                          if (item.allowedSubforums != null && item.allowedSubforums.contains(widget.thread.subforumId)) return true;
+                          return false;
+                        })
                         .map((o) => ListTile(
                               leading: CachedNetworkImage(
                                 width: 22,

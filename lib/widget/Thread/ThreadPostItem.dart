@@ -110,6 +110,7 @@ class _ThreadPostItemState extends State<ThreadPostItem> {
             buildContext: context,
             postId: widget.postDetails.id,
             onPostRated: widget.onPostRated,
+            thread: widget.thread,
           );
         });
   }
