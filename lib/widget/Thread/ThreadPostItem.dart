@@ -65,10 +65,8 @@ class _ThreadPostItemState extends State<ThreadPostItem> {
           items.add(
             Container(
               margin: EdgeInsets.only(right: 5.0),
-              child: Column(children: <Widget>[
-                Text('?'),
-                Text(rating.count.toString())
-              ]),
+              child: Column(
+                  children: <Widget>[Text('?'), Text(rating.count.toString())]),
             ),
           );
         }
@@ -148,7 +146,18 @@ class _ThreadPostItemState extends State<ThreadPostItem> {
     return [
       FlatButton(
         child: Text('Edit'),
-        onPressed: () => widget.onTapEditPost(widget.postDetails),
+        onPressed: () {
+          if (widget.postDetails.content is String) {
+            widget.onTapEditPost(widget.postDetails);
+          } else {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    'This post was made with the old Slate Editor, and the app does not support that anymore.'),
+              ),
+            );
+          }
+        },
       )
     ];
   }
