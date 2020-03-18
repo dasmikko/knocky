@@ -33,6 +33,8 @@ class _RatePostContentState extends State<RatePostContent> {
                     children: ratingsIconList
                         .map((o) => ListTile(
                               leading: CachedNetworkImage(
+                                width: 22,
+                                height: 22,                                
                                 imageUrl: o.url,
                               ),
                               title: Text(o.name),

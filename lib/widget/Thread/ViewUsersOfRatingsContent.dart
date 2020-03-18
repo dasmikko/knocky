@@ -48,6 +48,8 @@ class _ViewUsersOfRatingsContentState extends State<ViewUsersOfRatingsContent> {
                                   Container(
                                     margin: EdgeInsets.only(right: 20),
                                     child: CachedNetworkImage(
+                                      height: 22,
+                                      width: 22,
                                       imageUrl: ratingsIconList
                                           .where((i) => i.id == o.rating)
                                           .first
