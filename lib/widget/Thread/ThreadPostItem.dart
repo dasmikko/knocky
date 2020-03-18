@@ -52,6 +52,7 @@ class _ThreadPostItemState extends State<ThreadPostItem> {
         if (icon != null) {
           items.add(
             Container(
+              width: 22,
               margin: EdgeInsets.only(right: 5.0),
               child: Column(children: <Widget>[
                 CachedNetworkImage(
