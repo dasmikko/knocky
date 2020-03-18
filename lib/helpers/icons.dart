@@ -465,13 +465,14 @@ List<RatingistItem> ratingsIconList = [
   new RatingistItem(id: 'glasses', name: 'Bad Reading', url: _baseurl + '/static/ratings/glasses-24.png'),
   new RatingistItem(id: 'late', name: 'Late', url: _baseurl + '/static/ratings/clock-24.png'),
   new RatingistItem(id: 'dumb', name: 'Dumb', url: _baseurl + '/static/ratings/dumb-box-24.png'),
-  new RatingistItem(id: 'citation', name: 'Citation Needed', url: _baseurl + '/static/ratings/citation-24.png'),
+  new RatingistItem(id: 'citation', name: 'Citation Needed', url: _baseurl + '/static/ratings/citation-24.png', allowedSubforums: [5]),
 ];
 
 class RatingistItem {
   final String id;
   final String name;
   final String url;
+  final List<int> allowedSubforums;
 
-  RatingistItem({this.id, this.url, this.name});
+  RatingistItem({this.id, this.url, this.name, this.allowedSubforums});
 }
