@@ -58,8 +58,13 @@ class _ThreadScreenState extends State<ThreadScreen>
   @override
   void initState() {
     super.initState();
-    _currentPage = this.widget.page;
-
+    if (this.widget.page != null) { 
+      _currentPage = this.widget.page; 
+    } else {
+      _currentPage = 1;
+    }
+    
+    if (_totalPages == 0 && _currentPage != null) _totalPages = _currentPage;
     if (widget.postCount != null) {
       _totalPages = (widget.postCount / 20).ceil();
     }

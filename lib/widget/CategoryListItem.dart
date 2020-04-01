@@ -111,17 +111,15 @@ class CategoryListItem extends StatelessWidget {
             flex: 1,
             child: subforum.lastPost != null
                 ? InkWell(
-                    onTap: () {
-                      print('Clicked on last post');
-                      
-                      int page = subforum.lastPost.page;
+                    onTap: () {                      
+                      int page = subforum.lastPost.thread.lastPost.page;
 
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ThreadScreen(
                             page: page,
-                            threadId: subforum.lastPost.thread.id,
+                            threadId: subforum.lastPost.thread.lastPost.thread,
                           ),
                         ),
                       );

@@ -150,9 +150,10 @@ class SubforumThreadLastPostThread {
   final String title;
   @JsonKey(name: 'post_count')
   final int postCount;
+  final SubforumLastpostThreadLastpost lastPost;
 
   SubforumThreadLastPostThread(
-      {this.createdAt, this.id, this.title, this.postCount});
+      {this.createdAt, this.id, this.title, this.postCount, this.lastPost});
 
   factory SubforumThreadLastPostThread.fromJson(Map<String, dynamic> json) =>
       _$SubforumThreadLastPostThreadFromJson(json);
@@ -171,4 +172,28 @@ class SubforumThreadLastPostUser {
   factory SubforumThreadLastPostUser.fromJson(Map<String, dynamic> json) =>
       _$SubforumThreadLastPostUserFromJson(json);
   Map<String, dynamic> toJson() => _$SubforumThreadLastPostUserToJson(this);
+}
+
+@JsonSerializable()
+class SubforumLastpostThreadLastpost {
+  @JsonKey(name: 'created_at')
+  final DateTime createdAt;
+  final int id;
+  final int thread;
+  final String content;
+  final SubforumLastPostUser user;
+  final int page;
+
+  SubforumLastpostThreadLastpost({
+    this.id,
+    this.createdAt,
+    this.thread,
+    this.user,
+    this.page,
+    this.content
+  });
+
+  factory SubforumLastpostThreadLastpost.fromJson(Map<String, dynamic> json) =>
+      _$SubforumLastpostThreadLastpostFromJson(json);
+  Map<String, dynamic> toJson() => _$SubforumLastpostThreadLastpostToJson(this);
 }

@@ -84,12 +84,14 @@ class SubForumLastPostThread {
   @JsonKey(name: 'subforum_id')
   final int subforumId;
   final String title;
+  final int page;
 
   SubForumLastPostThread({
     this.id,
     this.postCount,
     this.subforumId,
     this.title,
+    this.page,
   });
 
   factory SubForumLastPostThread.fromJson(Map<String, dynamic> json) =>
