@@ -25,6 +25,7 @@ class _SubforumScreenState extends State<SubforumScreen>
   bool _bottomBarVisible = true;
   AnimationController expandController;
   Animation<double> animation;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -117,13 +118,16 @@ class _SubforumScreenState extends State<SubforumScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(widget.subforumModel.name),
         leading: BackButton(),
       ),
       body: content(context),
       drawerEdgeDragWidth: 30.0,
-      drawer: DrawerWidget(),
+      drawer: DrawerWidget(
+        scaffoldKey: _scaffoldKey,
+      ),
       extendBody: false,
       bottomNavigationBar: SizeTransition(
         axisAlignment: -1.0,

@@ -54,6 +54,7 @@ class _ThreadScreenState extends State<ThreadScreen>
   Animation<double> animation;
   BuildContext self;
   List<ThreadPost> postsToReplyTo = List();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -608,7 +609,9 @@ class _ThreadScreenState extends State<ThreadScreen>
         ],
       ),
       drawerEdgeDragWidth: 30.0,
-      drawer: DrawerWidget(),
+      drawer: DrawerWidget(
+        scaffoldKey: _scaffoldKey,
+      ),
       key: scaffoldkey,
       body: KnockoutLoadingIndicator(
         show: _isLoading,

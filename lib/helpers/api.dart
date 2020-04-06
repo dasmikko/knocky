@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/models/events.dart';

@@ -273,21 +273,7 @@ class _ForumScreenState extends State<ForumScreen>
         ),
         drawerEdgeDragWidth: 30.0,
         drawer: DrawerWidget(
-          onLoginOpen: () {
-            setState(() {
-              _loginIsOpen = true;
-            });
-          },
-          onLoginCloses: () {
-            setState(() {
-              _loginIsOpen = false;
-            });
-          },
-          onLoginFinished: () {
-            setState(() {
-              _loginIsOpen = false;
-            });
-          },
+          scaffoldKey: _scaffoldKey,
         ),
         body: KnockoutLoadingIndicator(
           show: _isFetching,
