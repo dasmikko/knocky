@@ -74,29 +74,39 @@ class SubforumDetailListItem extends StatelessWidget {
       }
     });
   }
+  
+  List<Widget> threadTags(BuildContext context) {
+    List<Widget> widgets = List();
 
-  Widget nsfwTag(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Container(
-          margin: EdgeInsets.only(bottom: 5),
-          child: ClipRRect(
-            borderRadius: BorderRadius.all(
-              Radius.circular(5),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: Container(
-              padding: EdgeInsets.all(5),
-              color: Colors.red,
-              child: Text(
-                'NSFW',
-                style: TextStyle(color: Colors.white),
+    if (threadDetails.tags != null) {
+      threadDetails.tags.forEach((tag) {
+        Map<String, dynamic> mappedTag = tag;
+
+        widgets.add(Stack(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(bottom: 5),
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: Container(
+                  padding: EdgeInsets.all(5),
+                  color: Colors.red,
+                  child: Text(
+                    mappedTag.values.first,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ],
-    );
+          ],
+        ));
+      });
+    }
+
+    return widgets;
   }
 
   Widget newPostsButton(BuildContext context) {
@@ -157,7 +167,7 @@ class SubforumDetailListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String _iconUrl;
+    String _iconUrl = getIconOrDefault(threadDetails.iconId).url;
 
     bool isNSFWThread = false;
 
@@ -167,17 +177,6 @@ class SubforumDetailListItem extends StatelessWidget {
 
         if (item['1'] == 'NSFW') isNSFWThread = true;
       });
-    }
-
-    try {
-      _iconUrl = threadDetails.iconId != null
-          ? iconList
-              .firstWhere(
-                  (IconListItem item) => item.id == threadDetails.iconId)
-              .url
-          : '';
-    } catch (err) {
-      _iconUrl = iconList.first.url;
     }
 
     Color userColor = AppColors(context).normalUserColor(); // User
@@ -229,7 +228,7 @@ class SubforumDetailListItem extends StatelessWidget {
                             margin: EdgeInsets.only(bottom: 5),
                             child: RichText(
                               text: TextSpan(children: <InlineSpan>[
-                                if (threadDetails.locked == 1)
+                                if (threadDetails.locked)
                                   WidgetSpan(
                                     child: Container(
                                       margin: EdgeInsets.only(right: 5),
@@ -240,7 +239,7 @@ class SubforumDetailListItem extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                if (threadDetails.pinned == 1)
+                                if (threadDetails.pinned)
                                   WidgetSpan(
                                     alignment: ui.PlaceholderAlignment.bottom,
                                     child: Container(
@@ -258,8 +257,7 @@ class SubforumDetailListItem extends StatelessWidget {
                               ]),
                             ),
                           ),
-                          if (isNSFWThread)
-                            nsfwTag(context),
+                          ...threadTags(context),
                           if (threadDetails.readThreadUnreadPosts > 0 &&
                               threadDetails.hasRead &&
                               !threadDetails.subscribed)
