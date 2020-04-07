@@ -107,341 +107,99 @@ List<IconListItem> iconList = [
   new IconListItem(id: 88, url:  _baseurl + "static/icons/bad-piggies.png"),
   new IconListItem(id: 89, url:  _baseurl + "static/icons/dog-pooping.png"),
 
-  new IconListItem(id: 90, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 91, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 92, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 93, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 94, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 95, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 96, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 97, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 98, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 99, url:  _baseurl + "static/icons/default.png"),
+  new IconListItem(id: 90, url:  _baseurl + "static/icons/lasagna.png"),
+  new IconListItem(id: 91, url:  _baseurl + "static/icons/soil.png"),
+  new IconListItem(id: 92, url:  _baseurl + "static/icons/batman-emoji.png"),
+  new IconListItem(id: 93, url:  _baseurl + "static/icons/euro-exchange.png"),
+  new IconListItem(id: 94, url:  _baseurl + "static/icons/lawn-care.png"),
+  new IconListItem(id: 95, url:  _baseurl + "static/icons/south-korea-circular.png"),
+  new IconListItem(id: 96, url:  _baseurl + "static/icons/belgium-circular.png"),
+  new IconListItem(id: 97, url:  _baseurl + "static/icons/finland-circular.png"),
+  new IconListItem(id: 98, url:  _baseurl + "static/icons/lobster.png"),
+  new IconListItem(id: 99, url:  _baseurl + "static/icons/spain2-circular.png"),
 
-  new IconListItem(id: 100, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 101, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 102, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 103, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 104, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 105, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 106, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 107, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 108, url:  _baseurl + "static/icons/default.png"),
-  new IconListItem(id: 109, url:  _baseurl + "static/icons/default.png"),
+  new IconListItem(id: 100, url:  _baseurl + "static/icons/boiling.png"),
+  new IconListItem(id: 101, url:  _baseurl + "static/icons/fortnite.png"),
+  new IconListItem(id: 102, url:  _baseurl + "static/icons/marijuana-leaf.png"),
+  new IconListItem(id: 103, url:  _baseurl + "static/icons/statue-of-christ-the-redeemer.png"),
+  new IconListItem(id: 104, url:  _baseurl + "static/icons/border-collie.png"),
+  new IconListItem(id: 105, url:  _baseurl + "static/icons/fry.png"),
+  new IconListItem(id: 106, url:  _baseurl + "static/icons/mdma.png"),
+  new IconListItem(id: 107, url:  _baseurl + "static/icons/stump-with-roots.png"),
+  new IconListItem(id: 108, url:  _baseurl + "static/icons/brazil-circular.png"),
+  new IconListItem(id: 109, url:  _baseurl + "static/icons/full-of-shit.png"),
+
+  new IconListItem(id: 110, url:  _baseurl + "static/icons/meowth.png"),
+  new IconListItem(id: 111, url:  _baseurl + "static/icons/sweden-circular.png"),
+  new IconListItem(id: 112, url:  _baseurl + "static/icons/brigadeiro.png"),
+  new IconListItem(id: 113, url: _baseurl + "static/icons/.png"),
+  new IconListItem(id: 114, url: _baseurl + "static/icons/.png"),
+  new IconListItem(id: 115, url: _baseurl + "static/icons/switzerland-circular.png"),
+  new IconListItem(id: 116, url: _baseurl + "static/icons/buddha.png"),
+  new IconListItem(id: 117, url: _baseurl + "static/icons/germany-circular.png"),
+  new IconListItem(id: 118, url: _baseurl + "static/icons/music-band.png"),
+  new IconListItem(id: 119, url: _baseurl + "static/icons/tapir.png"),
+
+  new IconListItem(id: 120, url: _baseurl + "static/icons/call-me.png"),
+  new IconListItem(id: 121, url: _baseurl + "static/icons/national-park.png"),
+  new IconListItem(id: 122, url: _baseurl + "static/icons/the-sims.png"),
+  new IconListItem(id: 123, url: _baseurl + "static/icons/canada-circular.png"),
+  new IconListItem(id: 124, url: _baseurl + "static/icons/great-britain-circular.png"),
+  new IconListItem(id: 125, url: _baseurl + "static/icons/nightmare.png"),
+  new IconListItem(id: 126, url: _baseurl + "static/icons/trust.png"),
+  new IconListItem(id: 127, url: _baseurl + "static/icons/car-fire.png"),
+  new IconListItem(id: 128, url: _baseurl + "static/icons/group-of-animals.png"),
+  new IconListItem(id: 129, url: _baseurl + "static/icons/nintendo-gamecube-controller.png"),
+
+  new IconListItem(id: 130, url: _baseurl + "static/icons/under-computer.png"),
+  new IconListItem(id: 131, url: _baseurl + "static/icons/caveman.png"),
+  new IconListItem(id: 132, url: _baseurl + "static/icons/headache.png"),
+  new IconListItem(id: 133, url: _baseurl + "static/icons/no-drugs.png"),
+  new IconListItem(id: 134, url: _baseurl + "static/icons/undertale.png"),
+  new IconListItem(id: 135, url: _baseurl + "static/icons/chad-circular.png"),
+  new IconListItem(id: 136, url: _baseurl + "static/icons/hills.png"),
+  new IconListItem(id: 137, url: _baseurl + "static/icons/norway-circular.png"),
+  new IconListItem(id: 138, url: _baseurl + "static/icons/usa-circular.png"),
+  new IconListItem(id: 139, url: _baseurl + "static/icons/chickenpox.png"),
+
+  new IconListItem(id: 140, url: _baseurl + "static/icons/hitler.png"),
+  new IconListItem(id: 141, url: _baseurl + "static/icons/nuke.png"),
+  new IconListItem(id: 142, url: _baseurl + "static/icons/ussr-circular.png"),
+  new IconListItem(id: 143, url: _baseurl + "static/icons/china-circular.png"),
+  new IconListItem(id: 144, url: _baseurl + "static/icons/holy-bible.png"),
+  new IconListItem(id: 145, url: _baseurl + "static/icons/overwatch.png"),
+  new IconListItem(id: 146, url: _baseurl + "static/icons/wake-up.png"),
+  new IconListItem(id: 147, url: _baseurl + "static/icons/choir--v2.png"),
+  new IconListItem(id: 148, url: _baseurl + "static/icons/improvement.png"),
+  new IconListItem(id: 149, url: _baseurl + "static/icons/peace-pigeon.png"),
+
+  new IconListItem(id: 150, url: _baseurl + "static/icons/wildfire.png"),
+  new IconListItem(id: 151, url: _baseurl + "static/icons/city-buildings.png"),
+  new IconListItem(id: 152, url: _baseurl + "static/icons/india-circular.png"),
+  new IconListItem(id: 153, url: _baseurl + "static/icons/plasma-ball.png"),
+  new IconListItem(id: 154, url: _baseurl + "static/icons/winner.png"),
+  new IconListItem(id: 155, url: _baseurl + "static/icons/complaint.png"),
+  new IconListItem(id: 156, url: _baseurl + "static/icons/insects.png"),
+  new IconListItem(id: 157, url: _baseurl + "static/icons/pocket.png"),
+  new IconListItem(id: 158, url: _baseurl + "static/icons/wring.png"),
+  new IconListItem(id: 159, url: _baseurl + "static/icons/country.png"),
+
+  new IconListItem(id: 160, url: _baseurl + "static/icons/internship.png"),
+  new IconListItem(id: 161, url: _baseurl + "static/icons/pokeball-2.png"),
+  new IconListItem(id: 162, url: _baseurl + "static/icons/cross.png"),
+  new IconListItem(id: 163, url: _baseurl + "static/icons/ireland-circular.png"),
+  new IconListItem(id: 164, url: _baseurl + "static/icons/cup-with-straw.png"),
+  new IconListItem(id: 165, url: _baseurl + "static/icons/israel-circular.png"),
+  new IconListItem(id: 166, url: _baseurl + "static/icons/pray.png"),
 ];
 
-/*
-   
-            description: "Lasagna",
-            url: "static/icons/lasagna.png",
-            id: 90
-        }, {
-            description: "Soil",
-            url: "static/icons/soil.png",
-            id: 91
-        }, {
-            description: "Batman-Emoji",
-            url: "static/icons/batman-emoji.png",
-            id: 92
-        }, {
-            description: "Euro-Exchange",
-            url: "static/icons/euro-exchange.png",
-            id: 93
-        }, {
-            description: "Lawn-Care",
-            url: "static/icons/lawn-care.png",
-            id: 94
-        }, {
-            description: "South-Korea-Circular",
-            url: "static/icons/south-korea-circular.png",
-            id: 95
-        }, {
-            description: "Belgium-Circular",
-            url: "static/icons/belgium-circular.png",
-            id: 96
-        }, {
-            description: "Finland-Circular",
-            url: "static/icons/finland-circular.png",
-            id: 97
-        }, {
-            description: "Lobster",
-            url: "static/icons/lobster.png",
-            id: 98
-        }, {
-            description: "Spain2-Circular",
-            url: "static/icons/spain2-circular.png",
-            id: 99
-        }, {
-            description: "Boiling",
-            url: "static/icons/boiling.png",
-            id: 100
-        }, {
-            description: "Fortnite",
-            url: "static/icons/fortnite.png",
-            id: 101
-        }, {
-            description: "Marijuana-Leaf",
-            url: "static/icons/marijuana-leaf.png",
-            id: 102
-        }, {
-            description: "Statue-Of-Christ-The-Redeemer",
-            url: "static/icons/statue-of-christ-the-redeemer.png",
-            id: 103
-        }, {
-            description: "Border-Collie",
-            url: "static/icons/border-collie.png",
-            id: 104
-        }, {
-            description: "Fry",
-            url: "static/icons/fry.png",
-            id: 105
-        }, {
-            description: "Mdma",
-            url: "static/icons/mdma.png",
-            id: 106
-        }, {
-            description: "Stump-With-Roots",
-            url: "static/icons/stump-with-roots.png",
-            id: 107
-        }, {
-            description: "Brazil-Circular",
-            url: "static/icons/brazil-circular.png",
-            id: 108
-        }, {
-            description: "Full-Of-Shit",
-            url: "static/icons/full-of-shit.png",
-            id: 109
-        }, {
-            description: "Meowth",
-            url: "static/icons/meowth.png",
-            id: 110
-        }, {
-            description: "Sweden-Circular",
-            url: "static/icons/sweden-circular.png",
-            id: 111
-        }, {
-            description: "Brigadeiro",
-            url: "static/icons/brigadeiro.png",
-            id: 112
-        }, {
-            description: "Gasoline-Refill",
-            url: "static/icons/gasoline-refill.png",
-            id: 113
-        }, {
-            description: "Mexico-Circular",
-            url: "static/icons/mexico-circular.png",
-            id: 114
-        }, {
-            description: "Switzerland-Circular",
-            url: "static/icons/switzerland-circular.png",
-            id: 115
-        }, {
-            description: "Buddha",
-            url: "static/icons/buddha.png",
-            id: 116
-        }, {
-            description: "Germany-Circular",
-            url: "static/icons/germany-circular.png",
-            id: 117
-        }, {
-            description: "Music-Band",
-            url: "static/icons/music-band.png",
-            id: 118
-        }, {
-            description: "Tapir",
-            url: "static/icons/tapir.png",
-            id: 119
-        }, {
-            description: "Call-Me",
-            url: "static/icons/call-me.png",
-            id: 120
-        }, {
-            description: "National-Park",
-            url: "static/icons/national-park.png",
-            id: 121
-        }, {
-            description: "The-Sims",
-            url: "static/icons/the-sims.png",
-            id: 122
-        }, {
-            description: "Canada-Circular",
-            url: "static/icons/canada-circular.png",
-            id: 123
-        }, {
-            description: "Great-Britain-Circular",
-            url: "static/icons/great-britain-circular.png",
-            id: 124
-        }, {
-            description: "Nightmare",
-            url: "static/icons/nightmare.png",
-            id: 125
-        }, {
-            description: "Trust",
-            url: "static/icons/trust.png",
-            id: 126
-        }, {
-            description: "Car-Fire",
-            url: "static/icons/car-fire.png",
-            id: 127
-        }, {
-            description: "Group-Of-Animals",
-            url: "static/icons/group-of-animals.png",
-            id: 128
-        }, {
-            description: "Nintendo-Gamecube-Controller",
-            url: "static/icons/nintendo-gamecube-controller.png",
-            id: 129
-        }, {
-            description: "Under-Computer",
-            url: "static/icons/under-computer.png",
-            id: 130
-        }, {
-            description: "Caveman",
-            url: "static/icons/caveman.png",
-            id: 131
-        }, {
-            description: "Headache",
-            url: "static/icons/headache.png",
-            id: 132
-        }, {
-            description: "No-Drugs",
-            url: "static/icons/no-drugs.png",
-            id: 133
-        }, {
-            description: "Undertale",
-            url: "static/icons/undertale.png",
-            id: 134
-        }, {
-            description: "Chad-Circular",
-            url: "static/icons/chad-circular.png",
-            id: 135
-        }, {
-            description: "Hills",
-            url: "static/icons/hills.png",
-            id: 136
-        }, {
-            description: "Norway-Circular",
-            url: "static/icons/norway-circular.png",
-            id: 137
-        }, {
-            description: "Usa-Circular",
-            url: "static/icons/usa-circular.png",
-            id: 138
-        }, {
-            description: "Chickenpox",
-            url: "static/icons/chickenpox.png",
-            id: 139
-        }, {
-            description: "Hitler",
-            url: "static/icons/hitler.png",
-            id: 140
-        }, {
-            description: "Nuke",
-            url: "static/icons/nuke.png",
-            id: 141
-        }, {
-            description: "Ussr-Circular",
-            url: "static/icons/ussr-circular.png",
-            id: 142
-        }, {
-            description: "China-Circular",
-            url: "static/icons/china-circular.png",
-            id: 143
-        }, {
-            description: "Holy-Bible",
-            url: "static/icons/holy-bible.png",
-            id: 144
-        }, {
-            description: "Overwatch",
-            url: "static/icons/overwatch.png",
-            id: 145
-        }, {
-            description: "Wake-Up",
-            url: "static/icons/wake-up.png",
-            id: 146
-        }, {
-            description: "Choir--V2",
-            url: "static/icons/choir--v2.png",
-            id: 147
-        }, {
-            description: "Improvement",
-            url: "static/icons/improvement.png",
-            id: 148
-        }, {
-            description: "Peace-Pigeon",
-            url: "static/icons/peace-pigeon.png",
-            id: 149
-        }, {
-            description: "Wildfire",
-            url: "static/icons/wildfire.png",
-            id: 150
-        }, {
-            description: "City-Buildings",
-            url: "static/icons/city-buildings.png",
-            id: 151
-        }, {
-            description: "India-Circular",
-            url: "static/icons/india-circular.png",
-            id: 152
-        }, {
-            description: "Plasma-Ball",
-            url: "static/icons/plasma-ball.png",
-            id: 153
-        }, {
-            description: "Winner",
-            url: "static/icons/winner.png",
-            id: 154
-        }, {
-            description: "Complaint",
-            url: "static/icons/complaint.png",
-            id: 155
-        }, {
-            description: "Insects",
-            url: "static/icons/insects.png",
-            id: 156
-        }, {
-            description: "Pocket",
-            url: "static/icons/pocket.png",
-            id: 157
-        }, {
-            description: "Wring",
-            url: "static/icons/wring.png",
-            id: 158
-        }, {
-            description: "Country",
-            url: "static/icons/country.png",
-            id: 159
-        }, {
-            description: "Internship",
-            url: "static/icons/internship.png",
-            id: 160
-        }, {
-            description: "Pokeball-2",
-            url: "static/icons/pokeball-2.png",
-            id: 161
-        }, {
-            description: "Cross",
-            url: "static/icons/cross.png",
-            id: 162
-        }, {
-            description: "Ireland-Circular",
-            url: "static/icons/ireland-circular.png",
-            id: 163
-        }, {
-            description: "Cup-With-Straw",
-            url: "static/icons/cup-with-straw.png",
-            id: 164
-        }, {
-            description: "Israel-Circular",
-            url: "static/icons/israel-circular.png",
-            id: 165
-        }, {
-            description: "Pray",
-            url: "static/icons/pray.png",
-            id: 166
-        }]
-
- */
+IconListItem getIconOrDefault (iconId) {
+  try {
+      return iconList.firstWhere((IconListItem litem) => litem.id == iconId);
+    } catch (err) {
+      return iconList.first;
+    }
+}
 
 class IconListItem {
   final int id;
