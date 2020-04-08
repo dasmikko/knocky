@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:knocky/helpers/bbcode.dart';
 import 'package:knocky/helpers/bbcodeparser.dart';
 import 'package:knocky/models/slateDocument.dart';
+import 'package:knocky/models/thread.dart';
 import 'package:knocky/screens/imageViewer.dart';
 import 'package:knocky/widget/BBcodeRenderer/BBcodeRenderer.dart';
 import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
@@ -21,11 +22,13 @@ class PostContent extends StatelessWidget {
   final Function onTapSpoiler;
   final GlobalKey scaffoldKey;
   final bool textSelectable;
+  final ThreadPost postDetails;
 
   PostContent(
       {this.onTapSpoiler,
       this.content,
       this.scaffoldKey,
+      this.postDetails,
       this.textSelectable = false});
 
   @override
@@ -141,7 +144,7 @@ class PostContent extends StatelessWidget {
         imageWidgetHandler: (String imageUrl, slateObject, SlateNode node) {
           return Container(
             margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-            child: ImageWidget(url: imageUrl, slateObject: slateObject),
+            child: ImageWidget(url: imageUrl, slateObject: slateObject, postId: postDetails.id,),
           );
         },
         videoWidgetHandler: (SlateNode node) {
@@ -294,7 +297,7 @@ class PostContent extends StatelessWidget {
         },
       );
     } else {
-      return BBcodeRenderer(bbcode: content, parentContext: context,);
+      return BBcodeRenderer(bbcode: content, parentContext: context, postDetails: postDetails,);
     }
   }
 }

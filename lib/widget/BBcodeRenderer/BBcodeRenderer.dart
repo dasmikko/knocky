@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/bbcodeparser.dart';
 import 'package:knocky/helpers/colors.dart';
+import 'package:knocky/models/thread.dart';
 import 'package:knocky/screens/Modals/knockoutDocument.dart';
 import 'package:knocky/screens/imageViewer.dart';
 import 'package:knocky/widget/Thread/PostElements/Audio.dart';
@@ -20,8 +21,9 @@ class BBcodeRenderer extends StatelessWidget {
   final String bbcode;
   final BuildContext parentContext;
   final GlobalKey scaffoldKey;
+  final ThreadPost postDetails;
 
-  BBcodeRenderer({this.parentContext, this.bbcode, this.scaffoldKey});
+  BBcodeRenderer({this.parentContext, this.bbcode, this.scaffoldKey, this.postDetails});
 
   dynamic textHandler(bbob.Node node, bool isRoot) {
     if (isRoot) {
@@ -38,8 +40,10 @@ class BBcodeRenderer extends StatelessWidget {
 
   Widget imageHandler(bbob.Element node) {
     return ImageWidget(
+      postId: postDetails.id,
       url: node.textContent,
       bbcode: this.bbcode,
+
     );
   }
 

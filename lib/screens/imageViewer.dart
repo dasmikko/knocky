@@ -7,8 +7,9 @@ import 'package:knocky/helpers/Download.dart';
 class ImageViewerScreen extends StatefulWidget {
   final String url;
   final List<String> urls;
+  final int postId;
 
-  ImageViewerScreen({@required this.url, this.urls});
+  ImageViewerScreen({@required this.url, this.urls, this.postId = 0});
 
   @override
   _ImageViewerScreenState createState() => _ImageViewerScreenState();
@@ -28,6 +29,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(200, 0, 0, 0),
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(this.widget.urls[_currentPage]),
@@ -66,7 +68,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
         itemBuilder: (BuildContext context, int index) {
           return Container(
             child: Hero(
-              tag: this.widget.urls[index],
+              tag: this.widget.urls[index] + this.widget.postId.toString(),
               child: ZoomableWidget(
                 minScale: 1.0,
                 maxScale: 2.0,

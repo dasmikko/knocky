@@ -232,6 +232,7 @@ class _ThreadPostItemState extends State<ThreadPostItem> {
             Container(
               padding: EdgeInsets.only(left: 10, right: 10),
               child: PostContent(
+                  postDetails: widget.postDetails,
                   textSelectable: this.textSelectable,
                   content: widget.postDetails.content,
                   onTapSpoiler: (text) {
