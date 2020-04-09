@@ -58,6 +58,8 @@ class _ThreadScreenState extends State<LoginScreen>
   }
 
   void onUrlChange(InAppWebViewController controller, String url) async {
+    controller.loadUrl(url: url);
+    
     if (url.contains(await box.get('env') == 'knockout'
         ? KnockoutAPI.KNOCKOUT_URL + "auth/finish"
         : KnockoutAPI.QA_URL + "auth/finish")) {
@@ -99,8 +101,6 @@ class _ThreadScreenState extends State<LoginScreen>
 
       Navigator.pop(context, true);
     }
-
-    controller.loadUrl(url: url);
   }
 
   Future<bool> _onWillPop() async {
