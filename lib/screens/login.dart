@@ -19,47 +19,117 @@ class LoginScreen extends StatefulWidget {
 
 class _ThreadScreenState extends State<LoginScreen>
     with AfterLayoutMixin<LoginScreen> {
-  Box box;
-  InAppWebView webView;
-  InAppWebViewController webViewController;
+  MyInAppBrowser browser;
 
   @override
   void initState() {
     super.initState();
 
-    // Setup the webview
-    this.webView = InAppWebView(
-      onWebViewCreated: (controller) {
-       this.webViewController = controller; 
-      },
-      shouldOverrideUrlLoading: onUrlChange,
-      initialUrl: this.widget.loginUrl,
-      initialOptions: InAppWebViewWidgetOptions(
-        androidInAppWebViewOptions: AndroidInAppWebViewOptions(
-          allowContentAccess: true,
-          allowUniversalAccessFromFileURLs: true,
-          domStorageEnabled: true,
-          databaseEnabled: true,
-          mixedContentMode:
-              AndroidInAppWebViewMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
-        ),
-        inAppWebViewOptions: InAppWebViewOptions(
-            userAgent:
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
-            javaScriptEnabled: true,
-            useShouldOverrideUrlLoading: true),
-      ),
-    );
+    this.browser = new MyInAppBrowser(
+        context: this.context,
+        onBrowserExit: () async {
+          bool isLoggedIn = await ScopedModel.of<AuthenticationModel>(context).isLoggedIn;
+          Navigator.of(context).pop(isLoggedIn);
+        });
+
+    this.browser.open(
+          url: this.widget.loginUrl,
+          options: InAppBrowserClassOptions(
+            inAppWebViewWidgetOptions: InAppWebViewWidgetOptions(
+              androidInAppWebViewOptions: AndroidInAppWebViewOptions(
+                allowContentAccess: true,
+                allowUniversalAccessFromFileURLs: true,
+                domStorageEnabled: true,
+                databaseEnabled: true,
+                disabledActionModeMenuItems: AndroidInAppWebViewModeMenuItem.MENU_ITEM_SHARE,
+                mixedContentMode: AndroidInAppWebViewMixedContentMode
+                    .MIXED_CONTENT_ALWAYS_ALLOW,
+              ),
+              inAppWebViewOptions: InAppWebViewOptions(
+                userAgent:
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
+                javaScriptEnabled: true,
+                useShouldOverrideUrlLoading: true,
+              ),
+            ),
+          ),
+        );
   }
 
   @override
-  void afterFirstLayout(BuildContext context) async {
-    this.box = await AppHiveBox.getBox();
+  void afterFirstLayout(BuildContext context) async {}
+
+  Future<bool> _onWillPop() async {
+    if (await this.browser.webViewController.canGoBack()) {
+      this.browser.webViewController.goBack();
+      return false;
+    } else {
+      return true;
+    }
   }
 
-  void onUrlChange(InAppWebViewController controller, String url) async {
-    controller.loadUrl(url: url);
-    
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Login'),
+        ),
+        body: Container(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MyInAppBrowser extends InAppBrowser {
+  BuildContext context;
+  Function onBrowserExit;
+
+  MyInAppBrowser({this.context, this.onBrowserExit});
+
+  @override
+  Future onBrowserCreated() async {
+    print("\n\nBrowser Created!\n\n");
+  }
+
+  @override
+  Future onLoadStart(String url) async {
+    print("\n\nStarted $url\n\n");
+  }
+
+  @override
+  Future onLoadStop(String url) async {
+    print("\n\nStopped $url\n\n");
+  }
+
+  @override
+  void onLoadError(String url, int code, String message) {
+    print("Can't load $url.. Error: $message");
+  }
+
+  @override
+  void onProgressChanged(int progress) {
+    print("Progress: $progress");
+  }
+
+  @override
+  void onExit() {
+    print("\n\nBrowser closed!\n\n");
+    this.onBrowserExit();
+  }
+
+  @override
+  void shouldOverrideUrlLoading(String url) async {
+    print("\n\n override $url\n\n");
+    this.webViewController.loadUrl(url: url);
+
+    Box box = await AppHiveBox.getBox();
+
     if (url.contains(await box.get('env') == 'knockout'
         ? KnockoutAPI.KNOCKOUT_URL + "auth/finish"
         : KnockoutAPI.QA_URL + "auth/finish")) {
@@ -99,29 +169,13 @@ class _ThreadScreenState extends State<LoginScreen>
       ScopedModel.of<AuthenticationModel>(context)
           .setCookieString(cookieString);
 
-      Navigator.pop(context, true);
+      this.close();
     }
-  }
 
-  Future<bool> _onWillPop() async {
-    if (await this.webViewController.canGoBack()) {
-      this.webViewController.goBack();
-      return false;
-    } else {
-      return true;
-    }
-  }
+    @override
+    void onLoadResource(LoadedResource response) {}
 
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Login'),
-        ),
-        body: this.webView,
-      ),
-    );
+    @override
+    void onConsoleMessage(ConsoleMessage consoleMessage) {}
   }
 }
