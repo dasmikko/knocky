@@ -13,6 +13,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 class PostEditorBBCode extends StatefulWidget {
   final String postBBCode;
   final Function onInputChange;
+  final Thread thread;
 
   // Toolbar callbacks
   final Function onTapAddTextBlock;
@@ -32,7 +33,8 @@ class PostEditorBBCode extends StatefulWidget {
   final List<ThreadPost> replyList;
 
   PostEditorBBCode(
-      {this.postBBCode,
+      { this.thread,
+        this.postBBCode,
       this.onTapAddHeadingOne,
       this.onTapAddHeadingTwo,
       this.onTapAddImage,
@@ -417,6 +419,44 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
     );
   }
 
+  void addUserquoteDialog() async {
+    await showDialog<int>(
+      context: context,
+      child: new AlertDialog(
+        title: Text('Select post'),
+        contentPadding: const EdgeInsets.all(16.0),
+        content: Container(
+          height: 400,
+          width: 200,
+          child: ListView.builder(
+            itemCount: this.widget.replyList.length,
+            itemBuilder: (BuildContext context, int index) {
+              ThreadPost item = this.widget.replyList[index];
+              return ListTile(
+                title: Text(item.user.username),
+                subtitle: Text(item.content.toString().substring(0, 50)),
+                contentPadding: EdgeInsets.all(10),
+                onTap: () {
+                  var controller = _textEditingController;
+                  controller.text += '[quote mentionUser="${item.user.id}" postId="${item.id}" threadPage="${this.widget.thread.currentPage}" threadPage="${this.widget.thread.id}" username="${item.user.username}" ]${item.content}[/quote]';
+                  this.widget.onInputChange(controller.text);
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+              );
+            },
+          ),
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              }),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -565,7 +605,7 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
                     return IconButton(
                       tooltip: 'Insert userquote',
                       icon: Icon(Icons.message),
-                      onPressed: this.widget.onTapAddUserQuote,
+                      onPressed: this.addUserquoteDialog,
                     );
                   },
                 ),

@@ -366,9 +366,9 @@ class _ThreadScreenState extends State<ThreadScreen>
     });
   }
 
-  void onPressReply(ThreadPost post) async {
+  void onPressReply(ThreadPost post, BuildContext buildContext) async {
     if (postsToReplyTo.length > 0) {
-      onLongPressReply(new ThreadPost.clone(post));
+      onLongPressReply(new ThreadPost.clone(post), buildContext);
     } else {
       List<ThreadPost> reply = List();
       reply.add(
@@ -397,14 +397,14 @@ class _ThreadScreenState extends State<ThreadScreen>
     }
   }
 
-  void onLongPressReply(ThreadPost post) {
+  void onLongPressReply(ThreadPost post, BuildContext buildContext) {
     if (postsToReplyTo.where((o) => o.id == post.id).length > 0) {
       setState(() {
         postsToReplyTo.removeWhere((o) => o.id == post.id);
 
-        Scaffold.of(context)
+        Scaffold.of(buildContext)
             .hideCurrentSnackBar(reason: SnackBarClosedReason.hide);
-        Scaffold.of(context).showSnackBar(SnackBar(
+        Scaffold.of(buildContext).showSnackBar(SnackBar(
           content: Text('Removed post from reply list'),
           behavior: SnackBarBehavior.floating,
         ));
@@ -419,9 +419,9 @@ class _ThreadScreenState extends State<ThreadScreen>
             ratings: post.ratings,
             user: post.user));
 
-        Scaffold.of(context)
+        Scaffold.of(buildContext)
             .hideCurrentSnackBar(reason: SnackBarClosedReason.hide);
-        Scaffold.of(context).showSnackBar(SnackBar(
+        Scaffold.of(buildContext).showSnackBar(SnackBar(
           content: Text('Added post to reply list'),
           behavior: SnackBarBehavior.floating,
         ));
@@ -645,8 +645,8 @@ class _ThreadScreenState extends State<ThreadScreen>
                                   .where((o) => o.id == item.id)
                                   .length >
                               0,
-                          onPressReply: onPressReply,
-                          onLongPressReply: onLongPressReply,
+                          onPressReply: (post) => onPressReply(post, context),
+                          onLongPressReply: (post) => onLongPressReply(post, context),
                           onPostRated: () {
                             Scaffold.of(context).showSnackBar(SnackBar(
                               backgroundColor: Colors.green,

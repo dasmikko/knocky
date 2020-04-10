@@ -57,12 +57,12 @@ class _NewPostScreenState extends State<NewPostScreen>
       this.postBBcode = this.widget.post.content;
     } else {
       if (this.replyListConverted.length > 0) {
-        this.convertReplyEmbedsToText();
       }
     }
 
-    if (this.replyListConverted.length == 1) {
-      
+    if (this.widget.replyList.length == 1) {
+      var firstReply = this.widget.replyList.first;
+      postBBcode += '[quote mentionUser="${firstReply.user.id}" postId="${firstReply.id}" threadPage="${this.widget.thread.currentPage}" threadPage="${this.widget.thread.id}" username="${firstReply.user.username}" ]${firstReply.content}[/quote]';
     }
   }
 
@@ -500,27 +500,16 @@ class _NewPostScreenState extends State<NewPostScreen>
           height: 400,
           width: 200,
           child: ListView.builder(
-            itemCount: this.replyListConverted.length,
+            itemCount: this.widget.replyList.length,
             itemBuilder: (BuildContext context, int index) {
-              ThreadPost item = this.replyListConverted[index];
+              ThreadPost item = this.widget.replyList[index];
               return ListTile(
                 title: Text(item.user.username),
+                subtitle: Text(item.content.toString().substring(0, 50)),
+                contentPadding: EdgeInsets.all(10),
                 onTap: () {
                   setState(() {
-                    /*this.document.document.nodes.add(
-                          SlateNode(
-                              object: 'block',
-                              type: 'userquote',
-                              data: SlateNodeData(
-                                postData: NodeDataPostData(
-                                  postId: item.id,
-                                  threadId: this.widget.thread.id,
-                                  threadPage: this.widget.thread.currentPage,
-                                  username: item.user.username,
-                                ),
-                              ),
-                              nodes: item.content.document.nodes),
-                        );*/
+                    this.postBBcode += '[quote mentionUser="${item.user.id}" postId="${item.id}" threadPage="${this.widget.thread.currentPage}" threadPage="${this.widget.thread.id}" username="${item.user.username}" ]${item.content}[/quote]';
                   });
                   Navigator.of(bcontext, rootNavigator: true).pop();
                 },
@@ -1038,7 +1027,8 @@ class _NewPostScreenState extends State<NewPostScreen>
             children: [
               PostEditorBBCode(
                 postBBCode: postBBcode,
-                replyList: this.replyListConverted,
+                thread: this.widget.thread,
+                replyList: this.widget.replyList,
                 onInputChange: (String newBBcode) {
                   setState(() {
                     this.postBBcode = newBBcode;

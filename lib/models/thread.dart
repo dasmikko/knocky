@@ -86,7 +86,7 @@ class ThreadPost {
       _$ThreadPostFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadPostToJson(this);
 
-  ThreadPost.clone(ThreadPost post): this(id: post.id, content: SlateObject.fromJson(post.content.toJson()), user: post.user, ratings: post.ratings, createdAt: post.createdAt, bans: post.bans);
+  ThreadPost.clone(ThreadPost post): this(id: post.id, content: post.content, user: post.user, ratings: post.ratings, createdAt: post.createdAt, bans: post.bans);
 }
 
 dynamic _contentFromJson(String jsonString) {
