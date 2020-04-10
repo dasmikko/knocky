@@ -47,19 +47,30 @@ class _ThreadPostItemState extends State<ThreadPostItem> {
       ratings.sort((a, b) => b.count.compareTo(a.count));
       ratings.forEach((rating) {
         RatingistItem icon =
-            ratingsIconList.where((icon) => icon.id == rating.rating).first;
+            ratingsIconList.firstWhere((icon) => icon.id == rating.rating);
 
-        items.add(
-          Container(
-            margin: EdgeInsets.only(right: 5.0),
-            child: Column(children: <Widget>[
-              CachedNetworkImage(
-                imageUrl: icon.url,
-              ),
-              Text(rating.count.toString())
-            ]),
-          ),
-        );
+        if (icon != null) {
+          items.add(
+            Container(
+              width: 22,
+              margin: EdgeInsets.only(right: 5.0),
+              child: Column(children: <Widget>[
+                CachedNetworkImage(
+                  imageUrl: icon.url,
+                ),
+                Text(rating.count.toString())
+              ]),
+            ),
+          );
+        } else {
+          items.add(
+            Container(
+              margin: EdgeInsets.only(right: 5.0),
+              child: Column(
+                  children: <Widget>[Text('?'), Text(rating.count.toString())]),
+            ),
+          );
+        }
       });
     }
 
@@ -99,6 +110,7 @@ class _ThreadPostItemState extends State<ThreadPostItem> {
             buildContext: context,
             postId: widget.postDetails.id,
             onPostRated: widget.onPostRated,
+            thread: widget.thread,
           );
         });
   }
@@ -136,7 +148,18 @@ class _ThreadPostItemState extends State<ThreadPostItem> {
     return [
       FlatButton(
         child: Text('Edit'),
-        onPressed: () => widget.onTapEditPost(widget.postDetails),
+        onPressed: () {
+          if (widget.postDetails.content is String) {
+            widget.onTapEditPost(widget.postDetails);
+          } else {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    'This post was made with the old Slate Editor, and the app does not support that anymore.'),
+              ),
+            );
+          }
+        },
       )
     ];
   }
@@ -209,6 +232,7 @@ class _ThreadPostItemState extends State<ThreadPostItem> {
             Container(
               padding: EdgeInsets.only(left: 10, right: 10),
               child: PostContent(
+                  postDetails: widget.postDetails,
                   textSelectable: this.textSelectable,
                   content: widget.postDetails.content,
                   onTapSpoiler: (text) {

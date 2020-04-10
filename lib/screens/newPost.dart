@@ -1,20 +1,22 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
+import 'package:after_layout/after_layout.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:knocky/helpers/ImgurHelper.dart';
-import 'package:knocky/helpers/bbcode.dart';
+import 'package:knocky/helpers/bbcodeparser.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/screens/Modals/editTextBlock.dart';
+import 'package:knocky/screens/Modals/knockoutDocument.dart';
+import 'package:knocky/widget/BBcodeRenderer/BBcodeRenderer.dart';
 import 'package:knocky/widget/LinkDialogContent.dart';
 import 'package:knocky/widget/ListEditor.dart';
-import 'package:knocky/widget/PostEditor.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
-import 'package:knocky/widget/Thread/PostContent.dart';
+import 'package:knocky/widget/PostEditorBBCode.dart';
+import 'package:knocky/widget/Thread/PostElements/Image.dart';
 import 'package:knocky/widget/UploadProgressDialogContent.dart';
 
 class NewPostScreen extends StatefulWidget {
@@ -30,15 +32,20 @@ class NewPostScreen extends StatefulWidget {
   _NewPostScreenState createState() => _NewPostScreenState();
 }
 
-class _NewPostScreenState extends State<NewPostScreen> {
-  SlateObject document = new SlateObject(
-    object: 'value',
-    document: SlateDocument(object: 'document', nodes: List()),
-  );
+class _NewPostScreenState extends State<NewPostScreen>
+    with AfterLayoutMixin<NewPostScreen>, SingleTickerProviderStateMixin {
   GlobalKey _scaffoldKey;
   bool _isPosting = false;
   TextEditingController controller = TextEditingController();
   List<ThreadPost> replyListConverted = List();
+  SlateDocument document;
+
+  String postBBcode = '';
+
+  //String postBBcode = '[ul][li]hello world[/li][/ul]';
+
+  BBCodeParser bbCodeParser;
+  KnockoutDocument knockoutDocument;
 
   @override
   void initState() {
@@ -47,30 +54,60 @@ class _NewPostScreenState extends State<NewPostScreen> {
     this.replyListConverted = this.widget.replyList;
 
     if (this.widget.editingPost) {
-      this.document = this.widget.post.content;
+      this.postBBcode = this.widget.post.content;
     } else {
       if (this.replyListConverted.length > 0) {
-        this.convertReplyEmbedsToText();
       }
     }
 
-    if (this.replyListConverted.length == 1) {
-      ThreadPost item = this.replyListConverted.first;
-      this.document.document.nodes.add(
-            SlateNode(
-                object: 'block',
-                type: 'userquote',
-                data: SlateNodeData(
-                  postData: NodeDataPostData(
-                    postId: item.id,
-                    threadId: this.widget.thread.id,
-                    threadPage: this.widget.thread.currentPage,
-                    username: item.user.username,
-                  ),
-                ),
-                nodes: item.content.document.nodes),
-          );
+    if (this.widget.replyList.length == 1) {
+      var firstReply = this.widget.replyList.first;
+      postBBcode += '[quote mentionUser="${firstReply.user.id}" postId="${firstReply.id}" threadPage="${this.widget.thread.currentPage}" threadPage="${this.widget.thread.id}" username="${firstReply.user.username}" ]${firstReply.content}[/quote]';
     }
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) async {
+    // Parse the bbcode
+  }
+
+  TextSpan bbCodeTextHandler(String text, bool isBold, bool isItalic,
+      bool isUnderlined, bool isCode, bool isSpoiler) {
+    TextStyle textStyle = Theme.of(context).textTheme.body1.copyWith(
+          fontFamily: isCode ? 'RobotoMono' : 'Roboto',
+          decoration:
+              isUnderlined ? TextDecoration.underline : TextDecoration.none,
+          fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+          fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
+        );
+
+    TextStyle spoilerStyle = textStyle.copyWith(
+        background: Paint()..color = Theme.of(context).textTheme.body1.color,
+        color: Theme.of(context).textTheme.body1.color);
+
+    if (isSpoiler) {
+      return TextSpan(
+        text: text,
+        recognizer: TapGestureRecognizer()
+          ..onTap = () {
+            print('Clicked spoiler');
+            this.onPressSpoiler(context, text);
+          },
+        style: spoilerStyle,
+      );
+    } else {
+      return TextSpan(text: text, style: textStyle);
+    }
+  }
+
+  Widget bbCodeImageHandler(String url) {
+    return Container(
+      margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
+      child: ImageWidget(
+        url: url,
+        bbcode: postBBcode,
+      ),
+    );
   }
 
   void convertReplyEmbedsToText() {
@@ -123,13 +160,13 @@ class _NewPostScreenState extends State<NewPostScreen> {
     if (this.widget.editingPost) {
       await KnockoutAPI()
           .updatePost(
-              document.toJson(), this.widget.post.id, this.widget.thread.id)
+              this.postBBcode, this.widget.post.id, this.widget.thread.id)
           .catchError((error) {
         print(error);
       });
     } else {
       await KnockoutAPI()
-          .newPost(document.toJson(), this.widget.thread.id)
+          .newPost(this.postBBcode, this.widget.thread.id)
           .catchError((error) {
         print(error);
       });
@@ -261,13 +298,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
           onFinishedUploading: (String imageLink) {
             Navigator.of(context, rootNavigator: true).pop();
             setState(() {
-              document.document.nodes.add(
-                SlateNode(
-                  object: 'block',
-                  type: 'image',
-                  data: SlateNodeData(src: imageLink),
-                ),
-              );
+              
             });
           },
         ),
@@ -305,13 +336,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
               onPressed: () {
                 Navigator.of(context, rootNavigator: true).pop();
                 setState(() {
-                  document.document.nodes.add(
-                    SlateNode(
-                      object: 'block',
-                      type: 'image',
-                      data: SlateNodeData(src: imgurlController.text),
-                    ),
-                  );
+                  
                 });
               })
         ],
@@ -406,11 +431,11 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Insert'),
               onPressed: () {
                 setState(() {
-                  this.document.document.nodes.add(SlateNode(
+                  /*this.document.document.nodes.add(SlateNode(
                       object: 'block',
                       type: 'youtube',
                       data: SlateNodeData(src: urlController.text)));
-                });
+                */});
 
                 Navigator.of(context, rootNavigator: true).pop();
               })
@@ -449,13 +474,13 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Insert'),
               onPressed: () {
                 setState(() {
-                  this.document.document.nodes.add(
+                  /*this.document.document.nodes.add(
                         SlateNode(
                           object: 'block',
                           type: 'video',
                           data: SlateNodeData(src: urlController.text),
                         ),
-                      );
+                      );*/
                 });
 
                 Navigator.of(context, rootNavigator: true).pop();
@@ -475,27 +500,16 @@ class _NewPostScreenState extends State<NewPostScreen> {
           height: 400,
           width: 200,
           child: ListView.builder(
-            itemCount: this.replyListConverted.length,
+            itemCount: this.widget.replyList.length,
             itemBuilder: (BuildContext context, int index) {
-              ThreadPost item = this.replyListConverted[index];
+              ThreadPost item = this.widget.replyList[index];
               return ListTile(
                 title: Text(item.user.username),
+                subtitle: Text(item.content.toString().substring(0, 50)),
+                contentPadding: EdgeInsets.all(10),
                 onTap: () {
                   setState(() {
-                    this.document.document.nodes.add(
-                          SlateNode(
-                              object: 'block',
-                              type: 'userquote',
-                              data: SlateNodeData(
-                                postData: NodeDataPostData(
-                                  postId: item.id,
-                                  threadId: this.widget.thread.id,
-                                  threadPage: this.widget.thread.currentPage,
-                                  username: item.user.username,
-                                ),
-                              ),
-                              nodes: item.content.document.nodes),
-                        );
+                    this.postBBcode += '[quote mentionUser="${item.user.id}" postId="${item.id}" threadPage="${this.widget.thread.currentPage}" threadPage="${this.widget.thread.id}" username="${item.user.username}" ]${item.content}[/quote]';
                   });
                   Navigator.of(bcontext, rootNavigator: true).pop();
                 },
@@ -517,7 +531,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   void addTextBlock() {
     setState(
       () {
-        this.document.document.nodes.add(
+        /*this.document.document.nodes.add(
               SlateNode(
                 type: 'paragraph',
                 object: 'block',
@@ -528,7 +542,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   ),
                 ],
               ),
-            );
+            );*/
       },
     );
   }
@@ -536,7 +550,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   void addHeadingBlock(String type) {
     setState(
       () {
-        this.document.document.nodes.add(
+        /*this.document.document.nodes.add(
               SlateNode(
                 type: 'heading-' + type,
                 object: 'block',
@@ -547,28 +561,28 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   ),
                 ],
               ),
-            );
+            );*/
       },
     );
   }
 
   void addQuoteBlock() {
     setState(() {
-      this
-          .document
-          .document
-          .nodes
-          .add(SlateNode(type: 'block-quote', nodes: List()));
+      // this
+      //     .document
+      //     .document
+      //     .nodes
+      //     .add(SlateNode(type: 'block-quote', nodes: List()));
     });
   }
 
   void addListBlock(String type) {
     setState(() {
-      this
-          .document
-          .document
-          .nodes
-          .add(SlateNode(object: 'block', type: type, nodes: List()));
+      // this
+      //     .document
+      //     .document
+      //     .nodes
+      //     .add(SlateNode(object: 'block', type: type, nodes: List()));
     });
   }
 
@@ -601,20 +615,20 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Insert'),
               onPressed: () {
                 setState(() {
-                  this.document.document.nodes.add(
-                        SlateNode(
-                            type: 'twitter',
-                            object: 'block',
-                            data: SlateNodeData(src: urlController.text),
-                            nodes: [
-                              SlateNode(
-                                object: 'text',
-                                leaves: [
-                                  SlateLeaf(text: '', marks: [], object: 'leaf')
-                                ],
-                              ),
-                            ]),
-                      );
+                  // this.document.document.nodes.add(
+                  //       SlateNode(
+                  //           type: 'twitter',
+                  //           object: 'block',
+                  //           data: SlateNodeData(src: urlController.text),
+                  //           nodes: [
+                  //             SlateNode(
+                  //               object: 'text',
+                  //               leaves: [
+                  //                 SlateLeaf(text: '', marks: [], object: 'leaf')
+                  //               ],
+                  //             ),
+                  //           ]),
+                  //     );
                 });
 
                 Navigator.of(context, rootNavigator: true).pop();
@@ -653,20 +667,20 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Insert'),
               onPressed: () {
                 setState(() {
-                  this.document.document.nodes.add(
-                        SlateNode(
-                            type: 'strawpoll',
-                            object: 'block',
-                            data: SlateNodeData(src: urlController.text),
-                            nodes: [
-                              SlateNode(
-                                object: 'text',
-                                leaves: [
-                                  SlateLeaf(text: '', marks: [], object: 'leaf')
-                                ],
-                              ),
-                            ]),
-                      );
+                  // this.document.document.nodes.add(
+                  //       SlateNode(
+                  //           type: 'strawpoll',
+                  //           object: 'block',
+                  //           data: SlateNodeData(src: urlController.text),
+                  //           nodes: [
+                  //             SlateNode(
+                  //               object: 'text',
+                  //               leaves: [
+                  //                 SlateLeaf(text: '', marks: [], object: 'leaf')
+                  //               ],
+                  //             ),
+                  //           ]),
+                  //     );
                 });
 
                 Navigator.of(context, rootNavigator: true).pop();
@@ -682,19 +696,21 @@ class _NewPostScreenState extends State<NewPostScreen> {
   void showTextEditDialog(BuildContext context, SlateNode node) async {
     var result = await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => EditTextBlockModal(node: node,),
+        builder: (context) => EditTextBlockModal(
+          node: node,
+        ),
       ),
     );
 
     if (result is SlateNode) {
-      int index = this.document.document.nodes.indexOf(node);
-      this.document.document.nodes[index] = result;
+      // int index = this.document.document.nodes.indexOf(node);
+      // this.document.document.nodes[index] = result;
     }
 
     if (result is bool && result == false) {
       setState(() {
-        int index = this.document.document.nodes.indexOf(node);
-        this.document.document.nodes.removeAt(index);
+        // int index = this.document.document.nodes.indexOf(node);
+        // this.document.document.nodes.removeAt(index);
       });
     }
   }
@@ -724,8 +740,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 child: const Text('Remove'),
                 onPressed: () {
                   setState(() {
-                    int index = this.document.document.nodes.indexOf(node);
-                    this.document.document.nodes.removeAt(index);
+                    // int index = this.document.document.nodes.indexOf(node);
+                    // this.document.document.nodes.removeAt(index);
                   });
                   Navigator.of(context, rootNavigator: true).pop();
                 }),
@@ -733,9 +749,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 child: const Text('Update'),
                 onPressed: () {
                   setState(() {
-                    int index = this.document.document.nodes.indexOf(node);
-                    this.document.document.nodes[index].data.src =
-                        imgurlController.text;
+                    // int index = this.document.document.nodes.indexOf(node);
+                    // this.document.document.nodes[index].data.src =
+                    //     imgurlController.text;
                   });
                   Navigator.of(context, rootNavigator: true).pop();
                 })
@@ -769,8 +785,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Remove'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes.removeAt(index);
+                  // int index = this.document.document.nodes.indexOf(node);
+                  // this.document.document.nodes.removeAt(index);
                 });
                 Navigator.of(context, rootNavigator: true).pop();
               }),
@@ -778,9 +794,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Update'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes[index].data.src =
-                      urlController.text;
+                  // int index = this.document.document.nodes.indexOf(node);
+                  // this.document.document.nodes[index].data.src =
+                  //     urlController.text;
                 });
                 Navigator.of(context, rootNavigator: true).pop();
               })
@@ -814,8 +830,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Remove'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes.removeAt(index);
+                  // int index = this.document.document.nodes.indexOf(node);
+                  // this.document.document.nodes.removeAt(index);
                 });
                 Navigator.of(context, rootNavigator: true).pop();
               }),
@@ -823,9 +839,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Update'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes[index].data.src =
-                      urlController.text;
+                  // int index = this.document.document.nodes.indexOf(node);
+                  // this.document.document.nodes[index].data.src =
+                      // urlController.text;
                 });
 
                 Navigator.of(context, rootNavigator: true).pop();
@@ -851,8 +867,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
           oldListItems: listItems,
           onListUpdated: (newListItems) {
             setState(() {
-              int index = this.document.document.nodes.indexOf(node);
-              this.document.document.nodes[index].nodes = newListItems;
+              // int index = this.document.document.nodes.indexOf(node);
+              // this.document.document.nodes[index].nodes = newListItems;
             });
           },
         ),
@@ -896,8 +912,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Remove'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes.removeAt(index);
+                 
                 });
                 Navigator.of(context, rootNavigator: true).pop();
               }),
@@ -905,9 +920,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Update'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes[index].data.src =
-                      urlController.text;
+                
                 });
                 Navigator.of(context, rootNavigator: true).pop();
               })
@@ -940,8 +953,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Remove'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes.removeAt(index);
+                
                 });
                 Navigator.of(context, rootNavigator: true).pop();
               }),
@@ -949,9 +961,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Update'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes[index].data.src =
-                      urlController.text;
+                  
                 });
                 Navigator.of(context, rootNavigator: true).pop();
               })
@@ -977,8 +987,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
               child: const Text('Yes'),
               onPressed: () {
                 setState(() {
-                  int index = this.document.document.nodes.indexOf(node);
-                  this.document.document.nodes.removeAt(index);
+                  // int index = this.document.document.nodes.indexOf(node);
+                  // this.document.document.nodes.removeAt(index);
                 });
                 Navigator.of(context, rootNavigator: true).pop();
               }),
@@ -989,7 +999,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   @override
   Widget build(BuildContext wcontext) {
-    print(document.toJson());
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -1016,19 +1025,15 @@ class _NewPostScreenState extends State<NewPostScreen> {
           child: TabBarView(
             physics: NeverScrollableScrollPhysics(),
             children: [
-              PostEditor(
-                document: document,
-                replyList: this.replyListConverted,
-                // Blocks
-                onTapTextBlock: this.showTextEditDialog,
-                onTapImageBlock: this.editImageDialog,
-                onTapQuoteBlock: this.showTextEditDialog,
-                onTapYouTubeBlock: this.editYoutubeVideoDialog,
-                onTapVideoBlock: this.editVideoDialog,
-                onTapListBlock: this.editList,
-                onTapTwitterBlock: this.editTwitterEmbed,
-                onTapUserQuoteBlock: this.editUserQuote,
-                onTapStrawpollBlock: this.editStrawpollEmbed,
+              PostEditorBBCode(
+                postBBCode: postBBcode,
+                thread: this.widget.thread,
+                replyList: this.widget.replyList,
+                onInputChange: (String newBBcode) {
+                  setState(() {
+                    this.postBBcode = newBBcode;
+                  });
+                },
                 // Toolbar
                 onTapAddTextBlock: this.addTextBlock,
                 onTapAddHeadingOne: () => this.addHeadingBlock('one'),
@@ -1042,21 +1047,23 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 onTapAddTwitterEmbed: this.addTwitterEmbed,
                 onTapAddStrawPollEmbed: this.addStrawpollEmbed,
                 onTapAddUserQuote: () => this.addUserquoteDialog(context),
-                onReorderHandler: (int oldIndex, int newIndex) {
-                  if (oldIndex < newIndex) {
-                    // removing the item at oldIndex will shorten the list by 1.
-                    newIndex -= 1;
-                  }
-                  setState(() {
-                    final SlateNode element =
-                        document.document.nodes.removeAt(oldIndex);
-                    document.document.nodes.insert(newIndex, element);
-                  });
-                },
               ),
               Container(
                 child: SingleChildScrollView(
                   child: Container(
+                    padding: EdgeInsets.all(15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        BBcodeRenderer(
+                          bbcode: postBBcode,
+                          parentContext: context,
+                          scaffoldKey: _scaffoldKey,
+                        ),
+                      ],
+
+                      /*Container(
                     padding: EdgeInsets.all(15),
                     child: PostContent(
                         content: document,
@@ -1064,6 +1071,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
                           onPressSpoiler(context, text);
                         },
                         scaffoldKey: this._scaffoldKey),
+                  ),*/
+                    ),
                   ),
                 ),
               ),

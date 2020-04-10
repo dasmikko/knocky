@@ -24,6 +24,9 @@ class SubscriptionScreen extends StatefulWidget {
 
 class _SubscriptionScreenState extends State<SubscriptionScreen>
     with AfterLayoutMixin<SubscriptionScreen> {
+
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +46,20 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
   }
 
   Future<void> loadSubscriptions() async {
+    if (ScopedModel.of<SubscriptionModel>(context).subscriptions.length == 0) {
+      ScopedModel.of<SubscriptionModel>(context).getSubscriptions(
+          errorCallback: () {
+        Scaffold.of(context).hideCurrentSnackBar();
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('Failed to get subscriptions. Try again.'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ));
+      });
+    }
+  }
+
+  Future<void> forceLoadSubscriptions() async {
     ScopedModel.of<SubscriptionModel>(context).getSubscriptions(
         errorCallback: () {
       Scaffold.of(context).hideCurrentSnackBar();
@@ -122,7 +139,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
         behavior: SnackBarBehavior.floating,
         content: Text('Removed subscription'),
       ));
-      loadSubscriptions();
+      forceLoadSubscriptions();
     });
   }
 
@@ -139,6 +156,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
         ScopedModel.of<AppStateModel>(context, rebuildOnChange: true).mentions;
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -148,9 +166,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
         ),
         title: Text('Subscriptions'),
       ),
-      drawer: DrawerWidget(),
+      drawerEdgeDragWidth: 30.0,
+      drawer: DrawerWidget(
+        scaffoldKey: _scaffoldKey,
+      ),
       body: RefreshIndicator(
-        onRefresh: loadSubscriptions,
+        onRefresh: forceLoadSubscriptions,
         child: KnockoutLoadingIndicator(
           show: fetching,
           child: ListView.builder(

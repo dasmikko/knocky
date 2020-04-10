@@ -20,7 +20,7 @@ class SubscriptionListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String iconUrl = iconList.where((icon) => icon.id == item.iconId).first.url;
+    String _iconUrl = getIconOrDefault(item.iconId).url;
 
     return Card(
       color: Color.fromRGBO(45, 45, 48, 1),
@@ -53,7 +53,7 @@ class SubscriptionListItem extends StatelessWidget {
                   children: <Widget>[
                     CachedNetworkImage(
                       width: 25,
-                      imageUrl: iconUrl,
+                      imageUrl: _iconUrl,
                     ),
                   ],
                 ),

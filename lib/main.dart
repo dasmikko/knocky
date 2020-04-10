@@ -7,7 +7,6 @@ import 'package:knocky/state/appState.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'themes/DarkTheme.dart';
-import 'screens/home.dart';
 import 'package:knocky/state/authentication.dart';
 import 'package:knocky/state/subscriptions.dart';
 import 'package:hive/hive.dart';

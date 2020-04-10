@@ -86,8 +86,120 @@ List<IconListItem> iconList = [
   new IconListItem(id: 69, url: "https://img.icons8.com/color/64/panties.png"),
 
   new IconListItem(id: 70, url: "https://img.icons8.com/color/64/mushroom-cloud.png"),
-  new IconListItem(id: 71, url: "https://img.icons8.com/color/64/bomb-with-timer.png"),
+  new IconListItem(id: 71, url:  _baseurl + "static/icons/adhd.png"),
+  new IconListItem(id: 72, url:  _baseurl + "static/icons/cute-monster.png"),
+  new IconListItem(id: 73, url:  _baseurl + "static/icons/japan-circular.png"),
+  new IconListItem(id: 74, url:  _baseurl + "static/icons/sad-sun.png"),
+  new IconListItem(id: 75, url:  _baseurl + "static/icons/anime-emoji.png"),
+  new IconListItem(id: 76, url:  _baseurl + "static/icons/daruma-doll.png"),
+  new IconListItem(id: 77, url:  _baseurl + "static/icons/jellyfish.png"),
+  new IconListItem(id: 78, url:  _baseurl + "static/icons/jellyfish.png"),
+  new IconListItem(id: 79, url:  _baseurl + "static/icons/sailor-moon.png"),
+
+  new IconListItem(id: 80, url:  _baseurl + "static/icons/argentina-circular.png"),
+  new IconListItem(id: 81, url:  _baseurl + "static/icons/dice.png"),
+  new IconListItem(id: 82, url:  _baseurl + "static/icons/landslide.png"),
+  new IconListItem(id: 83, url:  _baseurl + "static/icons/security-guard.png"),
+  new IconListItem(id: 84, url:  _baseurl + "static/icons/australia-circular.png"),
+  new IconListItem(id: 85, url:  _baseurl + "static/icons/dog-pee.png"),
+  new IconListItem(id: 86, url:  _baseurl + "static/icons/language-skill.png"),
+  new IconListItem(id: 87, url:  _baseurl + "static/icons/skull-heart--v2.png"),
+  new IconListItem(id: 88, url:  _baseurl + "static/icons/bad-piggies.png"),
+  new IconListItem(id: 89, url:  _baseurl + "static/icons/dog-pooping.png"),
+
+  new IconListItem(id: 90, url:  _baseurl + "static/icons/lasagna.png"),
+  new IconListItem(id: 91, url:  _baseurl + "static/icons/soil.png"),
+  new IconListItem(id: 92, url:  _baseurl + "static/icons/batman-emoji.png"),
+  new IconListItem(id: 93, url:  _baseurl + "static/icons/euro-exchange.png"),
+  new IconListItem(id: 94, url:  _baseurl + "static/icons/lawn-care.png"),
+  new IconListItem(id: 95, url:  _baseurl + "static/icons/south-korea-circular.png"),
+  new IconListItem(id: 96, url:  _baseurl + "static/icons/belgium-circular.png"),
+  new IconListItem(id: 97, url:  _baseurl + "static/icons/finland-circular.png"),
+  new IconListItem(id: 98, url:  _baseurl + "static/icons/lobster.png"),
+  new IconListItem(id: 99, url:  _baseurl + "static/icons/spain2-circular.png"),
+
+  new IconListItem(id: 100, url:  _baseurl + "static/icons/boiling.png"),
+  new IconListItem(id: 101, url:  _baseurl + "static/icons/fortnite.png"),
+  new IconListItem(id: 102, url:  _baseurl + "static/icons/marijuana-leaf.png"),
+  new IconListItem(id: 103, url:  _baseurl + "static/icons/statue-of-christ-the-redeemer.png"),
+  new IconListItem(id: 104, url:  _baseurl + "static/icons/border-collie.png"),
+  new IconListItem(id: 105, url:  _baseurl + "static/icons/fry.png"),
+  new IconListItem(id: 106, url:  _baseurl + "static/icons/mdma.png"),
+  new IconListItem(id: 107, url:  _baseurl + "static/icons/stump-with-roots.png"),
+  new IconListItem(id: 108, url:  _baseurl + "static/icons/brazil-circular.png"),
+  new IconListItem(id: 109, url:  _baseurl + "static/icons/full-of-shit.png"),
+
+  new IconListItem(id: 110, url:  _baseurl + "static/icons/meowth.png"),
+  new IconListItem(id: 111, url:  _baseurl + "static/icons/sweden-circular.png"),
+  new IconListItem(id: 112, url:  _baseurl + "static/icons/brigadeiro.png"),
+  new IconListItem(id: 113, url: _baseurl + "static/icons/.png"),
+  new IconListItem(id: 114, url: _baseurl + "static/icons/.png"),
+  new IconListItem(id: 115, url: _baseurl + "static/icons/switzerland-circular.png"),
+  new IconListItem(id: 116, url: _baseurl + "static/icons/buddha.png"),
+  new IconListItem(id: 117, url: _baseurl + "static/icons/germany-circular.png"),
+  new IconListItem(id: 118, url: _baseurl + "static/icons/music-band.png"),
+  new IconListItem(id: 119, url: _baseurl + "static/icons/tapir.png"),
+
+  new IconListItem(id: 120, url: _baseurl + "static/icons/call-me.png"),
+  new IconListItem(id: 121, url: _baseurl + "static/icons/national-park.png"),
+  new IconListItem(id: 122, url: _baseurl + "static/icons/the-sims.png"),
+  new IconListItem(id: 123, url: _baseurl + "static/icons/canada-circular.png"),
+  new IconListItem(id: 124, url: _baseurl + "static/icons/great-britain-circular.png"),
+  new IconListItem(id: 125, url: _baseurl + "static/icons/nightmare.png"),
+  new IconListItem(id: 126, url: _baseurl + "static/icons/trust.png"),
+  new IconListItem(id: 127, url: _baseurl + "static/icons/car-fire.png"),
+  new IconListItem(id: 128, url: _baseurl + "static/icons/group-of-animals.png"),
+  new IconListItem(id: 129, url: _baseurl + "static/icons/nintendo-gamecube-controller.png"),
+
+  new IconListItem(id: 130, url: _baseurl + "static/icons/under-computer.png"),
+  new IconListItem(id: 131, url: _baseurl + "static/icons/caveman.png"),
+  new IconListItem(id: 132, url: _baseurl + "static/icons/headache.png"),
+  new IconListItem(id: 133, url: _baseurl + "static/icons/no-drugs.png"),
+  new IconListItem(id: 134, url: _baseurl + "static/icons/undertale.png"),
+  new IconListItem(id: 135, url: _baseurl + "static/icons/chad-circular.png"),
+  new IconListItem(id: 136, url: _baseurl + "static/icons/hills.png"),
+  new IconListItem(id: 137, url: _baseurl + "static/icons/norway-circular.png"),
+  new IconListItem(id: 138, url: _baseurl + "static/icons/usa-circular.png"),
+  new IconListItem(id: 139, url: _baseurl + "static/icons/chickenpox.png"),
+
+  new IconListItem(id: 140, url: _baseurl + "static/icons/hitler.png"),
+  new IconListItem(id: 141, url: _baseurl + "static/icons/nuke.png"),
+  new IconListItem(id: 142, url: _baseurl + "static/icons/ussr-circular.png"),
+  new IconListItem(id: 143, url: _baseurl + "static/icons/china-circular.png"),
+  new IconListItem(id: 144, url: _baseurl + "static/icons/holy-bible.png"),
+  new IconListItem(id: 145, url: _baseurl + "static/icons/overwatch.png"),
+  new IconListItem(id: 146, url: _baseurl + "static/icons/wake-up.png"),
+  new IconListItem(id: 147, url: _baseurl + "static/icons/choir--v2.png"),
+  new IconListItem(id: 148, url: _baseurl + "static/icons/improvement.png"),
+  new IconListItem(id: 149, url: _baseurl + "static/icons/peace-pigeon.png"),
+
+  new IconListItem(id: 150, url: _baseurl + "static/icons/wildfire.png"),
+  new IconListItem(id: 151, url: _baseurl + "static/icons/city-buildings.png"),
+  new IconListItem(id: 152, url: _baseurl + "static/icons/india-circular.png"),
+  new IconListItem(id: 153, url: _baseurl + "static/icons/plasma-ball.png"),
+  new IconListItem(id: 154, url: _baseurl + "static/icons/winner.png"),
+  new IconListItem(id: 155, url: _baseurl + "static/icons/complaint.png"),
+  new IconListItem(id: 156, url: _baseurl + "static/icons/insects.png"),
+  new IconListItem(id: 157, url: _baseurl + "static/icons/pocket.png"),
+  new IconListItem(id: 158, url: _baseurl + "static/icons/wring.png"),
+  new IconListItem(id: 159, url: _baseurl + "static/icons/country.png"),
+
+  new IconListItem(id: 160, url: _baseurl + "static/icons/internship.png"),
+  new IconListItem(id: 161, url: _baseurl + "static/icons/pokeball-2.png"),
+  new IconListItem(id: 162, url: _baseurl + "static/icons/cross.png"),
+  new IconListItem(id: 163, url: _baseurl + "static/icons/ireland-circular.png"),
+  new IconListItem(id: 164, url: _baseurl + "static/icons/cup-with-straw.png"),
+  new IconListItem(id: 165, url: _baseurl + "static/icons/israel-circular.png"),
+  new IconListItem(id: 166, url: _baseurl + "static/icons/pray.png"),
 ];
+
+IconListItem getIconOrDefault (iconId) {
+  try {
+      return iconList.firstWhere((IconListItem litem) => litem.id == iconId);
+    } catch (err) {
+      return iconList.first;
+    }
+}
 
 class IconListItem {
   final int id;
@@ -111,12 +223,14 @@ List<RatingistItem> ratingsIconList = [
   new RatingistItem(id: 'glasses', name: 'Bad Reading', url: _baseurl + '/static/ratings/glasses-24.png'),
   new RatingistItem(id: 'late', name: 'Late', url: _baseurl + '/static/ratings/clock-24.png'),
   new RatingistItem(id: 'dumb', name: 'Dumb', url: _baseurl + '/static/ratings/dumb-box-24.png'),
+  new RatingistItem(id: 'citation', name: 'Citation Needed', url: _baseurl + '/static/ratings/citation-24.png', allowedSubforums: [5]),
 ];
 
 class RatingistItem {
   final String id;
   final String name;
   final String url;
+  final List<int> allowedSubforums;
 
-  RatingistItem({this.id, this.url, this.name});
+  RatingistItem({this.id, this.url, this.name, this.allowedSubforums});
 }

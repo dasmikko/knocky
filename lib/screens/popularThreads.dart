@@ -24,6 +24,7 @@ class _PopularThreadsScreenState extends State<PopularThreadsScreen>
   List<SubforumThreadLatestPopular> items = List();
   bool fetching = false;
   StreamSubscription<List<SubforumThreadLatestPopular>> _dataSub;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -103,6 +104,7 @@ class _PopularThreadsScreenState extends State<PopularThreadsScreen>
 
     return Scaffold(
       appBar: AppBar(
+        key: _scaffoldKey,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -111,7 +113,10 @@ class _PopularThreadsScreenState extends State<PopularThreadsScreen>
         ),
         title: Text('Popular threads'),
       ),
-      drawer: DrawerWidget(),
+      drawerEdgeDragWidth: 30.0,
+      drawer: DrawerWidget(
+        scaffoldKey: _scaffoldKey,
+      ),
       body: RefreshIndicator(
           onRefresh: loadThreads,
           child: KnockoutLoadingIndicator(

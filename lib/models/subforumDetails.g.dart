@@ -39,8 +39,8 @@ SubforumThread _$SubforumThreadFromJson(Map<String, dynamic> json) {
     firstUnreadId: json['firstUnreadId'] as int,
     iconId: json['icon_id'] as int,
     id: json['id'] as int,
-    locked: json['locked'] as int,
-    pinned: json['pinned'] as int,
+    locked: json['locked'] as bool,
+    pinned: json['pinned'] as bool,
     postCount: json['postCount'] as int,
     readThreadUnreadPosts: json['readThreadUnreadPosts'] as int ?? 0,
     unreadPostCount: json['unreadPostCount'] as int ?? 0,
@@ -52,6 +52,9 @@ SubforumThread _$SubforumThreadFromJson(Map<String, dynamic> json) {
     lastPost: json['lastPost'] == null
         ? null
         : SubforumLastPost.fromJson(json['lastPost'] as Map<String, dynamic>),
+    hasRead: json['hasRead'] as bool,
+    subscribed: json['subscribed'] as bool,
+    tags: json['tags'] as List,
   );
 }
 
@@ -70,6 +73,9 @@ Map<String, dynamic> _$SubforumThreadToJson(SubforumThread instance) =>
       'unreadType': instance.unreadType,
       'user': instance.user,
       'lastPost': instance.lastPost,
+      'hasRead': instance.hasRead,
+      'subscribed': instance.subscribed,
+      'tags': instance.tags,
     };
 
 SubforumThreadLatestPopular _$SubforumThreadLatestPopularFromJson(
@@ -168,6 +174,10 @@ SubforumThreadLastPostThread _$SubforumThreadLastPostThreadFromJson(
     id: json['id'] as int,
     title: json['title'] as String,
     postCount: json['post_count'] as int,
+    lastPost: json['lastPost'] == null
+        ? null
+        : SubforumLastpostThreadLastpost.fromJson(
+            json['lastPost'] as Map<String, dynamic>),
   );
 }
 
@@ -178,6 +188,7 @@ Map<String, dynamic> _$SubforumThreadLastPostThreadToJson(
       'created_at': instance.createdAt?.toIso8601String(),
       'title': instance.title,
       'post_count': instance.postCount,
+      'lastPost': instance.lastPost,
     };
 
 SubforumThreadLastPostUser _$SubforumThreadLastPostUserFromJson(
@@ -195,4 +206,31 @@ Map<String, dynamic> _$SubforumThreadLastPostUserToJson(
       'usergroup': instance.usergroup,
       'avatar_url': instance.avatarUrl,
       'username': instance.username,
+    };
+
+SubforumLastpostThreadLastpost _$SubforumLastpostThreadLastpostFromJson(
+    Map<String, dynamic> json) {
+  return SubforumLastpostThreadLastpost(
+    id: json['id'] as int,
+    createdAt: json['created_at'] == null
+        ? null
+        : DateTime.parse(json['created_at'] as String),
+    thread: json['thread'] as int,
+    user: json['user'] == null
+        ? null
+        : SubforumLastPostUser.fromJson(json['user'] as Map<String, dynamic>),
+    page: json['page'] as int,
+    content: json['content'] as String,
+  );
+}
+
+Map<String, dynamic> _$SubforumLastpostThreadLastpostToJson(
+        SubforumLastpostThreadLastpost instance) =>
+    <String, dynamic>{
+      'created_at': instance.createdAt?.toIso8601String(),
+      'id': instance.id,
+      'thread': instance.thread,
+      'content': instance.content,
+      'user': instance.user,
+      'page': instance.page,
     };

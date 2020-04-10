@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/models/events.dart';
@@ -175,7 +174,9 @@ class KnockoutAPI {
     print(threadId);
     try {
       await _request(type: 'post', url: 'post', data: {
-        'content': json.encode(content).toString(),
+        'displayCountryInfo': false,
+        'appName': 'Knocky',
+        'content':content.toString(),
         'thread_id': threadId,
       }, headers: {
         'content-type': 'application/json; charset=UTF-8',
@@ -190,7 +191,7 @@ class KnockoutAPI {
   Future<void> updatePost(dynamic content, int postId, int threadId) async {
     try {
       await _request(type: 'put', url: 'post', data: {
-        'content': json.encode(content).toString(),
+        'content': content.toString(),
         'id': postId,
         'thread_id': threadId
       });

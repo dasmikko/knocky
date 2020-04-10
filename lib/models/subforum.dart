@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:knocky/models/subforumDetails.dart';
 
 part 'subforum.g.dart';
 
@@ -12,7 +13,7 @@ class Subforum {
   final int totalThreads;
   @JsonKey(name: 'lastPost_id')
   final int lastPostId;
-  final SubforumLastPost lastPost;
+  final SubforumOldLastPost lastPost;
 
   Subforum({
     this.id,
@@ -35,20 +36,45 @@ class SubforumLastPost {
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
   final int id;
-  final SubForumLastPostThread thread;
+  final int thread;
   final SubforumLastPostUser user;
+  final int page;
 
   SubforumLastPost({
     this.id,
     this.createdAt,
     this.thread,
     this.user,
+    this.page,
   });
 
   factory SubforumLastPost.fromJson(Map<String, dynamic> json) =>
       _$SubforumLastPostFromJson(json);
   Map<String, dynamic> toJson() => _$SubforumLastPostToJson(this);
 }
+
+@JsonSerializable()
+class SubforumOldLastPost {
+  @JsonKey(name: 'created_at')
+  final DateTime createdAt;
+  final int id;
+  final SubforumThreadLastPostThread thread;
+  final SubforumLastPostUser user;
+  final int page;
+
+  SubforumOldLastPost({
+    this.id,
+    this.createdAt,
+    this.thread,
+    this.user,
+    this.page,
+  });
+
+  factory SubforumOldLastPost.fromJson(Map<String, dynamic> json) =>
+      _$SubforumOldLastPostFromJson(json);
+  Map<String, dynamic> toJson() => _$SubforumOldLastPostToJson(this);
+}
+
 
 @JsonSerializable()
 class SubForumLastPostThread {
@@ -58,12 +84,14 @@ class SubForumLastPostThread {
   @JsonKey(name: 'subforum_id')
   final int subforumId;
   final String title;
+  final int page;
 
   SubForumLastPostThread({
     this.id,
     this.postCount,
     this.subforumId,
     this.title,
+    this.page,
   });
 
   factory SubForumLastPostThread.fromJson(Map<String, dynamic> json) =>

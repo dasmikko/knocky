@@ -30,7 +30,7 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
   void initState() {
     super.initState();
 
-    var id = Uri.parse(this.widget.url).queryParameters['v'];
+    var id = Uri.parse(this.widget.url.trim()).queryParameters['v'];
 
     if (id == null) {
       id = this.widget.url.split("/").last.split('?').first;

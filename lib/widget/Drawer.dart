@@ -2,17 +2,15 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:knocky/helpers/api.dart';
-import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/models/syncData.dart';
 import 'package:knocky/screens/events.dart';
 import 'package:knocky/screens/forum.dart';
 import 'package:knocky/screens/latestThreads.dart';
+import 'package:knocky/screens/login.dart';
 import 'package:knocky/screens/popularThreads.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'dart:convert';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intent/intent.dart' as Intent;
@@ -24,16 +22,11 @@ import 'package:knocky/state/appState.dart';
 import 'package:knocky/state/subscriptions.dart';
 
 class DrawerWidget extends StatefulWidget {
-  final Function onLoginOpen;
-  final Function onLoginCloses;
-  final Function closeLoginWebview;
-  final Function onLoginFinished;
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
-  DrawerWidget(
-      {this.onLoginOpen,
-      this.onLoginCloses,
-      this.closeLoginWebview,
-      this.onLoginFinished});
+  DrawerWidget({
+    this.scaffoldKey,
+  });
 
   @override
   _DrawerWidgetState createState() => _DrawerWidgetState();
@@ -53,10 +46,11 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
         .getLoginStateFromSharedPreference(context);
 
     ScopedModel.of<AppStateModel>(context).updateSyncData();
+    ScopedModel.of<SubscriptionModel>(context).getSubscriptions();
   }
 
   void onClickLogin(BuildContext context) async {
-    final flutterWebviewPlugin = new FlutterWebviewPlugin();
+    //final flutterWebviewPlugin = new FlutterWebviewPlugin();
     String loginUrl = 'login';
     String fullUrl = '';
 
@@ -66,76 +60,31 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
         ? KnockoutAPI.KNOCKOUT_SITE_URL + loginUrl
         : KnockoutAPI.QA_SITE_URL + loginUrl;
 
-    flutterWebviewPlugin.onBack.listen((onData) async {
-      if (onData == null) {
-        flutterWebviewPlugin.close();
-        this.widget.onLoginCloses();
-      }
-    });
-
-    flutterWebviewPlugin.onUrlChanged.listen((String url) async {
-      if (url.contains(await box.get('env') == 'knockout'
-          ? KnockoutAPI.KNOCKOUT_URL + "auth/finish"
-          : KnockoutAPI.QA_URL + "auth/finish")) {
-        print(url);
-        Uri parsedUrl = Uri.parse(url);
-        String userJson = Uri.decodeFull(parsedUrl.queryParameters['user']);
-
-        print(userJson);
-
-        Map valueMap = json.decode(userJson);
-
-        print(valueMap);
-
-        await ScopedModel.of<AuthenticationModel>(context).setLoginState(
-            true,
-            valueMap['id'],
-            valueMap['username'] != null
-                ? valueMap['username']
-                : 'User has no username?',
-            valueMap['avatar_url'],
-            valueMap['background_url'],
-            valueMap['usergroup']);
-
-        flutterWebviewPlugin.reloadUrl(KnockoutAPI.baseurlSite);
-      }
-
-      if (url == KnockoutAPI.baseurlSite) {
-        String cookieUrl = await box.get('env') == 'knockout'
-            ? KnockoutAPI.KNOCKOUT_URL
-            : KnockoutAPI.QA_URL;
-
-        var cookies = await CookieManager.getCookies(cookieUrl);
-        String cookieString = '';
-
-        // Get needed JWTToken
-        cookies.forEach((element) {
-          if (element['name'] == 'knockoutJwt') {
-            cookieString += element['name'] + "=" + element['value'] + "; ";
-          }
-        });
-
-        ScopedModel.of<AuthenticationModel>(context)
-            .setCookieString(cookieString);
-
-        //flutterWebviewPlugin.evalJavascript('document.cookie = "user=localStorage.getItem("currentUser")";');
-
-        flutterWebviewPlugin.close();
-        this.widget.onLoginFinished();
-      }
-    });
-
-    this.widget.onLoginOpen();
-
-    flutterWebviewPlugin.launch(
-      fullUrl,
-      withLocalStorage: true,
-      appCacheEnabled: true,
-      withJavascript: true,
-      userAgent:
-          //"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
+    Navigator.pop(context);
+    bool wasLoggedIn = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginScreen(
+          loginUrl: fullUrl,
+        ),
+      ),
     );
+
+    print('was logged in state ' + wasLoggedIn.toString());
+
+    if (wasLoggedIn) {
+      this.widget.scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              content: Text(
+                'Login was successful!',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.green,
+            ),
+          );
+    }
+
+    return;
   }
 
   void onTapForum() {
@@ -238,6 +187,10 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
         ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
             .totalUnreadPosts;
 
+    final bool isFetchingSubscriptions =
+        ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
+            .isFetching;
+
     /*final int banThreadId =
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .banThreadId;*/
@@ -297,17 +250,34 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
               FontAwesomeIcons.solidNewspaper,
               size: _iconSize,
             ),
-            trailing: unreadPosts > 0 ? ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                color: Colors.red,
-                child: Text(
-                  unreadPosts.toString(),
-                  style: TextStyle(fontSize: 12),
-                ),
-              ),
-            ) : null,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                if (isFetchingSubscriptions)
+                  Container(
+                      height: 15,
+                      width: 15,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      )),
+                if (unreadPosts > 0)
+                  Container(
+                    margin: EdgeInsets.only(left: 10),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                        color: Colors.red,
+                        child: Text(
+                          unreadPosts.toString(),
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
             title: Text('Subscriptions'),
             onTap: onTapSubsriptions,
           ),

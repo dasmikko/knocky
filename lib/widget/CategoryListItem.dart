@@ -111,20 +111,15 @@ class CategoryListItem extends StatelessWidget {
             flex: 1,
             child: subforum.lastPost != null
                 ? InkWell(
-                    onTap: () {
-                      print('Clicked on last post');
-
-                      int page =
-                          (subforum.lastPost.thread.postCount / 20).ceil();
+                    onTap: () {                      
+                      int page = subforum.lastPost.thread.lastPost.page;
 
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ThreadScreen(
-                            title: subforum.lastPost.thread.title,
-                            postCount: subforum.lastPost.thread.postCount,
                             page: page,
-                            threadId: subforum.lastPost.thread.id,
+                            threadId: subforum.lastPost.thread.lastPost.thread,
                           ),
                         ),
                       );
@@ -148,8 +143,8 @@ class CategoryListItem extends StatelessWidget {
                                     children: <InlineSpan>[
                                       TextSpan(text: 'Last post by '),
                                       TextSpan(
-                                        text: subforum.lastPost.user.username +
-                                            ' ',
+                                        text: subforum.lastPost.user.username != null ? subforum.lastPost.user.username +
+                                            ' ' : ' ',
                                         style: TextStyle(color: AppColors(context).userGroupToColor(subforum.lastPost.user.usergroup)),
                                       ),
                                       TextSpan(

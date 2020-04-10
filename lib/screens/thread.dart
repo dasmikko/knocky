@@ -54,12 +54,18 @@ class _ThreadScreenState extends State<ThreadScreen>
   Animation<double> animation;
   BuildContext self;
   List<ThreadPost> postsToReplyTo = List();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _currentPage = this.widget.page;
-
+    if (this.widget.page != null) { 
+      _currentPage = this.widget.page; 
+    } else {
+      _currentPage = 1;
+    }
+    
+    if (_totalPages == 0 && _currentPage != null) _totalPages = _currentPage;
     if (widget.postCount != null) {
       _totalPages = (widget.postCount / 20).ceil();
     }
@@ -94,16 +100,17 @@ class _ThreadScreenState extends State<ThreadScreen>
 
     Future _future =
         api.getThread(widget.threadId, page: _currentPage).catchError((error) {
+          throw(error);
       setState(() {
         _isLoading = false;
       });
 
-      Scaffold.of(self).hideCurrentSnackBar();
-      Scaffold.of(self).showSnackBar(SnackBar(
+      /*Scaffold.of(context).hideCurrentSnackBar();
+      Scaffold.of(context).showSnackBar(SnackBar(
         content: Text('Failed to load thread. Try again'),
         backgroundColor: Colors.red,
         behavior: SnackBarBehavior.floating,
-      ));
+      ));*/
     });
 
     _dataSub = _future.asStream().listen((res) {
@@ -359,9 +366,9 @@ class _ThreadScreenState extends State<ThreadScreen>
     });
   }
 
-  void onPressReply(ThreadPost post) async {
+  void onPressReply(ThreadPost post, BuildContext buildContext) async {
     if (postsToReplyTo.length > 0) {
-      onLongPressReply(new ThreadPost.clone(post));
+      onLongPressReply(new ThreadPost.clone(post), buildContext);
     } else {
       List<ThreadPost> reply = List();
       reply.add(
@@ -390,14 +397,14 @@ class _ThreadScreenState extends State<ThreadScreen>
     }
   }
 
-  void onLongPressReply(ThreadPost post) {
+  void onLongPressReply(ThreadPost post, BuildContext buildContext) {
     if (postsToReplyTo.where((o) => o.id == post.id).length > 0) {
       setState(() {
         postsToReplyTo.removeWhere((o) => o.id == post.id);
 
-        Scaffold.of(context)
+        Scaffold.of(buildContext)
             .hideCurrentSnackBar(reason: SnackBarClosedReason.hide);
-        Scaffold.of(context).showSnackBar(SnackBar(
+        Scaffold.of(buildContext).showSnackBar(SnackBar(
           content: Text('Removed post from reply list'),
           behavior: SnackBarBehavior.floating,
         ));
@@ -412,9 +419,9 @@ class _ThreadScreenState extends State<ThreadScreen>
             ratings: post.ratings,
             user: post.user));
 
-        Scaffold.of(context)
+        Scaffold.of(buildContext)
             .hideCurrentSnackBar(reason: SnackBarClosedReason.hide);
-        Scaffold.of(context).showSnackBar(SnackBar(
+        Scaffold.of(buildContext).showSnackBar(SnackBar(
           content: Text('Added post to reply list'),
           behavior: SnackBarBehavior.floating,
         ));
@@ -594,13 +601,6 @@ class _ThreadScreenState extends State<ThreadScreen>
                         ),
                         'Jump to last page',
                         4),
-                    overFlowItem(
-                        Icon(
-                          FontAwesomeIcons.pen,
-                          size: 18,
-                        ),
-                        'Jump to fourth item',
-                        10),
                   ];
                 },
               );
@@ -608,7 +608,10 @@ class _ThreadScreenState extends State<ThreadScreen>
           ),
         ],
       ),
-      drawer: DrawerWidget(),
+      drawerEdgeDragWidth: 30.0,
+      drawer: DrawerWidget(
+        scaffoldKey: _scaffoldKey,
+      ),
       key: scaffoldkey,
       body: KnockoutLoadingIndicator(
         show: _isLoading,
@@ -642,8 +645,8 @@ class _ThreadScreenState extends State<ThreadScreen>
                                   .where((o) => o.id == item.id)
                                   .length >
                               0,
-                          onPressReply: onPressReply,
-                          onLongPressReply: onLongPressReply,
+                          onPressReply: (post) => onPressReply(post, context),
+                          onLongPressReply: (post) => onLongPressReply(post, context),
                           onPostRated: () {
                             Scaffold.of(context).showSnackBar(SnackBar(
                               backgroundColor: Colors.green,

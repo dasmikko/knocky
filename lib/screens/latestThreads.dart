@@ -24,6 +24,7 @@ class _LatestThreadsScreenState extends State<LatestThreadsScreen>
   List<SubforumThreadLatestPopular> items = List();
   bool fetching = false;
   StreamSubscription<List<SubforumThreadLatestPopular>> _dataSub;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -102,6 +103,7 @@ class _LatestThreadsScreenState extends State<LatestThreadsScreen>
         ScopedModel.of<AppStateModel>(context, rebuildOnChange: true).mentions;
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -111,7 +113,10 @@ class _LatestThreadsScreenState extends State<LatestThreadsScreen>
         ),
         title: Text('Latest threads'),
       ),
-      drawer: DrawerWidget(),
+      drawerEdgeDragWidth: 30.0,
+      drawer: DrawerWidget(
+        scaffoldKey: _scaffoldKey,
+      ),
       body: RefreshIndicator(
           onRefresh: loadThreads,
           child: KnockoutLoadingIndicator(

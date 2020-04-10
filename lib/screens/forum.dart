@@ -4,14 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:knocky/helpers/api.dart';
+import 'package:knocky/helpers/bbcodeparser.dart';
 import 'package:knocky/helpers/hiveHelper.dart';
 import 'package:knocky/helpers/twitterApi.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky/models/syncData.dart';
+import 'package:knocky/screens/latestThreads.dart';
+import 'package:knocky/screens/popularThreads.dart';
 import 'package:knocky/screens/subforum.dart';
+import 'package:knocky/screens/subscriptions.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/state/appState.dart';
+import 'package:knocky/state/subscriptions.dart';
 import 'package:knocky/widget/CategoryListItem.dart';
 import 'package:knocky/widget/Drawer.dart';
 import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
@@ -67,15 +72,30 @@ class _ForumScreenState extends State<ForumScreen>
         AppHiveBox.getBox().then((Box box) {
           box.get('isLoggedIn', defaultValue: false).then((loginState) {
             if (loginState) {
-              ScopedModel.of<AppStateModel>(context).setCurrentTab(1);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SubscriptionScreen(),
+                ),
+              );
             }
           });
         });
       }
       if (shortcutType == 'action_popular')
-        ScopedModel.of<AppStateModel>(context).setCurrentTab(3);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PopularThreadsScreen(),
+          ),
+        );
       if (shortcutType == 'action_latest')
-        ScopedModel.of<AppStateModel>(context).setCurrentTab(2);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LatestThreadsScreen(),
+          ),
+        );
       // More handling code...
     });
 
@@ -88,7 +108,6 @@ class _ForumScreenState extends State<ForumScreen>
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       Uri initialUri = await getInitialUri();
-      print(initialUri.toString());
       if (initialUri != null) handleLink(initialUri);
       // Parse the link and warn the user, if it is not correct,
       // but keep in mind it could be `null`.
@@ -107,9 +126,6 @@ class _ForumScreenState extends State<ForumScreen>
   }
 
   void handleLink(Uri uri) {
-    print(uri.toString());
-    print(uri.pathSegments.length);
-
     // Handle thread links
     if (uri.pathSegments.length > 0) {
       if (uri.pathSegments[0] == 'thread') {
@@ -127,15 +143,18 @@ class _ForumScreenState extends State<ForumScreen>
       }
     }
     uri.pathSegments.forEach((segment) {
-      print(segment);
     });
   }
 
   @override
-  void afterFirstLayout(BuildContext context) {
+  void afterFirstLayout(BuildContext context) async {
     getSubforums(context);
-    ScopedModel.of<AuthenticationModel>(context)
+    await ScopedModel.of<AuthenticationModel>(context)
         .getLoginStateFromSharedPreference(context);
+
+    if (ScopedModel.of<AuthenticationModel>(context).isLoggedIn) {
+      ScopedModel.of<SubscriptionModel>(context).getSubscriptions();
+    }
   }
 
   @override
@@ -212,6 +231,10 @@ class _ForumScreenState extends State<ForumScreen>
     final List<SyncDataMentionModel> mentions =
         ScopedModel.of<AppStateModel>(context, rebuildOnChange: true).mentions;
 
+    final int totalUnreadPosts =
+        ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
+            .totalUnreadPosts;
+
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -222,8 +245,8 @@ class _ForumScreenState extends State<ForumScreen>
                 overflow: Overflow.visible,
                 children: <Widget>[
                   Icon(Icons.menu),
-                  if (mentions != null &&
-                      mentions.length >
+                  if (totalUnreadPosts != null &&
+                      totalUnreadPosts >
                           0) // Show a little indicator that you have mentions
                     Positioned(
                       top: -5,
@@ -235,7 +258,7 @@ class _ForumScreenState extends State<ForumScreen>
                               EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                           color: Colors.red,
                           child: Text(
-                            '1',
+                            totalUnreadPosts.toString(),
                             style: TextStyle(fontSize: 10),
                           ),
                         ),
@@ -248,28 +271,15 @@ class _ForumScreenState extends State<ForumScreen>
               }),
           title: Text('Knocky'),
         ),
+        drawerEdgeDragWidth: 30.0,
         drawer: DrawerWidget(
-          onLoginOpen: () {
-            setState(() {
-              _loginIsOpen = true;
-            });
-          },
-          onLoginCloses: () {
-            setState(() {
-              _loginIsOpen = false;
-            });
-          },
-          onLoginFinished: () {
-            setState(() {
-              _loginIsOpen = false;
-            });
-          },
+          scaffoldKey: _scaffoldKey,
         ),
         body: KnockoutLoadingIndicator(
           show: _isFetching,
           child: Container(
             child: RefreshIndicator(
-              onRefresh: () => getSubforums(context),
+              onRefresh: () => getSubforums(this.context),
               child: ListView.builder(
                 padding: EdgeInsets.all(0.0),
                 itemCount: _subforums.length,
