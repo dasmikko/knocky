@@ -630,6 +630,7 @@ class _ThreadScreenState extends State<ThreadScreen>
               ),
             details != null
                 ? ScrollablePositionedList.builder(
+                    padding: EdgeInsets.only(bottom: 66),
                     itemCount: details.posts.length,
                     itemBuilder: (context, index) {
                       ThreadPost item = details.posts[index];
@@ -664,7 +665,7 @@ class _ThreadScreenState extends State<ThreadScreen>
                     itemPositionsListener: itemPositionListener,
                     didAttach:
                         (ScrollController scrollControllerFromListView) async {
-                      /*scrollControllerFromListView.addListener(() {
+                      scrollControllerFromListView.addListener(() {
                         if (scrollControllerFromListView
                                 .position.userScrollDirection ==
                             ScrollDirection.reverse) {
@@ -686,7 +687,7 @@ class _ThreadScreenState extends State<ThreadScreen>
                         if (scrollControllerFromListView.position.atEdge) {
                           expandController.reverse();
                         }
-                      });*/
+                      });
 
                       // The delayed if a huge stupid fucking hack, to make it work while in debug mode.
                       await Future.delayed(Duration(milliseconds: 100));
@@ -704,7 +705,7 @@ class _ThreadScreenState extends State<ThreadScreen>
           ],
         ),
       ),
-      extendBody: false,
+      extendBody: true,
       bottomNavigationBar: SizeTransition(
         axisAlignment: -1.0,
         sizeFactor: animation,
