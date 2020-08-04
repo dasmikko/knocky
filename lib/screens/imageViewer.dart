@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/zoomable.dart';
 import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:knocky/helpers/Download.dart';
+//import 'package:knocky_edge/helpers/Download.dart';
 
 class ImageViewerScreen extends StatefulWidget {
   final String url;
@@ -39,14 +39,15 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
             icon: Icon(Icons.file_download),
             tooltip: "Download image",
             onPressed: () async {
-              DownloadHelper().downloadFile(widget.url, _scaffoldKey);
+              //DownloadHelper().downloadFile(widget.url, _scaffoldKey);
             },
           ),
           IconButton(
             icon: Icon(Icons.content_copy),
             tooltip: "Copy image link",
             onPressed: () async {
-              Clipboard.setData(new ClipboardData(text: this.widget.urls[_currentPage]));
+              Clipboard.setData(
+                  new ClipboardData(text: this.widget.urls[_currentPage]));
               _scaffoldKey.currentState.showSnackBar(new SnackBar(
                 content: Text('Image link copied to clipboard'),
               ));
@@ -55,13 +56,15 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
         ],
       ),
       body: PageView.builder(
-        physics: !_isZooming ? AlwaysScrollableScrollPhysics() : NeverScrollableScrollPhysics(),
+        physics: !_isZooming
+            ? AlwaysScrollableScrollPhysics()
+            : NeverScrollableScrollPhysics(),
         controller: PageController(
           initialPage: this.widget.urls.indexOf(widget.url),
         ),
         onPageChanged: (int newIndex) {
           setState(() {
-           _currentPage = newIndex;
+            _currentPage = newIndex;
           });
         },
         itemCount: this.widget.urls.length,
@@ -80,13 +83,13 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
                 onZoomChanged: (double zoom) {
                   if (zoom > 1.0 && !_isZooming) {
                     setState(() {
-                     _isZooming = true;
+                      _isZooming = true;
                     });
                   }
 
                   if (zoom == 1.0 && _isZooming) {
                     setState(() {
-                     _isZooming = false;
+                      _isZooming = false;
                     });
                   }
                 },

@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:knocky/models/subforumDetails.dart';
+import 'package:knocky_edge/models/subforumDetails.dart';
 
 part 'subforum.g.dart';
 
@@ -74,7 +74,6 @@ class SubforumOldLastPost {
       _$SubforumOldLastPostFromJson(json);
   Map<String, dynamic> toJson() => _$SubforumOldLastPostToJson(this);
 }
-
 
 @JsonSerializable()
 class SubForumLastPostThread {

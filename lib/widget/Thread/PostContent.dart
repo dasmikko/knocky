@@ -1,21 +1,21 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:knocky/helpers/bbcode.dart';
-import 'package:knocky/helpers/bbcodeparser.dart';
-import 'package:knocky/models/slateDocument.dart';
-import 'package:knocky/models/thread.dart';
-import 'package:knocky/screens/imageViewer.dart';
-import 'package:knocky/widget/BBcodeRenderer/BBcodeRenderer.dart';
-import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
-import 'package:knocky/widget/Thread/PostElements/Audio.dart';
-import 'package:knocky/widget/Thread/PostElements/Embed.dart';
-import 'package:knocky/widget/Thread/PostElements/Image.dart';
-import 'package:knocky/widget/Thread/PostElements/Twitter.dart';
-import 'package:knocky/widget/Thread/PostElements/UserQuote.dart';
-import 'package:knocky/widget/Thread/PostElements/Video.dart';
-import 'package:knocky/widget/Thread/PostElements/YouTubeEmbed.dart';
-import 'package:intent/intent.dart' as Intent;
-import 'package:intent/action.dart' as Action;
+import 'package:knocky_edge/helpers/bbcode.dart';
+import 'package:knocky_edge/helpers/bbcodeparser.dart';
+import 'package:knocky_edge/models/slateDocument.dart';
+import 'package:knocky_edge/models/thread.dart';
+import 'package:knocky_edge/screens/imageViewer.dart';
+import 'package:knocky_edge/widget/BBcodeRenderer/BBcodeRenderer.dart';
+import 'package:knocky_edge/widget/SlateDocumentParser/SlateDocumentParser.dart';
+import 'package:knocky_edge/widget/Thread/PostElements/Audio.dart';
+import 'package:knocky_edge/widget/Thread/PostElements/Embed.dart';
+import 'package:knocky_edge/widget/Thread/PostElements/Image.dart';
+import 'package:knocky_edge/widget/Thread/PostElements/Twitter.dart';
+import 'package:knocky_edge/widget/Thread/PostElements/UserQuote.dart';
+import 'package:knocky_edge/widget/Thread/PostElements/Video.dart';
+import 'package:knocky_edge/widget/Thread/PostElements/YouTubeEmbed.dart';
+//import 'package:intent/intent.dart' as Intent;
+//import 'package:intent/action.dart' as Action;
 
 class PostContent extends StatelessWidget {
   final dynamic content;
@@ -74,10 +74,10 @@ class PostContent extends StatelessWidget {
                           style: TextStyle(color: Colors.blue),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              Intent.Intent()
+                              /*Intent.Intent()
                                 ..setAction(Action.Action.ACTION_VIEW)
                                 ..setData(Uri.parse(line.data.href))
-                                ..startActivity().catchError((e) => print(e));
+                                ..startActivity().catchError((e) => print(e));*/
                               print('Clicked link: ' + line.data.href);
                             }));
                     }
@@ -144,7 +144,11 @@ class PostContent extends StatelessWidget {
         imageWidgetHandler: (String imageUrl, slateObject, SlateNode node) {
           return Container(
             margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-            child: ImageWidget(url: imageUrl, slateObject: slateObject, postId: postDetails.id,),
+            child: ImageWidget(
+              url: imageUrl,
+              slateObject: slateObject,
+              postId: postDetails.id,
+            ),
           );
         },
         videoWidgetHandler: (SlateNode node) {
@@ -297,7 +301,11 @@ class PostContent extends StatelessWidget {
         },
       );
     } else {
-      return BBcodeRenderer(bbcode: content, parentContext: context, postDetails: postDetails,);
+      return BBcodeRenderer(
+        bbcode: content,
+        parentContext: context,
+        postDetails: postDetails,
+      );
     }
   }
 }

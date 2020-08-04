@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:knocky/helpers/api.dart';
-import 'package:knocky/models/events.dart';
-import 'package:knocky/models/subforumDetails.dart';
-import 'package:knocky/models/threadAlert.dart';
-import 'package:knocky/screens/thread.dart';
-import 'package:knocky/widget/Events/EventsListItem.dart';
-import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
+import 'package:knocky_edge/helpers/api.dart';
+import 'package:knocky_edge/models/events.dart';
+import 'package:knocky_edge/models/subforumDetails.dart';
+import 'package:knocky_edge/models/threadAlert.dart';
+import 'package:knocky_edge/screens/thread.dart';
+import 'package:knocky_edge/widget/Events/EventsListItem.dart';
+import 'package:knocky_edge/widget/KnockoutLoadingIndicator.dart';
 
 class EventsScreen extends StatefulWidget {
   @override

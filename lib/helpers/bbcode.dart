@@ -1,6 +1,5 @@
 import 'package:bbob_dart/bbob_dart.dart' as bbob;
-import 'package:knocky/models/slateDocument.dart';
-
+import 'package:knocky_edge/models/slateDocument.dart';
 
 class BBCodeHandler implements bbob.NodeVisitor {
   SlateNode paragraph = SlateNode(object: 'block', nodes: List());
@@ -79,7 +78,9 @@ class BBCodeHandler implements bbob.NodeVisitor {
       paragraph.nodes.add(SlateNode(
           object: 'inline',
           type: 'link',
-          data: SlateNodeData(href: element.children.first.textContent, isSmartLink: element.attributes['rich'] != null ? true : false),
+          data: SlateNodeData(
+              href: element.children.first.textContent,
+              isSmartLink: element.attributes['rich'] != null ? true : false),
           nodes: [
             SlateNode(object: 'text', leaves: [
               SlateLeaf(

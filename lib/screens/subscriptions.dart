@@ -3,19 +3,19 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:hive/hive.dart';
-import 'package:knocky/helpers/api.dart';
-import 'package:knocky/helpers/hiveHelper.dart';
-import 'package:knocky/models/syncData.dart';
-import 'package:knocky/models/threadAlert.dart';
-import 'package:knocky/screens/thread.dart';
-import 'package:knocky/state/appState.dart';
-import 'package:knocky/widget/Drawer.dart';
-import 'package:knocky/widget/Subscription/SubscriptionListItem.dart';
-import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
-import 'package:knocky/state/subscriptions.dart';
+import 'package:knocky_edge/helpers/api.dart';
+import 'package:knocky_edge/helpers/hiveHelper.dart';
+import 'package:knocky_edge/models/syncData.dart';
+import 'package:knocky_edge/models/threadAlert.dart';
+import 'package:knocky_edge/screens/thread.dart';
+import 'package:knocky_edge/state/appState.dart';
+import 'package:knocky_edge/widget/Drawer.dart';
+import 'package:knocky_edge/widget/Subscription/SubscriptionListItem.dart';
+import 'package:knocky_edge/widget/KnockoutLoadingIndicator.dart';
+import 'package:knocky_edge/state/subscriptions.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:knocky/events.dart';
+//import 'package:knocky_edge/events.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   @override
@@ -24,7 +24,6 @@ class SubscriptionScreen extends StatefulWidget {
 
 class _SubscriptionScreenState extends State<SubscriptionScreen>
     with AfterLayoutMixin<SubscriptionScreen> {
-
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override

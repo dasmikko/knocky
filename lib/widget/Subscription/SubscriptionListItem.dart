@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:knocky/models/threadAlert.dart';
-import 'package:knocky/helpers/icons.dart';
-import 'package:knocky/widget/InkWellOnWidget.dart';
+import 'package:knocky_edge/models/threadAlert.dart';
+import 'package:knocky_edge/helpers/icons.dart';
+import 'package:knocky_edge/widget/InkWellOnWidget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:knocky/helpers/colors.dart';
+import 'package:knocky_edge/helpers/colors.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class SubscriptionListItem extends StatelessWidget {
@@ -16,7 +16,11 @@ class SubscriptionListItem extends StatelessWidget {
   final Function onUnsubscribe;
 
   SubscriptionListItem(
-      {this.item, this.onTapItem, this.onTapNewPostButton, this.onUnsubscribe, this.onLongPress});
+      {this.item,
+      this.onTapItem,
+      this.onTapNewPostButton,
+      this.onUnsubscribe,
+      this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +139,9 @@ class SubscriptionListItem extends StatelessWidget {
                               ),
                             Text(
                               item.threadUsername,
-                              style: TextStyle(color: AppColors(context).userGroupToColor(item.threadUserUsergroup)),
+                              style: TextStyle(
+                                  color: AppColors(context).userGroupToColor(
+                                      item.threadUserUsergroup)),
                             )
                           ],
                         ),
@@ -169,7 +175,10 @@ class SubscriptionListItem extends StatelessWidget {
                       margin: EdgeInsets.only(bottom: 4),
                       child: Text(
                         item.lastPost.user.username,
-                        style: TextStyle(color: AppColors(context).userGroupToColor(item.lastPost.user.usergroup), fontSize: 11),
+                        style: TextStyle(
+                            color: AppColors(context)
+                                .userGroupToColor(item.lastPost.user.usergroup),
+                            fontSize: 11),
                       ),
                     ),
                     Container(

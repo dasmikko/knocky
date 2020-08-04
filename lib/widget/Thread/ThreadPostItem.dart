@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:knocky/models/thread.dart';
-import 'package:knocky/helpers/icons.dart';
+import 'package:knocky_edge/models/thread.dart';
+import 'package:knocky_edge/helpers/icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:knocky/widget/Thread/PostHeader.dart';
+import 'package:knocky_edge/widget/Thread/PostHeader.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:knocky/state/authentication.dart';
-import 'package:knocky/widget/Thread/RatePostContent.dart';
-import 'package:knocky/widget/Thread/ViewUsersOfRatingsContent.dart';
-import 'package:knocky/widget/Thread/PostBan.dart';
-import 'package:knocky/widget/Thread/PostContent.dart';
+import 'package:knocky_edge/state/authentication.dart';
+import 'package:knocky_edge/widget/Thread/RatePostContent.dart';
+import 'package:knocky_edge/widget/Thread/ViewUsersOfRatingsContent.dart';
+import 'package:knocky_edge/widget/Thread/PostBan.dart';
+import 'package:knocky_edge/widget/Thread/PostContent.dart';
 
 class ThreadPostItem extends StatefulWidget {
   final ThreadPost postDetails;

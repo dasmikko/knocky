@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
-import 'package:knocky/widget/InkWellOnWidget.dart';
-import 'package:intent/intent.dart' as intent;
-import 'package:intent/action.dart' as action;
+import 'package:knocky_edge/widget/InkWellOnWidget.dart';
+import 'package:url_launcher/url_launcher.dart';
+//import 'package:intent/intent.dart' as intent;
+//import 'package:intent/action.dart' as action;
 
 class EmbedWidget extends StatefulWidget {
   final String url;
@@ -90,10 +91,11 @@ class _EmbedWidgetState extends State<EmbedWidget> {
         clipBehavior: Clip.antiAlias,
         child: InkWellOverWidget(
           onTap: () async {
-            intent.Intent()
-              ..setAction(action.Action.ACTION_VIEW)
-              ..setData(Uri.parse(this.widget.url))
-              ..startActivity().catchError((e) => print(e));
+            if (await canLaunch(this.widget.url)) {
+              await launch(this.widget.url);
+            } else {
+              throw 'Could not launch $this.widget.url';
+            }
           },
           child: Container(
             padding: EdgeInsets.all(10),

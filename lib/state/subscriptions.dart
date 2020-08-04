@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:knocky/models/threadAlert.dart';
+import 'package:knocky_edge/models/threadAlert.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:knocky/helpers/api.dart';
+import 'package:knocky_edge/helpers/api.dart';
 
 class SubscriptionModel extends Model {
   List<ThreadAlert> _alerts = List();
@@ -15,8 +15,7 @@ class SubscriptionModel extends Model {
   bool get isFetching => _isFetching;
   bool get hasFailed => _hasFailed;
 
-
-  Future getSubscriptions ({Function errorCallback}) {
+  Future getSubscriptions({Function errorCallback}) {
     _isFetching = true;
     notifyListeners();
 
@@ -42,13 +41,13 @@ class SubscriptionModel extends Model {
     _hasFailed = false;
   }
 
-  void clearList () {
+  void clearList() {
     _alerts = List();
     _calcTotalUnreadPosts();
     notifyListeners();
   }
 
-  void _calcTotalUnreadPosts () {
+  void _calcTotalUnreadPosts() {
     int count = 0;
     _alerts.forEach((item) {
       count = count + item.unreadPosts;
@@ -59,5 +58,5 @@ class SubscriptionModel extends Model {
   }
 
   static SubscriptionModel of(BuildContext context) =>
-    ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true);
+      ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true);
 }

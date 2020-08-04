@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:knocky/screens/popularThreads.dart';
-import 'package:knocky/screens/latestThreads.dart';
-import 'package:knocky/screens/forum.dart';
-import 'package:knocky/screens/subscriptions.dart';
+//import 'package:knocky/screens/popularThreads.dart';
+//import 'package:knocky/screens/latestThreads.dart';
+//import 'package:knocky/screens/forum.dart';
+//import 'package:knocky/screens/subscriptions.dart';
 
 class TabNavigatorRoutes {
   static const String root = '/';
@@ -19,30 +19,29 @@ class TabNavigator extends StatelessWidget {
     switch (tabItem) {
       case 0:
         return {
-          TabNavigatorRoutes.root: (context) => ForumScreen(),
+          //TabNavigatorRoutes.root: (context) => ForumScreen(),
         };
         break;
       case 1:
         return {
-          TabNavigatorRoutes.root: (context) => SubscriptionScreen(),
+          //TabNavigatorRoutes.root: (context) => SubscriptionScreen(),
         };
         break;
       case 2:
         return {
-          TabNavigatorRoutes.root: (context) => LatestThreadsScreen(),
+          //TabNavigatorRoutes.root: (context) => LatestThreadsScreen(),
         };
         break;
       case 3:
         return {
-          TabNavigatorRoutes.root: (context) => PopularThreadsScreen(),
+          //TabNavigatorRoutes.root: (context) => PopularThreadsScreen(),
         };
         break;
       default:
-       return {
-          TabNavigatorRoutes.root: (context) => ForumScreen(),
+        return {
+          //TabNavigatorRoutes.root: (context) => ForumScreen(),
         };
     }
-    
   }
 
   @override
@@ -53,10 +52,9 @@ class TabNavigator extends StatelessWidget {
         key: navigatorKeys[tabItem],
         initialRoute: TabNavigatorRoutes.root,
         onGenerateRoute: (routeSettings) {
-          return MaterialPageRoute(
-              builder: (context) {
-                return routeBuilders[routeSettings.name](context);
-              });
+          return MaterialPageRoute(builder: (context) {
+            return routeBuilders[routeSettings.name](context);
+          });
         });
   }
 }

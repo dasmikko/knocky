@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:knocky/models/slateDocument.dart';
+import 'package:knocky_edge/models/slateDocument.dart';
 import 'dart:convert';
 
 part 'thread.g.dart';
@@ -27,25 +27,24 @@ class Thread {
   final String threadBackgroundType;
   final String threadBackgroundUrl;
 
-  Thread({
-    this.currentPage,
-    this.iconId,
-    this.readThreadLastSeen,
-    this.id,
-    this.locked,
-    this.pinned,
-    this.title,
-    this.totalPosts,
-    this.subforumId,
-    this.subforumName,
-    this.posts,
-    this.user,
-    this.subscriptionLastSeen,
-    this.isSubscribedTo,
-    this.userId,
-    this.threadBackgroundType,
-    this.threadBackgroundUrl
-  });
+  Thread(
+      {this.currentPage,
+      this.iconId,
+      this.readThreadLastSeen,
+      this.id,
+      this.locked,
+      this.pinned,
+      this.title,
+      this.totalPosts,
+      this.subforumId,
+      this.subforumName,
+      this.posts,
+      this.user,
+      this.subscriptionLastSeen,
+      this.isSubscribedTo,
+      this.userId,
+      this.threadBackgroundType,
+      this.threadBackgroundUrl});
 
   factory Thread.fromJson(Map<String, dynamic> json) => _$ThreadFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadToJson(this);
@@ -86,14 +85,21 @@ class ThreadPost {
       _$ThreadPostFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadPostToJson(this);
 
-  ThreadPost.clone(ThreadPost post): this(id: post.id, content: post.content, user: post.user, ratings: post.ratings, createdAt: post.createdAt, bans: post.bans);
+  ThreadPost.clone(ThreadPost post)
+      : this(
+            id: post.id,
+            content: post.content,
+            user: post.user,
+            ratings: post.ratings,
+            createdAt: post.createdAt,
+            bans: post.bans);
 }
 
 dynamic _contentFromJson(String jsonString) {
   try {
     SlateObject content = SlateObject.fromJson(json.decode(jsonString));
     return content;
-  } catch(err) {
+  } catch (err) {
     return jsonString;
   }
 }

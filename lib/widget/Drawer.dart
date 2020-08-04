@@ -1,25 +1,26 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:knocky/helpers/api.dart';
-import 'package:knocky/helpers/hiveHelper.dart';
-import 'package:knocky/models/syncData.dart';
-import 'package:knocky/screens/events.dart';
-import 'package:knocky/screens/forum.dart';
-import 'package:knocky/screens/latestThreads.dart';
-import 'package:knocky/screens/login.dart';
-import 'package:knocky/screens/popularThreads.dart';
-import 'package:knocky/screens/thread.dart';
+import 'package:knocky_edge/helpers/api.dart';
+import 'package:knocky_edge/helpers/hiveHelper.dart';
+import 'package:knocky_edge/models/syncData.dart';
+import 'package:knocky_edge/screens/events.dart';
+import 'package:knocky_edge/screens/forum.dart';
+import 'package:knocky_edge/screens/latestThreads.dart';
+import 'package:knocky_edge/screens/login.dart';
+import 'package:knocky_edge/screens/popularThreads.dart';
+import 'package:knocky_edge/screens/preLogin.dart';
+import 'package:knocky_edge/screens/thread.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:intent/intent.dart' as Intent;
-import 'package:intent/action.dart' as Action;
-import 'package:knocky/screens/subscriptions.dart';
-import 'package:knocky/screens/settings.dart';
-import 'package:knocky/state/authentication.dart';
-import 'package:knocky/state/appState.dart';
-import 'package:knocky/state/subscriptions.dart';
+//import 'package:intent/intent.dart' as Intent;
+//import 'package:intent/action.dart' as Action;
+import 'package:knocky_edge/screens/subscriptions.dart';
+import 'package:knocky_edge/screens/settings.dart';
+import 'package:knocky_edge/state/authentication.dart';
+import 'package:knocky_edge/state/appState.dart';
+import 'package:knocky_edge/state/subscriptions.dart';
 
 class DrawerWidget extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -50,29 +51,19 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
   }
 
   void onClickLogin(BuildContext context) async {
-    //final flutterWebviewPlugin = new FlutterWebviewPlugin();
-    String loginUrl = 'login';
-    String fullUrl = '';
-
-    Box box = await AppHiveBox.getBox();
-
-    fullUrl = await box.get('env') == 'knockout'
-        ? KnockoutAPI.KNOCKOUT_SITE_URL + loginUrl
-        : KnockoutAPI.QA_SITE_URL + loginUrl;
-
-    Navigator.pop(context);
+    // Open pre login screen and wait for login result
     bool wasLoggedIn = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => LoginScreen(
-          loginUrl: fullUrl,
-        ),
+        builder: (context) => PreLoginScreen(),
       ),
     );
 
     print('was logged in state ' + wasLoggedIn.toString());
 
     if (wasLoggedIn) {
+      Navigator.of(context).pop();
+      print('Show snackbar');
       this.widget.scaffoldKey.currentState.showSnackBar(
             SnackBar(
               content: Text(
@@ -83,8 +74,6 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
             ),
           );
     }
-
-    return;
   }
 
   void onTapForum() {
@@ -154,6 +143,7 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
         ),
       ),
     );
+
     ScopedModel.of<AppStateModel>(context).updateSyncData();
   }
 
@@ -282,7 +272,6 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
             onTap: onTapSubsriptions,
           ),
           ListTile(
-            enabled: _loginState,
             leading: Icon(
               FontAwesomeIcons.solidClock,
               size: _iconSize,
@@ -291,7 +280,6 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
             onTap: onTapLatestThreads,
           ),
           ListTile(
-            enabled: _loginState,
             leading: Icon(
               FontAwesomeIcons.fire,
               size: _iconSize,
@@ -329,10 +317,10 @@ class _DrawerWidgetState extends State<DrawerWidget> with AfterLayoutMixin {
             ),
             title: Text('Discord'),
             onTap: () {
-              Intent.Intent()
+              /*Intent.Intent()
                 ..setAction(Action.Action.ACTION_VIEW)
                 ..setData(Uri.parse('https://discord.gg/ce8pVKH'))
-                ..startActivity().catchError((e) => print(e));
+                ..startActivity().catchError((e) => print(e));*/
             },
           ),
           ListTile(

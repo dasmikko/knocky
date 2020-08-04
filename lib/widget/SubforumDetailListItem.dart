@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:knocky/models/subforumDetails.dart';
-import 'package:knocky/screens/thread.dart';
+import 'package:knocky_edge/models/subforumDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:knocky/helpers/icons.dart';
-import 'package:knocky/widget/InkWellOnWidget.dart';
+import 'package:knocky_edge/helpers/icons.dart';
+import 'package:knocky_edge/screens/thread.dart';
+import 'package:knocky_edge/widget/InkWellOnWidget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:knocky/helpers/colors.dart';
+import 'package:knocky_edge/helpers/colors.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'dart:ui' as ui;
 import 'package:numberpicker/numberpicker.dart';
@@ -74,7 +74,7 @@ class SubforumDetailListItem extends StatelessWidget {
       }
     });
   }
-  
+
   List<Widget> threadTags(BuildContext context) {
     List<Widget> widgets = List();
 

@@ -1,16 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:knocky/helpers/api.dart';
-import 'package:knocky/models/thread.dart';
-import 'package:knocky/models/userProfile.dart';
-import 'package:knocky/models/userProfilePosts.dart';
-import 'package:knocky/models/userProfileThreads.dart';
-import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
-import 'package:knocky/widget/SubforumDetailListItem.dart';
-import 'package:knocky/widget/SubforumPopularLatestDetailListItem.dart';
-import 'package:knocky/widget/Thread/ThreadPostItem.dart';
-import 'package:knocky/widget/UserProfilePostListItem.dart';
+import 'package:knocky_edge/helpers/api.dart';
+import 'package:knocky_edge/models/thread.dart';
+import 'package:knocky_edge/models/userProfile.dart';
+import 'package:knocky_edge/models/userProfilePosts.dart';
+import 'package:knocky_edge/models/userProfileThreads.dart';
+import 'package:knocky_edge/widget/KnockoutLoadingIndicator.dart';
+import 'package:knocky_edge/widget/SubforumDetailListItem.dart';
+import 'package:knocky_edge/widget/SubforumPopularLatestDetailListItem.dart';
+import 'package:knocky_edge/widget/Thread/ThreadPostItem.dart';
+import 'package:knocky_edge/widget/UserProfilePostListItem.dart';
 
 class UserProfileScreen extends StatefulWidget {
   final int userId;

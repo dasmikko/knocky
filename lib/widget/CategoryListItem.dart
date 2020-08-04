@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:knocky/helpers/colors.dart';
-import 'package:knocky/models/subforum.dart';
+import 'package:knocky_edge/helpers/colors.dart';
+import 'package:knocky_edge/models/subforum.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:knocky/screens/thread.dart';
+import 'package:knocky_edge/screens/thread.dart';
 
 class CategoryListItem extends StatelessWidget {
   final Subforum subforum;
@@ -93,7 +93,9 @@ class CategoryListItem extends StatelessWidget {
           ),
           Container(
             child: CachedNetworkImage(
-              imageUrl: !subforum.icon.contains('static') ? subforum.icon : 'https://knockout.chat' + subforum.icon,
+              imageUrl: !subforum.icon.contains('static')
+                  ? subforum.icon
+                  : 'https://knockout.chat' + subforum.icon,
               width: 40.0,
             ),
           )
@@ -111,7 +113,7 @@ class CategoryListItem extends StatelessWidget {
             flex: 1,
             child: subforum.lastPost != null
                 ? InkWell(
-                    onTap: () {                      
+                    onTap: () {
                       int page = subforum.lastPost.thread.lastPost.page;
 
                       Navigator.push(
@@ -143,9 +145,15 @@ class CategoryListItem extends StatelessWidget {
                                     children: <InlineSpan>[
                                       TextSpan(text: 'Last post by '),
                                       TextSpan(
-                                        text: subforum.lastPost.user.username != null ? subforum.lastPost.user.username +
-                                            ' ' : ' ',
-                                        style: TextStyle(color: AppColors(context).userGroupToColor(subforum.lastPost.user.usergroup)),
+                                        text: subforum.lastPost.user.username !=
+                                                null
+                                            ? subforum.lastPost.user.username +
+                                                ' '
+                                            : ' ',
+                                        style: TextStyle(
+                                            color: AppColors(context)
+                                                .userGroupToColor(subforum
+                                                    .lastPost.user.usergroup)),
                                       ),
                                       TextSpan(
                                           text: timeago

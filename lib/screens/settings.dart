@@ -2,24 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
-import 'package:knocky/helpers/colors.dart';
-import 'package:knocky/helpers/hiveHelper.dart';
-import 'package:knocky/screens/Settings/filter.dart';
-import 'package:knocky/themes/DefaultTheme.dart';
-import 'package:knocky/themes/DarkTheme.dart';
+import 'package:knocky_edge/helpers/colors.dart';
+import 'package:knocky_edge/helpers/hiveHelper.dart';
+import 'package:knocky_edge/screens/Settings/filter.dart';
+import 'package:knocky_edge/themes/DefaultTheme.dart';
+import 'package:knocky_edge/themes/DarkTheme.dart';
 import 'package:package_info/package_info.dart';
-import 'package:knocky/state/authentication.dart';
-import 'package:knocky/state/subscriptions.dart';
+import 'package:knocky_edge/state/authentication.dart';
+import 'package:knocky_edge/state/subscriptions.dart';
 import 'package:scoped_model/scoped_model.dart';
-
 
 class SettingsScreen extends StatefulWidget {
   final BuildContext appContext;
 
-
-  SettingsScreen({
-    @required this.appContext
-  });
+  SettingsScreen({@required this.appContext});
 
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
@@ -45,75 +41,78 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  void getEmbedSettings () async {
+  void getEmbedSettings() async {
     // Init hive
     Box box = await AppHiveBox.getBox();
 
     setState(() {
-     _useInlineYoutubePlayer = box.get('useInlineYoutubePlayer', defaultValue: true);
+      _useInlineYoutubePlayer =
+          box.get('useInlineYoutubePlayer', defaultValue: true);
     });
   }
 
-  void updateAppInfo () async {
+  void updateAppInfo() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     Box box = await AppHiveBox.getBox();
     String env = await box.get('env');
 
     setState(() {
-     _version = packageInfo.version;
-     selectedEnv = env;
+      _version = packageInfo.version;
+      selectedEnv = env;
     });
   }
 
-  void onSelectTheme (dynamic theme) {
+  void onSelectTheme(dynamic theme) {
     DynamicTheme.of(context).setBrightness(theme.brightness);
     DynamicTheme.of(context).setThemeData(theme);
 
     if (theme.brightness == Brightness.light) {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-              systemNavigationBarColor: Colors.white,
-              systemNavigationBarIconBrightness: Brightness.dark));
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark));
     } else {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-              systemNavigationBarColor: Colors.grey[900],
-              systemNavigationBarIconBrightness: Brightness.light));
+          systemNavigationBarColor: Colors.grey[900],
+          systemNavigationBarIconBrightness: Brightness.light));
     }
 
     setState(() {
-     selectedTheme = theme;
+      selectedTheme = theme;
     });
   }
 
-  void onSelectEnv (dynamic env) async {
-    showDialog(context: context, builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Are you sure?'),
-        content: Text('If you switch environment, you will be logged out.'),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('No'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          FlatButton(
-            child: Text('Yes'),
-            onPressed: () async {
-              setState(() {
-                selectedEnv = env;
-              });
+  void onSelectEnv(dynamic env) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text('If you switch environment, you will be logged out.'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('No'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text('Yes'),
+                onPressed: () async {
+                  setState(() {
+                    selectedEnv = env;
+                  });
 
-              Box box = await AppHiveBox.getBox();
-              await box.put('env', env);
+                  Box box = await AppHiveBox.getBox();
+                  await box.put('env', env);
 
-              ScopedModel.of<AuthenticationModel>(context).logout();
-              ScopedModel.of<SubscriptionModel>(context).clearList();
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    });
+                  ScopedModel.of<AuthenticationModel>(context).logout();
+                  ScopedModel.of<SubscriptionModel>(context).clearList();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 
   @override
@@ -127,7 +126,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           padding: EdgeInsets.only(top: 8, bottom: 8),
           children: <Widget>[
             ListTile(
-              title: Text('General', style: TextStyle(color: Colors.grey),),
+              title: Text(
+                'General',
+                style: TextStyle(color: Colors.grey),
+              ),
               dense: true,
             ),
             ListTile(
@@ -147,7 +149,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   )
                 ],
               ),
-
             ),
             ListTile(
               enabled: true,
@@ -181,27 +182,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               color: Colors.grey,
             ),
             ListTile(
-              title: Text('Embed settings', style: TextStyle(color: Colors.grey),),
-              dense: true,
-            ),
-            SwitchListTile(
-              activeColor: AppColors(context).switchColor(),
-              title: Text('Use inline YouTube player'),
-              subtitle: Text('When disabled, it will try to open app that can handle the YouTube link.'),
-              onChanged: (bool value) async {
-                Box box = await AppHiveBox.getBox();
-                box.put('useInlineYoutubePlayer', value);
-                setState(() {
-                 _useInlineYoutubePlayer = value;
-                });
-              },
-              value: _useInlineYoutubePlayer,
-            ),
-            Divider(
-              color: Colors.grey,
-            ),
-            ListTile(
-              title: Text('App info', style: TextStyle(color: Colors.grey),),
+              title: Text(
+                'App info',
+                style: TextStyle(color: Colors.grey),
+              ),
               dense: true,
             ),
             ListTile(

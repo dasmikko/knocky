@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:knocky/models/slateDocument.dart';
 
 part 'syncData.g.dart';
 

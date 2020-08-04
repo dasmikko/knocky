@@ -2,20 +2,20 @@ import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:knocky/helpers/bbcodeparser.dart';
-import 'package:knocky/helpers/colors.dart';
-import 'package:knocky/models/thread.dart';
-import 'package:knocky/screens/Modals/knockoutDocument.dart';
-import 'package:knocky/screens/imageViewer.dart';
-import 'package:knocky/widget/Thread/PostElements/Audio.dart';
-import 'package:knocky/widget/Thread/PostElements/Image.dart';
+import 'package:knocky_edge/helpers/bbcodeparser.dart';
+import 'package:knocky_edge/helpers/colors.dart';
+import 'package:knocky_edge/models/thread.dart';
+//import 'package:knocky_edge/screens/Modals/knockoutDocument.dart';
+import 'package:knocky_edge/screens/imageViewer.dart';
+import 'package:knocky_edge/widget/Thread/PostElements/Audio.dart';
+import 'package:knocky_edge/widget/Thread/PostElements/Embed.dart';
+import 'package:knocky_edge/widget/Thread/PostElements/Image.dart';
 import 'package:bbob_dart/bbob_dart.dart' as bbob;
-import 'package:knocky/widget/Thread/PostElements/Twitter.dart';
-import 'package:knocky/widget/Thread/PostElements/UserQuote.dart';
-import 'package:knocky/widget/Thread/PostElements/Video.dart';
-import 'package:knocky/widget/Thread/PostElements/YouTubeEmbed.dart';
-import 'package:intent/intent.dart' as Intent;
-import 'package:intent/action.dart' as Action;
+import 'package:knocky_edge/widget/Thread/PostElements/Twitter.dart';
+import 'package:knocky_edge/widget/Thread/PostElements/UserQuote.dart';
+import 'package:knocky_edge/widget/Thread/PostElements/Video.dart';
+import 'package:knocky_edge/widget/Thread/PostElements/YouTubeEmbed.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BBcodeRenderer extends StatelessWidget {
   final String bbcode;
@@ -23,7 +23,8 @@ class BBcodeRenderer extends StatelessWidget {
   final GlobalKey scaffoldKey;
   final ThreadPost postDetails;
 
-  BBcodeRenderer({this.parentContext, this.bbcode, this.scaffoldKey, this.postDetails});
+  BBcodeRenderer(
+      {this.parentContext, this.bbcode, this.scaffoldKey, this.postDetails});
 
   dynamic textHandler(bbob.Node node, bool isRoot) {
     if (isRoot) {
@@ -43,7 +44,6 @@ class BBcodeRenderer extends StatelessWidget {
       postId: postDetails.id,
       url: node.textContent,
       bbcode: this.bbcode,
-
     );
   }
 
@@ -107,7 +107,10 @@ class BBcodeRenderer extends StatelessWidget {
                 ),
               ),
               padding: EdgeInsets.all(10.0),
-              child: Text(node.attributes['username'] != null ? node.attributes['username'] : 'User'  + ' posted:',
+              child: Text(
+                  node.attributes['username'] != null
+                      ? node.attributes['username']
+                      : 'User' + ' posted:',
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             Container(
@@ -295,17 +298,31 @@ class BBcodeRenderer extends StatelessWidget {
                 url = node.textContent;
               }
 
-              richTextContent.add(TextSpan(
-                  text: node.textContent.isNotEmpty ? node.textContent : node.attributes['href'],
-                  style: TextStyle(color: Colors.blue),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      Intent.Intent()
-                        ..setAction(Action.Action.ACTION_VIEW)
-                        ..setData(Uri.parse(url))
-                        ..startActivity().catchError((e) => print(e));
-                      print('Clicked link: ' + url);
-                    }));
+              print(node.attributes);
+
+              if (node.attributes['smart'] == 'smart') {
+                widgetList.add(EmbedWidget(
+                  url: url,
+                ));
+              } else {
+                richTextContent.add(
+                  TextSpan(
+                    text: node.textContent.isNotEmpty
+                        ? node.textContent
+                        : node.attributes['href'],
+                    style: TextStyle(color: Colors.blue),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () async {
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        } else {
+                          throw 'Could not launch $url';
+                        }
+                        print('Clicked link: ' + url);
+                      },
+                  ),
+                );
+              }
             } else {
               richTextContent.add(
                 textElementHandler(node.children, currentTextStyle: textStyle),

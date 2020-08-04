@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:knocky/models/thread.dart';
-import 'package:knocky/widget/Thread/PostContent.dart';
+import 'package:knocky_edge/models/thread.dart';
+//import 'package:knocky/widget/Thread/PostContent.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class UserProfilePostListItem extends StatelessWidget {
@@ -12,7 +12,7 @@ class UserProfilePostListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
           padding: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
@@ -25,10 +25,12 @@ class UserProfilePostListItem extends StatelessWidget {
         ),
         Container(
           padding: EdgeInsets.all(10.0),
-          child: PostContent(
+          child:
+              /*PostContent(
             content: this.post.content,
             textSelectable: false,
-          ),
+          )*/
+              null,
         ),
       ],
     ));

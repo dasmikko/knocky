@@ -2,28 +2,20 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
-import 'package:knocky/helpers/api.dart';
-import 'package:knocky/helpers/bbcodeparser.dart';
-import 'package:knocky/helpers/hiveHelper.dart';
-import 'package:knocky/helpers/twitterApi.dart';
-import 'package:knocky/models/subforum.dart';
+import 'package:knocky_edge/helpers/api.dart';
+import 'package:knocky_edge/helpers/hiveHelper.dart';
+import 'package:knocky_edge/helpers/twitterApi.dart';
+import 'package:knocky_edge/models/subforum.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:knocky/models/syncData.dart';
-import 'package:knocky/screens/latestThreads.dart';
-import 'package:knocky/screens/popularThreads.dart';
-import 'package:knocky/screens/subforum.dart';
-import 'package:knocky/screens/subscriptions.dart';
-import 'package:knocky/screens/thread.dart';
-import 'package:knocky/state/appState.dart';
-import 'package:knocky/state/subscriptions.dart';
-import 'package:knocky/widget/CategoryListItem.dart';
-import 'package:knocky/widget/Drawer.dart';
-import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
-import 'package:quick_actions/quick_actions.dart';
+import 'package:knocky_edge/models/syncData.dart';
+import 'package:knocky_edge/screens/subforum.dart';
+import 'package:knocky_edge/state/appState.dart';
+import 'package:knocky_edge/state/subscriptions.dart';
+import 'package:knocky_edge/widget/CategoryListItem.dart';
+import 'package:knocky_edge/widget/Drawer.dart';
+import 'package:knocky_edge/widget/KnockoutLoadingIndicator.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:knocky/state/authentication.dart';
-import 'package:uni_links/uni_links.dart';
+import 'package:knocky_edge/state/authentication.dart';
 
 class ForumScreen extends StatefulWidget {
   final ScaffoldState scaffoldKey;
@@ -47,103 +39,13 @@ class _ForumScreenState extends State<ForumScreen>
   void initState() {
     super.initState();
 
-    initUniLinks();
+    print('initState');
+
     TwitterHelper().getBearerToken();
-
-    final QuickActions quickActions = new QuickActions();
-
-    quickActions.setShortcutItems(<ShortcutItem>[
-      const ShortcutItem(
-          type: 'action_subscriptions',
-          localizedTitle: 'Subscriptions',
-          icon: 'icon_help'),
-      const ShortcutItem(
-          type: 'action_popular',
-          localizedTitle: 'Popular threads',
-          icon: 'icon_help'),
-      const ShortcutItem(
-          type: 'action_latest',
-          localizedTitle: 'Latest threads',
-          icon: 'icon_help')
-    ]);
-
-    quickActions.initialize((shortcutType) {
-      if (shortcutType == 'action_subscriptions') {
-        AppHiveBox.getBox().then((Box box) {
-          box.get('isLoggedIn', defaultValue: false).then((loginState) {
-            if (loginState) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SubscriptionScreen(),
-                ),
-              );
-            }
-          });
-        });
-      }
-      if (shortcutType == 'action_popular')
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PopularThreadsScreen(),
-          ),
-        );
-      if (shortcutType == 'action_latest')
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LatestThreadsScreen(),
-          ),
-        );
-      // More handling code...
-    });
 
     ScopedModel.of<AppStateModel>(context).updateSyncData();
 
     _loginIsOpen = false;
-  }
-
-  Future<Null> initUniLinks() async {
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      Uri initialUri = await getInitialUri();
-      if (initialUri != null) handleLink(initialUri);
-      // Parse the link and warn the user, if it is not correct,
-      // but keep in mind it could be `null`.
-    } on PlatformException {
-      // Handle exception by warning the user their action did not succeed
-      // return?
-    }
-
-    // Attach a listener to the stream
-    _sub = getUriLinksStream().listen((Uri uri) {
-      handleLink(uri);
-      // Use the uri and warn the user, if it is not correct
-    }, onError: (err) {
-      // Handle exception by warning the user their action did not succeed
-    });
-  }
-
-  void handleLink(Uri uri) {
-    // Handle thread links
-    if (uri.pathSegments.length > 0) {
-      if (uri.pathSegments[0] == 'thread') {
-        int threadId = int.tryParse(uri.pathSegments[1]);
-
-        if (threadId != null) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => ThreadScreen(
-                threadId: int.parse(uri.pathSegments[1]),
-              ),
-            ),
-          );
-        }
-      }
-    }
-    uri.pathSegments.forEach((segment) {
-    });
   }
 
   @override

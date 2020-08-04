@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
-import 'package:knocky/helpers/colors.dart';
-import 'package:knocky/models/thread.dart';
-import 'package:knocky/screens/userProfile.dart';
+import 'package:knocky_edge/helpers/colors.dart';
+import 'package:knocky_edge/models/thread.dart';
+//import 'package:knocky_edge/screens/userProfile.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:scoped_model/scoped_model.dart';
-import 'package:knocky/state/authentication.dart';
+import 'package:knocky_edge/state/authentication.dart';
 
 class PostHeader extends StatelessWidget {
   final BuildContext context;
@@ -49,7 +49,7 @@ class PostHeader extends StatelessWidget {
   }
 
   void onTapUsername(BuildContext context) {
-    Navigator.of(context, rootNavigator: true).push(
+    /*Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (context) => UserProfileScreen(
           userId: this.userId,
@@ -59,7 +59,7 @@ class PostHeader extends StatelessWidget {
           postId: this.threadPost.id,
         ),
       ),
-    );
+    );*/
   }
 
   PopupMenuItem<int> overFlowItem(Icon icon, String title, int value) {
@@ -90,14 +90,15 @@ class PostHeader extends StatelessWidget {
       );
     }
 
-
-    if (thread.isSubscribedTo == 1 && thread.subscriptionLastSeen.isBefore(threadPost.createdAt)) {
+    if (thread.isSubscribedTo == 1 &&
+        thread.subscriptionLastSeen.isBefore(threadPost.createdAt)) {
       return Border(
         left: BorderSide(color: Color.fromRGBO(67, 104, 173, 1), width: 2),
       );
     }
 
-    if (thread.readThreadLastSeen != null && thread.readThreadLastSeen.isBefore(threadPost.createdAt)) {
+    if (thread.readThreadLastSeen != null &&
+        thread.readThreadLastSeen.isBefore(threadPost.createdAt)) {
       return Border(
         left: BorderSide(color: Color.fromRGBO(67, 104, 173, 1), width: 2),
       );

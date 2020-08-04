@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:knocky/models/thread.dart';
+import 'package:knocky_edge/models/thread.dart';
 
 part 'userProfilePosts.g.dart';
 
@@ -9,11 +9,7 @@ class UserProfilePosts {
   final int totalPosts;
   final List<ThreadPost> posts;
 
-  UserProfilePosts({
-    this.currentPage,
-    this.totalPosts,
-    this.posts
-  });
+  UserProfilePosts({this.currentPage, this.totalPosts, this.posts});
 
   factory UserProfilePosts.fromJson(Map<String, dynamic> json) =>
       _$UserProfilePostsFromJson(json);

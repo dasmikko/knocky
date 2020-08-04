@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:knocky/models/subforum.dart';
+import 'package:knocky_edge/models/subforum.dart';
 
 part 'subforumDetails.g.dart';
 
@@ -48,24 +48,23 @@ class SubforumThread {
   final bool subscribed;
   final List<dynamic> tags;
 
-  SubforumThread({
-    this.createdAt,
-    this.firstUnreadId,
-    this.iconId,
-    this.id,
-    this.locked,
-    this.pinned,
-    this.postCount,
-    this.readThreadUnreadPosts,
-    this.unreadPostCount,
-    this.title,
-    this.unreadType,
-    this.user,
-    this.lastPost,
-    this.hasRead,
-    this.subscribed,
-    this.tags
-  });
+  SubforumThread(
+      {this.createdAt,
+      this.firstUnreadId,
+      this.iconId,
+      this.id,
+      this.locked,
+      this.pinned,
+      this.postCount,
+      this.readThreadUnreadPosts,
+      this.unreadPostCount,
+      this.title,
+      this.unreadType,
+      this.user,
+      this.lastPost,
+      this.hasRead,
+      this.subscribed,
+      this.tags});
 
   factory SubforumThread.fromJson(Map<String, dynamic> json) =>
       _$SubforumThreadFromJson(json);
@@ -184,14 +183,13 @@ class SubforumLastpostThreadLastpost {
   final SubforumLastPostUser user;
   final int page;
 
-  SubforumLastpostThreadLastpost({
-    this.id,
-    this.createdAt,
-    this.thread,
-    this.user,
-    this.page,
-    this.content
-  });
+  SubforumLastpostThreadLastpost(
+      {this.id,
+      this.createdAt,
+      this.thread,
+      this.user,
+      this.page,
+      this.content});
 
   factory SubforumLastpostThreadLastpost.fromJson(Map<String, dynamic> json) =>
       _$SubforumLastpostThreadLastpostFromJson(json);

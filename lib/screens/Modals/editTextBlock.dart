@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:knocky/helpers/bbcode.dart';
-import 'package:knocky/models/slateDocument.dart';
-import 'package:knocky/widget/LinkDialogContent.dart';
+import 'package:knocky_edge/helpers/bbcode.dart';
+import 'package:knocky_edge/models/slateDocument.dart';
+import 'package:knocky_edge/widget/LinkDialogContent.dart';
 
 class EditTextBlockModal extends StatefulWidget {
   final SlateNode node;

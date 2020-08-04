@@ -1,13 +1,13 @@
 import 'dart:typed_data';
 
-import 'package:chewie_custom/chewie.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
 import 'package:path/path.dart';
 import 'package:flutter/services.dart';
-import 'package:knocky/helpers/Download.dart';
+//import 'package:knocky_edge/helpers/Download.dart';
 import 'package:video_player/video_player.dart';
-import 'package:knocky/events.dart';
+//import 'package:knocky_edge/events.dart';
 
 class VideoElement extends StatefulWidget {
   final String url;
@@ -39,12 +39,6 @@ class _VideoElementState extends State<VideoElement> {
                 videoPlayerController: vidController,
                 aspectRatio: size.width / size.height,
                 autoInitialize: false,
-                deviceOrientationsDuringFullScreen: [
-                  DeviceOrientation.landscapeLeft,
-                  DeviceOrientation.landscapeRight,
-                  DeviceOrientation.portraitDown,
-                  DeviceOrientation.portraitUp
-                ],
                 looping: true,
                 autoPlay: false);
 
@@ -58,21 +52,15 @@ class _VideoElementState extends State<VideoElement> {
         videoPlayerController: vidController,
         aspectRatio: size.width / size.height,
         autoInitialize: false,
-        deviceOrientationsDuringFullScreen: [
-          DeviceOrientation.landscapeLeft,
-          DeviceOrientation.landscapeRight,
-          DeviceOrientation.portraitDown,
-          DeviceOrientation.portraitUp
-        ],
         looping: true,
         autoPlay: false);
     chewieController.addListener(chewieListener);
   }
 
   void chewieListener() {
-    print('Fullscreenstate is: ' + chewieController.isFullScreen.toString());
+    //print('Fullscreenstate is: ' + chewieController.isFullScreen.toString());
     // Listen for drawer open events
-    eventBus.fire(HideBottomNavbarEvent(chewieController.isFullScreen));
+    //eventBus.fire(HideBottomNavbarEvent(chewieController.isFullScreen));
   }
 
   @override
@@ -114,7 +102,7 @@ class _VideoElementState extends State<VideoElement> {
             ));
         break;
       case 2:
-        DownloadHelper().downloadFile(url, this.widget.scaffoldKey);
+        //DownloadHelper().downloadFile(url, this.widget.scaffoldKey);
         break;
     }
   }
@@ -122,9 +110,8 @@ class _VideoElementState extends State<VideoElement> {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height / 2
-      ),
+      constraints:
+          BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 2),
       child: Container(
         margin: EdgeInsets.only(bottom: 8.0),
         child: GestureDetector(

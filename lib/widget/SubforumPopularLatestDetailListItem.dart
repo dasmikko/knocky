@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:knocky/models/subforumDetails.dart';
-import 'package:knocky/screens/thread.dart';
+import 'package:knocky_edge/models/subforumDetails.dart';
+//import 'package:knocky_edge/screens/thread.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:knocky/helpers/icons.dart';
-import 'package:knocky/state/appState.dart';
-import 'package:knocky/widget/InkWellOnWidget.dart';
+import 'package:knocky_edge/helpers/icons.dart';
+import 'package:knocky_edge/state/appState.dart';
+import 'package:knocky_edge/widget/InkWellOnWidget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:knocky/helpers/colors.dart';
+import 'package:knocky_edge/helpers/colors.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'dart:ui' as ui;
-import 'package:numberpicker/numberpicker.dart';
+//import 'package:numberpicker/numberpicker.dart';
 
 class SubforumPopularLatestDetailListItem extends StatelessWidget {
   final SubforumThreadLatestPopular threadDetails;
   final BuildContext rootContext;
   SubforumPopularLatestDetailListItem({this.threadDetails, this.rootContext});
 
-  void onTapNewPostsButton(BuildContext context, SubforumThreadLatestPopular item) {
+  void onTapNewPostsButton(
+      BuildContext context, SubforumThreadLatestPopular item) {
     double pagenumber =
         (item.postCount - (item.readThreadUnreadPosts - 1)) / 20;
 
@@ -25,7 +26,7 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
 
     print('new posts tapped');
 
-    Navigator.push(
+    /*Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ThreadScreen(
@@ -36,13 +37,13 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
           postIdToJumpTo: item.firstUnreadId,
         ),
       ),
-    );
+    );*/
   }
 
   void onTapItem(BuildContext context, SubforumThreadLatestPopular item) {
     print('Clicked item ' + threadDetails.id.toString());
 
-    Navigator.push(
+    /*Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ThreadScreen(
@@ -51,12 +52,12 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
           threadId: threadDetails.id,
         ),
       ),
-    );
+    );*/
   }
 
   void showJumpDialog(BuildContext context) {
     int totalPages = (threadDetails.postCount / 20).ceil();
-    showDialog<int>(
+    /*showDialog<int>(
         context: context,
         builder: (BuildContext context) {
           return new NumberPickerDialog.integer(
@@ -79,7 +80,7 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
           ),
         );
       }
-    });
+    });*/
   }
 
   Widget newPostsButton(BuildContext context) {
@@ -140,14 +141,19 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String _iconUrl = threadDetails.iconId != null ? iconList
-        .firstWhere((IconListItem item) => item.id == threadDetails.iconId)
-        .url : '';
+    String _iconUrl = threadDetails.iconId != null
+        ? iconList
+            .firstWhere((IconListItem item) => item.id == threadDetails.iconId)
+            .url
+        : '';
 
     Color userColor = AppColors(context).normalUserColor(); // User
-    if (threadDetails.user.usergroup == 2) userColor = AppColors(context).goldUserColor(); // Gold
-    if (threadDetails.user.usergroup == 3) userColor = AppColors(context).modUserColor(); // Mod
-    if (threadDetails.user.usergroup == 4) userColor = AppColors(context).adminUserColor(); // Admin
+    if (threadDetails.user.usergroup == 2)
+      userColor = AppColors(context).goldUserColor(); // Gold
+    if (threadDetails.user.usergroup == 3)
+      userColor = AppColors(context).modUserColor(); // Mod
+    if (threadDetails.user.usergroup == 4)
+      userColor = AppColors(context).adminUserColor(); // Admin
 
     return Card(
       color: Color.fromRGBO(45, 45, 48, 1),
@@ -215,13 +221,16 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
                               ]),
                             ),
                           ),
-                          if (threadDetails.readThreadUnreadPosts > 0 && threadDetails.unreadType == 1)
+                          if (threadDetails.readThreadUnreadPosts > 0 &&
+                              threadDetails.unreadType == 1)
                             newPostsButton(context),
-                          if (threadDetails.unreadPostCount > 0 && threadDetails.unreadType == 0)
+                          if (threadDetails.unreadPostCount > 0 &&
+                              threadDetails.unreadType == 0)
                             newPostsSubscriptionButton(context),
                           Text(
                             threadDetails.user.username,
-                            style: TextStyle(color: userColor, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                color: userColor, fontWeight: FontWeight.bold),
                           )
                         ],
                       ),
@@ -255,7 +264,10 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
                     margin: EdgeInsets.only(bottom: 4),
                     child: Text(
                       threadDetails.lastPost.user.username,
-                      style: TextStyle(color: AppColors(context).userGroupToColor(threadDetails.lastPost.user.usergroup), fontSize: 11),
+                      style: TextStyle(
+                          color: AppColors(context).userGroupToColor(
+                              threadDetails.lastPost.user.usergroup),
+                          fontSize: 11),
                     ),
                   ),
                   Container(

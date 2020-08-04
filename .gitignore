@@ -26,6 +26,7 @@
 .pub-cache/
 .pub/
 /build/
+/buildOutput/
 
 # Android related
 **/android/**/gradle-wrapper.jar
@@ -74,3 +75,4 @@ android/key.properties
 .flutter-plugins-dependencies
 .flutter-plugins-dependencies
 *.flutter-plugins-dependencies
+assets/.env

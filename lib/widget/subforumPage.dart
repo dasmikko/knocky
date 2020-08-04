@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:knocky/helpers/api.dart';
-import 'package:knocky/models/subforum.dart';
+import 'package:knocky_edge/helpers/api.dart';
+import 'package:knocky_edge/models/subforum.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:knocky/models/subforumDetails.dart';
-import 'package:knocky/widget/SubforumDetailListItem.dart';
+import 'package:knocky_edge/models/subforumDetails.dart';
+import 'package:knocky_edge/widget/SubforumDetailListItem.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
+import 'package:knocky_edge/widget/KnockoutLoadingIndicator.dart';
 
 class SubforumPage extends StatefulWidget {
   final Subforum subforumModel;
@@ -81,8 +81,8 @@ class _SubforumPagenState extends State<SubforumPage>
     Future _future = KnockoutAPI()
         .getSubforumDetails(widget.subforumModel.id, page: widget.page)
         .catchError((error) {
-          throw(error);
-        print(error);
+      throw (error);
+      print(error);
       this.widget.onError();
       setState(() {
         _isFetching = false;
@@ -97,14 +97,12 @@ class _SubforumPagenState extends State<SubforumPage>
 
           if (prefs.getBool('showNSFWThreads') == null ||
               !prefs.getBool('showNSFWThreads')) {
-            details.threads = details.threads
-                .where((item) {
-                  if (item.tags == null) return true;
-                  if (item.tags.first['1'] != 'NSFW') return true;
-                  
-                  return false;
-                })
-                .toList();
+            details.threads = details.threads.where((item) {
+              if (item.tags == null) return true;
+              if (item.tags.first['1'] != 'NSFW') return true;
+
+              return false;
+            }).toList();
           }
         }
       });
@@ -116,14 +114,16 @@ class _SubforumPagenState extends State<SubforumPage>
   Widget content() {
     return RefreshIndicator(
       onRefresh: loadPage,
-      child: details == null ? Container() : ListView.builder(
-        controller: scrollController,
-        itemCount: details.threads.length,
-        itemBuilder: (BuildContext context, int index) {
-          var item = details.threads[index];
-          return SubforumDetailListItem(threadDetails: item);
-        },
-      ),
+      child: details == null
+          ? Container()
+          : ListView.builder(
+              controller: scrollController,
+              itemCount: details.threads.length,
+              itemBuilder: (BuildContext context, int index) {
+                var item = details.threads[index];
+                return SubforumDetailListItem(threadDetails: item);
+              },
+            ),
     );
   }
 
