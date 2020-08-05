@@ -48,6 +48,7 @@ dependencies:
   chewie_audio: ^1.0.0+1
   permission_handler: ^5.0.1+1
   image_picker: ^0.6.7+4
+  device_info: ^0.4.2+4
   flutter:
     sdk: flutter
 

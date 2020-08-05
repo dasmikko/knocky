@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
+import 'package:knocky_edge/helpers/airtableApi.dart';
 import 'package:knocky_edge/helpers/hiveHelper.dart';
 import 'package:knocky_edge/screens/forum.dart';
 import 'package:knocky_edge/state/appState.dart';
@@ -11,11 +12,14 @@ import 'package:knocky_edge/state/subscriptions.dart';
 import 'package:knocky_edge/themes/DarkTheme.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-void main() async {
+Future<void> main() async {
   Widget rv;
 
   // Init dotenv
   await DotEnv().load('assets/.env');
+
+  //AirTableApi().testCall();
+  AirTableApi().writeRecord();
 
   // Init hive
   await AppHiveBox.initHive();
@@ -53,51 +57,4 @@ void main() async {
   rv = ScopedModel<AppStateModel>(model: AppStateModel(), child: rv);
 
   runApp(rv);
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            Text('Hello from iOS hot')
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
-    );
-  }
 }
