@@ -39,7 +39,8 @@ dependencies:
   package_info: ^0.4.0+4
   flutter_slidable: ^0.5.3
   flutter_inappwebview: ^4.0.0+4
-  flutter_advanced_networkimage: any
+  flutter_advanced_networkimage:
+    git: https://github.com/lain-ke/flutter_advanced_networkimage #To Fix flutter_svg dependency issue!
   url_launcher: ^5.5.0
   flutter_dotenv: ^2.0.1
   tweet_ui: ^2.2.0+3
