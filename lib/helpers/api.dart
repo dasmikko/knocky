@@ -1,17 +1,17 @@
 import 'dart:io';
-import 'package:knocky/helpers/hiveHelper.dart';
-import 'package:knocky/models/events.dart';
-import 'package:knocky/models/subforum.dart';
-import 'package:knocky/models/subforumDetails.dart';
-import 'package:knocky/models/syncData.dart';
-import 'package:knocky/models/thread.dart';
-import 'package:knocky/models/threadAlert.dart';
-import 'package:knocky/models/readThreads.dart';
+import 'package:knocky_edge/helpers/hiveHelper.dart';
+import 'package:knocky_edge/models/events.dart';
+import 'package:knocky_edge/models/subforum.dart';
+import 'package:knocky_edge/models/subforumDetails.dart';
+import 'package:knocky_edge/models/syncData.dart';
+import 'package:knocky_edge/models/thread.dart';
+import 'package:knocky_edge/models/threadAlert.dart';
+import 'package:knocky_edge/models/readThreads.dart';
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
-import 'package:knocky/models/userProfile.dart';
-import 'package:knocky/models/userProfilePosts.dart';
-import 'package:knocky/models/userProfileThreads.dart';
+import 'package:knocky_edge/models/userProfile.dart';
+import 'package:knocky_edge/models/userProfilePosts.dart';
+import 'package:knocky_edge/models/userProfileThreads.dart';
 
 class KnockoutAPI {
   static const KNOCKOUT_URL = "https://api.knockout.chat/";
@@ -46,13 +46,13 @@ class KnockoutAPI {
       'content-format-version': '1'
     };
     if (headers != null) mHeaders.addAll(headers);
-
     String mBaseurl =
         await box.get('env') == 'knockout' ? KNOCKOUT_URL : QA_URL;
 
+    //String mBaseurl = 'https://api.knockout.chat/';
     Dio dio = new Dio();
     dio.options.baseUrl = mBaseurl;
-    dio.options.contentType = ContentType.json;
+    dio.options.contentType = ContentType.json.toString();
     dio.options.headers = mHeaders;
     dio.options.receiveDataWhenStatusError = true;
 
@@ -176,7 +176,7 @@ class KnockoutAPI {
       await _request(type: 'post', url: 'post', data: {
         'displayCountryInfo': false,
         'appName': 'Knocky',
-        'content':content.toString(),
+        'content': content.toString(),
         'thread_id': threadId,
       }, headers: {
         'content-type': 'application/json; charset=UTF-8',
@@ -234,28 +234,36 @@ class KnockoutAPI {
 
   Future<UserProfile> getUserProfile(int userId) async {
     final response = await _request(
-        url: 'user/${userId}', type: 'get',);
+      url: 'user/${userId}',
+      type: 'get',
+    );
 
     return UserProfile.fromJson(response.data);
   }
 
   Future<UserProfilePosts> getUserProfilePosts(int userId) async {
     final response = await _request(
-        url: 'user/${userId}/posts', type: 'get',);
+      url: 'user/${userId}/posts',
+      type: 'get',
+    );
 
     return UserProfilePosts.fromJson(response.data);
   }
 
   Future<UserProfileThreads> getUserProfileThreads(int userId) async {
     final response = await _request(
-        url: 'user/${userId}/threads', type: 'get',);
+      url: 'user/${userId}/threads',
+      type: 'get',
+    );
 
     return UserProfileThreads.fromJson(response.data);
   }
 
   Future<SyncDataModel> getSyncData() async {
     final response = await _request(
-        url: 'user/syncData', type: 'get',);
+      url: 'user/syncData',
+      type: 'get',
+    );
 
     return SyncDataModel.fromJson(response.data);
   }

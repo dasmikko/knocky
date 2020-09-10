@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:knocky/helpers/hiveHelper.dart';
+import 'package:knocky_edge/helpers/hiveHelper.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:knocky/helpers/api.dart';
+import 'package:knocky_edge/helpers/api.dart';
 
 class AuthenticationModel extends Model {
   BuildContext buildContext;
@@ -19,7 +19,6 @@ class AuthenticationModel extends Model {
   int _banThreadId = 0;
 
   AuthenticationModel({this.buildContext});
-
 
   bool get isLoggedIn => _isLoggedIn;
   int get userId => _userId;
@@ -48,7 +47,8 @@ class AuthenticationModel extends Model {
   }
 
   // Change the login state
-  Future<void> setLoginState(bool isLoggedIn, int userId, String username, String avatar, String background, int usergroup) async {
+  Future<void> setLoginState(bool isLoggedIn, int userId, String username,
+      String avatar, String background, int usergroup) async {
     _isLoggedIn = isLoggedIn;
     _userId = userId;
     _username = username;
@@ -67,19 +67,19 @@ class AuthenticationModel extends Model {
     notifyListeners();
   }
 
-  Future<void> setCookieString (String cookieString) async {
+  Future<void> setCookieString(String cookieString) async {
     Box box = await AppHiveBox.getBox();
     await box.put('cookieString', cookieString);
     notifyListeners();
   }
 
-  void logout () async {
+  void logout() async {
     await this.setCookieString('');
     await this.setLoginState(false, 0, '', '', '', 0);
     notifyListeners();
   }
 
-  void authCheck () async {
+  void authCheck() async {
     dynamic authState = await KnockoutAPI().authCheck();
 
     if (authState is String) {
@@ -91,7 +91,8 @@ class AuthenticationModel extends Model {
       _banMessage = '';
       _banThreadId = 0;
 
-      if (authState['message'] == 'Invalid credentials. Please log out and try again.') this.logout();
+      if (authState['message'] ==
+          'Invalid credentials. Please log out and try again.') this.logout();
       if (authState['banMessage'] != null) {
         _isBanned = true;
         _banMessage = authState['banMessage'];
@@ -104,5 +105,4 @@ class AuthenticationModel extends Model {
   static AuthenticationModel of(BuildContext context) {
     return ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true);
   }
-
 }

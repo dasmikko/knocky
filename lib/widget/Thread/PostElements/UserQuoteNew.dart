@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:knocky/helpers/colors.dart';
-import 'package:knocky/widget/InkWellOnWidget.dart';
+import 'package:knocky_edge/helpers/colors.dart';
+import 'package:knocky_edge/widget/InkWellOnWidget.dart';
 
 class UserQuoteWidget extends StatefulWidget {
   final String username;

@@ -6,7 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ImgurHelper {
   final String imgurClientId = DotEnv().env['IMGUR_CLIENTID'];
-  final String apiUrl = "https://api.imgur.com/3/upload";
+  final String apiUrl = "https://api.imgur.com/3/image";
 
   Dio dio = new Dio();
 
@@ -14,7 +14,7 @@ class ImgurHelper {
     // Binary data
     String fileAsBase64 = base64Encode(file.readAsBytesSync());
 
-    FormData formData = new FormData.from({
+    FormData formData = new FormData.fromMap({
       "image": fileAsBase64,
     });
 

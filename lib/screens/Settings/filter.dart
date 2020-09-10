@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:knocky/helpers/colors.dart';
-
+import 'package:knocky_edge/helpers/colors.dart';
 
 class FilterScreen extends StatefulWidget {
   @override
@@ -18,17 +17,17 @@ class _FilterScreenState extends State<FilterScreen> {
     this.refreshSettings();
   }
 
-  void refreshSettings () async {
-   SharedPreferences prefs = await SharedPreferences.getInstance();
+  void refreshSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-   setState(() {
-    _showNSFWThreads = prefs.getBool('showNSFWThreads') != null ? prefs.getBool('showNSFWThreads') : false; 
-   });
-    
-    
+    setState(() {
+      _showNSFWThreads = prefs.getBool('showNSFWThreads') != null
+          ? prefs.getBool('showNSFWThreads')
+          : false;
+    });
   }
 
-  void updateNSFWSettings (bool val) async {
+  void updateNSFWSettings(bool val) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('showNSFWThreads', val);
 

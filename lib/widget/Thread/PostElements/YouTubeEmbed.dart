@@ -2,13 +2,15 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_youtube/flutter_youtube.dart';
+//import 'package:flutter_youtube/flutter_youtube.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hive/hive.dart';
-import 'package:knocky/helpers/hiveHelper.dart';
-import 'package:intent/intent.dart' as Intent;
-import 'package:intent/action.dart' as Action;
+import 'package:knocky_edge/helpers/hiveHelper.dart';
+//import 'package:intent/intent.dart' as Intent;
+//import 'package:intent/action.dart' as Action;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:io' show Platform;
 
 class YoutubeVideoEmbed extends StatefulWidget {
   final String url;
@@ -57,19 +59,14 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
   }
 
   void playYouTubeVideo(String url) async {
-    Box box = await AppHiveBox.getBox();
-    if (box.get('useInlineYoutubePlayer', defaultValue: true)) {
-      FlutterYoutube.playYoutubeVideoByUrl(
-          apiKey: "AIzaSyBehHEbtDN5ExcdWydEBp5R8EYlB6cf6nM",
-          videoUrl: url,
-          autoPlay: true, //default falase
-          fullScreen: false //default false
-          );
+    if (await canLaunch(url)) {
+      if (Platform.isIOS) {
+        await launch(url, forceSafariVC: false);
+      } else {
+        await launch(url, forceWebView: false);
+      }
     } else {
-      Intent.Intent()
-        ..setAction(Action.Action.ACTION_VIEW)
-        ..setData(Uri.parse(url))
-        ..startActivity().catchError((e) => print(e));
+      throw 'Could not launch $url';
     }
   }
 

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:knocky/helpers/ImgurHelper.dart';
+import 'package:knocky_edge/helpers/ImgurHelper.dart';
 
 typedef void OnFinishedUploading(String imageUrl);
 

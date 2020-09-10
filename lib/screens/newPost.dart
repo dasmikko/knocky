@@ -5,19 +5,19 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:knocky/helpers/bbcodeparser.dart';
-import 'package:knocky/models/slateDocument.dart';
-import 'package:knocky/models/thread.dart';
-import 'package:knocky/screens/Modals/editTextBlock.dart';
-import 'package:knocky/screens/Modals/knockoutDocument.dart';
-import 'package:knocky/widget/BBcodeRenderer/BBcodeRenderer.dart';
-import 'package:knocky/widget/LinkDialogContent.dart';
-import 'package:knocky/widget/ListEditor.dart';
-import 'package:knocky/helpers/api.dart';
-import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
-import 'package:knocky/widget/PostEditorBBCode.dart';
-import 'package:knocky/widget/Thread/PostElements/Image.dart';
-import 'package:knocky/widget/UploadProgressDialogContent.dart';
+import 'package:knocky_edge/helpers/bbcodeparser.dart';
+import 'package:knocky_edge/models/slateDocument.dart';
+import 'package:knocky_edge/models/thread.dart';
+import 'package:knocky_edge/screens/Modals/editTextBlock.dart';
+import 'package:knocky_edge/screens/Modals/knockoutDocument.dart';
+import 'package:knocky_edge/widget/BBcodeRenderer/BBcodeRenderer.dart';
+import 'package:knocky_edge/widget/LinkDialogContent.dart';
+import 'package:knocky_edge/widget/ListEditor.dart';
+import 'package:knocky_edge/helpers/api.dart';
+import 'package:knocky_edge/widget/KnockoutLoadingIndicator.dart';
+import 'package:knocky_edge/widget/PostEditorBBCode.dart';
+import 'package:knocky_edge/widget/Thread/PostElements/Image.dart';
+import 'package:knocky_edge/widget/UploadProgressDialogContent.dart';
 
 class NewPostScreen extends StatefulWidget {
   final ThreadPost post;
@@ -56,13 +56,13 @@ class _NewPostScreenState extends State<NewPostScreen>
     if (this.widget.editingPost) {
       this.postBBcode = this.widget.post.content;
     } else {
-      if (this.replyListConverted.length > 0) {
-      }
+      if (this.replyListConverted.length > 0) {}
     }
 
     if (this.widget.replyList.length == 1) {
       var firstReply = this.widget.replyList.first;
-      postBBcode += '[quote mentionUser="${firstReply.user.id}" postId="${firstReply.id}" threadPage="${this.widget.thread.currentPage}" threadPage="${this.widget.thread.id}" username="${firstReply.user.username}" ]${firstReply.content}[/quote]';
+      postBBcode +=
+          '[quote mentionUser="${firstReply.user.id}" postId="${firstReply.id}" threadPage="${this.widget.thread.currentPage}" threadPage="${this.widget.thread.id}" username="${firstReply.user.username}" ]${firstReply.content}[/quote]';
     }
   }
 
@@ -297,9 +297,7 @@ class _NewPostScreenState extends State<NewPostScreen>
           selectedFile: selectedFile,
           onFinishedUploading: (String imageLink) {
             Navigator.of(context, rootNavigator: true).pop();
-            setState(() {
-              
-            });
+            setState(() {});
           },
         ),
       ),
@@ -335,9 +333,7 @@ class _NewPostScreenState extends State<NewPostScreen>
               child: const Text('Insert'),
               onPressed: () {
                 Navigator.of(context, rootNavigator: true).pop();
-                setState(() {
-                  
-                });
+                setState(() {});
               })
         ],
       ),
@@ -435,7 +431,8 @@ class _NewPostScreenState extends State<NewPostScreen>
                       object: 'block',
                       type: 'youtube',
                       data: SlateNodeData(src: urlController.text)));
-                */});
+                */
+                });
 
                 Navigator.of(context, rootNavigator: true).pop();
               })
@@ -509,7 +506,8 @@ class _NewPostScreenState extends State<NewPostScreen>
                 contentPadding: EdgeInsets.all(10),
                 onTap: () {
                   setState(() {
-                    this.postBBcode += '[quote mentionUser="${item.user.id}" postId="${item.id}" threadPage="${this.widget.thread.currentPage}" threadPage="${this.widget.thread.id}" username="${item.user.username}" ]${item.content}[/quote]';
+                    this.postBBcode +=
+                        '[quote mentionUser="${item.user.id}" postId="${item.id}" threadPage="${this.widget.thread.currentPage}" threadPage="${this.widget.thread.id}" username="${item.user.username}" ]${item.content}[/quote]';
                   });
                   Navigator.of(bcontext, rootNavigator: true).pop();
                 },
@@ -841,7 +839,7 @@ class _NewPostScreenState extends State<NewPostScreen>
                 setState(() {
                   // int index = this.document.document.nodes.indexOf(node);
                   // this.document.document.nodes[index].data.src =
-                      // urlController.text;
+                  // urlController.text;
                 });
 
                 Navigator.of(context, rootNavigator: true).pop();
@@ -911,17 +909,13 @@ class _NewPostScreenState extends State<NewPostScreen>
           new FlatButton(
               child: const Text('Remove'),
               onPressed: () {
-                setState(() {
-                 
-                });
+                setState(() {});
                 Navigator.of(context, rootNavigator: true).pop();
               }),
           new FlatButton(
               child: const Text('Update'),
               onPressed: () {
-                setState(() {
-                
-                });
+                setState(() {});
                 Navigator.of(context, rootNavigator: true).pop();
               })
         ],
@@ -952,17 +946,13 @@ class _NewPostScreenState extends State<NewPostScreen>
           new FlatButton(
               child: const Text('Remove'),
               onPressed: () {
-                setState(() {
-                
-                });
+                setState(() {});
                 Navigator.of(context, rootNavigator: true).pop();
               }),
           new FlatButton(
               child: const Text('Update'),
               onPressed: () {
-                setState(() {
-                  
-                });
+                setState(() {});
                 Navigator.of(context, rootNavigator: true).pop();
               })
         ],

@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:knocky/models/subforumDetails.dart';
+import 'package:knocky_edge/models/subforumDetails.dart';
 
 part 'userProfileThreads.g.dart';
 
@@ -9,11 +9,7 @@ class UserProfileThreads {
   final int totalPosts;
   final List<SubforumThreadLatestPopular> threads;
 
-  UserProfileThreads({
-    this.currentPage,
-    this.totalPosts,
-    this.threads
-  });
+  UserProfileThreads({this.currentPage, this.totalPosts, this.threads});
 
   factory UserProfileThreads.fromJson(Map<String, dynamic> json) =>
       _$UserProfileThreadsFromJson(json);

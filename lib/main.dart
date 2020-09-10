@@ -1,21 +1,25 @@
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:knocky/helpers/hiveHelper.dart';
-import 'package:knocky/screens/forum.dart';
-import 'package:knocky/state/appState.dart';
-import 'package:scoped_model/scoped_model.dart';
-import 'package:dynamic_theme/dynamic_theme.dart';
-import 'themes/DarkTheme.dart';
-import 'package:knocky/state/authentication.dart';
-import 'package:knocky/state/subscriptions.dart';
 import 'package:hive/hive.dart';
+import 'package:knocky_edge/helpers/airtableApi.dart';
+import 'package:knocky_edge/helpers/hiveHelper.dart';
+import 'package:knocky_edge/screens/forum.dart';
+import 'package:knocky_edge/state/appState.dart';
+import 'package:knocky_edge/state/authentication.dart';
+import 'package:knocky_edge/state/subscriptions.dart';
+import 'package:knocky_edge/themes/DarkTheme.dart';
+import 'package:scoped_model/scoped_model.dart';
 
-void main() async {
+Future<void> main() async {
   Widget rv;
 
   // Init dotenv
-  await DotEnv().load('.env');
+  await DotEnv().load('assets/.env');
+
+  //AirTableApi().testCall();
+  AirTableApi().writeRecord();
 
   // Init hive
   await AppHiveBox.initHive();

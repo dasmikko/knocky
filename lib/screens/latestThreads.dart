@@ -2,16 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:knocky/helpers/api.dart';
-import 'package:knocky/models/subforumDetails.dart';
-import 'package:knocky/models/syncData.dart';
-import 'package:knocky/models/threadAlert.dart';
-import 'package:knocky/screens/thread.dart';
-import 'package:knocky/state/appState.dart';
-import 'package:knocky/widget/Drawer.dart';
-import 'package:knocky/widget/SubforumPopularLatestDetailListItem.dart';
-import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
-import 'package:knocky/events.dart';
+import 'package:knocky_edge/helpers/api.dart';
+import 'package:knocky_edge/models/subforumDetails.dart';
+import 'package:knocky_edge/models/syncData.dart';
+import 'package:knocky_edge/models/threadAlert.dart';
+import 'package:knocky_edge/screens/thread.dart';
+import 'package:knocky_edge/state/appState.dart';
+import 'package:knocky_edge/widget/Drawer.dart';
+import 'package:knocky_edge/widget/SubforumPopularLatestDetailListItem.dart';
+import 'package:knocky_edge/widget/KnockoutLoadingIndicator.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class LatestThreadsScreen extends StatefulWidget {

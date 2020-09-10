@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:knocky/helpers/colors.dart';
-import 'package:knocky/helpers/twitterApi.dart';
+import 'package:knocky_edge/helpers/colors.dart';
+import 'package:knocky_edge/helpers/twitterApi.dart';
 import 'package:tweet_ui/models/api/tweet.dart';
 import 'package:tweet_ui/tweet_view.dart';
 
@@ -75,7 +75,8 @@ class _TwitterEmbedWidgetState extends State<TwitterEmbedWidget>
           color: backgroundColor,
           child: Container(
             padding: EdgeInsets.all(10),
-            child: Text('Error fetching tweet: ' + _twitterJson['errors'][0]['message']),
+            child: Text('Error fetching tweet: ' +
+                _twitterJson['errors'][0]['message']),
           ),
         );
       }

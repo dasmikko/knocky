@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:knocky/helpers/bbcodehelper.dart';
-import 'package:knocky/models/slateDocument.dart';
-import 'package:knocky/screens/imageViewer.dart';
+import 'package:knocky_edge/helpers/bbcodehelper.dart';
+import 'package:knocky_edge/models/slateDocument.dart';
+import 'package:knocky_edge/screens/imageViewer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:path/path.dart';
 
@@ -13,7 +13,8 @@ class ImageWidget extends StatefulWidget {
   final SlateObject slateObject;
   final String bbcode;
 
-  ImageWidget({this.url, this.scaffoldKey, this.slateObject, this.bbcode, this.postId});
+  ImageWidget(
+      {this.url, this.scaffoldKey, this.slateObject, this.bbcode, this.postId});
 
   @override
   _ImageWidgetState createState() => _ImageWidgetState();
@@ -79,19 +80,19 @@ class _ImageWidgetState extends State<ImageWidget> {
       onTap: () {
         Navigator.of(context, rootNavigator: true).push(
           PageRouteBuilder(
-            opaque: false,
-            pageBuilder: (context, anim, anim2) => ImageViewerScreen(
-              url: this.widget.url,
-              urls: findAllImages(),
-              postId: widget.postId,
-            ),
-            transitionsBuilder: (___, Animation<double> animation, ____, Widget child) {
-              return FadeTransition(
-                opacity: animation,
-                child: child,
-              );
-            }
-          ),
+              opaque: false,
+              pageBuilder: (context, anim, anim2) => ImageViewerScreen(
+                    url: this.widget.url,
+                    urls: findAllImages(),
+                    postId: widget.postId,
+                  ),
+              transitionsBuilder:
+                  (___, Animation<double> animation, ____, Widget child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              }),
         );
       },
       child: Hero(

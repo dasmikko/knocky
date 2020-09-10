@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:knocky/models/slateDocument.dart';
-import 'package:knocky/widget/SlateDocumentParser/SlateDocumentController.dart';
+import 'package:knocky_edge/models/slateDocument.dart';
+import 'package:knocky_edge/widget/SlateDocumentParser/SlateDocumentController.dart';
 
 class SlateDocumentParser extends StatelessWidget {
   final SlateObject slateObject;
@@ -153,7 +153,8 @@ class SlateDocumentParser extends StatelessWidget {
     // Handle block nodes
     widgets.addAll(handleNodes(node.nodes, isChild: !isChild));
 
-    return this.userQuoteHandler(node.data.postData.username, widgets, isChild, node);
+    return this
+        .userQuoteHandler(node.data.postData.username, widgets, isChild, node);
   }
 
   Widget youTubeToWidget(SlateNode node) {

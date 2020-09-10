@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hive/hive.dart';
-import 'package:knocky/helpers/api.dart';
-import 'package:knocky/helpers/hiveHelper.dart';
+import 'package:knocky_edge/helpers/api.dart';
+import 'package:knocky_edge/helpers/hiveHelper.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:knocky/state/authentication.dart';
+import 'package:knocky_edge/state/authentication.dart';
+import 'dart:io' show Platform;
 
 class LoginScreen extends StatefulWidget {
   final String loginUrl;
@@ -27,29 +28,34 @@ class _ThreadScreenState extends State<LoginScreen>
 
     this.browser = new MyInAppBrowser(
         context: this.context,
-        onBrowserExit: () async {
-          bool isLoggedIn = await ScopedModel.of<AuthenticationModel>(context).isLoggedIn;
+        onBrowserExit: () {
+          bool isLoggedIn =
+              ScopedModel.of<AuthenticationModel>(context).isLoggedIn;
           Navigator.of(context).pop(isLoggedIn);
         });
 
-    this.browser.open(
+    this.browser.openUrl(
           url: this.widget.loginUrl,
           options: InAppBrowserClassOptions(
-            inAppWebViewWidgetOptions: InAppWebViewWidgetOptions(
-              androidInAppWebViewOptions: AndroidInAppWebViewOptions(
+            inAppWebViewGroupOptions: InAppWebViewGroupOptions(
+              crossPlatform: InAppWebViewOptions(
+                useShouldOverrideUrlLoading: true,
+                javaScriptEnabled: true,
+                userAgent:
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
+              ),
+              ios: IOSInAppWebViewOptions(
+                isPagingEnabled: true,
+              ),
+              android: AndroidInAppWebViewOptions(
                 allowContentAccess: true,
                 allowUniversalAccessFromFileURLs: true,
                 domStorageEnabled: true,
                 databaseEnabled: true,
-                disabledActionModeMenuItems: AndroidInAppWebViewModeMenuItem.MENU_ITEM_SHARE,
-                mixedContentMode: AndroidInAppWebViewMixedContentMode
-                    .MIXED_CONTENT_ALWAYS_ALLOW,
-              ),
-              inAppWebViewOptions: InAppWebViewOptions(
-                userAgent:
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
-                javaScriptEnabled: true,
-                useShouldOverrideUrlLoading: true,
+                disabledActionModeMenuItems:
+                    AndroidActionModeMenuItem.MENU_ITEM_SHARE,
+                mixedContentMode:
+                    AndroidMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
               ),
             ),
           ),
@@ -114,7 +120,7 @@ class MyInAppBrowser extends InAppBrowser {
 
   @override
   void onProgressChanged(int progress) {
-    print("Progress: $progress");
+    //print("Progress: $progress");
   }
 
   @override
@@ -124,9 +130,14 @@ class MyInAppBrowser extends InAppBrowser {
   }
 
   @override
-  void shouldOverrideUrlLoading(String url) async {
-    print("\n\n override $url\n\n");
-    this.webViewController.loadUrl(url: url);
+  Future<ShouldOverrideUrlLoadingAction> shouldOverrideUrlLoading(
+      ShouldOverrideUrlLoadingRequest shouldOverrideUrlLoadingRequest) async {
+    var url = shouldOverrideUrlLoadingRequest.url;
+    //print("\n\n override $url\n\n");
+
+    if (Platform.isAndroid) {
+      this.webViewController.loadUrl(url: url);
+    }
 
     Box box = await AppHiveBox.getBox();
 
@@ -153,9 +164,13 @@ class MyInAppBrowser extends InAppBrowser {
           ? KnockoutAPI.KNOCKOUT_URL
           : KnockoutAPI.QA_URL;
 
+      print('CookieUrl: ' + cookieUrl);
+
       var cookieManager = new CookieManager();
       var cookies = await cookieManager.getCookies(url: cookieUrl);
       String cookieString = '';
+
+      print('Cookies' + cookies.toString());
 
       // Get needed JWTToken
       cookies.forEach((element) {
@@ -176,6 +191,12 @@ class MyInAppBrowser extends InAppBrowser {
     void onLoadResource(LoadedResource response) {}
 
     @override
-    void onConsoleMessage(ConsoleMessage consoleMessage) {}
+    void onConsoleMessage(ConsoleMessage consoleMessage) {
+      print("""
+      console output:
+        message: ${consoleMessage.message}
+        messageLevel: ${consoleMessage.messageLevel.toValue()}
+    """);
+    }
   }
 }

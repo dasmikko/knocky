@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:knocky/models/subforum.dart';
+import 'package:knocky_edge/models/subforum.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:knocky/models/subforumDetails.dart';
-import 'package:knocky/widget/subforumPage.dart';
-import 'package:knocky/widget/Drawer.dart';
+import 'package:knocky_edge/models/subforumDetails.dart';
+import 'package:knocky_edge/widget/subforumPage.dart';
+import 'package:knocky_edge/widget/Drawer.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 class SubforumScreen extends StatefulWidget {
@@ -106,7 +106,7 @@ class _SubforumScreenState extends State<SubforumScreen>
     );
   }
 
-  void onFetchError (context) {
+  void onFetchError(context) {
     Scaffold.of(context).hideCurrentSnackBar();
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text('Failed to load page. Try again.'),

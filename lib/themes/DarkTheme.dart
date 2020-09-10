@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:knocky/helpers/colors.dart';
+import 'package:knocky_edge/helpers/colors.dart';
 
 ThemeData darkTheme() {
   return ThemeData(

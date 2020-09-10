@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:knocky/models/slateDocument.dart';
-import 'package:knocky/models/thread.dart';
-import 'package:knocky/widget/LinkDialogContent.dart';
-import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
-import 'package:knocky/widget/UploadProgressDialogContent.dart';
+import 'package:knocky_edge/models/slateDocument.dart';
+import 'package:knocky_edge/models/thread.dart';
+import 'package:knocky_edge/widget/LinkDialogContent.dart';
+import 'package:knocky_edge/widget/SlateDocumentParser/SlateDocumentParser.dart';
+import 'package:knocky_edge/widget/UploadProgressDialogContent.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class PostEditorBBCode extends StatefulWidget {
@@ -33,8 +33,8 @@ class PostEditorBBCode extends StatefulWidget {
   final List<ThreadPost> replyList;
 
   PostEditorBBCode(
-      { this.thread,
-        this.postBBCode,
+      {this.thread,
+      this.postBBCode,
       this.onTapAddHeadingOne,
       this.onTapAddHeadingTwo,
       this.onTapAddImage,
@@ -97,9 +97,14 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
   /// Add a tag with content at cursor position
   ///
   void addTag(TextEditingController controller, String tag, String content) {
-    String tagToAdd = '[${tag}]' + content + '[/${tag}]'; //ignore: unnecessary_brace_in_string_interps
-    if (controller.text.isNotEmpty) controller.text = controller.text + '\n' + tagToAdd; // Add new line if content is not empty
-    if (controller.text.isEmpty) controller.text = controller.text + tagToAdd; 
+    String tagToAdd = '[${tag}]' +
+        content +
+        '[/${tag}]'; //ignore: unnecessary_brace_in_string_interps
+    if (controller.text.isNotEmpty)
+      controller.text = controller.text +
+          '\n' +
+          tagToAdd; // Add new line if content is not empty
+    if (controller.text.isEmpty) controller.text = controller.text + tagToAdd;
 
     this.widget.onInputChange(controller.text);
   }
@@ -206,7 +211,7 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
           onFinishedUploading: (String imageLink) {
             Navigator.of(context, rootNavigator: true).pop();
             var controller = _textEditingController;
-            addTag(controller, 'img', imageLink); 
+            addTag(controller, 'img', imageLink);
           },
         ),
       ),
@@ -438,7 +443,8 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
                 contentPadding: EdgeInsets.all(10),
                 onTap: () {
                   var controller = _textEditingController;
-                  controller.text += '[quote mentionUser="${item.user.id}" postId="${item.id}" threadPage="${this.widget.thread.currentPage}" threadPage="${this.widget.thread.id}" username="${item.user.username}" ]${item.content}[/quote]';
+                  controller.text +=
+                      '[quote mentionUser="${item.user.id}" postId="${item.id}" threadPage="${this.widget.thread.currentPage}" threadPage="${this.widget.thread.id}" username="${item.user.username}" ]${item.content}[/quote]';
                   this.widget.onInputChange(controller.text);
                   Navigator.of(context, rootNavigator: true).pop();
                 },

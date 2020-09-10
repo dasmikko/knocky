@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:knocky/helpers/bbcode.dart';
-import 'package:knocky/models/slateDocument.dart';
-import 'package:knocky/widget/SlateDocumentParser/SlateDocumentParser.dart';
+import 'package:knocky_edge/helpers/bbcode.dart';
+import 'package:knocky_edge/models/slateDocument.dart';
+import 'package:knocky_edge/widget/SlateDocumentParser/SlateDocumentParser.dart';
 
 class ListEditor extends StatefulWidget {
   final List oldListItems;

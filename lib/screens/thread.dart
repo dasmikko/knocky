@@ -5,20 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:knocky/helpers/api.dart';
+import 'package:knocky_edge/helpers/api.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:knocky/models/syncData.dart';
-import 'package:knocky/state/appState.dart';
-import 'package:knocky/state/subscriptions.dart';
-import 'package:knocky/models/thread.dart';
-import 'package:knocky/widget/Drawer.dart';
-import 'package:knocky/widget/Thread/ThreadPostItem.dart';
-import 'package:knocky/widget/KnockoutLoadingIndicator.dart';
-import 'package:knocky/widget/scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:knocky_edge/models/syncData.dart';
+import 'package:knocky_edge/state/appState.dart';
+import 'package:knocky_edge/state/subscriptions.dart';
+import 'package:knocky_edge/models/thread.dart';
+import 'package:knocky_edge/widget/Drawer.dart';
+import 'package:knocky_edge/widget/Thread/ThreadPostItem.dart';
+import 'package:knocky_edge/widget/KnockoutLoadingIndicator.dart';
+import 'package:knocky_edge/widget/scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:knocky/state/authentication.dart';
-import 'package:knocky/screens/newPost.dart';
+import 'package:knocky_edge/state/authentication.dart';
+import 'package:knocky_edge/screens/newPost.dart';
 
 class ThreadScreen extends StatefulWidget {
   final String title;
@@ -59,12 +59,12 @@ class _ThreadScreenState extends State<ThreadScreen>
   @override
   void initState() {
     super.initState();
-    if (this.widget.page != null) { 
-      _currentPage = this.widget.page; 
+    if (this.widget.page != null) {
+      _currentPage = this.widget.page;
     } else {
       _currentPage = 1;
     }
-    
+
     if (_totalPages == 0 && _currentPage != null) _totalPages = _currentPage;
     if (widget.postCount != null) {
       _totalPages = (widget.postCount / 20).ceil();
@@ -100,7 +100,7 @@ class _ThreadScreenState extends State<ThreadScreen>
 
     Future _future =
         api.getThread(widget.threadId, page: _currentPage).catchError((error) {
-          throw(error);
+      throw (error);
       setState(() {
         _isLoading = false;
       });
@@ -535,7 +535,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       ));
       await refreshPage();
       print('Do the scroll');
-      scrollController.jumpTo(index: details.posts.length-1);
+      scrollController.jumpTo(index: details.posts.length - 1);
     }
   }
 
@@ -630,6 +630,7 @@ class _ThreadScreenState extends State<ThreadScreen>
               ),
             details != null
                 ? ScrollablePositionedList.builder(
+                    padding: EdgeInsets.only(bottom: 66),
                     itemCount: details.posts.length,
                     itemBuilder: (context, index) {
                       ThreadPost item = details.posts[index];
@@ -646,7 +647,8 @@ class _ThreadScreenState extends State<ThreadScreen>
                                   .length >
                               0,
                           onPressReply: (post) => onPressReply(post, context),
-                          onLongPressReply: (post) => onLongPressReply(post, context),
+                          onLongPressReply: (post) =>
+                              onLongPressReply(post, context),
                           onPostRated: () {
                             Scaffold.of(context).showSnackBar(SnackBar(
                               backgroundColor: Colors.green,
@@ -664,14 +666,13 @@ class _ThreadScreenState extends State<ThreadScreen>
                     itemPositionsListener: itemPositionListener,
                     didAttach:
                         (ScrollController scrollControllerFromListView) async {
-                      /*scrollControllerFromListView.addListener(() {
+                      scrollControllerFromListView.addListener(() {
                         if (scrollControllerFromListView
                                 .position.userScrollDirection ==
                             ScrollDirection.reverse) {
-
                           if (expandController.isDismissed) {
                             print('Forward');
-                              expandController.forward();
+                            expandController.forward();
                           }
                         }
                         if (scrollControllerFromListView
@@ -679,14 +680,14 @@ class _ThreadScreenState extends State<ThreadScreen>
                             ScrollDirection.forward) {
                           if (expandController.isCompleted) {
                             print('reverse');
-                              expandController.reverse();
+                            expandController.reverse();
                           }
                         }
 
                         if (scrollControllerFromListView.position.atEdge) {
                           expandController.reverse();
                         }
-                      });*/
+                      });
 
                       // The delayed if a huge stupid fucking hack, to make it work while in debug mode.
                       await Future.delayed(Duration(milliseconds: 100));
@@ -697,14 +698,13 @@ class _ThreadScreenState extends State<ThreadScreen>
                             index: postIndex == -1 ? 0 : postIndex);
                       }
                     },
-                    onScroll: (ScrollPosition position) async {
-                    },
+                    onScroll: (ScrollPosition position) async {},
                   )
                 : Container(),
           ],
         ),
       ),
-      extendBody: false,
+      extendBody: true,
       bottomNavigationBar: SizeTransition(
         axisAlignment: -1.0,
         sizeFactor: animation,

@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:knocky/models/thread.dart';
+import 'package:knocky_edge/models/thread.dart';
 
 class PostBan extends StatelessWidget {
   final ThreadPostBan ban;
