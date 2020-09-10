@@ -46,9 +46,12 @@ class _ThreadPostItemState extends State<ThreadPostItem> {
     if (ratings != null) {
       ratings.sort((a, b) => b.count.compareTo(a.count));
       ratings.forEach((rating) {
-        RatingistItem icon =
-            ratingsIconList.firstWhere((icon) => icon.id == rating.rating);
-
+        RatingistItem icon;
+        try {
+          icon = ratingsIconList.firstWhere((icon) => icon.id == rating.rating);
+        } catch (e) {
+          return;
+        }
         if (icon != null) {
           items.add(
             Container(
