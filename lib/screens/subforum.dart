@@ -41,7 +41,7 @@ class _SubforumScreenState extends State<SubforumScreen>
 
   void prepareAnimations() {
     expandController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 250));
+        AnimationController(duration: Duration(milliseconds: 250));
     Animation curve = CurvedAnimation(
       parent: expandController,
       curve: Curves.fastOutSlowIn,

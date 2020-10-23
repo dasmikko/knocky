@@ -35,7 +35,6 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
     _currentPage = this.widget.urls.indexOf(widget.url);
 
     _animationController = AnimationController(
-      vsync: this,
       duration: const Duration(milliseconds: 400),
     );
   }

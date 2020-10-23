@@ -33,24 +33,24 @@ const int _screenScrollCount = 2;
 /// All other parameters are the same as specified in [ListView].
 class ScrollablePositionedList extends StatefulWidget {
   /// Create a [ScrollablePositionedList] whose items are provided by [itemBuilder].
-  const ScrollablePositionedList.builder({
-    @required this.itemCount,
-    @required this.itemBuilder,
-    this.itemScrollController,
-    ItemPositionsListener itemPositionsListener,
-    this.initialScrollIndex = 0,
-    this.initialAlignment = 0,
-    this.scrollDirection = Axis.vertical,
-    this.reverse = false,
-    this.physics,
-    this.semanticChildCount,
-    this.padding,
-    this.addSemanticIndexes = true,
-    this.addAutomaticKeepAlives = true,
-    this.addRepaintBoundaries = true,
-    this.didAttach,
-    this.onScroll
-  })  : assert(itemCount != null),
+  const ScrollablePositionedList.builder(
+      {@required this.itemCount,
+      @required this.itemBuilder,
+      this.itemScrollController,
+      ItemPositionsListener itemPositionsListener,
+      this.initialScrollIndex = 0,
+      this.initialAlignment = 0,
+      this.scrollDirection = Axis.vertical,
+      this.reverse = false,
+      this.physics,
+      this.semanticChildCount,
+      this.padding,
+      this.addSemanticIndexes = true,
+      this.addAutomaticKeepAlives = true,
+      this.addRepaintBoundaries = true,
+      this.didAttach,
+      this.onScroll})
+      : assert(itemCount != null),
         assert(itemBuilder != null),
         itemPositionNotifier = itemPositionsListener;
 
@@ -121,7 +121,6 @@ class ScrollablePositionedList extends StatefulWidget {
 
   final Function onScroll;
 
-
   @override
   State<StatefulWidget> createState() => _ScrollablePositionedListState();
 }
@@ -131,7 +130,6 @@ class ScrollablePositionedList extends StatefulWidget {
 class ItemScrollController {
   _ScrollablePositionedListState _scrollableListState;
   bool isAttached = false;
-
 
   /// Immediately, without animation, reconfigure the list so that item at
   /// [index]'s leading edge is at the given [alignment].
@@ -347,8 +345,8 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
       final endCompleter = Completer<void>();
       startAnimationCallback = () {
         SchedulerBinding.instance.addPostFrameCallback((_) async {
-          frontOpacity.parent = _opacityAnimation(startingListDisplay).animate(
-              AnimationController(vsync: this, duration: duration)..forward());
+          frontOpacity.parent = _opacityAnimation(startingListDisplay)
+              .animate(AnimationController(duration: duration)..forward());
           startAnimationCallback = () {};
           endingScrollController.jumpTo(-direction *
               (_screenScrollCount *

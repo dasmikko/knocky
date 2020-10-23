@@ -23,8 +23,8 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
 
   initState() {
     super.initState();
-    controller = AnimationController(
-        duration: const Duration(milliseconds: 250), vsync: this);
+    controller =
+        AnimationController(duration: const Duration(milliseconds: 250));
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
 
     animation.addStatusListener((status) {
