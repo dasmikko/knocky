@@ -345,8 +345,8 @@ class _ScrollablePositionedListState extends State<ScrollablePositionedList>
       final endCompleter = Completer<void>();
       startAnimationCallback = () {
         SchedulerBinding.instance.addPostFrameCallback((_) async {
-          frontOpacity.parent = _opacityAnimation(startingListDisplay)
-              .animate(AnimationController(duration: duration)..forward());
+          frontOpacity.parent = _opacityAnimation(startingListDisplay).animate(
+              AnimationController(vsync: this, duration: duration)..forward());
           startAnimationCallback = () {};
           endingScrollController.jumpTo(-direction *
               (_screenScrollCount *

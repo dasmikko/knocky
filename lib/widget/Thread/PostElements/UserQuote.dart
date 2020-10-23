@@ -28,7 +28,7 @@ class _UserQuoteWidgetState extends State<UserQuoteWidget>
   ///Setting up the animation
   void prepareAnimations() {
     expandController =
-        AnimationController(duration: Duration(milliseconds: 500));
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     Animation curve = CurvedAnimation(
       parent: expandController,
       curve: Curves.fastOutSlowIn,
