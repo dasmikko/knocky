@@ -16,15 +16,15 @@ class KnockoutLoadingIndicator extends StatefulWidget {
 }
 
 class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<double> animation;
   bool isHidden = false;
 
   initState() {
     super.initState();
-    controller =
-        AnimationController(duration: const Duration(milliseconds: 250));
+    controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 250));
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
 
     animation.addStatusListener((status) {

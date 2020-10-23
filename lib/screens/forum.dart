@@ -1,9 +1,6 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:knocky_edge/helpers/api.dart';
-import 'package:knocky_edge/helpers/hiveHelper.dart';
 import 'package:knocky_edge/helpers/twitterApi.dart';
 import 'package:knocky_edge/models/subforum.dart';
 import 'package:after_layout/after_layout.dart';
