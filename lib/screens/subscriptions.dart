@@ -46,37 +46,27 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
 
   Future<void> loadSubscriptions() async {
     if (ScopedModel.of<SubscriptionModel>(context).subscriptions.length == 0) {
-      ScopedModel.of<SubscriptionModel>(context).getSubscriptions(
-          errorCallback: () {
-        Scaffold.of(context).hideCurrentSnackBar();
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('Failed to get subscriptions. Try again.'),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-        ));
-      });
+      ScopedModel.of<SubscriptionModel>(context)
+          .getSubscriptions(errorCallback: () {});
     }
   }
 
   Future<void> forceLoadSubscriptions() async {
     ScopedModel.of<SubscriptionModel>(context).getSubscriptions(
-        errorCallback: () {
-      Scaffold.of(context).hideCurrentSnackBar();
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to get subscriptions. Try again.'),
-        backgroundColor: Colors.red,
-        behavior: SnackBarBehavior.floating,
-      ));
+        errorCallback: (error) {
+      print('Error getting subscriptions');
+      print(error);
     });
   }
 
   void onTapItem(ThreadAlert item) {
+    print('Thread id' + item.threadId.toString());
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ThreadScreen(
           title: item.threadTitle,
-          postCount: item.lastPost.thread.postCount,
+          postCount: item.threadPostCount,
           threadId: item.threadId,
         ),
       ),
@@ -123,9 +113,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
       MaterialPageRoute(
         builder: (context) => ThreadScreen(
           title: item.threadTitle,
-          postCount: item.lastPost.thread.postCount,
+          page: item.lastPost.page,
           threadId: item.threadId,
-          page: pagenumber.ceil(),
           postIdToJumpTo: item.firstUnreadId,
         ),
       ),

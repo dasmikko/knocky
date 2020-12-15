@@ -73,7 +73,7 @@ class _LatestThreadsScreenState extends State<LatestThreadsScreen>
       MaterialPageRoute(
         builder: (context) => ThreadScreen(
           title: item.threadTitle,
-          postCount: item.lastPost.thread.postCount,
+          page: item.lastPost.page,
           threadId: item.threadId,
         ),
       ),
@@ -88,9 +88,8 @@ class _LatestThreadsScreenState extends State<LatestThreadsScreen>
       MaterialPageRoute(
         builder: (context) => ThreadScreen(
           title: item.threadTitle,
-          postCount: item.lastPost.thread.postCount,
           threadId: item.threadId,
-          page: pagenumber.ceil(),
+          page: item.lastPost.page,
         ),
       ),
     );

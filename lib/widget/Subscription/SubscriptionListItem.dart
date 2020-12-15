@@ -80,29 +80,6 @@ class SubscriptionListItem extends StatelessWidget {
                               margin: EdgeInsets.only(bottom: 5),
                               child: RichText(
                                 text: TextSpan(children: <InlineSpan>[
-                                  if (item.locked == 1)
-                                    WidgetSpan(
-                                      child: Container(
-                                        margin: EdgeInsets.only(right: 5),
-                                        child: Icon(
-                                          FontAwesomeIcons.lock,
-                                          size: 14,
-                                          color: HexColor('b38d4f'),
-                                        ),
-                                      ),
-                                    ),
-                                  if (item.pinned == 1)
-                                    WidgetSpan(
-                                      alignment: PlaceholderAlignment.bottom,
-                                      child: Container(
-                                        margin: EdgeInsets.only(right: 5),
-                                        child: Icon(
-                                          FontAwesomeIcons.solidStickyNote,
-                                          size: 14,
-                                          color: HexColor('b4e42d'),
-                                        ),
-                                      ),
-                                    ),
                                   TextSpan(
                                     text: item.threadTitle,
                                   ),
@@ -160,7 +137,7 @@ class SubscriptionListItem extends StatelessWidget {
                     Container(
                       margin: EdgeInsets.only(bottom: 4),
                       child: Text(
-                        item.lastPost.thread.postCount.toString() + ' replies',
+                        item.lastPost.threadPostNumber.toString() + ' replies',
                         style: TextStyle(fontSize: 11),
                       ),
                     ),

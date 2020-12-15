@@ -4,21 +4,11 @@ part 'threadAlert.g.dart';
 
 @JsonSerializable()
 class ThreadAlert {
-  @JsonKey(name: 'avatar_url')
-  final String avatarUrl;
-  @JsonKey(name: 'background_url')  
-  final String backgroundUrl;
-  final String email;
   final int firstUnreadId;
+  @JsonKey(nullable: true)
+  final String threadBackgroundUrl;
   @JsonKey(name: 'icon_id')
   final int iconId;
-  final int id;
-  @JsonKey(name: 'last_seen')
-  final DateTime lastSeen;
-  final int locked;
-  final int pinned;
-  @JsonKey(name: 'subforum_id')
-  final int subforumId;
   final DateTime threadCreatedAt;
   @JsonKey(nullable: true)
   final DateTime threadDeletedAt;
@@ -29,53 +19,37 @@ class ThreadAlert {
   final String threadUserAvatarUrl;
   final int threadUserUsergroup;
   final String threadUsername;
-  @JsonKey(name: 'thread_id')
   final int threadId;
   final String title;
   final int unreadPosts;
   @JsonKey(nullable: true, name: 'updated_at')
   final DateTime updatedAt;
-  @JsonKey(name: 'user_id')
-  final int userId;
-  final int usergroup;
-  final String username;
   final ThreadAlertLastPost lastPost;
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
 
+  ThreadAlert(
+      {this.firstUnreadId,
+      this.threadBackgroundUrl,
+      this.iconId,
+      this.threadCreatedAt,
+      this.threadDeletedAt,
+      this.threadTitle,
+      this.threadUpdateAt,
+      this.threadUser,
+      this.threadId,
+      this.threadUserAvatarUrl,
+      this.threadUsername,
+      this.threadUserUsergroup,
+      this.title,
+      this.unreadPosts,
+      this.updatedAt,
+      this.lastPost,
+      this.createdAt,
+      this.threadPostCount});
 
-  ThreadAlert({
-    this.avatarUrl,
-    this.backgroundUrl,
-    this.email,
-    this.firstUnreadId,
-    this.iconId,
-    this.id,
-    this.lastSeen,
-    this.locked,
-    this.pinned,
-    this.subforumId,
-    this.threadCreatedAt,
-    this.threadDeletedAt,
-    this.threadTitle,
-    this.threadUpdateAt,
-    this.threadUser,
-    this.username,
-    this.threadId,
-    this.threadUserAvatarUrl,
-    this.threadUsername,
-    this.threadUserUsergroup,
-    this.title,
-    this.unreadPosts,
-    this.updatedAt,
-    this.usergroup,
-    this.userId,
-    this.lastPost,
-    this.createdAt,
-    this.threadPostCount
-  });
-  
-  factory ThreadAlert.fromJson(Map<String, dynamic> json) => _$ThreadAlertFromJson(json);
+  factory ThreadAlert.fromJson(Map<String, dynamic> json) =>
+      _$ThreadAlertFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadAlertToJson(this);
 }
 
@@ -84,17 +58,21 @@ class ThreadAlertLastPost {
   final int id;
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
-  final ThreadAlertLastPostThread thread;
+  final int thread;
+  final int threadPostNumber;
+  final int page;
   final ThreadAlertLastPostUser user;
 
-  ThreadAlertLastPost({
-    this.createdAt,
-    this.id,
-    this.thread,
-    this.user
-  });
+  ThreadAlertLastPost(
+      {this.createdAt,
+      this.id,
+      this.thread,
+      this.threadPostNumber,
+      this.page,
+      this.user});
 
-  factory ThreadAlertLastPost.fromJson(Map<String, dynamic> json) => _$ThreadAlertLastPostFromJson(json);
+  factory ThreadAlertLastPost.fromJson(Map<String, dynamic> json) =>
+      _$ThreadAlertLastPostFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadAlertLastPostToJson(this);
 }
 
@@ -107,14 +85,11 @@ class ThreadAlertLastPostThread {
   @JsonKey(name: 'post_count')
   final int postCount;
 
-  ThreadAlertLastPostThread({
-    this.createdAt,
-    this.id,
-    this.title,
-    this.postCount  
-  });
+  ThreadAlertLastPostThread(
+      {this.createdAt, this.id, this.title, this.postCount});
 
-  factory ThreadAlertLastPostThread.fromJson(Map<String, dynamic> json) => _$ThreadAlertLastPostThreadFromJson(json);
+  factory ThreadAlertLastPostThread.fromJson(Map<String, dynamic> json) =>
+      _$ThreadAlertLastPostThreadFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadAlertLastPostThreadToJson(this);
 }
 
@@ -125,12 +100,9 @@ class ThreadAlertLastPostUser {
   final String avatarUrl;
   final String username;
 
-  ThreadAlertLastPostUser({
-    this.usergroup,
-    this.username,
-    this.avatarUrl
-  });
+  ThreadAlertLastPostUser({this.usergroup, this.username, this.avatarUrl});
 
-  factory ThreadAlertLastPostUser.fromJson(Map<String, dynamic> json) => _$ThreadAlertLastPostUserFromJson(json);
+  factory ThreadAlertLastPostUser.fromJson(Map<String, dynamic> json) =>
+      _$ThreadAlertLastPostUserFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadAlertLastPostUserToJson(this);
 }

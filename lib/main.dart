@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
-import 'package:knocky_edge/helpers/airtableApi.dart';
 import 'package:knocky_edge/helpers/hiveHelper.dart';
 import 'package:knocky_edge/screens/forum.dart';
 import 'package:knocky_edge/state/appState.dart';
@@ -17,9 +16,6 @@ Future<void> main() async {
 
   // Init dotenv
   await DotEnv().load('assets/.env');
-
-  //AirTableApi().testCall();
-  AirTableApi().writeRecord();
 
   // Init hive
   await AppHiveBox.initHive();

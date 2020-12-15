@@ -8,18 +8,9 @@ part of 'threadAlert.dart';
 
 ThreadAlert _$ThreadAlertFromJson(Map<String, dynamic> json) {
   return ThreadAlert(
-    avatarUrl: json['avatar_url'] as String,
-    backgroundUrl: json['background_url'] as String,
-    email: json['email'] as String,
     firstUnreadId: json['firstUnreadId'] as int,
+    threadBackgroundUrl: json['threadBackgroundUrl'] as String,
     iconId: json['icon_id'] as int,
-    id: json['id'] as int,
-    lastSeen: json['last_seen'] == null
-        ? null
-        : DateTime.parse(json['last_seen'] as String),
-    locked: json['locked'] as int,
-    pinned: json['pinned'] as int,
-    subforumId: json['subforum_id'] as int,
     threadCreatedAt: json['threadCreatedAt'] == null
         ? null
         : DateTime.parse(json['threadCreatedAt'] as String),
@@ -31,8 +22,7 @@ ThreadAlert _$ThreadAlertFromJson(Map<String, dynamic> json) {
         ? null
         : DateTime.parse(json['threadUpdateAt'] as String),
     threadUser: json['threadUser'] as int,
-    username: json['username'] as String,
-    threadId: json['thread_id'] as int,
+    threadId: json['threadId'] as int,
     threadUserAvatarUrl: json['threadUserAvatarUrl'] as String,
     threadUsername: json['threadUsername'] as String,
     threadUserUsergroup: json['threadUserUsergroup'] as int,
@@ -41,8 +31,6 @@ ThreadAlert _$ThreadAlertFromJson(Map<String, dynamic> json) {
     updatedAt: json['updated_at'] == null
         ? null
         : DateTime.parse(json['updated_at'] as String),
-    usergroup: json['usergroup'] as int,
-    userId: json['user_id'] as int,
     lastPost: json['lastPost'] == null
         ? null
         : ThreadAlertLastPost.fromJson(
@@ -56,16 +44,9 @@ ThreadAlert _$ThreadAlertFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$ThreadAlertToJson(ThreadAlert instance) =>
     <String, dynamic>{
-      'avatar_url': instance.avatarUrl,
-      'background_url': instance.backgroundUrl,
-      'email': instance.email,
       'firstUnreadId': instance.firstUnreadId,
+      'threadBackgroundUrl': instance.threadBackgroundUrl,
       'icon_id': instance.iconId,
-      'id': instance.id,
-      'last_seen': instance.lastSeen?.toIso8601String(),
-      'locked': instance.locked,
-      'pinned': instance.pinned,
-      'subforum_id': instance.subforumId,
       'threadCreatedAt': instance.threadCreatedAt?.toIso8601String(),
       'threadDeletedAt': instance.threadDeletedAt?.toIso8601String(),
       'threadTitle': instance.threadTitle,
@@ -75,13 +56,10 @@ Map<String, dynamic> _$ThreadAlertToJson(ThreadAlert instance) =>
       'threadUserAvatarUrl': instance.threadUserAvatarUrl,
       'threadUserUsergroup': instance.threadUserUsergroup,
       'threadUsername': instance.threadUsername,
-      'thread_id': instance.threadId,
+      'threadId': instance.threadId,
       'title': instance.title,
       'unreadPosts': instance.unreadPosts,
       'updated_at': instance.updatedAt?.toIso8601String(),
-      'user_id': instance.userId,
-      'usergroup': instance.usergroup,
-      'username': instance.username,
       'lastPost': instance.lastPost,
       'created_at': instance.createdAt?.toIso8601String(),
     };
@@ -92,10 +70,9 @@ ThreadAlertLastPost _$ThreadAlertLastPostFromJson(Map<String, dynamic> json) {
         ? null
         : DateTime.parse(json['created_at'] as String),
     id: json['id'] as int,
-    thread: json['thread'] == null
-        ? null
-        : ThreadAlertLastPostThread.fromJson(
-            json['thread'] as Map<String, dynamic>),
+    thread: json['thread'] as int,
+    threadPostNumber: json['threadPostNumber'] as int,
+    page: json['page'] as int,
     user: json['user'] == null
         ? null
         : ThreadAlertLastPostUser.fromJson(
@@ -109,6 +86,8 @@ Map<String, dynamic> _$ThreadAlertLastPostToJson(
       'id': instance.id,
       'created_at': instance.createdAt?.toIso8601String(),
       'thread': instance.thread,
+      'threadPostNumber': instance.threadPostNumber,
+      'page': instance.page,
       'user': instance.user,
     };
 

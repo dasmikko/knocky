@@ -114,7 +114,7 @@ class KnockoutAPI {
 
   Future<List<ThreadAlert>> getAlerts() async {
     try {
-      final response = await _request(url: 'alert/list', type: 'post');
+      final response = await _request(url: 'alerts', type: 'get');
       return response.data
           .map<ThreadAlert>((json) => ThreadAlert.fromJson(json))
           .toList();

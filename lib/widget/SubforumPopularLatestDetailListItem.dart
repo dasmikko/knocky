@@ -141,11 +141,13 @@ class SubforumPopularLatestDetailListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String _iconUrl = threadDetails.iconId != null
-        ? iconList
-            .firstWhere((IconListItem item) => item.id == threadDetails.iconId)
-            .url
-        : '';
+    String _iconUrl = '';
+
+    try {
+      _iconUrl = iconList
+          .firstWhere((IconListItem item) => item.id == threadDetails.iconId)
+          .url;
+    } catch (err) {}
 
     Color userColor = AppColors(context).normalUserColor(); // User
     if (threadDetails.user.usergroup == 2)

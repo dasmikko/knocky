@@ -73,7 +73,7 @@ class _PopularThreadsScreenState extends State<PopularThreadsScreen>
       MaterialPageRoute(
         builder: (context) => ThreadScreen(
           title: item.threadTitle,
-          postCount: item.lastPost.thread.postCount,
+          page: item.lastPost.page,
           threadId: item.threadId,
         ),
       ),
@@ -88,9 +88,8 @@ class _PopularThreadsScreenState extends State<PopularThreadsScreen>
       MaterialPageRoute(
         builder: (context) => ThreadScreen(
           title: item.threadTitle,
-          postCount: item.lastPost.thread.postCount,
+          page: item.lastPost.page,
           threadId: item.threadId,
-          page: pagenumber.ceil(),
         ),
       ),
     );

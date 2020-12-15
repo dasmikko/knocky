@@ -30,7 +30,9 @@ class SubscriptionModel extends Model {
       _hasFailed = true;
       _isFetching = false;
 
-      if (errorCallback != null) errorCallback();
+      print(error);
+
+      if (errorCallback != null) errorCallback(error);
       notifyListeners();
     });
 
