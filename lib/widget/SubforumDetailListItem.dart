@@ -80,8 +80,6 @@ class SubforumDetailListItem extends StatelessWidget {
 
     if (threadDetails.tags != null) {
       threadDetails.tags.forEach((tag) {
-        Map<String, dynamic> mappedTag = tag;
-
         widgets.add(Stack(
           children: <Widget>[
             Container(
@@ -95,7 +93,7 @@ class SubforumDetailListItem extends StatelessWidget {
                   padding: EdgeInsets.all(5),
                   color: Colors.red,
                   child: Text(
-                    mappedTag.values.first,
+                    tag.values.first,
                     style: TextStyle(color: Colors.white),
                   ),
                 ),

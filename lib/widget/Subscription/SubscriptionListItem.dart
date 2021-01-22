@@ -24,7 +24,7 @@ class SubscriptionListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String _iconUrl = getIconOrDefault(item.iconId).url;
+    String _iconUrl = getIconOrDefault(item.threadIcon).url;
 
     return Card(
       color: Color.fromRGBO(45, 45, 48, 1),
@@ -138,13 +138,6 @@ class SubscriptionListItem extends StatelessWidget {
                       margin: EdgeInsets.only(bottom: 4),
                       child: Text(
                         item.lastPost.threadPostNumber.toString() + ' replies',
-                        style: TextStyle(fontSize: 11),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(bottom: 4),
-                      child: Text(
-                        timeago.format(item.threadCreatedAt),
                         style: TextStyle(fontSize: 11),
                       ),
                     ),

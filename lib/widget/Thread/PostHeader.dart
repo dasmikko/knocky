@@ -113,10 +113,15 @@ class PostHeader extends StatelessWidget {
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .userId;
 
-    bool hasBg = (backgroundUrl != null ||
-        backgroundUrl != '' ||
-        backgroundUrl != 'none.webp');
-    bool hasAvatar = (avatarUrl != null || avatarUrl != '');
+    print(username);
+    print('avatarurl ' + avatarUrl);
+    print('bgurl ' + backgroundUrl);
+
+    bool hasAvatar = avatarUrl.isNotEmpty;
+    bool hasBg = backgroundUrl.isNotEmpty;
+
+    print('has avatarurl ' + hasAvatar.toString());
+    print('has bgurl ' + hasBg.toString());
 
     return Column(
       children: <Widget>[
@@ -124,7 +129,7 @@ class PostHeader extends StatelessWidget {
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
               border: postHeaderBorder(),
-              image: hasBg != null
+              image: hasBg != false
                   ? DecorationImage(
                       alignment: Alignment.center,
                       fit: BoxFit.cover,

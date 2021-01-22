@@ -9,18 +9,18 @@ part of 'events.dart';
 KnockoutEvent _$KnockoutEventFromJson(Map<String, dynamic> json) {
   return KnockoutEvent(
     content: json['content'] as String,
-    createdAt: json['created_at'] == null
+    createdAt: json['createdAt'] == null
         ? null
-        : DateTime.parse(json['created_at'] as String),
+        : DateTime.parse(json['createdAt'] as String),
     id: json['id'] as int,
-    executedBy: json['executed_by'] as int,
+    executedBy: json['executedBy'] as int,
   );
 }
 
 Map<String, dynamic> _$KnockoutEventToJson(KnockoutEvent instance) =>
     <String, dynamic>{
       'content': instance.content,
-      'created_at': instance.createdAt?.toIso8601String(),
-      'executed_by': instance.executedBy,
+      'createdAt': instance.createdAt?.toIso8601String(),
+      'executedBy': instance.executedBy,
       'id': instance.id,
     };

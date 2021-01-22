@@ -24,10 +24,9 @@ Thread _$ThreadFromJson(Map<String, dynamic> json) {
         ?.map((e) =>
             e == null ? null : ThreadPost.fromJson(e as Map<String, dynamic>))
         ?.toList(),
-    user: (json['user'] as List)
-        ?.map((e) =>
-            e == null ? null : ThreadUser.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
+    user: json['user'] == null
+        ? null
+        : ThreadUser.fromJson(json['user'] as Map<String, dynamic>),
     subscriptionLastSeen: json['subscriptionLastSeen'] == null
         ? null
         : DateTime.parse(json['subscriptionLastSeen'] as String),
@@ -147,7 +146,7 @@ Map<String, dynamic> _$ThreadPostRatingsToJson(ThreadPostRatings instance) =>
 ThreadPostUser _$ThreadPostUserFromJson(Map<String, dynamic> json) {
   return ThreadPostUser(
     id: json['id'] as int,
-    avatarUrl: json['avatar_url'] as String,
+    avatarUrl: json['avatarUrl'] as String,
     backgroundUrl: json['backgroundUrl'] as String,
     isBanned: json['isBanned'] as bool,
     usergroup: json['usergroup'] as int,
@@ -158,7 +157,7 @@ ThreadPostUser _$ThreadPostUserFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$ThreadPostUserToJson(ThreadPostUser instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'avatar_url': instance.avatarUrl,
+      'avatarUrl': instance.avatarUrl,
       'backgroundUrl': instance.backgroundUrl,
       'isBanned': instance.isBanned,
       'usergroup': instance.usergroup,

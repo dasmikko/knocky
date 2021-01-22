@@ -28,9 +28,7 @@ class SubforumDetails {
 @JsonSerializable()
 class SubforumThread {
   final int firstUnreadId;
-  @JsonKey(name: 'created_at')
   final DateTime createdAt;
-  @JsonKey(name: 'icon_id')
   final int iconId;
   final int id;
   final bool locked;
@@ -46,7 +44,7 @@ class SubforumThread {
   final SubforumLastPost lastPost;
   final bool hasRead;
   final bool subscribed;
-  final List<dynamic> tags;
+  final List<Map<int, String>> tags;
 
   SubforumThread(
       {this.createdAt,

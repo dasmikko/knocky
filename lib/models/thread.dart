@@ -20,7 +20,7 @@ class Thread {
   @JsonKey(nullable: true)
   final DateTime subscriptionLastSeen;
   final List<ThreadPost> posts;
-  final List<ThreadUser> user;
+  final ThreadUser user;
   final int userId;
   @JsonKey(defaultValue: 0)
   final int isSubscribedTo;
@@ -155,7 +155,6 @@ String _ratingIdHandler(dynamic id) {
 @JsonSerializable()
 class ThreadPostUser {
   final int id;
-  @JsonKey(name: 'avatar_url')
   final String avatarUrl;
   final String backgroundUrl;
   final bool isBanned;

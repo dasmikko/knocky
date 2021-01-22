@@ -5,9 +5,7 @@ part 'events.g.dart';
 @JsonSerializable()
 class KnockoutEvent {
   String content;
-  @JsonKey(name: 'created_at')
   DateTime createdAt;
-  @JsonKey(name: 'executed_by')
   int executedBy;
   int id;
 

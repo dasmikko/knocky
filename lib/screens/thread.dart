@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky_edge/helpers/api.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:knocky_edge/models/syncData.dart';
+import 'package:knocky_edge/screens/threadGallary.dart';
 import 'package:knocky_edge/state/appState.dart';
 import 'package:knocky_edge/state/subscriptions.dart';
 import 'package:knocky_edge/models/thread.dart';
@@ -551,6 +552,25 @@ class _ThreadScreenState extends State<ThreadScreen>
             tooltip: 'Refresh',
             onPressed: () => refreshPage(),
           ),
+          IconButton(
+              icon: Icon(Icons.image),
+              tooltip: 'Embed gallery',
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).push(
+                    PageRouteBuilder(
+                        opaque: false,
+                        pageBuilder: (context, anim, anim2) =>
+                            ThreadGalleryScreen(
+                              thread: details,
+                            ),
+                        transitionsBuilder: (___, Animation<double> animation,
+                            ____, Widget child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        }));
+              }),
           Builder(
             builder: (BuildContext bcontext) {
               return PopupMenuButton(

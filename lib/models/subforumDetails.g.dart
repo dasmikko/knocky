@@ -33,11 +33,11 @@ Map<String, dynamic> _$SubforumDetailsToJson(SubforumDetails instance) =>
 
 SubforumThread _$SubforumThreadFromJson(Map<String, dynamic> json) {
   return SubforumThread(
-    createdAt: json['created_at'] == null
+    createdAt: json['createdAt'] == null
         ? null
-        : DateTime.parse(json['created_at'] as String),
+        : DateTime.parse(json['createdAt'] as String),
     firstUnreadId: json['firstUnreadId'] as int,
-    iconId: json['icon_id'] as int,
+    iconId: json['iconId'] as int,
     id: json['id'] as int,
     locked: json['locked'] as bool,
     pinned: json['pinned'] as bool,
@@ -54,15 +54,19 @@ SubforumThread _$SubforumThreadFromJson(Map<String, dynamic> json) {
         : SubforumLastPost.fromJson(json['lastPost'] as Map<String, dynamic>),
     hasRead: json['hasRead'] as bool,
     subscribed: json['subscribed'] as bool,
-    tags: json['tags'] as List,
+    tags: (json['tags'] as List)
+        ?.map((e) => (e as Map<String, dynamic>)?.map(
+              (k, e) => MapEntry(int.parse(k), e as String),
+            ))
+        ?.toList(),
   );
 }
 
 Map<String, dynamic> _$SubforumThreadToJson(SubforumThread instance) =>
     <String, dynamic>{
       'firstUnreadId': instance.firstUnreadId,
-      'created_at': instance.createdAt?.toIso8601String(),
-      'icon_id': instance.iconId,
+      'createdAt': instance.createdAt?.toIso8601String(),
+      'iconId': instance.iconId,
       'id': instance.id,
       'locked': instance.locked,
       'pinned': instance.pinned,
@@ -75,7 +79,9 @@ Map<String, dynamic> _$SubforumThreadToJson(SubforumThread instance) =>
       'lastPost': instance.lastPost,
       'hasRead': instance.hasRead,
       'subscribed': instance.subscribed,
-      'tags': instance.tags,
+      'tags': instance.tags
+          ?.map((e) => e?.map((k, e) => MapEntry(k.toString(), e)))
+          ?.toList(),
     };
 
 SubforumThreadLatestPopular _$SubforumThreadLatestPopularFromJson(

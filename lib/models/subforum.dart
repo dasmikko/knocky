@@ -33,7 +33,6 @@ class Subforum {
 
 @JsonSerializable()
 class SubforumLastPost {
-  @JsonKey(name: 'created_at')
   final DateTime createdAt;
   final int id;
   final int thread;
@@ -55,7 +54,6 @@ class SubforumLastPost {
 
 @JsonSerializable()
 class SubforumOldLastPost {
-  @JsonKey(name: 'created_at')
   final DateTime createdAt;
   final int id;
   final SubforumThreadLastPostThread thread;

@@ -105,11 +105,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             child: Hero(
                               tag: this.widget.avatarUrl +
                                   this.widget.postId.toString(),
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
-                                        this.widget.avatarUrl,
-                              ),
+                              child: this.widget.avatarUrl.isNotEmpty
+                                  ? CachedNetworkImage(
+                                      imageUrl:
+                                          'https://knockout-production-assets.nyc3.digitaloceanspaces.com/image/' +
+                                              this.widget.avatarUrl,
+                                    )
+                                  : null,
                             ),
                           ),
                         ),

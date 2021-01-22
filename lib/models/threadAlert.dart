@@ -7,45 +7,34 @@ class ThreadAlert {
   final int firstUnreadId;
   @JsonKey(nullable: true)
   final String threadBackgroundUrl;
-  @JsonKey(name: 'icon_id')
-  final int iconId;
-  final DateTime threadCreatedAt;
   @JsonKey(nullable: true)
-  final DateTime threadDeletedAt;
   final String threadTitle;
-  final DateTime threadUpdateAt;
   final int threadUser;
+  final bool threadLocked;
   final int threadPostCount;
   final String threadUserAvatarUrl;
   final int threadUserUsergroup;
+  final int threadIcon;
   final String threadUsername;
   final int threadId;
   final String title;
   final int unreadPosts;
-  @JsonKey(nullable: true, name: 'updated_at')
-  final DateTime updatedAt;
   final ThreadAlertLastPost lastPost;
-  @JsonKey(name: 'created_at')
-  final DateTime createdAt;
 
   ThreadAlert(
       {this.firstUnreadId,
       this.threadBackgroundUrl,
-      this.iconId,
-      this.threadCreatedAt,
-      this.threadDeletedAt,
       this.threadTitle,
-      this.threadUpdateAt,
       this.threadUser,
       this.threadId,
       this.threadUserAvatarUrl,
       this.threadUsername,
       this.threadUserUsergroup,
+      this.threadLocked,
+      this.threadIcon,
       this.title,
       this.unreadPosts,
-      this.updatedAt,
       this.lastPost,
-      this.createdAt,
       this.threadPostCount});
 
   factory ThreadAlert.fromJson(Map<String, dynamic> json) =>
@@ -56,7 +45,6 @@ class ThreadAlert {
 @JsonSerializable()
 class ThreadAlertLastPost {
   final int id;
-  @JsonKey(name: 'created_at')
   final DateTime createdAt;
   final int thread;
   final int threadPostNumber;
@@ -79,10 +67,8 @@ class ThreadAlertLastPost {
 @JsonSerializable()
 class ThreadAlertLastPostThread {
   final int id;
-  @JsonKey(name: 'created_at')
   final DateTime createdAt;
   final String title;
-  @JsonKey(name: 'post_count')
   final int postCount;
 
   ThreadAlertLastPostThread(
@@ -96,7 +82,6 @@ class ThreadAlertLastPostThread {
 @JsonSerializable()
 class ThreadAlertLastPostUser {
   final int usergroup;
-  @JsonKey(name: 'avatar_url')
   final String avatarUrl;
   final String username;
 
