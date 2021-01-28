@@ -51,6 +51,8 @@ dependencies:
   image_picker: ^0.6.7+4
   device_info: ^0.4.2+4
   matrix4_transform: ^1.1.4
+  share: '>=0.6.5+4 <2.0.0'
+  mime: ^0.9.7
   flutter:
     sdk: flutter
 

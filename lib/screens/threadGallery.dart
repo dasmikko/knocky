@@ -1,6 +1,7 @@
+import 'dart:io';
 import 'package:bbob_dart/bbob_dart.dart' as bbob;
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/zoomable.dart';
 import 'package:knocky_edge/widget/ZoomWidget.dart';
 import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -9,6 +10,10 @@ import 'package:knocky_edge/models/thread.dart';
 import 'package:knocky_edge/widget/Thread/PostElements/Twitter.dart';
 import 'package:knocky_edge/widget/Thread/PostElements/Video.dart';
 import 'package:knocky_edge/widget/Thread/PostElements/YouTubeEmbed.dart';
+import 'package:mime/mime.dart';
+import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ThreadGalleryScreen extends StatefulWidget {
   final Thread thread;
@@ -21,10 +26,13 @@ class ThreadGalleryScreen extends StatefulWidget {
 
 class _ThreadGalleryScreenState extends State<ThreadGalleryScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  GlobalKey bottomSheetKey = GlobalKey();
+
   List<String> urls = new List();
   List<bbob.Element> elements = new List();
   int _currentPage = 0;
   bool _isZooming = false;
+  bool _isOpen = false;
 
   @override
   void initState() {
@@ -55,6 +63,101 @@ class _ThreadGalleryScreenState extends State<ThreadGalleryScreen> {
         }
       });
     });
+  }
+
+  void copyUrl(context) {
+    bbob.Element element = this.elements[_currentPage];
+    Clipboard.setData(new ClipboardData(text: element.textContent));
+    _scaffoldKey.currentState.showSnackBar(new SnackBar(
+      content: Text('URL copied to clipboard'),
+    ));
+  }
+
+  void openURL() async {
+    bbob.Element element = this.elements[_currentPage];
+    String url = element.textContent;
+
+    if (await canLaunch(url)) {
+      if (Platform.isIOS) {
+        await launch(url, forceSafariVC: false);
+      } else {
+        await launch(url, forceWebView: false);
+      }
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  void shareURL() async {
+    bbob.Element element = this.elements[_currentPage];
+    Uri url = Uri.parse(element.textContent);
+
+    bool isDirectSharable = element.tag == 'img' || element.tag == 'video';
+
+    // Make temp url for the image
+    Directory tempDir = await getTemporaryDirectory();
+    String fileUrl = tempDir.path + '/' + url.pathSegments.last;
+
+    if (isDirectSharable) {
+      // Download the element
+      Response response;
+      Dio dio = new Dio();
+      response =
+          await dio.download(element.textContent, fileUrl, deleteOnError: true);
+
+      print(lookupMimeType(fileUrl));
+      // Share the temp file
+      await Share.shareFiles([fileUrl], mimeTypes: [lookupMimeType(fileUrl)]);
+
+      // Delete the temp file
+      final file = File(fileUrl);
+      file.delete();
+    } else {
+      Share.share(element.textContent);
+    }
+  }
+
+  void showBottomSheet(BuildContext context) {
+    bbob.Element element = this.elements[_currentPage];
+
+    showModalBottomSheet(
+      backgroundColor: Colors.grey[900].withOpacity(0.5),
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          child: Wrap(
+            children: [
+              Wrap(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    child: Text(element.textContent),
+                  ),
+                ],
+              ),
+              Container(
+                color: Colors.grey[900],
+                padding: EdgeInsets.all(8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.copy),
+                      onPressed: () => copyUrl(context),
+                    ),
+                    IconButton(
+                        icon: Icon(Icons.open_in_browser), onPressed: openURL),
+                    IconButton(icon: Icon(Icons.share), onPressed: shareURL),
+                    IconButton(
+                        icon: Icon(Icons.file_download), onPressed: null),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -160,6 +263,27 @@ class _ThreadGalleryScreenState extends State<ThreadGalleryScreen> {
               return Text('Not supported element');
           }
         },
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.grey[900],
+        child: Container(
+          padding: EdgeInsets.only(left: 10, right: 10),
+          height: 56,
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Text((_currentPage + 1).toString() +
+                    ' of ' +
+                    this.elements.length.toString()),
+              ),
+              IconButton(
+                onPressed: () => showBottomSheet(context),
+                icon: Icon(Icons.more_vert),
+                tooltip: 'See additional actions and info',
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
