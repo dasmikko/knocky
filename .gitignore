@@ -70,7 +70,8 @@
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 pubspec.lock
-android/key.properties
+android/app/key.properties
+android/app/local.properties
 .env
 .flutter-plugins-dependencies
 .flutter-plugins-dependencies

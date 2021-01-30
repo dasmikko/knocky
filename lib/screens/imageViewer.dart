@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:knocky_edge/widget/ZoomWidget.dart';
+import 'package:knocky_edge/widget/ImageViewerBottomSheet.dart';
 //import 'package:knocky_edge/helpers/Download.dart';
 
 class ImageViewerScreen extends StatefulWidget {
@@ -86,6 +87,13 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
             ),
           );
         },
+      ),
+      bottomNavigationBar: ImageViewerBottomSheet(
+        currentPage: _currentPage,
+        totalPages: this.widget.urls.length,
+        url: this.widget.urls[_currentPage],
+        embedType: 'img',
+        scaffoldKey: _scaffoldKey,
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:knocky_edge/widget/ZoomWidget.dart';
 import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -11,8 +12,10 @@ import 'package:knocky_edge/widget/Thread/PostElements/Twitter.dart';
 import 'package:knocky_edge/widget/Thread/PostElements/Video.dart';
 import 'package:knocky_edge/widget/Thread/PostElements/YouTubeEmbed.dart';
 import 'package:mime/mime.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:knocky_edge/widget/ImageViewerBottomSheet.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ThreadGalleryScreen extends StatefulWidget {
@@ -71,6 +74,7 @@ class _ThreadGalleryScreenState extends State<ThreadGalleryScreen> {
     _scaffoldKey.currentState.showSnackBar(new SnackBar(
       content: Text('URL copied to clipboard'),
     ));
+    Navigator.pop(context);
   }
 
   void openURL() async {
@@ -86,6 +90,7 @@ class _ThreadGalleryScreenState extends State<ThreadGalleryScreen> {
     } else {
       throw 'Could not launch $url';
     }
+    Navigator.pop(context);
   }
 
   void shareURL() async {
@@ -115,9 +120,60 @@ class _ThreadGalleryScreenState extends State<ThreadGalleryScreen> {
     } else {
       Share.share(element.textContent);
     }
+    Navigator.pop(context);
   }
 
-  void showBottomSheet(BuildContext context) {
+  void downloadEmbed(BuildContext context) async {
+    bbob.Element element = this.elements[_currentPage];
+    Uri url = Uri.parse(element.textContent);
+
+    // Make temp url for the image
+    String saveDir = '/storage/emulated/0/Knocky/';
+    String fileUrl = saveDir + url.pathSegments.last;
+
+    print(fileUrl.toString());
+
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.storage,
+    ].request();
+
+// You can request multiple permissions at once.
+
+    print(statuses[Permission.storage]);
+
+    if (statuses[Permission.storage].isDenied) return;
+
+    // Download the element
+    GallerySaver.saveImage(url.toString(), albumName: 'Knocky').then(
+      (bool success) async {
+        if (success) {
+          _scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.green,
+              content: Text(
+                'Image was saved to gallery',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          );
+          Navigator.pop(context);
+        } else {
+          _scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.red,
+              content: Text(
+                'Error saving image to gallery..',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          );
+          Navigator.pop(context);
+        }
+      },
+    );
+  }
+
+  void showBottomSheet(BuildContext scaffoldcontext) {
     bbob.Element element = this.elements[_currentPage];
 
     showModalBottomSheet(
@@ -143,13 +199,14 @@ class _ThreadGalleryScreenState extends State<ThreadGalleryScreen> {
                   children: [
                     IconButton(
                       icon: Icon(Icons.copy),
-                      onPressed: () => copyUrl(context),
+                      onPressed: () => copyUrl(scaffoldcontext),
                     ),
                     IconButton(
                         icon: Icon(Icons.open_in_browser), onPressed: openURL),
                     IconButton(icon: Icon(Icons.share), onPressed: shareURL),
                     IconButton(
-                        icon: Icon(Icons.file_download), onPressed: null),
+                        icon: Icon(Icons.file_download),
+                        onPressed: () => downloadEmbed(scaffoldcontext)),
                   ],
                 ),
               ),
@@ -264,27 +321,12 @@ class _ThreadGalleryScreenState extends State<ThreadGalleryScreen> {
           }
         },
       ),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.grey[900],
-        child: Container(
-          padding: EdgeInsets.only(left: 10, right: 10),
-          height: 56,
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Text((_currentPage + 1).toString() +
-                    ' of ' +
-                    this.elements.length.toString()),
-              ),
-              IconButton(
-                onPressed: () => showBottomSheet(context),
-                icon: Icon(Icons.more_vert),
-                tooltip: 'See additional actions and info',
-              )
-            ],
-          ),
-        ),
-      ),
+      bottomNavigationBar: ImageViewerBottomSheet(
+          currentPage: _currentPage,
+          totalPages: elements.length,
+          url: elements[_currentPage].textContent,
+          embedType: elements[_currentPage].tag,
+          scaffoldKey: _scaffoldKey),
     );
   }
 }
