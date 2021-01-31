@@ -224,25 +224,6 @@ class _ThreadGalleryScreenState extends State<ThreadGalleryScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Thread Gallery"),
-        actions: <Widget>[
-          // action button
-          IconButton(
-            icon: Icon(Icons.file_download),
-            tooltip: "Download image",
-            onPressed: () async {},
-          ),
-          IconButton(
-            icon: Icon(Icons.content_copy),
-            tooltip: "Copy image link",
-            onPressed: () async {
-              Clipboard.setData(
-                  new ClipboardData(text: this.urls[_currentPage]));
-              _scaffoldKey.currentState.showSnackBar(new SnackBar(
-                content: Text('Image link copied to clipboard'),
-              ));
-            },
-          ),
-        ],
       ),
       body: PageView.builder(
         physics: !_isZooming

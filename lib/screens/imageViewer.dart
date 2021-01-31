@@ -37,27 +37,6 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(this.widget.urls[_currentPage]),
-        actions: <Widget>[
-          // action button
-          IconButton(
-            icon: Icon(Icons.file_download),
-            tooltip: "Download image",
-            onPressed: () async {
-              //DownloadHelper().downloadFile(widget.url, _scaffoldKey);
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.content_copy),
-            tooltip: "Copy image link",
-            onPressed: () async {
-              Clipboard.setData(
-                  new ClipboardData(text: this.widget.urls[_currentPage]));
-              _scaffoldKey.currentState.showSnackBar(new SnackBar(
-                content: Text('Image link copied to clipboard'),
-              ));
-            },
-          ),
-        ],
       ),
       body: PageView.builder(
         physics: !_isZooming
