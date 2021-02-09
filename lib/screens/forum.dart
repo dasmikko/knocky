@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:knocky_edge/helpers/api.dart';
 import 'package:knocky_edge/helpers/twitterApi.dart';
 import 'package:knocky_edge/models/subforum.dart';
@@ -13,6 +14,7 @@ import 'package:knocky_edge/widget/Drawer.dart';
 import 'package:knocky_edge/widget/KnockoutLoadingIndicator.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky_edge/state/authentication.dart';
+import 'package:uni_links/uni_links.dart';
 
 class ForumScreen extends StatefulWidget {
   final ScaffoldState scaffoldKey;
@@ -42,6 +44,9 @@ class _ForumScreenState extends State<ForumScreen>
 
     ScopedModel.of<AppStateModel>(context).updateSyncData();
 
+    // Not ready yet!
+    //initUniLinks();
+
     _loginIsOpen = false;
   }
 
@@ -61,6 +66,52 @@ class _ForumScreenState extends State<ForumScreen>
     _dataSub.cancel();
     _sub.cancel();
     super.dispose();
+  }
+
+  Future<Null> initUniLinks() async {
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      String initialLink = await getInitialLink();
+
+      if (initialLink != null) {
+        print(initialLink);
+
+        Uri url = Uri.parse(initialLink);
+
+        switch (url.pathSegments.length) {
+          case 2: // SubForum
+            print('Is subforum');
+            int forumId = int.parse(url.pathSegments[1]);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SubforumScreen(
+                  subforumModel: new Subforum(id: forumId, name: "loading!"),
+                ),
+              ),
+            );
+
+            break;
+          case 3: // Thread
+            int forumId = int.parse(url.pathSegments[1]);
+            int threadId = int.parse(url.pathSegments[2]);
+            break;
+          default:
+        }
+        // Parse the link and warn the user, if it is not correct,
+        // but keep in mind it could be `null`.
+        print('initial link!\n\n\n');
+        print(url.pathSegments);
+        print(url.pathSegments.length);
+        print('initial link!\n\n\n');
+      }
+    } on PlatformException {
+      // Handle exception by warning the user their action did not succeed
+      // return?
+      print('initial link!\n\n\n');
+      print('Initial link error');
+      print('initial link!\n\n\n');
+    }
   }
 
   Future<void> getSubforums(context) {

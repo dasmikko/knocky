@@ -52,7 +52,17 @@
                 <data
                     android:host="knockout.chat"
                     android:scheme="https" />
-                <data android:pathPattern=".*" />
+                <data android:pathPrefix="/subforum" />
+
+                <data
+                    android:host="knockout.chat"
+                    android:scheme="https" />
+                <data android:pathPrefix="/thread" />
+
+                <data
+                    android:host="api.knockout.chat"
+                    android:scheme="https" />
+                <data android:path="/auth/finish" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

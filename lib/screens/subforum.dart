@@ -31,7 +31,8 @@ class _SubforumScreenState extends State<SubforumScreen>
   void initState() {
     super.initState();
     prepareAnimations();
-    _totalPages = (widget.subforumModel.totalThreads / 40).ceil();
+    if (widget.subforumModel.totalThreads != null)
+      _totalPages = (widget.subforumModel.totalThreads / 40).ceil();
   }
 
   @override
@@ -144,11 +145,13 @@ class _SubforumScreenState extends State<SubforumScreen>
                       ' of ' +
                       _totalPages.toString()),
                 ),
-                IconButton(
-                  onPressed: _totalPages > 1 ? showJumpDialog : null,
-                  icon: Icon(Icons.redo),
-                  tooltip: 'Jump to page',
-                )
+                _totalPages != null
+                    ? IconButton(
+                        onPressed: _totalPages > 1 ? showJumpDialog : null,
+                        icon: Icon(Icons.redo),
+                        tooltip: 'Jump to page',
+                      )
+                    : null
               ],
             ),
           ),
