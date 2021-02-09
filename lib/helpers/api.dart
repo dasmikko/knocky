@@ -45,6 +45,7 @@ class KnockoutAPI {
       'Access-Control-Request-Headers': 'content-format-version,content-type',
       'content-format-version': '1'
     };
+
     if (headers != null) mHeaders.addAll(headers);
     String mBaseurl =
         await box.get('env') == 'knockout' ? KNOCKOUT_URL : QA_URL;

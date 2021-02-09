@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:knocky_edge/screens/JWT.dart';
 import 'package:knocky_edge/screens/login.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class PreLoginScreen extends StatelessWidget {
-  void onPressGoogle(BuildContext context, String type) async {
+  void onPressButton(BuildContext context, String type) async {
     String loginUrl = 'login';
+
+    if (type == 'jwt') {
+      bool wasLoggedIn = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => JWTScreen(),
+        ),
+      );
+
+      if (wasLoggedIn) Navigator.of(context).pop(wasLoggedIn);
+
+      return;
+    }
 
     bool wasLoggedIn = await Navigator.push(
       context,
@@ -37,7 +51,7 @@ class PreLoginScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 padding: EdgeInsets.all(10),
-                onPressed: () => onPressGoogle(context, 'google'),
+                onPressed: () => onPressButton(context, 'google'),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -65,7 +79,7 @@ class PreLoginScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                onPressed: () => onPressGoogle(context, 'twitter'),
+                onPressed: () => onPressButton(context, 'twitter'),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -93,7 +107,7 @@ class PreLoginScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                onPressed: () => onPressGoogle(context, 'github'),
+                onPressed: () => onPressButton(context, 'github'),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -121,7 +135,7 @@ class PreLoginScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                onPressed: () => onPressGoogle(context, 'steam'),
+                onPressed: () => onPressButton(context, 'steam'),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -135,6 +149,34 @@ class PreLoginScreen extends StatelessWidget {
                     ),
                     Text(
                       'Steam',
+                      style: TextStyle(fontSize: 18),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 10),
+              child: RaisedButton(
+                padding: EdgeInsets.all(10),
+                color: Colors.indigo[800],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                onPressed: () => onPressButton(context, 'jwt'),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(right: 10),
+                      child: Icon(
+                        MdiIcons.key,
+                        color: Colors.white,
+                        size: 24.0,
+                      ),
+                    ),
+                    Text(
+                      'JWT token',
                       style: TextStyle(fontSize: 18),
                     )
                   ],
