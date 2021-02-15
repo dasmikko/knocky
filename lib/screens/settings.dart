@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
-import 'package:knocky_edge/helpers/colors.dart';
-import 'package:knocky_edge/helpers/hiveHelper.dart';
 import 'package:knocky_edge/screens/Settings/filter.dart';
 import 'package:knocky_edge/themes/DefaultTheme.dart';
 import 'package:knocky_edge/themes/DarkTheme.dart';
@@ -11,6 +8,7 @@ import 'package:package_info/package_info.dart';
 import 'package:knocky_edge/state/authentication.dart';
 import 'package:knocky_edge/state/subscriptions.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   final BuildContext appContext;
@@ -42,19 +40,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void getEmbedSettings() async {
-    // Init hive
-    Box box = await AppHiveBox.getBox();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
-      _useInlineYoutubePlayer =
-          box.get('useInlineYoutubePlayer', defaultValue: true);
+      _useInlineYoutubePlayer = prefs.getBool('useInlineYoutubePlayer');
     });
   }
 
   void updateAppInfo() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    Box box = await AppHiveBox.getBox();
-    String env = await box.get('env');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String env = prefs.getString('env');
 
     setState(() {
       _version = packageInfo.version;
@@ -102,8 +98,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     selectedEnv = env;
                   });
 
-                  Box box = await AppHiveBox.getBox();
-                  await box.put('env', env);
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  await prefs.setString('env', env);
 
                   ScopedModel.of<AuthenticationModel>(context).logout();
                   ScopedModel.of<SubscriptionModel>(context).clearList();

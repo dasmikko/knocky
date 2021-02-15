@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:knocky_edge/helpers/hiveHelper.dart';
 import 'package:knocky_edge/models/events.dart';
 import 'package:knocky_edge/models/subforum.dart';
 import 'package:knocky_edge/models/subforumDetails.dart';
@@ -8,10 +7,10 @@ import 'package:knocky_edge/models/thread.dart';
 import 'package:knocky_edge/models/threadAlert.dart';
 import 'package:knocky_edge/models/readThreads.dart';
 import 'package:dio/dio.dart';
-import 'package:hive/hive.dart';
 import 'package:knocky_edge/models/userProfile.dart';
 import 'package:knocky_edge/models/userProfilePosts.dart';
 import 'package:knocky_edge/models/userProfileThreads.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class KnockoutAPI {
   static const KNOCKOUT_URL = "https://api.knockout.chat/";
@@ -38,17 +37,17 @@ class KnockoutAPI {
       throw ('URL not set!');
     }
 
-    Box box = await AppHiveBox.getBox();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     Map<String, dynamic> mHeaders = {
-      'Cookie': await box.get('cookieString'),
+      'Cookie': prefs.getString('cookieString'),
       'Access-Control-Request-Headers': 'content-format-version,content-type',
       'content-format-version': '1'
     };
 
     if (headers != null) mHeaders.addAll(headers);
     String mBaseurl =
-        await box.get('env') == 'knockout' ? KNOCKOUT_URL : QA_URL;
+        prefs.getString('env') == 'knockout' ? KNOCKOUT_URL : QA_URL;
 
     //String mBaseurl = 'https://api.knockout.chat/';
     Dio dio = new Dio();

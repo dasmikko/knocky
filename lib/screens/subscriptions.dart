@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:hive/hive.dart';
 import 'package:knocky_edge/helpers/api.dart';
-import 'package:knocky_edge/helpers/hiveHelper.dart';
 import 'package:knocky_edge/models/syncData.dart';
 import 'package:knocky_edge/models/threadAlert.dart';
 import 'package:knocky_edge/screens/thread.dart';
@@ -15,6 +13,7 @@ import 'package:knocky_edge/widget/KnockoutLoadingIndicator.dart';
 import 'package:knocky_edge/state/subscriptions.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:knocky_edge/events.dart';
 
 class SubscriptionScreen extends StatefulWidget {
@@ -33,8 +32,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
 
   @override
   void afterFirstLayout(BuildContext context) async {
-    Box box = await AppHiveBox.getBox();
-    if (await box.get('isLoggedIn') == true) {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool('isLoggedIn') == true) {
       loadSubscriptions();
     }
   }

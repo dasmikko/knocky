@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:knocky_edge/helpers/hiveHelper.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky_edge/helpers/api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationModel extends Model {
   BuildContext buildContext;
@@ -33,14 +32,16 @@ class AuthenticationModel extends Model {
 
   // Get the stored auth state
   Future<void> getLoginStateFromSharedPreference(BuildContext context) async {
-    Box box = await AppHiveBox.getBox();
-    _isLoggedIn = await box.get('isLoggedIn', defaultValue: false);
-    _userId = await box.get('userId');
-    _username = await box.get('username');
-    _avatar = await box.get('avatar_url');
-    _background = await box.get('background_url');
-    _usergroup = await box.get('usergroup');
-    _cookieString = await box.get('cookieString');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _isLoggedIn = prefs.getBool('isLoggedIn');
+    _userId = prefs.getInt('userId');
+    _username = prefs.getString('username');
+    _avatar = prefs.getString('avatar_url');
+    _background = prefs.getString('background_url');
+    _usergroup = prefs.getInt('usergroup');
+    _cookieString = prefs.getString('cookieString');
+
+    print(_isLoggedIn);
 
     authCheck();
     notifyListeners();
@@ -56,20 +57,21 @@ class AuthenticationModel extends Model {
     _background = background;
     _usergroup = usergroup;
 
-    Box box = await AppHiveBox.getBox();
-    await box.put('isLoggedIn', isLoggedIn);
-    await box.put('userId', userId);
-    await box.put('username', username);
-    await box.put('avatar_url', avatar);
-    await box.put('background_url', background);
-    await box.put('usergroup', usergroup);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setBool('isLoggedIn', isLoggedIn);
+    await prefs.setInt('userId', userId);
+    await prefs.setString('username', username);
+    await prefs.setString('avatar_url', avatar);
+    await prefs.setString('background_url', background);
+    await prefs.setInt('usergroup', usergroup);
 
     notifyListeners();
   }
 
   Future<void> setCookieString(String cookieString) async {
-    Box box = await AppHiveBox.getBox();
-    await box.put('cookieString', cookieString);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('cookieString', cookieString);
     notifyListeners();
   }
 

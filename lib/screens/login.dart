@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:hive/hive.dart';
 import 'package:knocky_edge/helpers/api.dart';
-import 'package:knocky_edge/helpers/hiveHelper.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:knocky_edge/state/authentication.dart';
 import 'dart:io' show Platform;
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   final String loginUrl;
@@ -139,9 +139,9 @@ class MyInAppBrowser extends InAppBrowser {
       this.webViewController.loadUrl(url: url);
     }
 
-    Box box = await AppHiveBox.getBox();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if (url.contains(await box.get('env') == 'knockout'
+    if (url.contains(prefs.getString('env') == 'knockout'
         ? KnockoutAPI.KNOCKOUT_URL + "auth/finish"
         : KnockoutAPI.QA_URL + "auth/finish")) {
       Uri parsedUrl = Uri.parse(url);
@@ -160,7 +160,7 @@ class MyInAppBrowser extends InAppBrowser {
           valueMap['usergroup']);
 
       // Get the JWT token from the cookie inside the webview
-      String cookieUrl = await box.get('env') == 'knockout'
+      String cookieUrl = prefs.getString('env') == 'knockout'
           ? KnockoutAPI.KNOCKOUT_URL
           : KnockoutAPI.QA_URL;
 

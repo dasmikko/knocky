@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-import 'package:knocky_edge/helpers/hiveHelper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TwitterHelper {
   final String _consumerKey = DotEnv().env['TWITTER_CONSUMER'];
@@ -22,17 +21,17 @@ class TwitterHelper {
               },
               body: 'grant_type=client_credentials');
       Map json = jsonDecode(httpResponse.body);
-      AppHiveBox.getBox().then((Box box) {
-        box.put('twitterBearerToken', json['access_token']);
-      });
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('twitterBearerToken', json['access_token']);
     } catch (e) {
       print('Error');
     }
   }
 
   Future<Map<String, dynamic>> getTweet(int tweetId) async {
-    Box box = await AppHiveBox.getBox();
-    String bearerToken = await box.get('twitterBearerToken');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String bearerToken = prefs.getString('twitterBearerToken');
 
     try {
       http.Response httpResponse = await http.get(
