@@ -11,9 +11,7 @@ class AppColors {
   }
 
   Color switchColor() {
-    return this.currentBrightness == Brightness.dark
-        ? Colors.red
-        : Colors.red;
+    return this.currentBrightness == Brightness.dark ? Colors.red : Colors.red;
   }
 
   Color userQuoteBodyBackground() {
@@ -46,27 +44,27 @@ class AppColors {
         : HexColor('000000');
   }
 
-  Color normalUserColor () {
+  Color normalUserColor() {
     return HexColor('3facff');
   }
 
-  Color modUserColor () {
+  Color modUserColor() {
     return HexColor('08f760');
   }
 
-  Color goldUserColor () {
-    return HexColor('ffb100');
+  Color goldUserColor() {
+    return HexColor('fcbe20');
   }
 
-  Color adminUserColor () {
+  Color adminUserColor() {
     return HexColor('c448ff');
   }
 
-  Color devUserColor () {
+  Color devUserColor() {
     return HexColor('ff6cb4');
   }
 
-  Color userGroupToColor (int usergroup) {
+  Color userGroupToColor(int usergroup) {
     switch (usergroup) {
       case 1:
         return normalUserColor();
@@ -77,13 +75,11 @@ class AppColors {
       case 4:
         return adminUserColor();
       case 5:
-        return devUserColor();
+        return goldUserColor();
       default:
         return normalUserColor();
     }
   }
-
-
 }
 
 class HexColor extends Color {

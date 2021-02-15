@@ -178,7 +178,7 @@ class SubforumDetailListItem extends StatelessWidget {
     }
 
     Color userColor = AppColors(context).normalUserColor(); // User
-    if (threadDetails.user.usergroup == 2)
+    if (threadDetails.user.usergroup == 2 || threadDetails.user.usergroup == 5)
       userColor = AppColors(context).goldUserColor(); // Gold
     if (threadDetails.user.usergroup == 3)
       userColor = AppColors(context).modUserColor(); // Mod
