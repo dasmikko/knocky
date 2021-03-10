@@ -148,6 +148,7 @@ class PostContent extends StatelessWidget {
               url: imageUrl,
               slateObject: slateObject,
               postId: postDetails.id,
+              scaffoldKey: scaffoldKey,
             ),
           );
         },

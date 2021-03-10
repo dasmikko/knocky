@@ -78,7 +78,7 @@ class ImageViewerBottomSheet extends StatelessWidget {
       Permission.storage,
     ].request();
 
-// You can request multiple permissions at once.
+    // You can request multiple permissions at once.
 
     print(statuses[Permission.storage]);
 

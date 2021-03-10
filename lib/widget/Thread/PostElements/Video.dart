@@ -3,8 +3,10 @@ import 'dart:typed_data';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:path/path.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 //import 'package:knocky_edge/helpers/Download.dart';
 import 'package:video_player/video_player.dart';
 //import 'package:knocky_edge/events.dart';
@@ -71,6 +73,47 @@ class _VideoElementState extends State<VideoElement> {
     vidController.dispose();
   }
 
+  void downloadEmbed(BuildContext context) async {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.storage,
+    ].request();
+
+    if (statuses[Permission.storage].isDenied) return;
+
+    print(this.widget.url.split('?').first);
+
+    // Download the element
+    GallerySaver.saveVideo(
+      this.widget.url.split('?').first,
+      albumName: 'Knocky',
+    ).then(
+      (bool success) async {
+        if (success) {
+          print(this.widget.scaffoldKey);
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.green,
+              content: Text(
+                'Video was saved to gallery',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          );
+        } else {
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.red,
+              content: Text(
+                'Error saving Video to gallery..',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
+
   void onLongPress(BuildContext context, String url) async {
     String fileName = basename(url);
 
@@ -102,7 +145,7 @@ class _VideoElementState extends State<VideoElement> {
             ));
         break;
       case 2:
-        //DownloadHelper().downloadFile(url, this.widget.scaffoldKey);
+        downloadEmbed(context);
         break;
     }
   }

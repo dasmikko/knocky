@@ -175,7 +175,7 @@ class KnockoutAPI {
     try {
       await _request(type: 'post', url: 'post', data: {
         'displayCountryInfo': false,
-        'appName': 'Knocky',
+        'appName': 'knocky',
         'content': content.toString(),
         'thread_id': threadId,
       }, headers: {
