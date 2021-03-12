@@ -45,7 +45,7 @@ class _ForumScreenState extends State<ForumScreen> {
                   subforum: subforum,
                   onTapItem: (Subforum subforumItem) {
                     Get.to(
-                      SubforumScreen(subforum: subforum),
+                      () => SubforumScreen(subforum: subforum),
                     );
                   },
                 );

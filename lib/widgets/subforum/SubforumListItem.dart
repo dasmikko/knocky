@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:knocky_edge/models/subforumDetails.dart';
+import 'package:get/get.dart';
+import 'package:knocky/models/subforumDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:knocky_edge/helpers/icons.dart';
-import 'package:knocky_edge/screens/thread.dart';
-import 'package:knocky_edge/widget/InkWellOnWidget.dart';
+import 'package:knocky/helpers/icons.dart';
+import 'package:knocky/widgets/InkWellOnWidget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:knocky_edge/helpers/colors.dart';
+import 'package:knocky/helpers/colors.dart';
+import 'package:knocky/widgets/jumpToPageDialog.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'dart:ui' as ui;
 import 'package:numberpicker/numberpicker.dart';
 
-class SubforumDetailListItem extends StatelessWidget {
+class SubforumListItem extends StatelessWidget {
   final SubforumThread threadDetails;
-  SubforumDetailListItem({this.threadDetails});
+  SubforumListItem({this.threadDetails});
 
   void onTapNewPostsButton(BuildContext context, SubforumThread item) {
     double pagenumber =
         (item.postCount - (item.readThreadUnreadPosts - 1)) / 20;
 
-    Navigator.push(
+    /*Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ThreadScreen(
@@ -29,13 +30,13 @@ class SubforumDetailListItem extends StatelessWidget {
           postIdToJumpTo: item.firstUnreadId,
         ),
       ),
-    );
+    );*/
   }
 
   void onTapItem(BuildContext context, SubforumThread item) {
     print('Clicked item ' + threadDetails.id.toString());
 
-    Navigator.push(
+    /*Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ThreadScreen(
@@ -44,39 +45,27 @@ class SubforumDetailListItem extends StatelessWidget {
           threadId: threadDetails.id,
         ),
       ),
-    );
+    );*/
   }
 
-  void showJumpDialog(BuildContext context) {
+  void showJumpDialog(BuildContext context) async {
     int totalPages = (threadDetails.postCount / 20).ceil();
-    showDialog<int>(
-        context: context,
-        builder: (BuildContext context) {
-          return new NumberPickerDialog.integer(
-            minValue: 1,
-            maxValue: totalPages,
-            title: new Text("Jump to page"),
-            initialIntegerValue: 1,
-          );
-        }).then((int value) {
-      if (value != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ThreadScreen(
-              title: threadDetails.title,
-              postCount: threadDetails.postCount,
-              threadId: threadDetails.id,
-              page: value,
-            ),
-          ),
-        );
-      }
-    });
+
+    int selectedValue = await Get.dialog(
+      JumpToPageDialog(
+        minValue: 1,
+        maxValue: totalPages,
+        value: 1,
+      ),
+    );
+
+    print(selectedValue);
+
+    // TODO: Go to thread screen
   }
 
   List<Widget> threadTags(BuildContext context) {
-    List<Widget> widgets = List();
+    List<Widget> widgets = [];
 
     if (threadDetails.tags != null) {
       threadDetails.tags.forEach((tag) {
@@ -201,7 +190,7 @@ class SubforumDetailListItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     CachedNetworkImage(
-                      width: 25,
+                      width: 35,
                       imageUrl: _iconUrl,
                     ),
                   ],
@@ -210,7 +199,15 @@ class SubforumDetailListItem extends StatelessWidget {
             ),
             Flexible(
               child: Container(
-                color: Color.fromRGBO(34, 34, 38, 1),
+                decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.2),
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                          Colors.black.withOpacity(0.7), BlendMode.darken),
+                      image: CachedNetworkImageProvider(
+                          threadDetails.backgroundUrl),
+                    )),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
@@ -251,6 +248,7 @@ class SubforumDetailListItem extends StatelessWidget {
                                   ),
                                 TextSpan(
                                   text: threadDetails.title,
+                                  style: TextStyle(fontSize: 15),
                                 ),
                               ]),
                             ),
@@ -264,158 +262,42 @@ class SubforumDetailListItem extends StatelessWidget {
                               !threadDetails.hasRead &&
                               threadDetails.subscribed)
                             newPostsSubscriptionButton(context),
-                          Text(
-                            threadDetails.user.username,
-                            style: TextStyle(
-                                color: userColor, fontWeight: FontWeight.bold),
-                          )
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(text: 'by '),
+                                TextSpan(
+                                  text: threadDetails.user.username,
+                                  style: TextStyle(
+                                      color: userColor,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                WidgetSpan(
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 5, right: 5),
+                                    child: Icon(
+                                      Icons.reply_all_rounded,
+                                      size: 15,
+                                    ),
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: timeago
+                                      .format(threadDetails.lastPost.createdAt),
+                                )
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            Container(
-              width: 110,
-              padding: EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(bottom: 4),
-                    child: Text(
-                      threadDetails.postCount.toString() + ' replies',
-                      style: TextStyle(fontSize: 11),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 4),
-                    child: Text(
-                      timeago.format(threadDetails.createdAt),
-                      style: TextStyle(fontSize: 11),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 4),
-                    child: Text(
-                      threadDetails.lastPost.user.username,
-                      style: TextStyle(
-                          color: AppColors(context).userGroupToColor(
-                              threadDetails.lastPost.user.usergroup),
-                          fontSize: 11),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 4),
-                    child: Text(
-                      timeago.format(threadDetails.lastPost.createdAt),
-                      style: TextStyle(fontSize: 11),
-                    ),
-                  ),
-                ],
               ),
             ),
           ],
         ),
       ),
     );
-
-    /*return Card(
-      margin: EdgeInsets.only(bottom: 5.0, top: 10.0),
-      child: InkWell(
-        onTap: () {
-          print('Clicked item ' + threadDetails.id.toString());
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ThreadScreen(
-                    title: threadDetails.title,
-                    postCount: threadDetails.postCount,
-                    threadId: threadDetails.id,
-                  ),
-            ),
-          );
-        },
-        child: Container(
-          padding: EdgeInsets.all(10.0),
-          child: Row(
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(right: 10.0),
-                child: CachedNetworkImage(
-                  width: 40,
-                  imageUrl: _iconUrl,
-                ),
-              ),
-              Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          if (threadDetails.locked == 1)
-                            Container(
-                              margin: EdgeInsets.only(right: 5),
-                              child: Icon(
-                                FontAwesomeIcons.lock,
-                                size: 14,
-                                color: HexColor('b38d4f'),
-                              ),
-                            ),
-                          if (threadDetails.pinned == 1)
-                            Container(
-                              margin: EdgeInsets.only(right: 5),
-                              child: Icon(
-                                FontAwesomeIcons.solidStickyNote,
-                                size: 14,
-                                color: HexColor('b4e42d'),
-                              ),
-                            ),
-                          Flexible(
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  bottom:
-                                      threadDetails.readThreadUnreadPosts > 0
-                                          ? 10
-                                          : 0),
-                              child: Text(threadDetails.title),
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (threadDetails.readThreadUnreadPosts > 0)
-                        Container(
-                          margin: EdgeInsets.only(bottom: 5),
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(5),
-                              ),
-                              clipBehavior: Clip.antiAlias,
-                              child: InkWellOverWidget(
-                                child: Container(
-                                  padding: EdgeInsets.all(5),
-                                  color: Color.fromRGBO(255, 201, 63, 1),
-                                  child: Text(
-                                    '${threadDetails.readThreadUnreadPosts} new posts',
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                ),
-                                onTap: () {
-                                  onTapNewPostsButton(context, threadDetails);
-                                },
-                              )),
-                        ),
-                    ],
-                  )),
-            ],
-          ),
-        ),
-      ),
-    );*/
   }
 }

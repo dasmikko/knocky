@@ -1,13 +1,11 @@
-import 'dart:ui';
-
 import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:flutter/material.dart';
 
 
 class BBCodeHelper implements bbob.NodeVisitor { 
-  List<String> urls = List();
+  List<String> urls = [];
   String _elType = 'text'; // Types: text, img, blockquote,
-  List<TextSpan> textChildren = List();
+  List<TextSpan> textChildren = [];
 
   List<String> getUrls(String text) {
     var ast = bbob.parse(text);

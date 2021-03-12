@@ -10,7 +10,7 @@ class SubforumDetails {
   final int iconId;
   final String name;
   final int totalThreads;
-  List<SubforumThread> threads;
+  List<SubforumThread> threads = [];
 
   SubforumDetails(
       {this.id,
@@ -27,6 +27,7 @@ class SubforumDetails {
 
 @JsonSerializable()
 class SubforumThread {
+  final String backgroundUrl;
   final int firstUnreadId;
   final DateTime createdAt;
   final int iconId;
@@ -47,7 +48,8 @@ class SubforumThread {
   final List<Map<int, String>> tags;
 
   SubforumThread(
-      {this.createdAt,
+      {this.backgroundUrl,
+      this.createdAt,
       this.firstUnreadId,
       this.iconId,
       this.id,

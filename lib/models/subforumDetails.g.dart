@@ -33,6 +33,7 @@ Map<String, dynamic> _$SubforumDetailsToJson(SubforumDetails instance) =>
 
 SubforumThread _$SubforumThreadFromJson(Map<String, dynamic> json) {
   return SubforumThread(
+    backgroundUrl: json['backgroundUrl'] as String,
     createdAt: json['createdAt'] == null
         ? null
         : DateTime.parse(json['createdAt'] as String),
@@ -64,6 +65,7 @@ SubforumThread _$SubforumThreadFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$SubforumThreadToJson(SubforumThread instance) =>
     <String, dynamic>{
+      'backgroundUrl': instance.backgroundUrl,
       'firstUnreadId': instance.firstUnreadId,
       'createdAt': instance.createdAt?.toIso8601String(),
       'iconId': instance.iconId,

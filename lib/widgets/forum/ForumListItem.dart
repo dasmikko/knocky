@@ -141,7 +141,7 @@ class ForumListItem extends StatelessWidget {
 
   Widget footer(BuildContext context) {
     return Container(
-      color: Colors.black.withOpacity(0.3),
+      color: Colors.black.withOpacity(0.2),
       child: Row(
         children: <Widget>[
           Flexible(

@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=C:\Users\mik.DANAK\fvm\versions\stable"
-export "FLUTTER_APPLICATION_PATH=C:\Users\mik.DANAK\Documents\Flutter projects\knocky_v2\knocky"
+export "FLUTTER_ROOT=C:\Users\mik\fvm\versions\stable"
+export "FLUTTER_APPLICATION_PATH=C:\repos\knocky"
 export "FLUTTER_TARGET=lib\main.dart"
 export "FLUTTER_BUILD_DIR=build"
 export "SYMROOT=${SOURCE_ROOT}/../build\ios"

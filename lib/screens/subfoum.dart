@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/subforumController.dart';
 import 'package:knocky/models/subforum.dart';
+import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
+import 'package:knocky/widgets/subforum/SubforumListItem.dart';
 
 class SubforumScreen extends StatefulWidget {
   final Subforum subforum;
@@ -32,20 +34,22 @@ class _SubforumScreenState extends State<SubforumScreen> {
         child: Obx(
           () => KnockoutLoadingIndicator(
             show: subforumController.isFetching.value,
-            child: this.subforumController.subforum.value.id != null
-                ? RefreshIndicator(
-                    onRefresh: () async => subforumController
-                        .fetchSubforum(this.widget.subforum.id),
-                    child: ListView.builder(
-                      itemCount:
-                          subforumController.subforum.value.threads.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Text(subforumController
-                            .subforum.value.threads[index].title);
-                      },
-                    ),
-                  )
-                : Container(),
+            child: RefreshIndicator(
+              onRefresh: () async =>
+                  subforumController.fetchSubforum(this.widget.subforum.id),
+              child: ListView.builder(
+                itemCount: subforumController.subforum.value.threads != null
+                    ? subforumController.subforum.value.threads.length
+                    : 0,
+                itemBuilder: (BuildContext context, int index) {
+                  SubforumThread thread =
+                      subforumController.subforum.value.threads[index];
+                  return SubforumListItem(
+                    threadDetails: thread,
+                  );
+                },
+              ),
+            ),
           ),
         ),
       ),
