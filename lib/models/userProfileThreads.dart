@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:knocky_edge/models/subforumDetails.dart';
+import 'package:knocky/models/subforumDetails.dart';
 
 part 'userProfileThreads.g.dart';
 

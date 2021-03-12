@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:knocky_edge/models/slateDocument.dart';
+import 'package:knocky/models/slateDocument.dart';
 import 'dart:convert';
 
 part 'thread.g.dart';

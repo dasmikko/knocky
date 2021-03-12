@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:dynamic_theme/dynamic_theme.dart';
 
 class AppColors {
   BuildContext context;
@@ -7,7 +6,7 @@ class AppColors {
 
   AppColors(BuildContext context) {
     this.context = context;
-    this.currentBrightness = DynamicTheme.of(this.context).brightness;
+    this.currentBrightness = Theme.of(this.context).brightness;
   }
 
   Color switchColor() {

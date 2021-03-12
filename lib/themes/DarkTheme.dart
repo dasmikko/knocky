@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:knocky_edge/helpers/colors.dart';
 
 ThemeData darkTheme() {
   return ThemeData(
@@ -7,12 +6,13 @@ ThemeData darkTheme() {
     appBarTheme: AppBarTheme(
       color: Colors.grey[900],
     ),
+    textTheme: TextTheme(),
     bottomAppBarTheme: BottomAppBarTheme(
       color: Colors.grey[900],
     ),
     primarySwatch: Colors.red,
     accentColor: Colors.red,
-    scaffoldBackgroundColor: Colors.black12,
+    scaffoldBackgroundColor: Colors.black,
     cardColor: Colors.grey[900],
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,

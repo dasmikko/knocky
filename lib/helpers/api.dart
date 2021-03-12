@@ -1,16 +1,16 @@
 import 'dart:io';
-import 'package:knocky_edge/models/events.dart';
-import 'package:knocky_edge/models/subforum.dart';
-import 'package:knocky_edge/models/subforumDetails.dart';
-import 'package:knocky_edge/models/syncData.dart';
-import 'package:knocky_edge/models/thread.dart';
-import 'package:knocky_edge/models/threadAlert.dart';
-import 'package:knocky_edge/models/readThreads.dart';
+import 'package:knocky/models/events.dart';
+import 'package:knocky/models/subforum.dart';
+import 'package:knocky/models/subforumDetails.dart';
+import 'package:knocky/models/syncData.dart';
+import 'package:knocky/models/thread.dart';
+import 'package:knocky/models/threadAlert.dart';
+import 'package:knocky/models/readThreads.dart';
 import 'package:dio/dio.dart';
-import 'package:knocky_edge/models/userProfile.dart';
-import 'package:knocky_edge/models/userProfilePosts.dart';
-import 'package:knocky_edge/models/userProfileThreads.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:knocky/models/userProfile.dart';
+import 'package:knocky/models/userProfilePosts.dart';
+import 'package:knocky/models/userProfileThreads.dart';
+import 'package:get_storage/get_storage.dart';
 
 class KnockoutAPI {
   static const KNOCKOUT_URL = "https://api.knockout.chat/";
@@ -37,17 +37,16 @@ class KnockoutAPI {
       throw ('URL not set!');
     }
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    GetStorage prefs = GetStorage();
 
     Map<String, dynamic> mHeaders = {
-      'Cookie': prefs.getString('cookieString'),
+      'Cookie': prefs.read('cookieString'),
       'Access-Control-Request-Headers': 'content-format-version,content-type',
       'content-format-version': '1'
     };
 
     if (headers != null) mHeaders.addAll(headers);
-    String mBaseurl =
-        prefs.getString('env') == 'knockout' ? KNOCKOUT_URL : QA_URL;
+    String mBaseurl = prefs.read('env') == 'knockout' ? KNOCKOUT_URL : QA_URL;
 
     //String mBaseurl = 'https://api.knockout.chat/';
     Dio dio = new Dio();
@@ -77,6 +76,7 @@ class KnockoutAPI {
   Future<List<Subforum>> getSubforums() async {
     try {
       final response2 = await _request(url: 'subforum');
+      print(response2);
       return response2.data['list']
           .map<Subforum>((json) => Subforum.fromJson(json))
           .toList();
@@ -234,7 +234,7 @@ class KnockoutAPI {
 
   Future<UserProfile> getUserProfile(int userId) async {
     final response = await _request(
-      url: 'user/${userId}',
+      url: 'user/' + userId.toString(),
       type: 'get',
     );
 
@@ -243,7 +243,7 @@ class KnockoutAPI {
 
   Future<UserProfilePosts> getUserProfilePosts(int userId) async {
     final response = await _request(
-      url: 'user/${userId}/posts',
+      url: 'user/' + userId.toString() + '/posts',
       type: 'get',
     );
 
@@ -252,7 +252,7 @@ class KnockoutAPI {
 
   Future<UserProfileThreads> getUserProfileThreads(int userId) async {
     final response = await _request(
-      url: 'user/${userId}/threads',
+      url: 'user/' + userId.toString() + 'threads',
       type: 'get',
     );
 
