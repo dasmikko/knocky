@@ -30,7 +30,8 @@ Thread _$ThreadFromJson(Map<String, dynamic> json) {
     subscriptionLastSeen: json['subscriptionLastSeen'] == null
         ? null
         : DateTime.parse(json['subscriptionLastSeen'] as String),
-    isSubscribedTo: json['isSubscribedTo'] as int ?? 0,
+    subscriptionLastPostNumber: json['subscriptionLastPostNumber'] as int,
+    subscribed: json['subscribed'] as bool ?? 0,
     userId: json['userId'] as int,
     threadBackgroundType: json['threadBackgroundType'] as String,
     threadBackgroundUrl: json['threadBackgroundUrl'] as String,
@@ -49,10 +50,11 @@ Map<String, dynamic> _$ThreadToJson(Thread instance) => <String, dynamic>{
       'totalPosts': instance.totalPosts,
       'readThreadLastSeen': instance.readThreadLastSeen?.toIso8601String(),
       'subscriptionLastSeen': instance.subscriptionLastSeen?.toIso8601String(),
+      'subscriptionLastPostNumber': instance.subscriptionLastPostNumber,
       'posts': instance.posts,
       'user': instance.user,
       'userId': instance.userId,
-      'isSubscribedTo': instance.isSubscribedTo,
+      'subscribed': instance.subscribed,
       'threadBackgroundType': instance.threadBackgroundType,
       'threadBackgroundUrl': instance.threadBackgroundUrl,
     };
@@ -77,6 +79,8 @@ ThreadPost _$ThreadPostFromJson(Map<String, dynamic> json) {
     user: json['user'] == null
         ? null
         : ThreadPostUser.fromJson(json['user'] as Map<String, dynamic>),
+    thread: json['thread'] as int,
+    threadPostNumber: json['threadPostNumber'] as int,
     ratings: (json['ratings'] as List)
         ?.map((e) => e == null
             ? null
@@ -100,19 +104,21 @@ Map<String, dynamic> _$ThreadPostToJson(ThreadPost instance) =>
       'content': _contentToJson(instance.content),
       'user': instance.user,
       'ratings': instance.ratings,
+      'thread': instance.thread,
+      'threadPostNumber': instance.threadPostNumber,
       'bans': instance.bans,
     };
 
 ThreadPostBan _$ThreadPostBanFromJson(Map<String, dynamic> json) {
   return ThreadPostBan(
     banBannedBy: json['banBannedBy'] as String,
-    banCreatedAt: json['banCreatedAt'] == null
+    createdAt: json['createdAt'] == null
         ? null
-        : DateTime.parse(json['banCreatedAt'] as String),
-    banExpiresAt: json['banExpiresAt'] == null
+        : DateTime.parse(json['createdAt'] as String),
+    expiresAt: json['expiresAt'] == null
         ? null
-        : DateTime.parse(json['banExpiresAt'] as String),
-    banPostId: json['banPostId'] as int,
+        : DateTime.parse(json['expiresAt'] as String),
+    post: json['post'] as int,
     banReason: json['banReason'] as String,
   );
 }
@@ -120,9 +126,9 @@ ThreadPostBan _$ThreadPostBanFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$ThreadPostBanToJson(ThreadPostBan instance) =>
     <String, dynamic>{
       'banBannedBy': instance.banBannedBy,
-      'banCreatedAt': instance.banCreatedAt?.toIso8601String(),
-      'banExpiresAt': instance.banExpiresAt?.toIso8601String(),
-      'banPostId': instance.banPostId,
+      'createdAt': instance.createdAt?.toIso8601String(),
+      'expiresAt': instance.expiresAt?.toIso8601String(),
+      'post': instance.post,
       'banReason': instance.banReason,
     };
 

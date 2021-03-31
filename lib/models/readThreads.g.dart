@@ -8,6 +8,7 @@ part of 'readThreads.dart';
 
 ReadThreads _$ReadThreadsFromJson(Map<String, dynamic> json) {
   return ReadThreads(
+    lastPostNumber: json['lastPostNumber'] as int,
     lastSeen: json['lastSeen'] == null
         ? null
         : DateTime.parse(json['lastSeen'] as String),
@@ -17,6 +18,7 @@ ReadThreads _$ReadThreadsFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$ReadThreadsToJson(ReadThreads instance) =>
     <String, dynamic>{
+      'lastPostNumber': instance.lastPostNumber,
       'lastSeen': instance.lastSeen?.toIso8601String(),
       'threadId': instance.threadId,
     };

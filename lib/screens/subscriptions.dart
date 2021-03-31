@@ -105,14 +105,17 @@ class _SubscriptionScreenState extends State<SubscriptionScreen>
   }
 
   void onTapNewPostsButton(ThreadAlert item) {
-    double pagenumber = (item.threadPostCount - (item.unreadPosts - 1)) / 20;
+    int pagenumber =
+        ((item.threadPostCount - (item.unreadPosts - 1)) / 20).ceil();
+
+    print(pagenumber);
 
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ThreadScreen(
           title: item.threadTitle,
-          page: item.lastPost.page,
+          page: pagenumber,
           threadId: item.threadId,
           postIdToJumpTo: item.firstUnreadId,
         ),

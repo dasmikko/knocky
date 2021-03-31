@@ -135,16 +135,25 @@ class _ThreadScreenState extends State<ThreadScreen>
       await KnockoutAPI().readThreads(lastPostDate, details.id).then((res) {});
     }
 
-    if (details.isSubscribedTo != 0) {
+    print(details.subscribed);
+    print(details.subscriptionLastPostNumber);
+    print(details.posts.last.threadPostNumber);
+
+    if (details.subscribed == true) {
       // Handle for subscribed thread
       // Check if last read is null
+      if (details.subscriptionLastPostNumber == null ||
+          details.subscriptionLastPostNumber <
+              details.posts.last.threadPostNumber) {
+        await KnockoutAPI()
+            .readThreadSubsciption(
+                details.posts.last.threadPostNumber, details.id)
+            .then((res) {});
+      }
+    } else {
       if (details.subscriptionLastSeen == null) {
         await KnockoutAPI()
             .readThreads(lastPostDate, details.id)
-            .then((res) {});
-      } else if (details.subscriptionLastSeen.isBefore(lastPostDate)) {
-        await KnockoutAPI()
-            .readThreadSubsciption(lastPostDate, details.id)
             .then((res) {});
       }
     }

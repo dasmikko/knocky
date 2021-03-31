@@ -19,11 +19,12 @@ class Thread {
   final DateTime readThreadLastSeen;
   @JsonKey(nullable: true)
   final DateTime subscriptionLastSeen;
+  final int subscriptionLastPostNumber;
   final List<ThreadPost> posts;
   final ThreadUser user;
   final int userId;
   @JsonKey(defaultValue: 0)
-  final int isSubscribedTo;
+  final bool subscribed;
   final String threadBackgroundType;
   final String threadBackgroundUrl;
 
@@ -41,7 +42,8 @@ class Thread {
       this.posts,
       this.user,
       this.subscriptionLastSeen,
-      this.isSubscribedTo,
+      this.subscriptionLastPostNumber,
+      this.subscribed,
       this.userId,
       this.threadBackgroundType,
       this.threadBackgroundUrl});
@@ -70,6 +72,8 @@ class ThreadPost {
   final dynamic content;
   final ThreadPostUser user;
   final List<ThreadPostRatings> ratings;
+  final int thread;
+  final int threadPostNumber;
   @JsonKey(nullable: true)
   final List<ThreadPostBan> bans;
 
@@ -77,6 +81,8 @@ class ThreadPost {
       {this.id,
       this.content,
       this.user,
+      this.thread,
+      this.threadPostNumber,
       this.ratings,
       this.createdAt,
       this.bans});
@@ -109,16 +115,16 @@ Map _contentToJson(SlateObject slateObject) => slateObject.toJson();
 @JsonSerializable()
 class ThreadPostBan {
   final String banBannedBy;
-  final DateTime banCreatedAt;
-  final DateTime banExpiresAt;
-  final int banPostId;
+  final DateTime createdAt;
+  final DateTime expiresAt;
+  final int post;
   final String banReason;
 
   ThreadPostBan({
     this.banBannedBy,
-    this.banCreatedAt,
-    this.banExpiresAt,
-    this.banPostId,
+    this.createdAt,
+    this.expiresAt,
+    this.post,
     this.banReason,
   });
 

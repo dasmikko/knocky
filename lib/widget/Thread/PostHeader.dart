@@ -90,8 +90,9 @@ class PostHeader extends StatelessWidget {
       );
     }
 
-    if (thread.isSubscribedTo == 1 &&
-        thread.subscriptionLastSeen.isBefore(threadPost.createdAt)) {
+    if (thread.subscribed &&
+        (thread.subscriptionLastPostNumber == null ||
+            thread.subscriptionLastPostNumber < threadPost.threadPostNumber)) {
       return Border(
         left: BorderSide(color: Color.fromRGBO(67, 104, 173, 1), width: 2),
       );
@@ -113,15 +114,8 @@ class PostHeader extends StatelessWidget {
         ScopedModel.of<AuthenticationModel>(context, rebuildOnChange: true)
             .userId;
 
-    print(username);
-    print('avatarurl ' + avatarUrl);
-    print('bgurl ' + backgroundUrl);
-
     bool hasAvatar = avatarUrl.isNotEmpty;
     bool hasBg = backgroundUrl.isNotEmpty;
-
-    print('has avatarurl ' + hasAvatar.toString());
-    print('has bgurl ' + hasBg.toString());
 
     return Column(
       children: <Widget>[

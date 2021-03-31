@@ -97,8 +97,8 @@ class KnockoutAPI {
   }
 
   Future<Thread> getThread(int id, {int page: 1}) async {
-    final response =
-        await _request(url: 'thread/' + id.toString() + '/' + page.toString());
+    final response = await _request(
+        url: 'v2/threads/' + id.toString() + '/' + page.toString());
     return Thread.fromJson(response.data);
   }
 
@@ -130,9 +130,9 @@ class KnockoutAPI {
     await _request(type: 'post', url: 'readThreads', data: jsonToPost.toJson());
   }
 
-  Future<void> readThreadSubsciption(DateTime lastseen, int threadId) async {
+  Future<void> readThreadSubsciption(int lastPostNumber, int threadId) async {
     ReadThreads jsonToPost =
-        new ReadThreads(lastSeen: lastseen, threadId: threadId);
+        new ReadThreads(lastPostNumber: lastPostNumber, threadId: threadId);
     await _request(type: 'post', url: 'alert', data: jsonToPost.toJson());
   }
 

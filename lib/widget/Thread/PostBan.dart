@@ -8,8 +8,8 @@ class PostBan extends StatelessWidget {
   PostBan({this.ban});
 
   String calcHours() {
-    DateTime created = ban.banCreatedAt;
-    DateTime expires = ban.banExpiresAt;
+    DateTime created = ban.createdAt;
+    DateTime expires = ban.expiresAt;
     Duration difference = expires.difference(created);
 
     if (difference.inHours < 24) {

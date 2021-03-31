@@ -277,17 +277,21 @@ class BBcodeRenderer extends StatelessWidget {
           case 'u':
           case 'url':
           case 'spoiler':
-            TextStyle textStyle =
-                Theme.of(parentContext).textTheme.body1.copyWith(
-                      fontFamily: node.tag == 'code' ? 'RobotoMono' : 'Roboto',
-                      decoration: node.tag == 'u'
-                          ? TextDecoration.underline
-                          : TextDecoration.none,
-                      fontWeight:
-                          node.tag == 'b' ? FontWeight.bold : FontWeight.normal,
-                      fontStyle:
-                          node.tag == 'i' ? FontStyle.italic : FontStyle.normal,
-                    );
+            TextStyle textStyle = Theme.of(parentContext)
+                .textTheme
+                .body1
+                .copyWith(
+                    fontFamily: node.tag == 'code' ? 'RobotoMono' : 'Roboto',
+                    decoration: node.tag == 'u'
+                        ? TextDecoration.underline
+                        : TextDecoration.none,
+                    fontWeight:
+                        node.tag == 'b' ? FontWeight.bold : FontWeight.normal,
+                    fontStyle:
+                        node.tag == 'i' ? FontStyle.italic : FontStyle.normal,
+                    backgroundColor: node.tag == 'spoiler'
+                        ? Theme.of(parentContext).textTheme.bodyText1.color
+                        : null);
 
             if (node.tag == 'url') {
               String url;
@@ -323,6 +327,44 @@ class BBcodeRenderer extends StatelessWidget {
                   ),
                 );
               }
+            } else if (node.tag == 'spoiler') {
+              print('spoiler element');
+              richTextContent.add(
+                TextSpan(
+                  text: node.textContent,
+                  style: textStyle,
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () async {
+                      print(node.textContent);
+                      return showDialog<void>(
+                        context: parentContext,
+                        barrierDismissible: false, // user must tap button!
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Spoiler'),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+                                  RichText(
+                                    text: textElementHandler(node.children),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text('Close'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                ),
+              );
             } else {
               richTextContent.add(
                 textElementHandler(node.children, currentTextStyle: textStyle),
