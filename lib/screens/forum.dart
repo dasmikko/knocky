@@ -4,10 +4,8 @@ import 'package:knocky/controllers/forumController.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:knocky/screens/subfoum.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
-import 'package:knocky/widgets/drawer/drawerListTile.dart';
 import 'package:knocky/widgets/drawer/mainDrawer.dart';
 import 'package:knocky/widgets/forum/ForumListItem.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ForumScreen extends StatefulWidget {
   @override
