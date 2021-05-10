@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class Avatar extends StatelessWidget {
   final String avatarUrl;
   final bool isBanned;
+  // todo: how can we have this as a const somewhere
   final String imageEndpoint = 'https://cdn.knockout.chat/image/';
 
   Avatar({@required this.avatarUrl, @required this.isBanned});

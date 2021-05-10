@@ -1,7 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/shared/avatar.dart';
+import 'package:knocky/widgets/shared/background.dart';
+import 'package:knocky/widgets/shared/username.dart';
 
 class UserInfo extends StatelessWidget {
   final ThreadPostUser user;
@@ -12,11 +13,16 @@ class UserInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     // todo: background
     return Container(
-        child: Row(children: [
-      // CachedNetworkImage(imageUrl: user.avatarUrl),
-      Container(
-          child: Avatar(avatarUrl: user.avatarUrl, isBanned: user.isBanned)),
-      Text(user.username) // todo: render name according to user group
-    ]));
+        height: 80,
+        child: Stack(fit: StackFit.expand, children: [
+          Background(backgroundUrl: user.backgroundUrl),
+          Row(children: [
+            Container(
+                padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+                child:
+                    Avatar(avatarUrl: user.avatarUrl, isBanned: user.isBanned)),
+            Username(username: user.username, usergroup: user.usergroup),
+          ])
+        ]));
   }
 }
