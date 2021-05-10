@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/threadController.dart';
+import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widgets/drawer/mainDrawer.dart';
+import 'package:knocky/widgets/thread/postListItem.dart';
 
 class ThreadScreen extends StatefulWidget {
   final int id;
@@ -41,7 +43,18 @@ class _ThreadScreenState extends State<ThreadScreen> {
               child: RefreshIndicator(
                   onRefresh: () async =>
                       threadController.fetchThreadPage(this.widget.page),
-                  child: Container()),
+                  child: ListView.builder(
+                    itemCount: threadController.thread.value != null
+                        ? threadController.thread.value.posts.length
+                        : 0,
+                    itemBuilder: (BuildContext context, int index) {
+                      ThreadPost threadPost =
+                          threadController.thread.value.posts[index];
+                      return PostListItem(
+                        threadPost: threadPost,
+                      );
+                    },
+                  )),
             ),
           ),
         ),
