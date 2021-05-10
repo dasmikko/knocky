@@ -48,10 +48,10 @@ class _ThreadScreenState extends State<ThreadScreen> {
                         ? threadController.thread.value.posts.length
                         : 0,
                     itemBuilder: (BuildContext context, int index) {
-                      ThreadPost threadPost =
+                      ThreadPost post =
                           threadController.thread.value.posts[index];
                       return PostListItem(
-                        threadPost: threadPost,
+                        post: post,
                       );
                     },
                   )),
