@@ -23,7 +23,7 @@ class Thread {
   final ThreadUser user;
   final int userId;
   @JsonKey(defaultValue: 0)
-  final int isSubscribedTo;
+  final bool isSubscribedTo;
   final String threadBackgroundType;
   final String threadBackgroundUrl;
 

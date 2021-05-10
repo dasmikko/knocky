@@ -3,10 +3,12 @@ import 'package:get/get.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:knocky/helpers/icons.dart';
+import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/InkWellOnWidget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/widgets/jumpToPageDialog.dart';
+import 'package:knocky/screens/thread.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'dart:ui' as ui;
 import 'package:numberpicker/numberpicker.dart';
@@ -36,16 +38,10 @@ class SubforumListItem extends StatelessWidget {
   void onTapItem(BuildContext context, SubforumThread item) {
     print('Clicked item ' + threadDetails.id.toString());
 
-    /*Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ThreadScreen(
-          title: threadDetails.title,
-          postCount: threadDetails.postCount,
-          threadId: threadDetails.id,
-        ),
-      ),
-    );*/
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ThreadScreen(id: threadDetails.id)));
   }
 
   void showJumpDialog(BuildContext context) async {
