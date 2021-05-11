@@ -3,6 +3,10 @@ import 'package:knocky/helpers/colors.dart';
 
 ThemeData darkTheme() {
   return ThemeData(
+    backgroundColor: Color.fromRGBO(13, 16, 19, 1),
+    cardTheme: CardTheme(
+        color: Color.fromRGBO(22, 29, 36, 1), clipBehavior: Clip.antiAlias),
+    primaryColor: Color.fromRGBO(31, 44, 57, 1),
     brightness: Brightness.dark,
     appBarTheme: AppBarTheme(
       color: Colors.grey[900],

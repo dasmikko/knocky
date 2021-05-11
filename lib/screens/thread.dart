@@ -6,7 +6,7 @@ import 'package:knocky/controllers/threadController.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widgets/drawer/mainDrawer.dart';
-import 'package:knocky/widgets/thread/postListItem.dart';
+import 'package:knocky/widgets/post/postListItem.dart';
 
 class ThreadScreen extends StatefulWidget {
   final int id;

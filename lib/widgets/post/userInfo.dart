@@ -11,14 +11,13 @@ class UserInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // todo: background
     return Container(
         height: 80,
         child: Stack(fit: StackFit.expand, children: [
           Background(backgroundUrl: user.backgroundUrl),
           Row(children: [
             Container(
-                padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+                padding: EdgeInsets.all(8),
                 child:
                     Avatar(avatarUrl: user.avatarUrl, isBanned: user.isBanned)),
             Username(username: user.username, usergroup: user.usergroup),
