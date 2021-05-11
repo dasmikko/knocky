@@ -4,7 +4,7 @@ import 'package:knocky/controllers/subforumController.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
-import 'package:knocky/widgets/subforum/SubforumListItem.dart';
+import 'package:knocky/widgets/subforum/subforumListItem.dart';
 
 class SubforumScreen extends StatefulWidget {
   final Subforum subforum;

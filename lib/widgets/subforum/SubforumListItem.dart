@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:knocky/helpers/icons.dart';
-import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/InkWellOnWidget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/colors.dart';
@@ -11,7 +10,6 @@ import 'package:knocky/widgets/jumpToPageDialog.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'dart:ui' as ui;
-import 'package:numberpicker/numberpicker.dart';
 
 class SubforumListItem extends StatelessWidget {
   final SubforumThread threadDetails;
@@ -162,13 +160,8 @@ class SubforumListItem extends StatelessWidget {
       });
     }
 
-    Color userColor = AppColors(context).normalUserColor(); // User
-    if (threadDetails.user.usergroup == 2 || threadDetails.user.usergroup == 5)
-      userColor = AppColors(context).goldUserColor(); // Gold
-    if (threadDetails.user.usergroup == 3)
-      userColor = AppColors(context).modUserColor(); // Mod
-    if (threadDetails.user.usergroup == 4)
-      userColor = AppColors(context).adminUserColor(); // Admin
+    Color userColor =
+        AppColors(context).userGroupToColor(threadDetails.user.usergroup);
 
     return Card(
       color: Color.fromRGBO(45, 45, 48, 1),
