@@ -12,9 +12,9 @@ class Avatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isBanned) {
-      return Container(); // todo: return banned placeholder
+      return Container(width: 40); // todo: return banned placeholder
     } else if (avatarUrl == 'none.webp') {
-      return Container(); // todo: ?
+      return Container(width: 40);
     }
     return CachedNetworkImage(imageUrl: "$imageEndpoint/$avatarUrl");
   }

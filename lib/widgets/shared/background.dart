@@ -11,9 +11,12 @@ class Background extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (backgroundUrl == 'none.webp') {
-      return Container(); // todo: ?
+      return Container();
     }
+    // todo: apply brightness/contrast filter
     return CachedNetworkImage(
-        fit: BoxFit.cover, imageUrl: "$imageEndpoint/$backgroundUrl");
+      fit: BoxFit.cover,
+      imageUrl: "$imageEndpoint/$backgroundUrl",
+    );
   }
 }
