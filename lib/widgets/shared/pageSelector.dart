@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 
 class PageSelector extends StatelessWidget {
   final Function onNext;
+  final Function onPage;
   final int pageCount;
   final int currentPage;
 
   PageSelector(
-      {@required this.pageCount, @required this.onNext, this.currentPage: 1});
+      {@required this.pageCount,
+      @required this.onNext,
+      @required this.onPage,
+      this.currentPage: 1});
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +29,8 @@ class PageSelector extends StatelessWidget {
 
   List<Widget> pageSelectorButtons(context) {
     final children = <Widget>[];
-    for (var i = 0; i < pageCount; i++) {
-      children.add(navigatorButton(context, (i + 1).toString(), onNext));
+    for (var i = 1; i != pageCount; i++) {
+      children.add(navigatorButton(context, i.toString(), () => onPage(i)));
     }
     return children;
   }
@@ -37,6 +41,6 @@ class PageSelector extends StatelessWidget {
         style: ElevatedButton.styleFrom(
             minimumSize: Size.fromWidth(16),
             primary: Theme.of(context).primaryColor),
-        onPressed: onNext);
+        onPressed: onClick);
   }
 }

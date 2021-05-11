@@ -64,12 +64,23 @@ class _ThreadScreenState extends State<ThreadScreen> {
     fetch();
   }
 
+  void goToPage(page) {
+    print(page);
+    this.setState(() {
+      _page = page;
+    });
+    fetch();
+  }
+
   Widget pageSelector() {
     int pageCount =
         (threadController.thread.value.totalPosts / PostsPerPage.POSTS_PER_PAGE)
             .ceil();
-    print(pageCount);
-    return PageSelector(pageCount: pageCount, onNext: () => nextPage());
+    return PageSelector(
+      pageCount: pageCount,
+      onNext: () => nextPage(),
+      onPage: (page) => goToPage(page),
+    );
   }
 
   Widget posts() {
