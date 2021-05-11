@@ -37,7 +37,8 @@ class SubforumListItem extends StatelessWidget {
   }
 
   void showJumpDialog(BuildContext context) async {
-    int totalPages = (threadDetails.postCount / 20).ceil();
+    int totalPages =
+        (threadDetails.postCount / PostsPerPage.POSTS_PER_PAGE).ceil();
 
     int page = await Get.dialog(
       JumpToPageDialog(

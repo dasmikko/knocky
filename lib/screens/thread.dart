@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/threadController.dart';
+import 'package:knocky/helpers/postsPerPage.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widgets/drawer/mainDrawer.dart';
@@ -44,13 +45,8 @@ class _ThreadScreenState extends State<ThreadScreen> {
               show: threadController.isFetching.value,
               child: RefreshIndicator(
                   onRefresh: () async => fetch(),
-                  // todo: this should be a column but there is an issue
-                  child: Stack(children: [
-                    PageSelector(onNext: () => nextPage()),
-                    Container(
-                        padding: EdgeInsets.fromLTRB(0, 48, 0, 0),
-                        child: posts()),
-                  ])),
+                  // todo: this should probably be a column but there is an issue
+                  child: Stack(children: [pageSelector(), posts()])),
             ),
           ),
         ),
@@ -68,15 +64,25 @@ class _ThreadScreenState extends State<ThreadScreen> {
     fetch();
   }
 
+  Widget pageSelector() {
+    int pageCount =
+        (threadController.thread.value.totalPosts / PostsPerPage.POSTS_PER_PAGE)
+            .ceil();
+    print(pageCount);
+    return PageSelector(pageCount: pageCount, onNext: () => nextPage());
+  }
+
   Widget posts() {
-    return ScrollablePositionedList.builder(
-      itemCount: threadController.thread.value?.posts?.length ?? 0,
-      itemBuilder: (BuildContext context, int index) {
-        ThreadPost post = threadController.thread.value.posts[index];
-        return PostListItem(
-          post: post,
-        );
-      },
-    );
+    return Container(
+        padding: EdgeInsets.fromLTRB(0, 48, 0, 0),
+        child: ScrollablePositionedList.builder(
+          itemCount: threadController.thread.value?.posts?.length ?? 0,
+          itemBuilder: (BuildContext context, int index) {
+            ThreadPost post = threadController.thread.value.posts[index];
+            return PostListItem(
+              post: post,
+            );
+          },
+        ));
   }
 }
