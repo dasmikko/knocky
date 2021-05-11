@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:knocky/helpers/postsPerPage.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:knocky/helpers/icons.dart';
@@ -16,21 +17,14 @@ class SubforumListItem extends StatelessWidget {
   SubforumListItem({this.threadDetails});
 
   void onTapNewPostsButton(BuildContext context, SubforumThread item) {
-    double pagenumber =
-        (item.postCount - (item.readThreadUnreadPosts - 1)) / 20;
-
-    /*Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ThreadScreen(
-          title: item.title,
-          postCount: item.postCount,
-          threadId: item.id,
-          page: pagenumber.ceil(),
-          postIdToJumpTo: item.firstUnreadId,
-        ),
-      ),
-    );*/
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ThreadScreen(
+                id: threadDetails.id,
+                page: PostsPerPage.unreadPostsPage(
+                    item.unreadPostCount, item.postCount),
+                linkedPostId: item.firstUnreadId)));
   }
 
   void onTapItem(BuildContext context, SubforumThread item) {
@@ -45,7 +39,7 @@ class SubforumListItem extends StatelessWidget {
   void showJumpDialog(BuildContext context) async {
     int totalPages = (threadDetails.postCount / 20).ceil();
 
-    int selectedValue = await Get.dialog(
+    int page = await Get.dialog(
       JumpToPageDialog(
         minValue: 1,
         maxValue: totalPages,
@@ -53,9 +47,11 @@ class SubforumListItem extends StatelessWidget {
       ),
     );
 
-    print(selectedValue);
-
-    // TODO: Go to thread screen
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                ThreadScreen(id: threadDetails.id, page: page)));
   }
 
   List<Widget> threadTags(BuildContext context) {

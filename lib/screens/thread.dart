@@ -11,6 +11,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 class ThreadScreen extends StatefulWidget {
   final int id;
   final int page;
+  // todo: actually use this
   final int linkedPostId;
 
   ThreadScreen({@required this.id, this.page: 1, this.linkedPostId});
@@ -25,7 +26,8 @@ class _ThreadScreenState extends State<ThreadScreen> {
 
   @override
   void initState() {
-    threadController.fetchThreadPage(this.widget.id, page: _page);
+    _page = widget.page;
+    fetch();
     super.initState();
   }
 
@@ -41,8 +43,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
             () => KnockoutLoadingIndicator(
               show: threadController.isFetching.value,
               child: RefreshIndicator(
-                  onRefresh: () async => threadController
-                      .fetchThreadPage(this.widget.id, page: _page),
+                  onRefresh: () async => fetch(),
                   // todo: this should be a column but there is an issue
                   child: Stack(children: [
                     PageSelector(onNext: () => nextPage()),
@@ -56,11 +57,15 @@ class _ThreadScreenState extends State<ThreadScreen> {
         drawer: MainDrawer());
   }
 
+  void fetch() {
+    threadController.fetchThreadPage(this.widget.id, page: _page);
+  }
+
   void nextPage() {
     this.setState(() {
       _page++;
     });
-    threadController.fetchThreadPage(this.widget.id, page: _page);
+    fetch();
   }
 
   Widget posts() {
