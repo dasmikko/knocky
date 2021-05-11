@@ -15,7 +15,7 @@ class PageSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.only(right: 8),
+        padding: EdgeInsets.fromLTRB(0, 8, 8, 0),
         height: 40,
         child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           Container(
@@ -30,17 +30,24 @@ class PageSelector extends StatelessWidget {
   List<Widget> pageSelectorButtons(context) {
     final children = <Widget>[];
     for (var i = 1; i != pageCount; i++) {
-      children.add(navigatorButton(context, i.toString(), () => onPage(i)));
+      children.add(navigatorButton(context, i.toString(), () => onPage(i),
+          highlight: i == currentPage));
     }
     return children;
   }
 
-  ElevatedButton navigatorButton(context, text, onClick) {
+  ElevatedButton navigatorButton(context, text, onClick, {highlight = false}) {
     return ElevatedButton(
         child: Text(text, style: TextStyle(color: Colors.white)),
         style: ElevatedButton.styleFrom(
             minimumSize: Size.fromWidth(16),
-            primary: Theme.of(context).primaryColor),
+            primary: Theme.of(context).primaryColor,
+            shape: highlight
+                ? RoundedRectangleBorder(
+                    side: BorderSide(
+                        color: Theme.of(context).accentColor, width: 2),
+                  )
+                : RoundedRectangleBorder()),
         onPressed: onClick);
   }
 }

@@ -80,6 +80,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
       pageCount: pageCount,
       onNext: () => nextPage(),
       onPage: (page) => goToPage(page),
+      currentPage: _page,
     );
   }
 
