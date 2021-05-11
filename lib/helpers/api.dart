@@ -15,6 +15,7 @@ import 'package:get_storage/get_storage.dart';
 class KnockoutAPI {
   static const KNOCKOUT_URL = "https://api.knockout.chat/";
   static const QA_URL = "https://forums.stylepunch.club:3000/";
+  static const CDN_URL = "https://cdn.knockout.chat/image";
 
   static const KNOCKOUT_SITE_URL = "https://knockout.chat/";
   static const QA_SITE_URL = "https://forums.stylepunch.club/";

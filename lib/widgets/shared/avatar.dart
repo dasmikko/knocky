@@ -1,11 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:knocky/helpers/api.dart';
 
 class Avatar extends StatelessWidget {
   final String avatarUrl;
   final bool isBanned;
-  // todo: how can we have this as a const somewhere
-  final String imageEndpoint = 'https://cdn.knockout.chat/image/';
 
   Avatar({@required this.avatarUrl, @required this.isBanned});
 
@@ -16,6 +15,6 @@ class Avatar extends StatelessWidget {
     } else if (avatarUrl == 'none.webp') {
       return Container(width: 40);
     }
-    return CachedNetworkImage(imageUrl: "$imageEndpoint/$avatarUrl");
+    return CachedNetworkImage(imageUrl: "${KnockoutAPI.CDN_URL}/$avatarUrl");
   }
 }
