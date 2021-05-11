@@ -9,7 +9,7 @@ class Background extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (backgroundUrl == 'none.webp') {
+    if (backgroundUrl == 'none.webp' || backgroundUrl.isEmpty) {
       return Container();
     }
     // todo: apply brightness/contrast filter

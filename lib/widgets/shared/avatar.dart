@@ -12,7 +12,7 @@ class Avatar extends StatelessWidget {
   Widget build(BuildContext context) {
     if (isBanned) {
       return Container(width: 40); // todo: return banned placeholder
-    } else if (avatarUrl == 'none.webp') {
+    } else if (avatarUrl == 'none.webp' || avatarUrl.isEmpty) {
       return Container(width: 40);
     }
     return CachedNetworkImage(imageUrl: "${KnockoutAPI.CDN_URL}/$avatarUrl");
