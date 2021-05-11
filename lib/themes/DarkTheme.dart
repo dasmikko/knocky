@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/colors.dart';
 
-Color primary = Color.fromRGBO(31, 44, 57, 1);
-Color primaryDark = Color.fromRGBO(22, 29, 36, 1);
+Color primary = Color.fromRGBO(45, 45, 48, 1);
+Color primaryDark = Color.fromRGBO(34, 34, 38, 1);
 
 ThemeData darkTheme() {
   return ThemeData(
