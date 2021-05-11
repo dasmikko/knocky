@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/widgets/bbcode/bbcodeRenderer.dart';
 import 'package:knocky/widgets/post/toolbar.dart';
 import 'package:knocky/widgets/post/userInfo.dart';
 
@@ -19,7 +20,11 @@ class PostListItem extends StatelessWidget {
             Container(
                 padding: EdgeInsets.fromLTRB(8, 24, 16, 24),
                 // todo: use BB renderer
-                child: Text(this.post.content))
+                child: BBcodeRenderer(
+                  parentContext: context,
+                  bbcode: post.content,
+                  postDetails: post,
+                ))
           ],
         ));
   }
