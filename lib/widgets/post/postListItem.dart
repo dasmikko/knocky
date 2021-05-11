@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/widgets/post/toolbar.dart';
 import 'package:knocky/widgets/post/userInfo.dart';
 
 class PostListItem extends StatelessWidget {
@@ -14,11 +15,7 @@ class PostListItem extends StatelessWidget {
         child: Column(
           children: [
             UserInfo(user: post.user),
-            Container(
-                color: Theme.of(context).primaryColor,
-                height: 30,
-                child: Row() // todo: post metadata + controls
-                ),
+            Toolbar(post: post),
             Container(
                 padding: EdgeInsets.fromLTRB(8, 24, 16, 24),
                 // todo: use BB renderer

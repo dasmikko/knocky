@@ -72,6 +72,7 @@ class ThreadPost {
   final List<ThreadPostRatings> ratings;
   @JsonKey(nullable: true)
   final List<ThreadPostBan> bans;
+  final int threadPostNumber;
 
   ThreadPost(
       {this.id,
@@ -79,7 +80,8 @@ class ThreadPost {
       this.user,
       this.ratings,
       this.createdAt,
-      this.bans});
+      this.bans,
+      this.threadPostNumber});
 
   factory ThreadPost.fromJson(Map<String, dynamic> json) =>
       _$ThreadPostFromJson(json);

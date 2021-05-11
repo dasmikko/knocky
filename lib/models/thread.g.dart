@@ -90,6 +90,7 @@ ThreadPost _$ThreadPostFromJson(Map<String, dynamic> json) {
             ? null
             : ThreadPostBan.fromJson(e as Map<String, dynamic>))
         ?.toList(),
+    threadPostNumber: json['threadPostNumber'] as int,
   );
 }
 
