@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/colors.dart';
 
+Color primary = Color.fromRGBO(31, 44, 57, 1);
+Color primaryDark = Color.fromRGBO(22, 29, 36, 1);
+
 ThemeData darkTheme() {
   return ThemeData(
     backgroundColor: Color.fromRGBO(13, 16, 19, 1),
-    cardTheme: CardTheme(
-        color: Color.fromRGBO(22, 29, 36, 1), clipBehavior: Clip.antiAlias),
-    primaryColor: Color.fromRGBO(31, 44, 57, 1),
+    cardTheme: CardTheme(color: primaryDark, clipBehavior: Clip.antiAlias),
+    primaryColor: primary,
+    primaryColorDark: primaryDark,
     brightness: Brightness.dark,
     appBarTheme: AppBarTheme(
       color: Colors.grey[900],
