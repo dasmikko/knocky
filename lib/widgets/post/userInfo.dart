@@ -20,7 +20,8 @@ class UserInfo extends StatelessWidget {
                 padding: EdgeInsets.all(8),
                 child:
                     Avatar(avatarUrl: user.avatarUrl, isBanned: user.isBanned)),
-            Username(username: user.username, usergroup: user.usergroup),
+            Username(
+                username: user.username, usergroup: user.usergroup, bold: true),
           ])
         ]));
   }
