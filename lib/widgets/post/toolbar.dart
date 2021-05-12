@@ -24,7 +24,7 @@ class Toolbar extends StatelessWidget {
               ),
             )
           ],
-        ) // todo: post metadata + controls
+        ) // TODO: post metadata + controls
         );
   }
 }

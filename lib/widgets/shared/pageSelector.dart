@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class PageSelector extends StatelessWidget {
   final Function onNext;
@@ -20,21 +21,18 @@ class PageSelector extends StatelessWidget {
         height: 40,
         child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           Container(
-              width: 150, // todo: shrink width depending on amount of pages
-              child: ListView.separated(
+              width: 150, // TODO: shrink width depending on amount of pages
+              // TODO: add equal padding between each button, even if buttons
+              // have different widths (single vs double digits)
+              child: ScrollablePositionedList.builder(
                 physics: BouncingScrollPhysics(),
+                initialScrollIndex: currentPage - 1,
                 scrollDirection: Axis.horizontal,
                 itemCount: pageCount,
-                shrinkWrap: true,
                 itemBuilder: (BuildContext context, int i) {
                   return navigatorButton(
                       context, (i + 1).toString(), () => onPage(i + 1),
                       highlight: currentPage == i + 1);
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return SizedBox(
-                    width: 2,
-                  );
                 },
               )),
           if (currentPage != pageCount) navigatorButton(context, '>', onNext)
@@ -43,7 +41,7 @@ class PageSelector extends StatelessWidget {
 
   ElevatedButton navigatorButton(context, text, onClick, {highlight = false}) {
     return ElevatedButton(
-        child: Stack(children: [
+        child: Stack(fit: StackFit.loose, children: [
           Container(
               height: double.infinity,
               child: Align(
@@ -58,16 +56,18 @@ class PageSelector extends StatelessWidget {
         onPressed: onClick);
   }
 
+  // TODO: the width of the text in the navigator can expand to two digits
+  // which causes the highlight caret to be off-center, i.e. how do we make
+  // sure this caret is always in the middle of the stack?
   Widget highlightCaret(context) {
-    return Container(
-        color: Colors.blue,
-        height: double.infinity,
-        width: 0,
-        child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-                margin: EdgeInsets.only(top: 20),
-                child: FaIcon(FontAwesomeIcons.caretUp,
-                    size: 16, color: Theme.of(context).accentColor))));
+    return IntrinsicWidth(
+        child: Container(
+            height: double.infinity,
+            child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                    margin: EdgeInsets.only(top: 20),
+                    child: FaIcon(FontAwesomeIcons.caretUp,
+                        size: 16, color: Theme.of(context).accentColor)))));
   }
 }

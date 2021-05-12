@@ -12,7 +12,7 @@ class Background extends StatelessWidget {
     if (backgroundUrl == 'none.webp' || backgroundUrl.isEmpty) {
       return Container();
     }
-    // todo: apply brightness/contrast filter
+    // TODO: apply brightness/contrast filter
     return CachedNetworkImage(
       fit: BoxFit.cover,
       imageUrl: "${KnockoutAPI.CDN_URL}/$backgroundUrl",

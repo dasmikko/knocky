@@ -32,7 +32,7 @@ class BBcodeRenderer extends StatelessWidget {
 
   Widget imageHandler(bbob.Element node) {
     return Container();
-    // todo:
+    // TODO:
     /*
     return ImageWidget(
       postId: postDetails.id,
@@ -44,7 +44,7 @@ class BBcodeRenderer extends StatelessWidget {
 
   Widget videoHandler(bbob.Element node) {
     return Container();
-    // todo:
+    // TODO:
     /*
     if (node.textContent.endsWith('.wav') ||
         node.textContent.endsWith('.mp3') ||
@@ -64,7 +64,7 @@ class BBcodeRenderer extends StatelessWidget {
 
   Widget youtubeHandler(bbob.Element node) {
     return Container();
-    // todo:
+    // TODO:
     /*
     return YoutubeVideoEmbed(
       url: node.textContent,
@@ -74,7 +74,7 @@ class BBcodeRenderer extends StatelessWidget {
 
   Widget twitterHandler(bbob.Element node) {
     return Container();
-    // todo:
+    // TODO:
     /*
     return TwitterEmbedWidget(
       twitterUrl: node.textContent,
@@ -91,7 +91,7 @@ class BBcodeRenderer extends StatelessWidget {
     */
   }
 
-  // todo: Move out to own file
+  // TODO: Move out to own file
   Widget userQuoteHandler(bbob.Element node) {
     AppColors appColors = AppColors(this.parentContext);
 
@@ -312,7 +312,7 @@ class BBcodeRenderer extends StatelessWidget {
               print(node.attributes);
 
               if (node.attributes['smart'] == 'smart') {
-                // todo:
+                // TODO:
                 /*
                 widgetList.add(EmbedWidget(
                   url: url,

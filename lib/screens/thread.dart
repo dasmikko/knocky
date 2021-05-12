@@ -11,7 +11,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 class ThreadScreen extends StatefulWidget {
   final int id;
   final int page;
-  // todo: actually use this
+  // TODO: actually use this
   final int linkedPostId;
 
   ThreadScreen({@required this.id, this.page: 1, this.linkedPostId});
@@ -42,7 +42,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
               show: threadController.isFetching.value,
               child: RefreshIndicator(
                   onRefresh: () async => threadController.fetch(),
-                  // todo: this should probably be a column but there is an issue
+                  // TODO: this should probably be a column but there is an issue
                   child: Stack(children: [pageSelector(), posts()])),
             ),
           ),

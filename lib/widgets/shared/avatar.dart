@@ -11,7 +11,7 @@ class Avatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isBanned) {
-      return Container(width: 40); // todo: return banned placeholder
+      return Container(width: 40); // TODO: return banned placeholder
     } else if (avatarUrl == 'none.webp' || avatarUrl.isEmpty) {
       return Container(width: 40);
     }
