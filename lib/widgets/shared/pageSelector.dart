@@ -29,9 +29,11 @@ class PageSelector extends StatelessWidget {
 
   List<Widget> pageSelectorButtons(context) {
     final children = <Widget>[];
-    for (var i = 1; i != pageCount; i++) {
-      children.add(navigatorButton(context, i.toString(), () => onPage(i),
-          highlight: i == currentPage));
+    for (var i = 0; i < pageCount; i++) {
+      var pageNumber = i + 1;
+      children.add(navigatorButton(
+          context, pageNumber.toString(), () => onPage(pageNumber),
+          highlight: pageNumber == currentPage));
     }
     return children;
   }

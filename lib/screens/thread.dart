@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/threadController.dart';
-import 'package:knocky/helpers/postsPerPage.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widgets/drawer/mainDrawer.dart';
@@ -52,11 +51,8 @@ class _ThreadScreenState extends State<ThreadScreen> {
   }
 
   Widget pageSelector() {
-    int pageCount =
-        (threadController.thread.value.totalPosts / PostsPerPage.POSTS_PER_PAGE)
-            .ceil();
     return PageSelector(
-      pageCount: pageCount,
+      pageCount: threadController.pageCount,
       onNext: () => threadController.nextPage(),
       onPage: (page) => threadController.goToPage(page),
       currentPage: threadController.page,

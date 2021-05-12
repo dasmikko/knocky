@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:knocky/helpers/api.dart';
+import 'package:knocky/helpers/postsPerPage.dart';
 import 'package:knocky/models/thread.dart';
 
 class ThreadController extends GetxController {
@@ -27,7 +28,13 @@ class ThreadController extends GetxController {
   }
 
   get page => _page.value;
+
+  get pageCount =>
+      ((thread.value?.totalPosts ?? 0) / PostsPerPage.POSTS_PER_PAGE).ceil();
+
   nextPage() => _page.value++;
+
   previousPage() => _page.value--;
+
   goToPage(pageNumber) => _page.value = pageNumber;
 }
