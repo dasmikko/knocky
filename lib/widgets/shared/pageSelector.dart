@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PageSelector extends StatelessWidget {
   final Function onNext;
@@ -7,9 +8,9 @@ class PageSelector extends StatelessWidget {
   final int currentPage;
 
   PageSelector(
-      {@required this.pageCount,
-      @required this.onNext,
+      {@required this.onNext,
       @required this.onPage,
+      @required this.pageCount,
       this.currentPage: 1});
 
   @override
@@ -19,37 +20,54 @@ class PageSelector extends StatelessWidget {
         height: 40,
         child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           Container(
-              width: 150,
-              child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: pageSelectorButtons(context))),
-          navigatorButton(context, '>', onNext)
+              width: 150, // todo: shrink width depending on amount of pages
+              child: ListView.separated(
+                physics: BouncingScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                itemCount: pageCount,
+                shrinkWrap: true,
+                itemBuilder: (BuildContext context, int i) {
+                  return navigatorButton(
+                      context, (i + 1).toString(), () => onPage(i + 1),
+                      highlight: currentPage == i + 1);
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return SizedBox(
+                    width: 2,
+                  );
+                },
+              )),
+          if (currentPage != pageCount) navigatorButton(context, '>', onNext)
         ]));
-  }
-
-  List<Widget> pageSelectorButtons(context) {
-    final children = <Widget>[];
-    for (var i = 0; i < pageCount; i++) {
-      var pageNumber = i + 1;
-      children.add(navigatorButton(
-          context, pageNumber.toString(), () => onPage(pageNumber),
-          highlight: pageNumber == currentPage));
-    }
-    return children;
   }
 
   ElevatedButton navigatorButton(context, text, onClick, {highlight = false}) {
     return ElevatedButton(
-        child: Text(text, style: TextStyle(color: Colors.white)),
+        child: Stack(children: [
+          Container(
+              height: double.infinity,
+              child: Align(
+                  alignment: Alignment.center,
+                  child: Text(text, style: TextStyle(color: Colors.white)))),
+          if (highlight) highlightCaret(context)
+        ]),
         style: ElevatedButton.styleFrom(
-            minimumSize: Size.fromWidth(16),
-            primary: Theme.of(context).primaryColor,
-            shape: highlight
-                ? RoundedRectangleBorder(
-                    side: BorderSide(
-                        color: Theme.of(context).accentColor, width: 2),
-                  )
-                : RoundedRectangleBorder()),
+          minimumSize: Size.fromWidth(4),
+          primary: Theme.of(context).primaryColor,
+        ),
         onPressed: onClick);
+  }
+
+  Widget highlightCaret(context) {
+    return Container(
+        color: Colors.blue,
+        height: double.infinity,
+        width: 0,
+        child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+                margin: EdgeInsets.only(top: 20),
+                child: FaIcon(FontAwesomeIcons.caretUp,
+                    size: 16, color: Theme.of(context).accentColor))));
   }
 }

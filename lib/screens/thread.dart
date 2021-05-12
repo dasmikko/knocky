@@ -52,9 +52,9 @@ class _ThreadScreenState extends State<ThreadScreen> {
 
   Widget pageSelector() {
     return PageSelector(
-      pageCount: threadController.pageCount,
       onNext: () => threadController.nextPage(),
       onPage: (page) => threadController.goToPage(page),
+      pageCount: threadController.pageCount,
       currentPage: threadController.page,
     );
   }

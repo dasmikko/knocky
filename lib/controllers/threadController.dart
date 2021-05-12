@@ -16,6 +16,7 @@ class ThreadController extends GetxController {
   }
 
   initState(int id, int page) {
+    thread.value = null;
     this.id = id;
     _page.value = page;
     fetch();
@@ -27,7 +28,7 @@ class ThreadController extends GetxController {
     isFetching.value = false;
   }
 
-  get title => !isFetching.value ? thread.value?.title : null;
+  get title => thread.value?.title;
 
   get page => _page.value;
 
