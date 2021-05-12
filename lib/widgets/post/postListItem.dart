@@ -14,6 +14,8 @@ class PostListItem extends StatelessWidget {
     return Card(
         margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             UserInfo(user: post.user),
             Toolbar(post: post),
