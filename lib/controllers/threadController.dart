@@ -27,6 +27,8 @@ class ThreadController extends GetxController {
     isFetching.value = false;
   }
 
+  get title => !isFetching.value ? thread.value?.title : null;
+
   get page => _page.value;
 
   get pageCount =>

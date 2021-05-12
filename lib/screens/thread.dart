@@ -33,7 +33,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Knocky"),
+          title: Obx(() => Text(threadController.title ?? 'Loading thread...')),
           actions: [],
         ),
         body: Container(
