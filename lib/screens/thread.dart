@@ -23,13 +23,11 @@ class ThreadScreen extends StatefulWidget {
 
 class _ThreadScreenState extends State<ThreadScreen> {
   final ThreadController threadController = Get.put(ThreadController());
-  int _page = 1;
 
   @override
   void initState() {
-    _page = widget.page;
-    fetch();
     super.initState();
+    threadController.initState(widget.id, widget.page);
   }
 
   @override
@@ -44,7 +42,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
             () => KnockoutLoadingIndicator(
               show: threadController.isFetching.value,
               child: RefreshIndicator(
-                  onRefresh: () async => fetch(),
+                  onRefresh: () async => threadController.fetch(),
                   // todo: this should probably be a column but there is an issue
                   child: Stack(children: [pageSelector(), posts()])),
             ),
@@ -53,34 +51,15 @@ class _ThreadScreenState extends State<ThreadScreen> {
         drawer: MainDrawer());
   }
 
-  void fetch() {
-    threadController.fetchThreadPage(this.widget.id, page: _page);
-  }
-
-  void nextPage() {
-    this.setState(() {
-      _page++;
-    });
-    fetch();
-  }
-
-  void goToPage(page) {
-    print(page);
-    this.setState(() {
-      _page = page;
-    });
-    fetch();
-  }
-
   Widget pageSelector() {
     int pageCount =
         (threadController.thread.value.totalPosts / PostsPerPage.POSTS_PER_PAGE)
             .ceil();
     return PageSelector(
       pageCount: pageCount,
-      onNext: () => nextPage(),
-      onPage: (page) => goToPage(page),
-      currentPage: _page,
+      onNext: () => threadController.nextPage(),
+      onPage: (page) => threadController.goToPage(page),
+      currentPage: threadController.page,
     );
   }
 
