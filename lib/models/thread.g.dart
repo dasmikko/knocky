@@ -30,7 +30,7 @@ Thread _$ThreadFromJson(Map<String, dynamic> json) {
     subscriptionLastSeen: json['subscriptionLastSeen'] == null
         ? null
         : DateTime.parse(json['subscriptionLastSeen'] as String),
-    isSubscribedTo: json['isSubscribedTo'] as int ?? 0,
+    isSubscribedTo: json['isSubscribedTo'] as bool,
     userId: json['userId'] as int,
     threadBackgroundType: json['threadBackgroundType'] as String,
     threadBackgroundUrl: json['threadBackgroundUrl'] as String,
@@ -90,6 +90,7 @@ ThreadPost _$ThreadPostFromJson(Map<String, dynamic> json) {
             ? null
             : ThreadPostBan.fromJson(e as Map<String, dynamic>))
         ?.toList(),
+    threadPostNumber: json['threadPostNumber'] as int,
   );
 }
 

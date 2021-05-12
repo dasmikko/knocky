@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:knocky/helpers/postsPerPage.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:knocky/helpers/icons.dart';
@@ -7,51 +8,39 @@ import 'package:knocky/widgets/InkWellOnWidget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/widgets/jumpToPageDialog.dart';
+import 'package:knocky/screens/thread.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'dart:ui' as ui;
-import 'package:numberpicker/numberpicker.dart';
 
 class SubforumListItem extends StatelessWidget {
   final SubforumThread threadDetails;
   SubforumListItem({this.threadDetails});
 
   void onTapNewPostsButton(BuildContext context, SubforumThread item) {
-    double pagenumber =
-        (item.postCount - (item.readThreadUnreadPosts - 1)) / 20;
-
-    /*Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ThreadScreen(
-          title: item.title,
-          postCount: item.postCount,
-          threadId: item.id,
-          page: pagenumber.ceil(),
-          postIdToJumpTo: item.firstUnreadId,
-        ),
-      ),
-    );*/
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ThreadScreen(
+                id: threadDetails.id,
+                page: PostsPerPage.unreadPostsPage(
+                    item.unreadPostCount, item.postCount),
+                linkedPostId: item.firstUnreadId)));
   }
 
   void onTapItem(BuildContext context, SubforumThread item) {
     print('Clicked item ' + threadDetails.id.toString());
 
-    /*Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ThreadScreen(
-          title: threadDetails.title,
-          postCount: threadDetails.postCount,
-          threadId: threadDetails.id,
-        ),
-      ),
-    );*/
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ThreadScreen(id: threadDetails.id)));
   }
 
   void showJumpDialog(BuildContext context) async {
-    int totalPages = (threadDetails.postCount / 20).ceil();
+    int totalPages =
+        (threadDetails.postCount / PostsPerPage.POSTS_PER_PAGE).ceil();
 
-    int selectedValue = await Get.dialog(
+    int page = await Get.dialog(
       JumpToPageDialog(
         minValue: 1,
         maxValue: totalPages,
@@ -59,9 +48,11 @@ class SubforumListItem extends StatelessWidget {
       ),
     );
 
-    print(selectedValue);
-
-    // TODO: Go to thread screen
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                ThreadScreen(id: threadDetails.id, page: page)));
   }
 
   List<Widget> threadTags(BuildContext context) {
@@ -166,13 +157,8 @@ class SubforumListItem extends StatelessWidget {
       });
     }
 
-    Color userColor = AppColors(context).normalUserColor(); // User
-    if (threadDetails.user.usergroup == 2 || threadDetails.user.usergroup == 5)
-      userColor = AppColors(context).goldUserColor(); // Gold
-    if (threadDetails.user.usergroup == 3)
-      userColor = AppColors(context).modUserColor(); // Mod
-    if (threadDetails.user.usergroup == 4)
-      userColor = AppColors(context).adminUserColor(); // Admin
+    Color userColor =
+        AppColors(context).userGroupToColor(threadDetails.user.usergroup);
 
     return Card(
       color: Color.fromRGBO(45, 45, 48, 1),

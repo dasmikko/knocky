@@ -14,7 +14,7 @@ class MainDrawer extends StatelessWidget {
     return Drawer(
         child: ListView(padding: EdgeInsets.zero, children: <Widget>[
       DrawerHeader(
-        child: null, // todo: insert user bg/avatar info here
+        child: null, // TODO: insert user bg/avatar info here
         decoration: BoxDecoration(
           color: Colors.redAccent,
         ),
