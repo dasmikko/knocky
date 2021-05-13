@@ -28,6 +28,6 @@ class SignificantThreadsController extends GetxController {
     fetch();
   }
 
-  get threadsToFetchName => _threadsToFetch.name;
-  get threadsToFetch => _threadsToFetch;
+  String get threadsToFetchName => _threadsToFetch.name;
+  SignificantThreads get threadsToFetch => _threadsToFetch;
 }

@@ -11,6 +11,15 @@ import 'drawerListTile.dart';
 class MainDrawer extends StatelessWidget {
   final AuthController authController = Get.put(AuthController());
 
+  navigateTo(BuildContext context, Widget screen) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
+  }
+
+  onListTileTap(BuildContext context, Function onTap) {
+    Navigator.of(context).pop(); // close the drawer
+    onTap();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -34,21 +43,23 @@ class MainDrawer extends StatelessWidget {
       DrawerListTile(
           iconData: FontAwesomeIcons.solidClock,
           title: 'Latest Threads',
-          onTap: () => Navigator.push(
+          onTap: () => onListTileTap(
               context,
-              MaterialPageRoute(
-                  builder: (context) => SignificantThreadsScreen(
-                        threadsToShow: SignificantThreads.Latest,
-                      )))),
+              () => navigateTo(
+                  context,
+                  SignificantThreadsScreen(
+                    threadsToShow: SignificantThreads.Latest,
+                  )))),
       DrawerListTile(
           iconData: FontAwesomeIcons.fire,
           title: 'Popular Threads',
-          onTap: () => Navigator.push(
+          onTap: () => onListTileTap(
               context,
-              MaterialPageRoute(
-                  builder: (context) => SignificantThreadsScreen(
-                        threadsToShow: SignificantThreads.Popular,
-                      )))),
+              () => navigateTo(
+                  context,
+                  SignificantThreadsScreen(
+                    threadsToShow: SignificantThreads.Popular,
+                  )))),
       DrawerListTile(
         iconData: FontAwesomeIcons.cog,
         title: 'Settings',

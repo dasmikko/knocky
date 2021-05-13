@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:knocky/models/subforum.dart';
+import 'package:knocky/models/viewers.dart';
 
 part 'subforumDetails.g.dart';
 
@@ -88,22 +89,25 @@ class SignificantThread {
   final int unreadType;
   final SubforumThreadUser user;
   final SubforumLastPost lastPost;
+  final String backgroundUrl;
+  final Viewers viewers;
 
-  SignificantThread({
-    this.createdAt,
-    this.firstUnreadId,
-    this.iconId,
-    this.id,
-    this.locked,
-    this.pinned,
-    this.postCount,
-    this.readThreadUnreadPosts,
-    this.unreadPostCount,
-    this.title,
-    this.unreadType,
-    this.user,
-    this.lastPost,
-  });
+  SignificantThread(
+      {this.createdAt,
+      this.firstUnreadId,
+      this.iconId,
+      this.id,
+      this.locked,
+      this.pinned,
+      this.postCount,
+      this.readThreadUnreadPosts,
+      this.unreadPostCount,
+      this.title,
+      this.unreadType,
+      this.user,
+      this.lastPost,
+      this.backgroundUrl,
+      this.viewers});
 
   factory SignificantThread.fromJson(Map<String, dynamic> json) =>
       _$SignificantThreadFromJson(json);
