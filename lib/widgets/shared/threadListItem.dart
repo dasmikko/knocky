@@ -12,7 +12,7 @@ class ThreadListItem extends StatelessWidget {
   ThreadListItem({this.threadDetails});
 
   @protected
-  onTapItem(BuildContext context) {
+  void onTapItem(BuildContext context) {
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -20,13 +20,14 @@ class ThreadListItem extends StatelessWidget {
   }
 
   @protected
-  onLongPressItem(BuildContext context) {}
+  void onLongPressItem(BuildContext context) {}
 
   @protected
   List getTagWidgets(BuildContext context) {
     return [];
   }
 
+  @protected
   Widget getIcon(BuildContext context) {
     return Container(
         padding: EdgeInsets.all(8),
@@ -38,6 +39,7 @@ class ThreadListItem extends StatelessWidget {
         ]));
   }
 
+  @protected
   BoxDecoration getBackground(BuildContext context) {
     return BoxDecoration(
         color: Colors.black.withOpacity(0.2),
@@ -49,6 +51,7 @@ class ThreadListItem extends StatelessWidget {
         ));
   }
 
+  @protected
   List<WidgetSpan> getDetailIcons(BuildContext context) {
     return [
       if (threadDetails.locked)
@@ -77,6 +80,7 @@ class ThreadListItem extends StatelessWidget {
     ];
   }
 
+  @protected
   Widget getSubtitle(BuildContext context) {
     return Container();
   }
