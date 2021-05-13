@@ -86,9 +86,8 @@ Map<String, dynamic> _$SubforumThreadToJson(SubforumThread instance) =>
           ?.toList(),
     };
 
-SubforumThreadLatestPopular _$SubforumThreadLatestPopularFromJson(
-    Map<String, dynamic> json) {
-  return SubforumThreadLatestPopular(
+SignificantThread _$SignificantThreadFromJson(Map<String, dynamic> json) {
+  return SignificantThread(
     createdAt: json['createdAt'] == null
         ? null
         : DateTime.parse(json['createdAt'] as String),
@@ -111,8 +110,7 @@ SubforumThreadLatestPopular _$SubforumThreadLatestPopularFromJson(
   );
 }
 
-Map<String, dynamic> _$SubforumThreadLatestPopularToJson(
-        SubforumThreadLatestPopular instance) =>
+Map<String, dynamic> _$SignificantThreadToJson(SignificantThread instance) =>
     <String, dynamic>{
       'firstUnreadId': instance.firstUnreadId,
       'createdAt': instance.createdAt?.toIso8601String(),

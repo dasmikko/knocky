@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
+import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/screens/login.dart';
+import 'package:knocky/screens/significantThreads.dart';
 
 import 'drawerListTile.dart';
 
@@ -32,11 +34,21 @@ class MainDrawer extends StatelessWidget {
       DrawerListTile(
           iconData: FontAwesomeIcons.solidClock,
           title: 'Latest Threads',
-          onTap: () => {}),
+          onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SignificantThreadsScreen(
+                        threadsToShow: SignificantThreads.Latest,
+                      )))),
       DrawerListTile(
           iconData: FontAwesomeIcons.fire,
           title: 'Popular Threads',
-          onTap: () => {}),
+          onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SignificantThreadsScreen(
+                        threadsToShow: SignificantThreads.Popular,
+                      )))),
       DrawerListTile(
         iconData: FontAwesomeIcons.cog,
         title: 'Settings',

@@ -72,7 +72,7 @@ class SubforumThread {
 }
 
 @JsonSerializable()
-class SubforumThreadLatestPopular {
+class SignificantThread {
   final int firstUnreadId;
   final DateTime createdAt;
   final int iconId;
@@ -89,7 +89,7 @@ class SubforumThreadLatestPopular {
   final SubforumThreadUser user;
   final SubforumLastPost lastPost;
 
-  SubforumThreadLatestPopular({
+  SignificantThread({
     this.createdAt,
     this.firstUnreadId,
     this.iconId,
@@ -105,9 +105,9 @@ class SubforumThreadLatestPopular {
     this.lastPost,
   });
 
-  factory SubforumThreadLatestPopular.fromJson(Map<String, dynamic> json) =>
-      _$SubforumThreadLatestPopularFromJson(json);
-  Map<String, dynamic> toJson() => _$SubforumThreadLatestPopularToJson(this);
+  factory SignificantThread.fromJson(Map<String, dynamic> json) =>
+      _$SignificantThreadFromJson(json);
+  Map<String, dynamic> toJson() => _$SignificantThreadToJson(this);
 }
 
 @JsonSerializable()

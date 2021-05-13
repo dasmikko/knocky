@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:knocky/models/events.dart';
+import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/models/syncData.dart';
@@ -202,25 +203,13 @@ class KnockoutAPI {
     }
   }
 
-  Future<List<SubforumThreadLatestPopular>> latestThreads() async {
-    final response = await _request(type: 'get', url: 'thread/latest');
-
+  Future<List<SignificantThread>> getSignificantThreads(
+      SignificantThreads threadsToFetch) async {
+    final endpoint = "v2/threads/${threadsToFetch.name.toLowerCase()}";
+    final response = await _request(type: 'get', url: endpoint);
     print(response);
-
-    return response.data['list']
-        .map<SubforumThreadLatestPopular>(
-            (json) => SubforumThreadLatestPopular.fromJson(json))
-        .toList();
-  }
-
-  Future<List<SubforumThreadLatestPopular>> popularThreads() async {
-    final response = await _request(type: 'get', url: 'thread/popular');
-
-    print(response);
-
-    return response.data['list']
-        .map<SubforumThreadLatestPopular>(
-            (json) => SubforumThreadLatestPopular.fromJson(json))
+    return response.data
+        .map<SignificantThread>((json) => SignificantThread.fromJson(json))
         .toList();
   }
 
