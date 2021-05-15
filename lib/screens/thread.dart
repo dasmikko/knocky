@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:knocky/controllers/threadController.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
-import 'package:knocky/widgets/drawer/mainDrawer.dart';
 import 'package:knocky/widgets/post/postListItem.dart';
 import 'package:knocky/widgets/shared/pageSelector.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -46,8 +45,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
                   child: Stack(children: [pageSelector(), posts()])),
             ),
           ),
-        ),
-        drawer: MainDrawer());
+        ));
   }
 
   Widget pageSelector() {
