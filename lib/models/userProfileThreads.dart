@@ -7,7 +7,7 @@ part 'userProfileThreads.g.dart';
 class UserProfileThreads {
   final int currentPage;
   final int totalPosts;
-  final List<SubforumThreadLatestPopular> threads;
+  final List<SignificantThread> threads;
 
   UserProfileThreads({this.currentPage, this.totalPosts, this.threads});
 

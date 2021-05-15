@@ -13,7 +13,7 @@ UserProfileThreads _$UserProfileThreadsFromJson(Map<String, dynamic> json) {
     threads: (json['threads'] as List)
         ?.map((e) => e == null
             ? null
-            : SubforumThreadLatestPopular.fromJson(e as Map<String, dynamic>))
+            : SignificantThread.fromJson(e as Map<String, dynamic>))
         ?.toList(),
   );
 }

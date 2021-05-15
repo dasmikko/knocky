@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:knocky/helpers/usergroup.dart';
+import 'package:knocky/models/usergroup.dart';
 
 class AppColors {
   BuildContext context;

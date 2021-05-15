@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:knocky/models/subforum.dart';
+import 'package:knocky/models/viewers.dart';
 
 part 'subforumDetails.g.dart';
 
@@ -72,7 +73,7 @@ class SubforumThread {
 }
 
 @JsonSerializable()
-class SubforumThreadLatestPopular {
+class SignificantThread {
   final int firstUnreadId;
   final DateTime createdAt;
   final int iconId;
@@ -88,26 +89,29 @@ class SubforumThreadLatestPopular {
   final int unreadType;
   final SubforumThreadUser user;
   final SubforumLastPost lastPost;
+  final String backgroundUrl;
+  final Viewers viewers;
 
-  SubforumThreadLatestPopular({
-    this.createdAt,
-    this.firstUnreadId,
-    this.iconId,
-    this.id,
-    this.locked,
-    this.pinned,
-    this.postCount,
-    this.readThreadUnreadPosts,
-    this.unreadPostCount,
-    this.title,
-    this.unreadType,
-    this.user,
-    this.lastPost,
-  });
+  SignificantThread(
+      {this.createdAt,
+      this.firstUnreadId,
+      this.iconId,
+      this.id,
+      this.locked,
+      this.pinned,
+      this.postCount,
+      this.readThreadUnreadPosts,
+      this.unreadPostCount,
+      this.title,
+      this.unreadType,
+      this.user,
+      this.lastPost,
+      this.backgroundUrl,
+      this.viewers});
 
-  factory SubforumThreadLatestPopular.fromJson(Map<String, dynamic> json) =>
-      _$SubforumThreadLatestPopularFromJson(json);
-  Map<String, dynamic> toJson() => _$SubforumThreadLatestPopularToJson(this);
+  factory SignificantThread.fromJson(Map<String, dynamic> json) =>
+      _$SignificantThreadFromJson(json);
+  Map<String, dynamic> toJson() => _$SignificantThreadToJson(this);
 }
 
 @JsonSerializable()

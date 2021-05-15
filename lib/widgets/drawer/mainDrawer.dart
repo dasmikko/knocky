@@ -2,12 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
+import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/screens/login.dart';
+import 'package:knocky/screens/significantThreads.dart';
 
 import 'drawerListTile.dart';
 
 class MainDrawer extends StatelessWidget {
   final AuthController authController = Get.put(AuthController());
+
+  navigateTo(BuildContext context, Widget screen) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
+  }
+
+  onListTileTap(BuildContext context, Function onTap) {
+    Navigator.of(context).pop(); // close the drawer
+    onTap();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +43,23 @@ class MainDrawer extends StatelessWidget {
       DrawerListTile(
           iconData: FontAwesomeIcons.solidClock,
           title: 'Latest Threads',
-          onTap: () => {}),
+          onTap: () => onListTileTap(
+              context,
+              () => navigateTo(
+                  context,
+                  SignificantThreadsScreen(
+                    threadsToShow: SignificantThreads.Latest,
+                  )))),
       DrawerListTile(
           iconData: FontAwesomeIcons.fire,
           title: 'Popular Threads',
-          onTap: () => {}),
+          onTap: () => onListTileTap(
+              context,
+              () => navigateTo(
+                  context,
+                  SignificantThreadsScreen(
+                    threadsToShow: SignificantThreads.Popular,
+                  )))),
       DrawerListTile(
         iconData: FontAwesomeIcons.cog,
         title: 'Settings',

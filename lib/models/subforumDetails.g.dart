@@ -86,33 +86,34 @@ Map<String, dynamic> _$SubforumThreadToJson(SubforumThread instance) =>
           ?.toList(),
     };
 
-SubforumThreadLatestPopular _$SubforumThreadLatestPopularFromJson(
-    Map<String, dynamic> json) {
-  return SubforumThreadLatestPopular(
-    createdAt: json['createdAt'] == null
-        ? null
-        : DateTime.parse(json['createdAt'] as String),
-    firstUnreadId: json['firstUnreadId'] as int,
-    iconId: json['iconId'] as int,
-    id: json['id'] as int,
-    locked: json['locked'] as bool,
-    pinned: json['pinned'] as bool,
-    postCount: json['postCount'] as int,
-    readThreadUnreadPosts: json['readThreadUnreadPosts'] as int ?? 0,
-    unreadPostCount: json['unreadPostCount'] as int ?? 0,
-    title: json['title'] as String,
-    unreadType: json['unreadType'] as int,
-    user: json['user'] == null
-        ? null
-        : SubforumThreadUser.fromJson(json['user'] as Map<String, dynamic>),
-    lastPost: json['lastPost'] == null
-        ? null
-        : SubforumLastPost.fromJson(json['lastPost'] as Map<String, dynamic>),
-  );
+SignificantThread _$SignificantThreadFromJson(Map<String, dynamic> json) {
+  return SignificantThread(
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      firstUnreadId: json['firstUnreadId'] as int,
+      iconId: json['iconId'] as int,
+      id: json['id'] as int,
+      locked: json['locked'] as bool,
+      pinned: json['pinned'] as bool,
+      postCount: json['postCount'] as int,
+      readThreadUnreadPosts: json['readThreadUnreadPosts'] as int ?? 0,
+      unreadPostCount: json['unreadPostCount'] as int ?? 0,
+      title: json['title'] as String,
+      unreadType: json['unreadType'] as int,
+      user: json['user'] == null
+          ? null
+          : SubforumThreadUser.fromJson(json['user'] as Map<String, dynamic>),
+      lastPost: json['lastPost'] == null
+          ? null
+          : SubforumLastPost.fromJson(json['lastPost'] as Map<String, dynamic>),
+      backgroundUrl: json['backgroundUrl'] as String,
+      viewers: json['viewers'] == null
+          ? null
+          : Viewers.fromJson(json['viewers'] as Map<String, dynamic>));
 }
 
-Map<String, dynamic> _$SubforumThreadLatestPopularToJson(
-        SubforumThreadLatestPopular instance) =>
+Map<String, dynamic> _$SignificantThreadToJson(SignificantThread instance) =>
     <String, dynamic>{
       'firstUnreadId': instance.firstUnreadId,
       'createdAt': instance.createdAt?.toIso8601String(),
