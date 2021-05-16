@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:knocky/controllers/significantThreadsController.dart';
 import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
-import 'package:knocky/widgets/drawer/mainDrawer.dart';
 import 'package:knocky/widgets/significantThreads/popularThreadListItem.dart';
 import 'package:knocky/widgets/significantThreads/latestThreadListItem.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -49,8 +48,7 @@ class _SignificantThreadsScreenState extends State<SignificantThreadsScreen> {
                 onRefresh: () async => controller.fetch(),
                 child: Stack(children: [threads()])),
           ),
-        ),
-        drawer: MainDrawer()));
+        )));
   }
 
   Widget threads() {
