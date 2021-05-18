@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:knocky/screens/loginWebview.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -28,7 +30,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   padding: EdgeInsets.all(10),
                 ),
-                onPressed: () => {},
+                onPressed: () => {
+                  Get.to(() => LoginWebviewScreen(
+                        loginUrl: 'https://api.knockout.chat/auth/' +
+                            'google' +
+                            '/login',
+                      ))
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[

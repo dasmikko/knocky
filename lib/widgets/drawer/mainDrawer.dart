@@ -11,87 +11,92 @@ import 'drawerListTile.dart';
 class MainDrawer extends StatelessWidget {
   final AuthController authController = Get.put(AuthController());
 
-  navigateTo(BuildContext context, Widget screen) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
+  navigateTo(Widget screen) {
+    Get.to(screen);
   }
 
   onListTileTap(BuildContext context, Function onTap) {
-    Navigator.of(context).pop(); // close the drawer
+    Get.back();
+    //Navigator.of(context).pop(); // close the drawer
     onTap();
   }
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-        child: ListView(padding: EdgeInsets.zero, children: <Widget>[
-      DrawerHeader(
-        child: null, // TODO: insert user bg/avatar info here
-        decoration: BoxDecoration(
-          color: Colors.redAccent,
-        ),
-      ),
-      DrawerListTile(
-        iconData: FontAwesomeIcons.thList,
-        title: 'Forum',
-        onTap: () => {},
-      ),
-      DrawerListTile(
-          disabled: !authController.isAuthenticated.value,
-          iconData: FontAwesomeIcons.solidNewspaper,
-          title: 'Subscriptions',
-          onTap: () => {}),
-      DrawerListTile(
-          iconData: FontAwesomeIcons.solidClock,
-          title: 'Latest Threads',
-          onTap: () => onListTileTap(
-              context,
-              () => navigateTo(
-                  context,
-                  SignificantThreadsScreen(
-                    threadsToShow: SignificantThreads.Latest,
-                  )))),
-      DrawerListTile(
-          iconData: FontAwesomeIcons.fire,
-          title: 'Popular Threads',
-          onTap: () => onListTileTap(
-              context,
-              () => navigateTo(
-                  context,
-                  SignificantThreadsScreen(
-                    threadsToShow: SignificantThreads.Popular,
-                  )))),
-      DrawerListTile(
-        iconData: FontAwesomeIcons.cog,
-        title: 'Settings',
-        onTap: () => {},
-      ),
-      authController.isAuthenticated.value
-          ? DrawerListTile(
-              iconData: FontAwesomeIcons.signOutAlt,
-              title: 'Log Out',
-              onTap: () => {})
-          : DrawerListTile(
-              iconData: FontAwesomeIcons.signInAlt,
-              title: 'Log in',
-              onTap: () => {
-                Get.to(LoginScreen()),
-              },
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+            child: null, // TODO: insert user bg/avatar info here
+            decoration: BoxDecoration(
+              color: Colors.redAccent,
             ),
-      Divider(color: Colors.white),
-      DrawerListTile(
-          iconData: FontAwesomeIcons.bullhorn,
-          title: 'Events',
-          onTap: () => {}),
-      DrawerListTile(
-          iconData: FontAwesomeIcons.discord,
-          title: 'Discord',
-          onTap: () => {}),
-      DrawerListTile(
-          iconData: FontAwesomeIcons.cog, title: 'Events', onTap: () => {}),
-      DrawerListTile(
-          iconData: FontAwesomeIcons.solidComment,
-          title: 'Mentions',
-          onTap: () => {}),
-    ]));
+          ),
+          DrawerListTile(
+            iconData: FontAwesomeIcons.thList,
+            title: 'Forum',
+            onTap: () => {},
+          ),
+          DrawerListTile(
+              disabled: !authController.isAuthenticated.value,
+              iconData: FontAwesomeIcons.solidNewspaper,
+              title: 'Subscriptions',
+              onTap: () => {}),
+          DrawerListTile(
+              iconData: FontAwesomeIcons.solidClock,
+              title: 'Latest Threads',
+              onTap: () => onListTileTap(
+                  context,
+                  () => navigateTo(SignificantThreadsScreen(
+                        threadsToShow: SignificantThreads.Latest,
+                      )))),
+          DrawerListTile(
+            iconData: FontAwesomeIcons.fire,
+            title: 'Popular Threads',
+            onTap: () => onListTileTap(
+              context,
+              () => navigateTo(
+                SignificantThreadsScreen(
+                  threadsToShow: SignificantThreads.Popular,
+                ),
+              ),
+            ),
+          ),
+          DrawerListTile(
+            iconData: FontAwesomeIcons.cog,
+            title: 'Settings',
+            onTap: () => {},
+          ),
+          authController.isAuthenticated.value
+              ? DrawerListTile(
+                  iconData: FontAwesomeIcons.signOutAlt,
+                  title: 'Log Out',
+                  onTap: () => {})
+              : DrawerListTile(
+                  iconData: FontAwesomeIcons.signInAlt,
+                  title: 'Log in',
+                  onTap: () => {
+                    navigateTo(LoginScreen()),
+                  },
+                ),
+          Divider(color: Colors.white),
+          DrawerListTile(
+              iconData: FontAwesomeIcons.bullhorn,
+              title: 'Events',
+              onTap: () => {}),
+          DrawerListTile(
+              iconData: FontAwesomeIcons.discord,
+              title: 'Discord',
+              onTap: () => {}),
+          DrawerListTile(
+              iconData: FontAwesomeIcons.cog, title: 'Events', onTap: () => {}),
+          DrawerListTile(
+              iconData: FontAwesomeIcons.solidComment,
+              title: 'Mentions',
+              onTap: () => {}),
+        ],
+      ),
+    );
   }
 }
