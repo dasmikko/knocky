@@ -1,4 +1,6 @@
 # Knocky!
+![Knocky screenshot](https://github.com/dasmikko/knocky/blob/master/screenshot.png?raw=true)
+
 
 A client for Knockout!
 Browse the Knockout forum the native way!
