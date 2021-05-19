@@ -24,13 +24,15 @@ class AuthController extends GetxController {
     }
   }
 
-  setLoggedInUser(int userId, String username, String avatar, String background,
-      int usergroup) {
+  login(int userId, String username, String avatar, String background,
+      int usergroup, String jwt) {
     this.userId.value = userId;
     this.username.value = username;
     this.avatar.value = avatar;
     this.background.value = background;
     this.usergroup.value = usergroup;
+    this.isAuthenticated.value = true;
+    this.jwt.value = jwt;
 
     GetStorage prefs = GetStorage();
     prefs.write('isAuthenticated', this.isAuthenticated.value);
@@ -39,18 +41,27 @@ class AuthController extends GetxController {
     prefs.write('avatar', avatar);
     prefs.write('background', background);
     prefs.write('usergroup', usergroup);
-  }
-
-  setJwtToken(String token) {
-    GetStorage prefs = GetStorage();
-    this.jwt.value = token;
-    prefs.write('cookieString', token);
+    prefs.write('cookieString', jwt);
   }
 
   logout() {
     this.isAuthenticated.value = false;
-    setLoggedInUser(0, '', '', '', 0);
-    setJwtToken('');
+    this.userId.value = 0;
+    this.username.value = '';
+    this.avatar.value = '';
+    this.background.value = '';
+    this.usergroup.value = 0;
+    this.jwt.value = '';
+
+    GetStorage prefs = GetStorage();
+    prefs.write('isAuthenticated', false);
+    prefs.write('userId', 0);
+    prefs.write('username', '');
+    prefs.write('avatar', '');
+    prefs.write('background', '');
+    prefs.write('usergroup', 0);
+    prefs.write('cookieString', '');
+
     Get.snackbar('Success', 'You are now logged out');
   }
 }

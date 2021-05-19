@@ -152,16 +152,6 @@ class MyInAppBrowser extends InAppBrowser {
 
       Map valueMap = json.decode(userJson);
 
-      authController.isAuthenticated.value = true;
-      authController.setLoggedInUser(
-          valueMap['id'],
-          valueMap['username'] != null
-              ? valueMap['username']
-              : 'User has no username?',
-          valueMap['avatar_url'],
-          valueMap['background_url'],
-          valueMap['usergroup']);
-
       // Get the JWT token from the cookie inside the webview
       String cookieUrl = settingsController.apiEnv.value == 'knockout'
           ? KnockoutAPI.KNOCKOUT_URL
@@ -182,8 +172,15 @@ class MyInAppBrowser extends InAppBrowser {
         }
       });
 
-      print(cookieString);
-      authController.setJwtToken(cookieString);
+      authController.login(
+          valueMap['id'],
+          valueMap['username'] != null
+              ? valueMap['username']
+              : 'User has no username?',
+          valueMap['avatar_url'],
+          valueMap['background_url'],
+          valueMap['usergroup'],
+          cookieString);
 
       this.loginWasSuccessfull = true;
 
