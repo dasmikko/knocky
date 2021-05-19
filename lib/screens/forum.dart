@@ -1,3 +1,4 @@
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/forumController.dart';
@@ -12,12 +13,17 @@ class ForumScreen extends StatefulWidget {
   _ForumScreenState createState() => _ForumScreenState();
 }
 
-class _ForumScreenState extends State<ForumScreen> {
+class _ForumScreenState extends State<ForumScreen>
+    with AfterLayoutMixin<ForumScreen> {
   final ForumController forumController = Get.put(ForumController());
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
     forumController.fetchSubforums();
   }
 

@@ -27,10 +27,13 @@ class MainDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          DrawerHeader(
-            child: null, // TODO: insert user bg/avatar info here
-            decoration: BoxDecoration(
-              color: Colors.redAccent,
+          Obx(
+            () => DrawerHeader(
+              child: Text(
+                  '${authController.isAuthenticated.value ? authController.username : 'Not logged in'}'), // TODO: insert user bg/avatar info here
+              decoration: BoxDecoration(
+                color: Colors.redAccent,
+              ),
             ),
           ),
           DrawerListTile(
@@ -38,11 +41,13 @@ class MainDrawer extends StatelessWidget {
             title: 'Forum',
             onTap: () => {},
           ),
-          DrawerListTile(
-              disabled: !authController.isAuthenticated.value,
-              iconData: FontAwesomeIcons.solidNewspaper,
-              title: 'Subscriptions',
-              onTap: () => {}),
+          Obx(
+            () => DrawerListTile(
+                disabled: !authController.isAuthenticated.value,
+                iconData: FontAwesomeIcons.solidNewspaper,
+                title: 'Subscriptions',
+                onTap: () => {}),
+          ),
           DrawerListTile(
               iconData: FontAwesomeIcons.solidClock,
               title: 'Latest Threads',
@@ -68,18 +73,22 @@ class MainDrawer extends StatelessWidget {
             title: 'Settings',
             onTap: () => {},
           ),
-          authController.isAuthenticated.value
-              ? DrawerListTile(
-                  iconData: FontAwesomeIcons.signOutAlt,
-                  title: 'Log Out',
-                  onTap: () => {})
-              : DrawerListTile(
-                  iconData: FontAwesomeIcons.signInAlt,
-                  title: 'Log in',
-                  onTap: () => {
-                    navigateTo(LoginScreen()),
-                  },
-                ),
+          Obx(
+            () => authController.isAuthenticated.value
+                ? DrawerListTile(
+                    iconData: FontAwesomeIcons.signOutAlt,
+                    title: 'Log Out',
+                    onTap: () {
+                      authController.logout();
+                    })
+                : DrawerListTile(
+                    iconData: FontAwesomeIcons.signInAlt,
+                    title: 'Log in',
+                    onTap: () => {
+                      navigateTo(LoginScreen()),
+                    },
+                  ),
+          ),
           Divider(color: Colors.white),
           DrawerListTile(
               iconData: FontAwesomeIcons.bullhorn,

@@ -10,6 +10,21 @@ class AuthController extends GetxController {
   var background = ''.obs;
   var usergroup = 0.obs;
 
+  getStoredAuthInfo() {
+    GetStorage prefs = GetStorage();
+    var cookieString = prefs.read('cookieString');
+
+    if (cookieString != null || cookieString != '') {
+      this.isAuthenticated.value = true;
+      this.jwt.value = prefs.read('cookieString');
+      this.userId.value = prefs.read('userId');
+      this.username.value = prefs.read('username');
+      this.avatar.value = prefs.read('avatar');
+      this.background.value = prefs.read('background');
+      this.usergroup.value = prefs.read('usergroup');
+    }
+  }
+
   setLoggedInUser(int userId, String username, String avatar, String background,
       int usergroup) {
     this.userId.value = userId;
@@ -17,11 +32,25 @@ class AuthController extends GetxController {
     this.avatar.value = avatar;
     this.background.value = background;
     this.usergroup.value = usergroup;
+
+    GetStorage prefs = GetStorage();
+    prefs.write('userId', userId);
+    prefs.write('username', username);
+    prefs.write('avatar', avatar);
+    prefs.write('background', background);
+    prefs.write('usergroup', usergroup);
   }
 
   setJwtToken(String token) {
     GetStorage prefs = GetStorage();
     this.jwt.value = token;
     prefs.write('cookieString', token);
+  }
+
+  logout() {
+    this.isAuthenticated.value = false;
+    setLoggedInUser(0, '', '', '', 0);
+    setJwtToken('');
+    Get.snackbar('Success', 'You are now logged out');
   }
 }

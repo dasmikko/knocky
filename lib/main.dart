@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/screens/forum.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/themes/DarkTheme.dart';
 //import 'package:knocky/themes/DefaultTheme.dart';
 
 void main() async {
+  final AuthController authController = Get.put(AuthController());
   await GetStorage.init();
 
   GetStorage prefs = GetStorage();
@@ -13,6 +15,8 @@ void main() async {
   if (prefs.read('env') == null) {
     await prefs.write('env', 'knockout');
   }
+
+  authController.getStoredAuthInfo();
 
   runApp(MyApp());
 }

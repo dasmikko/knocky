@@ -27,8 +27,8 @@ class _LoginWebviewState extends State<LoginWebviewScreen>
 
     this.browser = new MyInAppBrowser(
         context: this.context,
-        onBrowserExit: () {
-          Get.back();
+        onBrowserExit: (bool loginStatus) {
+          Get.back(result: loginStatus);
         });
 
     this.browser.openUrlRequest(
@@ -94,6 +94,7 @@ class MyInAppBrowser extends InAppBrowser {
   Function onBrowserExit;
   final AuthController authController = Get.put(AuthController());
   final SettingsController settingsController = Get.put(SettingsController());
+  bool loginWasSuccessfull = false;
 
   MyInAppBrowser({this.context, this.onBrowserExit});
 
@@ -122,7 +123,7 @@ class MyInAppBrowser extends InAppBrowser {
 
   @override
   void onExit() {
-    this.onBrowserExit();
+    this.onBrowserExit(this.loginWasSuccessfull);
   }
 
   @override
@@ -151,6 +152,7 @@ class MyInAppBrowser extends InAppBrowser {
 
       Map valueMap = json.decode(userJson);
 
+      authController.isAuthenticated.value = true;
       authController.setLoggedInUser(
           valueMap['id'],
           valueMap['username'] != null
@@ -182,6 +184,9 @@ class MyInAppBrowser extends InAppBrowser {
 
       print(cookieString);
       authController.setJwtToken(cookieString);
+
+      this.loginWasSuccessfull = true;
+
       await this.close();
     }
 
