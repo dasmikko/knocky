@@ -12,9 +12,8 @@ class AuthController extends GetxController {
 
   getStoredAuthInfo() {
     GetStorage prefs = GetStorage();
-    var cookieString = prefs.read('cookieString');
-
-    if (cookieString != null || cookieString != '') {
+    if (prefs.read('isAuthenticated') != null &&
+        prefs.read('isAuthenticated')) {
       this.isAuthenticated.value = true;
       this.jwt.value = prefs.read('cookieString');
       this.userId.value = prefs.read('userId');
@@ -34,6 +33,7 @@ class AuthController extends GetxController {
     this.usergroup.value = usergroup;
 
     GetStorage prefs = GetStorage();
+    prefs.write('isAuthenticated', this.isAuthenticated.value);
     prefs.write('userId', userId);
     prefs.write('username', username);
     prefs.write('avatar', avatar);
