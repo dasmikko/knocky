@@ -6,6 +6,7 @@ import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:knocky/helpers/bbcodeparser.dart';
 import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/widgets/post/postsElements/image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BBcodeRenderer extends StatelessWidget {
@@ -31,15 +32,11 @@ class BBcodeRenderer extends StatelessWidget {
   }
 
   Widget imageHandler(bbob.Element node) {
-    return Container();
-    // TODO:
-    /*
     return ImageWidget(
       postId: postDetails.id,
       url: node.textContent,
       bbcode: this.bbcode,
     );
-    */
   }
 
   Widget videoHandler(bbob.Element node) {
@@ -153,7 +150,7 @@ class BBcodeRenderer extends StatelessWidget {
   }
 
   Widget unorderedListHandler(bbob.Element node) {
-    List<Widget> listItems = List();
+    List<Widget> listItems = [];
 
     node.children.where((item) => item.textContent != "").forEach((item) {
       listItems.add(
@@ -181,7 +178,7 @@ class BBcodeRenderer extends StatelessWidget {
   }
 
   TextSpan textElementHandler(List children, {TextStyle currentTextStyle}) {
-    List<TextSpan> textSpans = List();
+    List<TextSpan> textSpans = [];
 
     // convert children to styleless textspans
     children.forEach((item) {
@@ -239,9 +236,9 @@ class BBcodeRenderer extends StatelessWidget {
   }
 
   List<Widget> nodeChildrenHandler(List<bbob.Node> nodes) {
-    List<Widget> widgetList = List();
+    List<Widget> widgetList = [];
 
-    List<TextSpan> richTextContent = List();
+    List<TextSpan> richTextContent = [];
 
     // Convert the nodes to widgets
     nodes.forEach((node) {
@@ -478,7 +475,7 @@ class BBcodeRenderer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> widgetList = List();
+    List<Widget> widgetList = [];
     List<bbob.Node> nodes = new BBCodeParser().parse(this.bbcode);
 
     widgetList = nodeChildrenHandler(nodes);

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:knocky/screens/forum.dart';
+import 'package:knocky/screens/loginWebview.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -7,6 +10,29 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  void initiateLogin(String provider) async {
+    var loginResult = await Get.to(
+      () => LoginWebviewScreen(
+        loginUrl: 'https://api.knockout.chat/auth/' + provider + '/login',
+      ),
+    );
+
+    if (loginResult == true) {
+      Get.offAll(ForumScreen());
+      Get.snackbar(
+        'Success',
+        'Login was successfull!',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } else {
+      Get.snackbar(
+        'Error',
+        'Login was canceled!',
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +54,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   padding: EdgeInsets.all(10),
                 ),
-                onPressed: () => {},
+                onPressed: () async {
+                  initiateLogin('google');
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -58,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                onPressed: () => {},
+                onPressed: () => {initiateLogin('twitter')},
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -88,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                onPressed: () => {},
+                onPressed: () => {initiateLogin('github')},
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -118,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                onPressed: () => {},
+                onPressed: () => {initiateLogin('steam')},
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -148,7 +176,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                onPressed: () => {},
+                onPressed: () =>
+                    {Get.snackbar('TODO', 'Feature not ready yet!')},
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[

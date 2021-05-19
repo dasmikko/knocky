@@ -41,6 +41,9 @@ dependencies:
   cupertino_icons: ^1.0.0
   scrollable_positioned_list: ^0.1.10
   url_launcher: ^6.0.3
+  flutter_inappwebview: ^5.3.2
+  after_layout: ^1.1.0
+  extended_image: ^4.1.0
 
 dev_dependencies:
   build_runner: ^1.11.5
