@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
+import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/screens/event.dart';
 import 'package:knocky/screens/login.dart';
@@ -30,9 +32,28 @@ class MainDrawer extends StatelessWidget {
         children: <Widget>[
           Obx(
             () => DrawerHeader(
-              child: Text(
-                  '${authController.isAuthenticated.value ? authController.username : 'Not logged in'}'), // TODO: insert user bg/avatar info here
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(bottom: 16),
+                    child: CachedNetworkImage(
+                        height: 80,
+                        width: 80,
+                        placeholder: (BuildContext context, String url) =>
+                            CircularProgressIndicator(),
+                        imageUrl:
+                            "${KnockoutAPI.CDN_URL}/${authController.avatar.value}"),
+                  ),
+                  Text(
+                      '${authController.isAuthenticated.value ? authController.username : 'Not logged in'}'),
+                ],
+              ), // TODO: insert user bg/avatar info here
               decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: CachedNetworkImageProvider(
+                      "${KnockoutAPI.CDN_URL}/${authController.background.value}"),
+                ),
                 color: Colors.redAccent,
               ),
             ),
