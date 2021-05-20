@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/models/significantThreads.dart';
+import 'package:knocky/screens/event.dart';
 import 'package:knocky/screens/login.dart';
 import 'package:knocky/screens/significantThreads.dart';
 
@@ -93,13 +94,12 @@ class MainDrawer extends StatelessWidget {
           DrawerListTile(
               iconData: FontAwesomeIcons.bullhorn,
               title: 'Events',
-              onTap: () => {}),
+              onTap: () =>
+                  onListTileTap(context, () => navigateTo(EventScreen()))),
           DrawerListTile(
               iconData: FontAwesomeIcons.discord,
               title: 'Discord',
               onTap: () => {}),
-          DrawerListTile(
-              iconData: FontAwesomeIcons.cog, title: 'Events', onTap: () => {}),
           DrawerListTile(
               iconData: FontAwesomeIcons.solidComment,
               title: 'Mentions',
