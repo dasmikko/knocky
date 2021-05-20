@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/forumController.dart';
 import 'package:knocky/models/subforum.dart';
-import 'package:knocky/screens/subfoum.dart';
+import 'package:knocky/screens/subforum.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widgets/drawer/mainDrawer.dart';
 import 'package:knocky/widgets/forum/ForumListItem.dart';
