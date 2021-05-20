@@ -12,22 +12,22 @@ class PostListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            UserInfo(user: post.user),
-            Toolbar(post: post),
-            Container(
-                padding: EdgeInsets.fromLTRB(8, 24, 16, 24),
-                // TODO: use BB renderer
-                child: BBcodeRenderer(
-                  parentContext: context,
-                  bbcode: post.content,
-                  postDetails: post,
-                ))
-          ],
-        ));
+      margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          UserInfo(user: post.user),
+          Toolbar(post: post),
+          Container(
+              padding: EdgeInsets.fromLTRB(8, 16, 16, 16),
+              // TODO: use BB renderer
+              child: BBcodeRenderer(
+                parentContext: context,
+                bbcode: post.content,
+                postDetails: post,
+              ))
+        ],
+      ),
+    );
   }
 }

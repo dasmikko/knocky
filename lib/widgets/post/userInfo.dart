@@ -12,7 +12,7 @@ class UserInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 80,
+        height: 64,
         child: Stack(fit: StackFit.expand, children: [
           Background(backgroundUrl: user.backgroundUrl),
           Row(children: [
