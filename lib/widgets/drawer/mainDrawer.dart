@@ -31,32 +31,58 @@ class MainDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           Obx(
-            () => DrawerHeader(
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(bottom: 16),
-                    child: CachedNetworkImage(
-                        height: 80,
-                        width: 80,
+            () => authController.isAuthenticated.value
+                ? UserAccountsDrawerHeader(
+                    accountName: Text(authController.username.value),
+                    accountEmail: null,
+                    onDetailsPressed: () => print('Clicked!'),
+                    decoration: BoxDecoration(
+                      image: authController.isAuthenticated.value
+                          ? DecorationImage(
+                              fit: BoxFit.cover,
+                              image: CachedNetworkImageProvider(
+                                  "${KnockoutAPI.CDN_URL}/${authController.background.value}"),
+                            )
+                          : null,
+                      color: Colors.redAccent,
+                    ),
+                    currentAccountPicture: CachedNetworkImage(
                         placeholder: (BuildContext context, String url) =>
                             CircularProgressIndicator(),
                         imageUrl:
                             "${KnockoutAPI.CDN_URL}/${authController.avatar.value}"),
+                  )
+                : DrawerHeader(
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(bottom: 16),
+                          child: authController.isAuthenticated.value
+                              ? CachedNetworkImage(
+                                  height: 80,
+                                  width: 80,
+                                  placeholder:
+                                      (BuildContext context, String url) =>
+                                          CircularProgressIndicator(),
+                                  imageUrl:
+                                      "${KnockoutAPI.CDN_URL}/${authController.avatar.value}")
+                              : null,
+                        ),
+                        Text(
+                            '${authController.isAuthenticated.value ? authController.username : 'Not logged in'}'),
+                      ],
+                    ), // TODO: insert user bg/avatar info here
+                    decoration: BoxDecoration(
+                      image: authController.isAuthenticated.value
+                          ? DecorationImage(
+                              fit: BoxFit.cover,
+                              image: CachedNetworkImageProvider(
+                                  "${KnockoutAPI.CDN_URL}/${authController.background.value}"),
+                            )
+                          : null,
+                      color: Colors.redAccent,
+                    ),
                   ),
-                  Text(
-                      '${authController.isAuthenticated.value ? authController.username : 'Not logged in'}'),
-                ],
-              ), // TODO: insert user bg/avatar info here
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: CachedNetworkImageProvider(
-                      "${KnockoutAPI.CDN_URL}/${authController.background.value}"),
-                ),
-                color: Colors.redAccent,
-              ),
-            ),
           ),
           DrawerListTile(
             iconData: FontAwesomeIcons.thList,

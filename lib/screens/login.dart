@@ -22,13 +22,24 @@ class _LoginScreenState extends State<LoginScreen> {
       Get.snackbar(
         'Success',
         'Login was successfull!',
+        icon: Icon(Icons.check),
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
     } else {
       Get.snackbar(
         'Error',
-        'Login was canceled!',
+        'Login was canceled',
+        icon: Icon(Icons.warning),
+        snackPosition: SnackPosition.BOTTOM,
+        animationDuration: Duration(milliseconds: 500),
+        forwardAnimationCurve: Curves.easeOutCirc,
+        reverseAnimationCurve: Curves.easeOutCirc,
+        margin: EdgeInsets.only(
+          bottom: 14,
+          left: 14,
+          right: 14,
+        ),
       );
     }
   }
