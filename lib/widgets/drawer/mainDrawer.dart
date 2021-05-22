@@ -63,30 +63,15 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
                           : null,
                       color: Colors.redAccent,
                     ),
-                    currentAccountPicture: CachedNetworkImage(
-                        placeholder: (BuildContext context, String url) =>
-                            CircularProgressIndicator(),
-                        imageUrl:
-                            "${KnockoutAPI.CDN_URL}/${authController.avatar.value}"),
+                    currentAccountPicture: CircleAvatar(
+                      backgroundImage: CachedNetworkImageProvider(
+                          "${KnockoutAPI.CDN_URL}/${authController.avatar.value}"),
+                    ),
                   )
                 : DrawerHeader(
                     child: Column(
                       children: [
-                        Container(
-                          margin: EdgeInsets.only(bottom: 16),
-                          child: authController.isAuthenticated.value
-                              ? CachedNetworkImage(
-                                  height: 80,
-                                  width: 80,
-                                  placeholder:
-                                      (BuildContext context, String url) =>
-                                          CircularProgressIndicator(),
-                                  imageUrl:
-                                      "${KnockoutAPI.CDN_URL}/${authController.avatar.value}")
-                              : null,
-                        ),
-                        Text(
-                            '${authController.isAuthenticated.value ? authController.username : 'Not logged in'}'),
+                        Text('Not logged in'),
                       ],
                     ),
                     decoration: BoxDecoration(
@@ -109,13 +94,14 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
               duration: Duration(milliseconds: 500),
               sizeCurve: Curves.easeOutCirc,
               firstChild: Container(
-                color: Colors.grey[900],
                 child: Column(children: [
                   DrawerListTile(
+                      tileColor: Colors.grey[900],
                       iconData: FontAwesomeIcons.user,
                       title: 'Profile',
                       onTap: () {}),
                   DrawerListTile(
+                      tileColor: Colors.grey[900],
                       iconData: FontAwesomeIcons.signOutAlt,
                       title: 'Log Out',
                       onTap: () {

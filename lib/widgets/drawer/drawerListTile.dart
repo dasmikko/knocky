@@ -6,23 +6,32 @@ class DrawerListTile extends StatelessWidget {
   final String title;
   final Function onTap;
   final bool disabled;
+  final Color tileColor;
 
   final double _leadingWidth = 16;
 
-  DrawerListTile(
-      {this.disabled = false,
-      @required this.iconData,
-      @required this.title,
-      @required this.onTap});
+  DrawerListTile({
+    this.disabled = false,
+    @required this.iconData,
+    @required this.title,
+    @required this.onTap,
+    this.tileColor,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-        dense: true,
-        enabled: !disabled,
-        minLeadingWidth: _leadingWidth,
-        leading: FaIcon(iconData, size: _leadingWidth),
-        title: Text(title),
-        onTap: onTap);
+    return Material(
+      child: ListTile(
+          tileColor: this.tileColor,
+          enabled: !disabled,
+          minLeadingWidth: _leadingWidth,
+          leading: Container(
+            alignment: Alignment.center,
+            width: _leadingWidth,
+            child: FaIcon(iconData, size: _leadingWidth),
+          ),
+          title: Text(title),
+          onTap: onTap),
+    );
   }
 }
