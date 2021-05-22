@@ -9,6 +9,7 @@ import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/screens/event.dart';
 import 'package:knocky/screens/login.dart';
 import 'package:knocky/screens/significantThreads.dart';
+import 'package:knocky/screens/subscriptions.dart';
 
 import 'drawerListTile.dart';
 
@@ -28,7 +29,6 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
 
   onListTileTap(BuildContext context, Function onTap) {
     Get.back();
-    //Navigator.of(context).pop(); // close the drawer
     onTap();
   }
 
@@ -118,13 +118,12 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
             title: 'Forum',
             onTap: () => {},
           ),
-          Obx(
-            () => DrawerListTile(
-                disabled: !authController.isAuthenticated.value,
-                iconData: FontAwesomeIcons.solidNewspaper,
-                title: 'Subscriptions',
-                onTap: () => {}),
-          ),
+          Obx(() => DrawerListTile(
+              disabled: !authController.isAuthenticated.value,
+              iconData: FontAwesomeIcons.solidNewspaper,
+              title: 'Subscriptions',
+              onTap: () => onListTileTap(
+                  context, () => navigateTo(SubscriptionsScreen())))),
           DrawerListTile(
               iconData: FontAwesomeIcons.solidClock,
               title: 'Latest Threads',

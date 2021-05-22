@@ -8,23 +8,26 @@ part of 'threadAlert.dart';
 
 ThreadAlert _$ThreadAlertFromJson(Map<String, dynamic> json) {
   return ThreadAlert(
-    firstUnreadId: json['firstUnreadId'] as int,
-    threadBackgroundUrl: json['threadBackgroundUrl'] as String,
-    threadTitle: json['threadTitle'] as String,
-    threadUser: json['threadUser'] as int,
-    threadId: json['threadId'] as int,
-    threadUserAvatarUrl: json['threadUserAvatarUrl'] as String,
-    threadUsername: json['threadUsername'] as String,
-    threadUserUsergroup: json['threadUserUsergroup'] as int,
-    threadLocked: json['threadLocked'] as bool,
-    threadIcon: json['threadIcon'] as int,
-    title: json['title'] as String,
-    unreadPosts: json['unreadPosts'] as int,
-    lastPost: json['lastPost'] == null
-        ? null
-        : ThreadAlertLastPost.fromJson(
-            json['lastPost'] as Map<String, dynamic>),
-    threadPostCount: json['threadPostCount'] as int,
+      firstUnreadId: json['firstUnreadId'] as int,
+      threadBackgroundUrl: json['threadBackgroundUrl'] as String,
+      title: json['threadTitle'] as String,
+      threadId: json['threadId'] as int,
+      unreadPostCount: json['unreadPosts'] as int,
+      lastPost: json['lastPost'] == null
+          ? null
+          : ThreadAlertLastPost.fromJson(
+              json['lastPost'] as Map<String, dynamic>),
+      postCount: json['threadPostCount'] as int,
+      iconId: json['icon_id'] as int,
+      backgroundUrl: json['threadBackgroundUrl'] as String,
+      locked: json['threadLocked'] as bool,
+      user: _$ThreadAlertUser(json));
+}
+
+ThreadUser _$ThreadAlertUser(Map<String, dynamic> json) {
+  return ThreadUser(
+    usergroup: json['threadUserUsergroup'] as int,
+    username: json['threadUsername'] as String,
   );
 }
 
@@ -32,17 +35,12 @@ Map<String, dynamic> _$ThreadAlertToJson(ThreadAlert instance) =>
     <String, dynamic>{
       'firstUnreadId': instance.firstUnreadId,
       'threadBackgroundUrl': instance.threadBackgroundUrl,
-      'threadTitle': instance.threadTitle,
-      'threadUser': instance.threadUser,
-      'threadLocked': instance.threadLocked,
-      'threadPostCount': instance.threadPostCount,
-      'threadUserAvatarUrl': instance.threadUserAvatarUrl,
-      'threadUserUsergroup': instance.threadUserUsergroup,
-      'threadIcon': instance.threadIcon,
-      'threadUsername': instance.threadUsername,
+      'threadTitle': instance.title,
+      'threadLocked': instance.locked,
+      'threadPostCount': instance.postCount,
+      'threadIcon': instance.iconId,
       'threadId': instance.threadId,
-      'title': instance.title,
-      'unreadPosts': instance.unreadPosts,
+      'unreadPosts': instance.unreadPostCount,
       'lastPost': instance.lastPost,
     };
 

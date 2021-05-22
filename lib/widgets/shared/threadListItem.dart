@@ -3,7 +3,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:knocky/helpers/icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/colors.dart';
+import 'package:knocky/helpers/postsPerPage.dart';
+import 'package:knocky/widgets/InkWellOnWidget.dart';
 import 'dart:ui' as ui;
+import 'package:timeago/timeago.dart' as timeago;
 
 import 'package:knocky/screens/thread.dart';
 
@@ -52,7 +55,7 @@ class ThreadListItem extends StatelessWidget {
   }
 
   @protected
-  List<WidgetSpan> getDetailIcons(BuildContext context) {
+  lockedIcon() {
     return [
       if (threadDetails.locked)
         WidgetSpan(
@@ -64,7 +67,13 @@ class ThreadListItem extends StatelessWidget {
               color: HexColor('b38d4f'),
             ),
           ),
-        ),
+        )
+    ];
+  }
+
+  @protected
+  pinnedIcon() {
+    return [
       if (threadDetails.pinned)
         WidgetSpan(
           alignment: ui.PlaceholderAlignment.bottom,
@@ -81,8 +90,78 @@ class ThreadListItem extends StatelessWidget {
   }
 
   @protected
+  void onTapNewPostsButton(BuildContext context, dynamic item) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ThreadScreen(
+                id: threadDetails.id,
+                page: PostsPerPage.unreadPostsPage(
+                    item.unreadPostCount, item.postCount),
+                linkedPostId: item.firstUnreadId)));
+  }
+
+  @protected
+  Widget unreadPostsButton(BuildContext context, int unreadPosts) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(bottom: 4),
+          child: ClipRRect(
+              borderRadius: BorderRadius.all(
+                Radius.circular(4),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: InkWellOverWidget(
+                child: Container(
+                  padding: EdgeInsets.all(4),
+                  color: AppColors(context).unreadPostsColor(),
+                  child: Text(
+                    '$unreadPosts new posts',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                onTap: () {
+                  onTapNewPostsButton(context, threadDetails);
+                },
+              )),
+        ),
+      ],
+    );
+  }
+
+  @protected
+  List<WidgetSpan> getDetailIcons(BuildContext context) {
+    return [...lockedIcon(), ...pinnedIcon()];
+  }
+
+  @protected
   Widget getSubtitle(BuildContext context) {
-    return Container();
+    Color userColor =
+        AppColors(context).userGroupToColor(threadDetails.user.usergroup);
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(text: 'by '),
+          TextSpan(
+            text: threadDetails.user.username,
+            style: TextStyle(color: userColor, fontWeight: FontWeight.bold),
+          ),
+          WidgetSpan(
+            child: Container(
+              margin: EdgeInsets.only(left: 5, right: 5),
+              child: Icon(
+                Icons.reply_all_rounded,
+                size: 15,
+              ),
+            ),
+          ),
+          TextSpan(
+            text: timeago.format(threadDetails.lastPost.createdAt),
+          )
+        ],
+      ),
+    );
   }
 
   @override
