@@ -1,14 +1,40 @@
 import 'package:get/get.dart';
 import 'package:knocky/helpers/api.dart';
-import 'package:knocky/models/threadAlert.dart';
+import 'package:knocky/helpers/postsPerPage.dart';
+import 'package:knocky/models/threadAlertPage.dart';
 
 class SubscriptionController extends GetxController {
   final isFetching = false.obs;
-  final subscriptions = <ThreadAlert>[].obs;
+  final subscriptions = ThreadAlertPage().obs;
+  final _page = 1.obs;
+
+  @override
+  onInit() {
+    super.onInit();
+    ever(_page, (_) => fetch());
+  }
+
+  initState() {
+    subscriptions.value = new ThreadAlertPage(alerts: [], totalAlerts: 0);
+    _page.value = 1;
+    fetch();
+  }
 
   void fetch() async {
     isFetching.value = true;
-    subscriptions.value = await KnockoutAPI().getAlerts();
+    subscriptions.value = await KnockoutAPI().getAlertsPaginated(page: page);
     isFetching.value = false;
   }
+
+  get page => _page.value;
+
+  get pageCount =>
+      ((subscriptions.value?.totalAlerts ?? 0) / PostsPerPage.POSTS_PER_PAGE)
+          .ceil();
+
+  nextPage() => _page.value++;
+
+  previousPage() => _page.value--;
+
+  goToPage(pageNumber) => _page.value = pageNumber;
 }
