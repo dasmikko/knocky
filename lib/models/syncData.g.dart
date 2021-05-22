@@ -8,18 +8,22 @@ part of 'syncData.dart';
 
 SyncDataModel _$SyncDataModelFromJson(Map<String, dynamic> json) {
   return SyncDataModel(
-    avatarUrl: json['avatarUrl'] as String,
-    backgroundUrl: json['backgroundUrl'] as String,
-    id: json['id'] as int,
-    usergroup: json['usergroup'] as int,
-    username: json['username'] as String,
-    isBanned: json['isBanned'] as bool,
-    mentions: (json['mentions'] as List)
-        ?.map((e) => e == null
-            ? null
-            : SyncDataMentionModel.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-  );
+      avatarUrl: json['avatarUrl'] as String,
+      backgroundUrl: json['backgroundUrl'] as String,
+      id: json['id'] as int,
+      usergroup: json['usergroup'] as int,
+      username: json['username'] as String,
+      isBanned: json['isBanned'] as bool,
+      mentions: (json['mentions'] as List)
+          ?.map((e) => e == null
+              ? null
+              : SyncDataMentionModel.fromJson(e as Map<String, dynamic>))
+          ?.toList(),
+      subscriptions: (json['subscriptions'] as List)
+          ?.map((e) => e == null
+              ? null
+              : ThreadAlert.fromJson(e as Map<String, dynamic>))
+          ?.toList());
 }
 
 Map<String, dynamic> _$SyncDataModelToJson(SyncDataModel instance) =>

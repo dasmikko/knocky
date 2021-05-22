@@ -4,12 +4,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/drawerController.dart';
+import 'package:knocky/controllers/syncController.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/screens/event.dart';
 import 'package:knocky/screens/login.dart';
 import 'package:knocky/screens/significantThreads.dart';
 import 'package:knocky/screens/subscriptions.dart';
+import 'package:knocky/widgets/drawer/drawerNotificationsListTile.dart';
 
 import 'drawerListTile.dart';
 
@@ -20,6 +22,7 @@ class MainDrawer extends StatefulWidget {
 
 class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
   final AuthController authController = Get.put(AuthController());
+  final SyncController syncController = Get.put(SyncController());
   final MainDrawerController mainDrawerController =
       Get.put(MainDrawerController());
 
@@ -41,6 +44,7 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    syncController.fetch();
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -118,12 +122,13 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
             title: 'Forum',
             onTap: () => {},
           ),
-          Obx(() => DrawerListTile(
+          DrawerNotificationsListTile(
               disabled: !authController.isAuthenticated.value,
               iconData: FontAwesomeIcons.solidNewspaper,
+              notificationCount: syncController.subscriptionNotificationCount,
               title: 'Subscriptions',
               onTap: () => onListTileTap(
-                  context, () => navigateTo(SubscriptionsScreen())))),
+                  context, () => navigateTo(SubscriptionsScreen()))),
           DrawerListTile(
               iconData: FontAwesomeIcons.solidClock,
               title: 'Latest Threads',
