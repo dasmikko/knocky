@@ -11,7 +11,7 @@ ThreadAlert _$ThreadAlertFromJson(Map<String, dynamic> json) {
       firstUnreadId: json['firstUnreadId'] as int,
       threadBackgroundUrl: json['threadBackgroundUrl'] as String,
       title: json['threadTitle'] as String,
-      threadId: json['threadId'] as int,
+      id: json['threadId'] as int,
       unreadPostCount: json['unreadPosts'] as int,
       lastPost: json['lastPost'] == null
           ? null
@@ -39,7 +39,7 @@ Map<String, dynamic> _$ThreadAlertToJson(ThreadAlert instance) =>
       'threadLocked': instance.locked,
       'threadPostCount': instance.postCount,
       'threadIcon': instance.iconId,
-      'threadId': instance.threadId,
+      'threadId': instance.id,
       'unreadPosts': instance.unreadPostCount,
       'lastPost': instance.lastPost,
     };

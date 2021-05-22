@@ -24,7 +24,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Knockout Events'),
+        title: Text('Subscriptions'),
       ),
       body: Container(
         child: Obx(

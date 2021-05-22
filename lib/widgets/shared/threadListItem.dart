@@ -16,6 +16,7 @@ class ThreadListItem extends StatelessWidget {
 
   @protected
   void onTapItem(BuildContext context) {
+    print(threadDetails.id);
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -90,19 +91,19 @@ class ThreadListItem extends StatelessWidget {
   }
 
   @protected
-  void onTapNewPostsButton(BuildContext context, dynamic item) {
+  void onTapUnreadPostsButton(
+      BuildContext context, int unreadCount, int totalCount) {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => ThreadScreen(
                 id: threadDetails.id,
-                page: PostsPerPage.unreadPostsPage(
-                    item.unreadPostCount, item.postCount),
-                linkedPostId: item.firstUnreadId)));
+                page: PostsPerPage.unreadPostsPage(unreadCount, totalCount),
+                linkedPostId: threadDetails.firstUnreadId)));
   }
 
   @protected
-  Widget unreadPostsButton(BuildContext context, int unreadPosts) {
+  Widget unreadPostsButton(BuildContext context, int unreadCount) {
     return Stack(
       children: <Widget>[
         Container(
@@ -117,12 +118,13 @@ class ThreadListItem extends StatelessWidget {
                   padding: EdgeInsets.all(4),
                   color: AppColors(context).unreadPostsColor(),
                   child: Text(
-                    '$unreadPosts new posts',
+                    '$unreadCount new posts',
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
                 onTap: () {
-                  onTapNewPostsButton(context, threadDetails);
+                  onTapUnreadPostsButton(
+                      context, unreadCount, threadDetails.postCount);
                 },
               )),
         ),

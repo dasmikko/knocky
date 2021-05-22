@@ -9,7 +9,7 @@ class ThreadAlert {
   @JsonKey(nullable: true)
   final String threadBackgroundUrl;
   final int postCount;
-  final int threadId;
+  final int id;
   final String title;
   final int unreadPostCount;
   final ThreadAlertLastPost lastPost;
@@ -22,7 +22,7 @@ class ThreadAlert {
   ThreadAlert(
       {this.firstUnreadId,
       this.threadBackgroundUrl,
-      this.threadId,
+      this.id,
       this.title,
       this.unreadPostCount,
       this.lastPost,
