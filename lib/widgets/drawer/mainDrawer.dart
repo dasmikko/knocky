@@ -251,6 +251,7 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
             Divider(
               color: Colors.white,
             ),
+            // TODO: Add on tap for the ad
             mainDrawerController.adImageUrl.value != ''
                 ? CachedNetworkImage(
                     height: 80,
