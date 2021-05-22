@@ -28,7 +28,7 @@ class DrawerNotificationsListTile extends DrawerListTile {
             tileColor: tileColor);
 
   notificationIndicator() {
-    return Obx(() => notificationCount.value > 0
+    return Obx(() => notificationCount.value > 0 && !disabled
         ? NotificationIndicator(count: notificationCount.value)
         : Container());
   }

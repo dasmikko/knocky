@@ -17,10 +17,11 @@ class SyncController extends GetxController {
     isFetching.value = true;
     var syncDataValue = await KnockoutAPI().getSyncData();
 
-    subscriptionNotificationCount.value = syncDataValue.subscriptions
-        .where((threadAlert) => threadAlert.unreadPostCount > 0)
-        .length;
-    print(subscriptionNotificationCount.value);
+    if (syncDataValue.subscriptions != null) {
+      subscriptionNotificationCount.value = syncDataValue.subscriptions
+          .where((threadAlert) => threadAlert.unreadPostCount > 0)
+          .length;
+    }
 
     isFetching.value = false;
   }
