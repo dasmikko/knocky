@@ -33,61 +33,195 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
   }
 
   @override
+  void initState() {
+    super.initState();
+    mainDrawerController.fetchRandomAd();
+  }
+
+  @override
   void dispose() {
     // TODO: implement dispose
     mainDrawerController.isUserListOpen.value = false;
     super.dispose();
   }
 
+  Widget loggedInDrawerHeader() {
+    return UserAccountsDrawerHeader(
+      margin: EdgeInsets.only(bottom: 0),
+      accountName: Text(authController.username.value),
+      accountEmail: null,
+      onDetailsPressed: () => mainDrawerController.isUserListOpen.value =
+          !mainDrawerController.isUserListOpen.value,
+      decoration: BoxDecoration(
+        image: authController.isAuthenticated.value
+            ? DecorationImage(
+                fit: BoxFit.cover,
+                image: CachedNetworkImageProvider(
+                    "${KnockoutAPI.CDN_URL}/${authController.background.value}"),
+              )
+            : null,
+        color: Colors.redAccent,
+      ),
+      currentAccountPicture: CircleAvatar(
+        backgroundImage: CachedNetworkImageProvider(
+            "${KnockoutAPI.CDN_URL}/${authController.avatar.value}"),
+      ),
+    );
+  }
+
+  List<Widget> loggedInDrawerItems() {
+    if (!authController.isAuthenticated.value) return [];
+
+    return [
+      DrawerListTile(
+        iconData: FontAwesomeIcons.thList,
+        title: 'Forum',
+        onTap: () => {},
+      ),
+      DrawerListTile(
+        iconData: FontAwesomeIcons.solidNewspaper,
+        title: 'Subscriptions',
+        onTap: () => {},
+      ),
+      DrawerListTile(
+          iconData: FontAwesomeIcons.solidClock,
+          title: 'Latest Threads',
+          onTap: () => onListTileTap(
+              context,
+              () => navigateTo(SignificantThreadsScreen(
+                    threadsToShow: SignificantThreads.Latest,
+                  )))),
+      DrawerListTile(
+        iconData: FontAwesomeIcons.fire,
+        title: 'Popular Threads',
+        onTap: () => onListTileTap(
+          context,
+          () => navigateTo(
+            SignificantThreadsScreen(
+              threadsToShow: SignificantThreads.Popular,
+            ),
+          ),
+        ),
+      ),
+      DrawerListTile(
+        iconData: FontAwesomeIcons.cog,
+        title: 'Settings',
+        onTap: () => {},
+      ),
+      Obx(() => !authController.isAuthenticated.value
+          ? DrawerListTile(
+              iconData: FontAwesomeIcons.signInAlt,
+              title: 'Log in',
+              onTap: () => {
+                navigateTo(LoginScreen()),
+              },
+            )
+          : Container()),
+      Divider(color: Colors.white),
+      DrawerListTile(
+          iconData: FontAwesomeIcons.bullhorn,
+          title: 'Events',
+          onTap: () => onListTileTap(context, () => navigateTo(EventScreen()))),
+      DrawerListTile(
+          iconData: FontAwesomeIcons.discord,
+          title: 'Discord',
+          onTap: () => {}),
+      DrawerListTile(
+          iconData: FontAwesomeIcons.solidComment,
+          title: 'Mentions',
+          onTap: () => {}),
+    ];
+  }
+
+  List<Widget> guestDrawerItems() {
+    if (authController.isAuthenticated.value) return [];
+    return [
+      DrawerListTile(
+        iconData: FontAwesomeIcons.thList,
+        title: 'Forum',
+        onTap: () => {},
+      ),
+      DrawerListTile(
+          iconData: FontAwesomeIcons.solidClock,
+          title: 'Latest Threads',
+          onTap: () => onListTileTap(
+              context,
+              () => navigateTo(SignificantThreadsScreen(
+                    threadsToShow: SignificantThreads.Latest,
+                  )))),
+      DrawerListTile(
+        iconData: FontAwesomeIcons.fire,
+        title: 'Popular Threads',
+        onTap: () => onListTileTap(
+          context,
+          () => navigateTo(
+            SignificantThreadsScreen(
+              threadsToShow: SignificantThreads.Popular,
+            ),
+          ),
+        ),
+      ),
+      DrawerListTile(
+        iconData: FontAwesomeIcons.cog,
+        title: 'Settings',
+        onTap: () => {},
+      ),
+      Obx(() => !authController.isAuthenticated.value
+          ? DrawerListTile(
+              iconData: FontAwesomeIcons.signInAlt,
+              title: 'Log in',
+              onTap: () => {
+                navigateTo(LoginScreen()),
+              },
+            )
+          : Container()),
+      Divider(color: Colors.white),
+      DrawerListTile(
+          iconData: FontAwesomeIcons.bullhorn,
+          title: 'Events',
+          onTap: () => onListTileTap(context, () => navigateTo(EventScreen()))),
+      DrawerListTile(
+          iconData: FontAwesomeIcons.discord,
+          title: 'Discord',
+          onTap: () => {}),
+      DrawerListTile(
+          iconData: FontAwesomeIcons.solidComment,
+          title: 'Mentions',
+          onTap: () => {}),
+    ];
+  }
+
+  Widget guestDrawerHeader() {
+    return DrawerHeader(
+      child: Column(
+        children: [
+          Text('Not logged in'),
+        ],
+      ),
+      decoration: BoxDecoration(
+        image: authController.isAuthenticated.value
+            ? DecorationImage(
+                fit: BoxFit.cover,
+                image: CachedNetworkImageProvider(
+                    "${KnockoutAPI.CDN_URL}/${authController.background.value}"),
+              )
+            : null,
+        color: Colors.redAccent,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          Obx(
-            () => authController.isAuthenticated.value
-                ? UserAccountsDrawerHeader(
-                    margin: EdgeInsets.only(bottom: 0),
-                    accountName: Text(authController.username.value),
-                    accountEmail: null,
-                    onDetailsPressed: () => mainDrawerController.isUserListOpen
-                        .value = !mainDrawerController.isUserListOpen.value,
-                    decoration: BoxDecoration(
-                      image: authController.isAuthenticated.value
-                          ? DecorationImage(
-                              fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(
-                                  "${KnockoutAPI.CDN_URL}/${authController.background.value}"),
-                            )
-                          : null,
-                      color: Colors.redAccent,
-                    ),
-                    currentAccountPicture: CircleAvatar(
-                      backgroundImage: CachedNetworkImageProvider(
-                          "${KnockoutAPI.CDN_URL}/${authController.avatar.value}"),
-                    ),
-                  )
-                : DrawerHeader(
-                    child: Column(
-                      children: [
-                        Text('Not logged in'),
-                      ],
-                    ),
-                    decoration: BoxDecoration(
-                      image: authController.isAuthenticated.value
-                          ? DecorationImage(
-                              fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(
-                                  "${KnockoutAPI.CDN_URL}/${authController.background.value}"),
-                            )
-                          : null,
-                      color: Colors.redAccent,
-                    ),
-                  ),
-          ),
-          Obx(
-            () => AnimatedCrossFade(
+      child: Obx(
+        () => ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            authController.isAuthenticated.value
+                ? loggedInDrawerHeader()
+                : guestDrawerHeader(),
+            AnimatedCrossFade(
               crossFadeState: mainDrawerController.isUserListOpen.value
                   ? CrossFadeState.showFirst
                   : CrossFadeState.showSecond,
@@ -112,68 +246,37 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
               ),
               secondChild: Container(),
             ),
-          ),
-          DrawerListTile(
-            iconData: FontAwesomeIcons.thList,
-            title: 'Forum',
-            onTap: () => {},
-          ),
-          Obx(
-            () => DrawerListTile(
-                disabled: !authController.isAuthenticated.value,
-                iconData: FontAwesomeIcons.solidNewspaper,
-                title: 'Subscriptions',
-                onTap: () => {}),
-          ),
-          DrawerListTile(
-              iconData: FontAwesomeIcons.solidClock,
-              title: 'Latest Threads',
-              onTap: () => onListTileTap(
-                  context,
-                  () => navigateTo(SignificantThreadsScreen(
-                        threadsToShow: SignificantThreads.Latest,
-                      )))),
-          DrawerListTile(
-            iconData: FontAwesomeIcons.fire,
-            title: 'Popular Threads',
-            onTap: () => onListTileTap(
-              context,
-              () => navigateTo(
-                SignificantThreadsScreen(
-                  threadsToShow: SignificantThreads.Popular,
-                ),
-              ),
+            ...guestDrawerItems(),
+            ...loggedInDrawerItems(),
+            Divider(
+              color: Colors.white,
             ),
-          ),
-          DrawerListTile(
-            iconData: FontAwesomeIcons.cog,
-            title: 'Settings',
-            onTap: () => {},
-          ),
-          Obx(() => !authController.isAuthenticated.value
-              ? DrawerListTile(
-                  iconData: FontAwesomeIcons.signInAlt,
-                  title: 'Log in',
-                  onTap: () => {
-                    navigateTo(LoginScreen()),
-                  },
-                )
-              : Container()),
-          Divider(color: Colors.white),
-          DrawerListTile(
-              iconData: FontAwesomeIcons.bullhorn,
-              title: 'Events',
-              onTap: () =>
-                  onListTileTap(context, () => navigateTo(EventScreen()))),
-          DrawerListTile(
-              iconData: FontAwesomeIcons.discord,
-              title: 'Discord',
-              onTap: () => {}),
-          DrawerListTile(
-              iconData: FontAwesomeIcons.solidComment,
-              title: 'Mentions',
-              onTap: () => {}),
-        ],
+            mainDrawerController.adImageUrl.value != ''
+                ? CachedNetworkImage(
+                    height: 80,
+                    placeholderFadeInDuration: Duration(milliseconds: 200),
+                    placeholder: (context, url) => Container(
+                      height: 80,
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(right: 14),
+                            child: CircularProgressIndicator(),
+                          ),
+                          Text('Loading ad...')
+                        ],
+                      ),
+                    ),
+                    fit: BoxFit.fitWidth,
+                    imageUrl: mainDrawerController.adImageUrl.value,
+                  )
+                : Container(),
+            Divider(color: Colors.white)
+          ],
+        ),
       ),
     );
   }
