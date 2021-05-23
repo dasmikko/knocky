@@ -118,7 +118,7 @@ class ThreadListItem extends StatelessWidget {
                   padding: EdgeInsets.all(4),
                   color: AppColors(context).unreadPostsColor(),
                   child: Text(
-                    '$unreadCount new posts',
+                    '$unreadCount new post${unreadCount > 1 ? 's' : ''}',
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
