@@ -7,6 +7,9 @@ class NotificationIndicator extends StatelessWidget {
   NotificationIndicator({this.count = 0, this.showWhenZero = false});
 
   Widget countText() {
+    if (count == 0) {
+      return Container();
+    }
     return Align(
         alignment: Alignment.center,
         child: Container(
