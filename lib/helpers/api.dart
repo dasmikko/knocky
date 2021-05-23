@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:knocky/models/ad.dart';
 import 'package:knocky/models/events.dart';
 import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/models/subforum.dart';
@@ -275,5 +276,11 @@ class KnockoutAPI {
 
     if (response.statusCode == 200) return true;
     return false;
+  }
+
+  Future<KnockoutAd> randomAd() async {
+    final response = await _request(url: 'threadAds/random', type: 'get');
+
+    return KnockoutAd.fromJson(response.data);
   }
 }
