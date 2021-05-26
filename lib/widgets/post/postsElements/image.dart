@@ -16,11 +16,18 @@ class ImageWidget extends StatefulWidget {
 class _ImageWidgetState extends State<ImageWidget> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: 300),
       child: CachedNetworkImage(
-        // TODO: Placeholder
+        placeholder: (context, url) {
+          return Container(
+            height: 100,
+            width: 100,
+            padding: EdgeInsets.all(20),
+            child: CircularProgressIndicator(),
+          );
+        },
         // TODO: On tapping image
-        height: 300,
         imageUrl: this.widget.url,
       ),
     );

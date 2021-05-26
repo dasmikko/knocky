@@ -7,6 +7,7 @@ import 'package:knocky/helpers/bbcodeparser.dart';
 import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/post/postsElements/image.dart';
+import 'package:knocky/widgets/post/postsElements/video.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BBcodeRenderer extends StatelessWidget {
@@ -40,7 +41,6 @@ class BBcodeRenderer extends StatelessWidget {
   }
 
   Widget videoHandler(bbob.Element node) {
-    return Container();
     // TODO:
     /*
     if (node.textContent.endsWith('.wav') ||
@@ -51,12 +51,10 @@ class BBcodeRenderer extends StatelessWidget {
         scaffoldKey: this.scaffoldKey,
       );
     }
-
-    return VideoElement(
-      url: node.textContent,
-      scaffoldKey: this.scaffoldKey,
-    ); 
     */
+    return VideoEmbed(
+      url: node.textContent,
+    );
   }
 
   Widget youtubeHandler(bbob.Element node) {

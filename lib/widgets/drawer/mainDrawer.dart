@@ -274,7 +274,21 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
                     fit: BoxFit.fitWidth,
                     imageUrl: mainDrawerController.adImageUrl.value,
                   )
-                : Container(),
+                : Container(
+                    height: 80,
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(right: 14),
+                          child: CircularProgressIndicator(),
+                        ),
+                        Text('Loading ad...')
+                      ],
+                    ),
+                  ),
             Divider(color: Colors.white)
           ],
         ),
