@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io' show Platform;
 
@@ -44,8 +44,8 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
   }
 
   void getVideoInfo(String url) async {
-    Dio().get('https://noembed.com/embed?url=${url}').then((res) {
-      Map jsonData = jsonDecode(res.toString());
+    GetConnect().get('https://noembed.com/embed?url=${url}').then((res) {
+      Map jsonData = jsonDecode(res.bodyString);
       setState(() {
         _title = jsonData['title'];
       });
