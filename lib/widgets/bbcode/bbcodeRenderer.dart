@@ -8,6 +8,7 @@ import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/post/postsElements/image.dart';
 import 'package:knocky/widgets/post/postsElements/video.dart';
+import 'package:knocky/widgets/post/postsElements/youtube.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BBcodeRenderer extends StatelessWidget {
@@ -58,13 +59,9 @@ class BBcodeRenderer extends StatelessWidget {
   }
 
   Widget youtubeHandler(bbob.Element node) {
-    return Container();
-    // TODO:
-    /*
     return YoutubeVideoEmbed(
       url: node.textContent,
     );
-    */
   }
 
   Widget twitterHandler(bbob.Element node) {
