@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:knocky/models/threadAlert.dart';
 
 part 'syncData.g.dart';
 
@@ -12,16 +13,17 @@ class SyncDataModel {
   final List<SyncDataMentionModel> mentions;
   final int usergroup;
   final String username;
+  final List<ThreadAlert> subscriptions;
 
-  SyncDataModel({
-    this.avatarUrl,
-    this.backgroundUrl,
-    this.id,
-    this.usergroup,
-    this.username,
-    this.isBanned,
-    this.mentions,
-  });
+  SyncDataModel(
+      {this.avatarUrl,
+      this.backgroundUrl,
+      this.id,
+      this.usergroup,
+      this.username,
+      this.isBanned,
+      this.mentions,
+      this.subscriptions});
 
   factory SyncDataModel.fromJson(Map<String, dynamic> json) =>
       _$SyncDataModelFromJson(json);

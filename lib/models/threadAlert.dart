@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:knocky/models/thread.dart';
 
 part 'threadAlert.g.dart';
 
@@ -7,35 +8,29 @@ class ThreadAlert {
   final int firstUnreadId;
   @JsonKey(nullable: true)
   final String threadBackgroundUrl;
-  @JsonKey(nullable: true)
-  final String threadTitle;
-  final int threadUser;
-  final bool threadLocked;
-  final int threadPostCount;
-  final String threadUserAvatarUrl;
-  final int threadUserUsergroup;
-  final int threadIcon;
-  final String threadUsername;
-  final int threadId;
+  final int postCount;
+  final int id;
   final String title;
-  final int unreadPosts;
+  final int unreadPostCount;
   final ThreadAlertLastPost lastPost;
+  final int iconId;
+  final String backgroundUrl;
+  @JsonKey(nullable: true)
+  final bool locked;
+  final ThreadUser user;
 
   ThreadAlert(
       {this.firstUnreadId,
       this.threadBackgroundUrl,
-      this.threadTitle,
-      this.threadUser,
-      this.threadId,
-      this.threadUserAvatarUrl,
-      this.threadUsername,
-      this.threadUserUsergroup,
-      this.threadLocked,
-      this.threadIcon,
+      this.id,
       this.title,
-      this.unreadPosts,
+      this.unreadPostCount,
       this.lastPost,
-      this.threadPostCount});
+      this.postCount,
+      this.iconId,
+      this.backgroundUrl,
+      this.locked,
+      this.user});
 
   factory ThreadAlert.fromJson(Map<String, dynamic> json) =>
       _$ThreadAlertFromJson(json);
