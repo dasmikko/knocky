@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/api.dart';
+import 'package:knocky/helpers/containers.dart';
 
 class Background extends StatelessWidget {
   final String backgroundUrl;
@@ -12,10 +12,8 @@ class Background extends StatelessWidget {
     if (backgroundUrl == 'none.webp' || backgroundUrl.isEmpty) {
       return Container();
     }
-    // TODO: apply brightness/contrast filter
-    return CachedNetworkImage(
-      fit: BoxFit.cover,
-      imageUrl: "${KnockoutAPI.CDN_URL}/$backgroundUrl",
-    );
+    return Container(
+        decoration: Containers.getBackgroundDecoration(
+            context, "${KnockoutAPI.CDN_URL}/$backgroundUrl"));
   }
 }
