@@ -38,13 +38,6 @@ class _RatingsState extends State<Ratings> {
         child: showChooser ? showRatingsChooser() : showExistingRatings());
   }
 
-  onRatingDone() async {
-    var ratings = await ratingsController.getRatingsOf(widget.postId);
-    setState(() {
-      this.ratings = ratings;
-    });
-  }
-
   Widget showRatingsChooser() {
     return Row(children: [
       Expanded(
@@ -62,15 +55,17 @@ class _RatingsState extends State<Ratings> {
   }
 
   Widget showExistingRatings() {
-    return Row(children: [
-      Expanded(child: ratingsList()),
-      TextButton(
-          onPressed: () => toggleShowChooser(true),
-          child: Text(
-            'Rate',
-            style: TextStyle(color: Colors.grey),
-          ))
-    ]);
+    return Container(
+        margin: EdgeInsets.only(top: 4),
+        child: Row(children: [
+          Expanded(child: ratingsList()),
+          TextButton(
+              onPressed: () => toggleShowChooser(true),
+              child: Text(
+                'Rate',
+                style: TextStyle(color: Colors.grey),
+              ))
+        ]));
   }
 
   toggleShowChooser(bool toggled) {
@@ -79,11 +74,18 @@ class _RatingsState extends State<Ratings> {
     });
   }
 
+  onRatingDone() async {
+    var ratings = await ratingsController.getRatingsOf(widget.postId);
+    setState(() {
+      this.ratings = ratings;
+    });
+  }
+
   Widget ratingsList() {
     return ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: ratings.length,
-        separatorBuilder: (context, index) => Container(width: 8),
+        separatorBuilder: (context, index) => Container(width: 4),
         itemBuilder: (context, index) {
           var rating = ratings.elementAt(index);
           return ratingColumn(rating);
@@ -91,15 +93,17 @@ class _RatingsState extends State<Ratings> {
   }
 
   Widget ratingColumn(ThreadPostRatings rating) {
-    var ratingUrl = ratingIconMap[rating.rating].url;
+    var ratingItem = ratingIconMap[rating.rating];
     return Column(children: [
       Container(
         width: RATING_ICON_SIZE,
         height: RATING_ICON_SIZE,
-        margin: EdgeInsets.only(bottom: 8),
-        child: CachedNetworkImage(imageUrl: ratingUrl),
+        margin: EdgeInsets.only(bottom: 4),
+        child: RatingsChooser.ratingButton(ratingItem, widget.postId,
+            () => toggleShowChooser(false), onRatingDone),
       ),
-      Text(rating.count.toString())
+      Text(rating.count.toString(),
+          style: TextStyle(fontSize: 12, color: Colors.grey))
     ]);
   }
 }

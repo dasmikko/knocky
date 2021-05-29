@@ -15,7 +15,9 @@ class RatingsChooser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.only(top: 16), height: 48, child: ratingsList());
+        margin: EdgeInsets.fromLTRB(0, 8, 0, 8),
+        height: 48,
+        child: ratingsList());
   }
 
   Widget ratingsList() {
@@ -26,19 +28,21 @@ class RatingsChooser extends StatelessWidget {
         itemCount: ratings.length,
         itemBuilder: (context, index) {
           var rating = ratings.elementAt(index);
-          return ratingButton(rating);
+          return ratingButton(
+              rating.value, postId, onRatingClicked, onRatingDone);
         });
   }
 
-  Widget ratingButton(MapEntry<String, RatingItem> ratingEntry) {
-    var ratingUrl = ratingIconMap[ratingEntry.key].url;
+  static Widget ratingButton(RatingItem ratingItem, int postId,
+      Function onRatingClicked, Function onRatingDone) {
     return IconButton(
         color: Colors.green,
         padding: EdgeInsets.all(4),
+        splashRadius: 16,
         visualDensity: VisualDensity.compact,
         onPressed: () => onRatingPressed(
-            postId, ratingEntry.value.id, onRatingClicked, onRatingDone),
-        icon: CachedNetworkImage(imageUrl: ratingUrl));
+            postId, ratingItem.id, onRatingClicked, onRatingDone),
+        icon: CachedNetworkImage(imageUrl: ratingItem.url));
   }
 
   static Future<void> onRatingPressed(int postId, String ratingId,
