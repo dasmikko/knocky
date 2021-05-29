@@ -7,8 +7,10 @@ import 'package:knocky/models/usergroup.dart';
 
 class RatingsChooser extends StatelessWidget {
   final int postId;
-  final Function onRated;
-  RatingsChooser({@required this.postId, this.onRated});
+  final Function onRatingClicked;
+  final Function onRatingDone;
+  RatingsChooser(
+      {@required this.postId, this.onRatingClicked, this.onRatingDone});
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +36,15 @@ class RatingsChooser extends StatelessWidget {
         color: Colors.green,
         padding: EdgeInsets.all(4),
         visualDensity: VisualDensity.compact,
-        onPressed: () => onRatingPressed(postId, ratingEntry.value.id, onRated),
+        onPressed: () => onRatingPressed(
+            postId, ratingEntry.value.id, onRatingClicked, onRatingDone),
         icon: CachedNetworkImage(imageUrl: ratingUrl));
   }
 
-  static Future<void> onRatingPressed(
-      int postId, String ratingId, Function onRated) async {
+  static Future<void> onRatingPressed(int postId, String ratingId,
+      Function onRatingClicked, Function onRatingDone) async {
+    onRatingClicked();
     await KnockoutAPI().ratePost(postId, ratingId);
-    onRated();
+    onRatingDone();
   }
 }
