@@ -19,8 +19,12 @@ class PostListItem extends StatelessWidget {
             bbcode: post.content,
             postDetails: post,
           ),
-          Ratings(ratings: post.ratings)
+          Ratings(postId: post.id, ratings: post.ratings, onRated: onRated)
         ]));
+  }
+
+  onRated() {
+    print('rated');
   }
 
   @override

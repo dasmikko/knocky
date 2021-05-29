@@ -1,3 +1,5 @@
+import 'package:knocky/models/usergroup.dart';
+
 /// This is really ugly, and should be a seperate API call.
 ///
 /// As of time of writing, there is no API call for this.
@@ -232,50 +234,77 @@ class IconListItem {
   IconListItem({this.id, this.url});
 }
 
-Map<String, RatingistItem> ratingIconMap = {
-  'agree': new RatingistItem(
+Map<String, RatingItem> ratingsMapForContext(Usergroup group, int subforum) {
+  var relevantEntries = ratingIconMap.entries
+      .where((element) =>
+          element.value.allowedUsergroups == null ||
+          element.value.allowedUsergroups.contains(group))
+      .where((element) =>
+          element.value.allowedSubforums == null ||
+          element.value.allowedSubforums.contains(subforum));
+  var map = new Map<String, RatingItem>();
+  map.addEntries(relevantEntries);
+  return map;
+}
+
+const double RATING_ICON_SIZE = 24;
+
+Map<String, RatingItem> ratingIconMap = {
+  'agree': new RatingItem(
       id: 'agree', name: 'Agree', url: "${_ratingsUrl}agree.png"),
-  'disagree': new RatingistItem(
+  'disagree': new RatingItem(
       id: 'disagree', name: 'Disagree', url: "${_ratingsUrl}disagree.png"),
-  'funny': new RatingistItem(
+  'funny': new RatingItem(
       id: 'funny', name: 'Funny', url: "${_ratingsUrl}funny.png"),
-  'friendly': new RatingistItem(
+  'friendly': new RatingItem(
       id: 'friendly', name: 'Friendly', url: "${_ratingsUrl}friendly.png"),
-  'kawaii': new RatingistItem(
-      id: 'kawaii', name: 'かわいい', url: "${_ratingsUrl}cute.png"),
-  'sad':
-      new RatingistItem(id: 'sad', name: 'Sad', url: "${_ratingsUrl}sad.png"),
-  'artistic': new RatingistItem(
+  'kawaii':
+      new RatingItem(id: 'kawaii', name: 'かわいい', url: "${_ratingsUrl}cute.png"),
+  'sad': new RatingItem(id: 'sad', name: 'Sad', url: "${_ratingsUrl}sad.png"),
+  'artistic': new RatingItem(
       id: 'artistic', name: 'Artistic', url: "${_ratingsUrl}artistic.png"),
-  'informative': new RatingistItem(
+  'informative': new RatingItem(
       id: 'informative',
       name: 'Informative',
       url: "${_ratingsUrl}informative.png"),
-  'idea': new RatingistItem(
-      id: 'idea', name: 'Idea', url: "${_ratingsUrl}idea.png"),
-  'winner': new RatingistItem(
+  'idea':
+      new RatingItem(id: 'idea', name: 'Idea', url: "${_ratingsUrl}idea.png"),
+  'winner': new RatingItem(
       id: 'winner', name: 'Winner', url: "${_ratingsUrl}winner.png"),
-  'glasses': new RatingistItem(
+  'glasses': new RatingItem(
       id: 'glasses', name: 'Bad Reading', url: "${_ratingsUrl}badreading.png"),
-  'late': new RatingistItem(
-      id: 'late', name: 'Late', url: "${_ratingsUrl}late.png"),
-  'dumb': new RatingistItem(
-      id: 'dumb', name: 'Dumb', url: "${_ratingsUrl}dumb.png"),
-  'citation': new RatingistItem(
+  'late':
+      new RatingItem(id: 'late', name: 'Late', url: "${_ratingsUrl}late.png"),
+  'dumb':
+      new RatingItem(id: 'dumb', name: 'Dumb', url: "${_ratingsUrl}dumb.png"),
+  'citation': new RatingItem(
       id: 'citation',
       name: 'Citation Needed',
       url: "${_ratingsUrl}citation.png",
       allowedSubforums: [5]),
-  'yeet':
-      new RatingistItem(id: 'yeet', name: 'Yeet', url: "${_ratingsUrl}yeet.png")
+  'yeet': new RatingItem(
+      id: 'yeet',
+      name: 'Yeet',
+      url: "${_ratingsUrl}yeet.png",
+      allowedUsergroups: [
+        Usergroup.moderator,
+        Usergroup.admin,
+        Usergroup.staff,
+        Usergroup.moderatorInTraining
+      ])
 };
 
-class RatingistItem {
+class RatingItem {
   final String id;
   final String name;
   final String url;
   final List<int> allowedSubforums;
-  // TODO: yeet should not show up in choices of 'new' ratings for a post
+  final List<Usergroup> allowedUsergroups;
 
-  RatingistItem({this.id, this.url, this.name, this.allowedSubforums});
+  RatingItem(
+      {this.id,
+      this.url,
+      this.name,
+      this.allowedSubforums,
+      this.allowedUsergroups});
 }
