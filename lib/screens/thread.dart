@@ -21,6 +21,7 @@ class ThreadScreen extends StatefulWidget {
 
 class _ThreadScreenState extends State<ThreadScreen> {
   final ThreadController threadController = Get.put(ThreadController());
+  final ItemScrollController itemScrollController = new ItemScrollController();
 
   @override
   void initState() {
@@ -50,8 +51,14 @@ class _ThreadScreenState extends State<ThreadScreen> {
 
   Widget pageSelector() {
     return PageSelector(
-      onNext: () => threadController.nextPage(),
-      onPage: (page) => threadController.goToPage(page),
+      onNext: () {
+        itemScrollController.jumpTo(index: 0);
+        threadController.nextPage();
+      },
+      onPage: (page) {
+        itemScrollController.jumpTo(index: 0);
+        threadController.goToPage(page);
+      },
       pageCount: threadController.pageCount,
       currentPage: threadController.page,
     );
@@ -61,6 +68,8 @@ class _ThreadScreenState extends State<ThreadScreen> {
     return Container(
         padding: EdgeInsets.fromLTRB(0, 48, 0, 0),
         child: ScrollablePositionedList.builder(
+          itemScrollController: itemScrollController,
+          addAutomaticKeepAlives: true,
           itemCount: threadController.thread.value?.posts?.length ?? 0,
           itemBuilder: (BuildContext context, int index) {
             ThreadPost post = threadController.thread.value.posts[index];

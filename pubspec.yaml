@@ -45,6 +45,10 @@ dependencies:
   after_layout: ^1.1.0
   extended_image: ^4.1.0
   better_player: ^0.0.68
+  gallery_saver: ^2.1.0
+  share: ^2.0.4
+  permission_handler: ^8.0.0+2
+  matrix4_transform: ^2.0.0
 
 dev_dependencies:
   build_runner: ^1.11.5
