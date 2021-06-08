@@ -19,7 +19,7 @@ class PostListItem extends StatelessWidget {
           UserInfo(user: post.user),
           Toolbar(post: post),
           Container(
-              padding: EdgeInsets.fromLTRB(8, 16, 16, 16),
+              padding: EdgeInsets.fromLTRB(8, 16, 8, 16),
               // TODO: use BB renderer
               child: BBcodeRenderer(
                 parentContext: context,

@@ -44,6 +44,10 @@ class AppColors {
         : HexColor('000000');
   }
 
+  Color unreadPostsColor() {
+    return Color.fromRGBO(255, 201, 63, 1);
+  }
+
   Color userGroupToColor(int usergroup) {
     Usergroup group = Usergroup.values[usergroup];
     switch (group) {
