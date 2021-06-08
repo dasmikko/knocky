@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/bbcode/bbcodeRenderer.dart';
 import 'package:knocky/widgets/post/ratings.dart';
@@ -7,6 +9,7 @@ import 'package:knocky/widgets/post/userInfo.dart';
 
 class PostListItem extends StatelessWidget {
   final ThreadPost post;
+  final AuthController authController = Get.put(AuthController());
 
   PostListItem({@required this.post});
 
@@ -19,7 +22,10 @@ class PostListItem extends StatelessWidget {
             bbcode: post.content,
             postDetails: post,
           ),
-          Ratings(postId: post.id, ratings: post.ratings, onRated: onRated)
+          Obx(() => authController.isAuthenticated.value
+              ? Ratings(
+                  postId: post.id, ratings: post.ratings, onRated: onRated)
+              : Container())
         ]));
   }
 

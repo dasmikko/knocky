@@ -1,7 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/ratingsController.dart';
 import 'package:knocky/helpers/icons.dart';
 import 'package:knocky/models/thread.dart';
@@ -20,6 +20,7 @@ class Ratings extends StatefulWidget {
 
 class _RatingsState extends State<Ratings> {
   final RatingsController ratingsController = Get.put(RatingsController());
+  final AuthController authController = Get.put(AuthController());
   List<ThreadPostRatings> ratings;
   bool showChooser = false;
 
@@ -94,16 +95,31 @@ class _RatingsState extends State<Ratings> {
 
   Widget ratingColumn(ThreadPostRatings rating) {
     var ratingItem = ratingIconMap[rating.rating];
-    return Column(children: [
-      Container(
-        width: RATING_ICON_SIZE,
-        height: RATING_ICON_SIZE,
-        margin: EdgeInsets.only(bottom: 4),
-        child: RatingsChooser.ratingButton(ratingItem, widget.postId,
-            () => toggleShowChooser(false), onRatingDone),
-      ),
-      Text(rating.count.toString(),
-          style: TextStyle(fontSize: 12, color: Colors.grey))
+    bool userChose = rating.users.contains(authController.username?.value);
+    return Stack(children: [
+      if (userChose)
+        Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(RATING_ICON_SIZE),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.yellow.withAlpha(50),
+                    blurRadius: 6,
+                  )
+                ]),
+            height: RATING_ICON_SIZE,
+            width: RATING_ICON_SIZE),
+      Column(children: [
+        Container(
+          width: RATING_ICON_SIZE,
+          height: RATING_ICON_SIZE,
+          margin: EdgeInsets.only(bottom: 4),
+          child: RatingsChooser.ratingButton(ratingItem, widget.postId,
+              () => toggleShowChooser(false), onRatingDone),
+        ),
+        Text(rating.count.toString(),
+            style: TextStyle(fontSize: 12, color: Colors.grey))
+      ]),
     ]);
   }
 }

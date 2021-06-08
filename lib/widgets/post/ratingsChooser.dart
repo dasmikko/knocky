@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/icons.dart';
 import 'package:knocky/models/usergroup.dart';
@@ -9,6 +11,8 @@ class RatingsChooser extends StatelessWidget {
   final int postId;
   final Function onRatingClicked;
   final Function onRatingDone;
+  final AuthController authController = Get.put(AuthController());
+
   RatingsChooser(
       {@required this.postId, this.onRatingClicked, this.onRatingDone});
 
@@ -21,8 +25,9 @@ class RatingsChooser extends StatelessWidget {
   }
 
   Widget ratingsList() {
-    // TODO: add actual user group and sub forum
-    var ratings = ratingsMapForContext(Usergroup.regular, 1).entries;
+    var ratings = ratingsMapForContext(
+            Usergroup.values[authController.usergroup?.value], 1)
+        .entries;
     return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: ratings.length,
