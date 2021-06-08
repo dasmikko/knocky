@@ -37,14 +37,11 @@ class PostListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          UserInfo(user: post.user),
-          Toolbar(post: post),
-          postBody(context)
-        ],
-      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        UserInfo(user: post.user),
+        Toolbar(post: post),
+        postBody(context)
+      ]),
     );
   }
 }

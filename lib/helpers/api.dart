@@ -9,6 +9,7 @@ import 'package:knocky/models/thread.dart';
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/models/readThreads.dart';
 import 'package:dio/dio.dart';
+import 'package:knocky/models/threadAlertPage.dart';
 import 'package:knocky/models/userProfile.dart';
 import 'package:knocky/models/userProfilePosts.dart';
 import 'package:knocky/models/userProfileThreads.dart';
@@ -112,6 +113,16 @@ class KnockoutAPI {
       return response.data;
     } on DioError catch (e) {
       return e.response.data;
+    }
+  }
+
+  Future<ThreadAlertPage> getAlertsPaginated({int page: 1}) async {
+    try {
+      final response = await _request(url: 'alerts/$page', type: 'get');
+      return ThreadAlertPage.fromJson(response.data);
+    } on DioError catch (e) {
+      print(e);
+      throw e;
     }
   }
 
