@@ -14,19 +14,21 @@ class PostListItem extends StatelessWidget {
   PostListItem({@required this.post});
 
   Widget postBody(BuildContext context) {
-    return Container(
+    return Obx(
+      () => Container(
         padding: EdgeInsets.fromLTRB(8, 16, 16, 16),
-        child: Column(children: [
-          BBcodeRenderer(
-            parentContext: context,
-            bbcode: post.content,
-            postDetails: post,
-          ),
-          Obx(() => authController.isAuthenticated.value
-              ? Ratings(
-                  postId: post.id, ratings: post.ratings, onRated: onRated)
-              : Container())
-        ]));
+        child: Column(
+          children: [
+            BBcodeRenderer(
+              parentContext: context,
+              bbcode: post.content,
+              postDetails: post,
+            ),
+            Ratings(postId: post.id, ratings: post.ratings, onRated: onRated)
+          ],
+        ),
+      ),
+    );
   }
 
   onRated() {

@@ -57,16 +57,21 @@ class _RatingsState extends State<Ratings> {
 
   Widget showExistingRatings() {
     return Container(
-        margin: EdgeInsets.only(top: 4),
-        child: Row(children: [
-          Expanded(child: ratingsList()),
-          TextButton(
-              onPressed: () => toggleShowChooser(true),
-              child: Text(
-                'Rate',
-                style: TextStyle(color: Colors.grey),
-              ))
-        ]));
+      margin: EdgeInsets.only(top: 4),
+      child: Row(children: [
+        Expanded(child: ratingsList()),
+        Obx(
+          () => authController.isAuthenticated.value
+              ? TextButton(
+                  onPressed: () => toggleShowChooser(true),
+                  child: Text(
+                    'Rate',
+                    style: TextStyle(color: Colors.grey),
+                  ))
+              : Container(),
+        )
+      ]),
+    );
   }
 
   toggleShowChooser(bool toggled) {
