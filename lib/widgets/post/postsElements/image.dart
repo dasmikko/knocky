@@ -28,22 +28,27 @@ class _ImageWidgetState extends State<ImageWidget> {
     return [this.widget.url];
   }
 
+  final _imageWidgetKey = GlobalKey();
+  bool imageIsLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final box = GetStorage('sizeCache');
     Size loadedImageSize = Size.zero;
+    final bool hasCachedSize = box.hasData(this.widget.url);
 
     // Check if we have cached the image size
-    if (box.hasData(this.widget.url)) {
-      print('Has size cache');
+    if (hasCachedSize) {
       Map cachedSize = box.read(this.widget.url);
       loadedImageSize = Size(
         cachedSize['width'],
         cachedSize['height'],
       );
-    } else {
-      print(this.widget.url);
-      print('Has NOT size cache');
     }
 
     return GestureDetector(
@@ -58,39 +63,34 @@ class _ImageWidgetState extends State<ImageWidget> {
           transition: Transition.fadeIn,
         );
       },
-      child: MeasuredSize(
-        onChange: (Size size) {
-          if (loadedImageSize == Size.zero && size != Size(100, 100)) {
-            print('Image loaded, setting image size!: ' + size.toString());
-            setState(() {
-              var sizeMap = Map();
-              sizeMap['height'] = size.height;
-              sizeMap['width'] = size.width;
-
-              box.write(this.widget.url, sizeMap);
-            });
-          }
-        },
-        child: Container(
-          height: loadedImageSize != Size.zero ? loadedImageSize.height : null,
-          width: loadedImageSize != Size.zero ? loadedImageSize.width : null,
-          child: Hero(
-            tag: this.widget.url + this.widget.postId.toString(),
-            child: CachedNetworkImage(
-              placeholder: (context, url) {
-                return Container(
-                  height: loadedImageSize != Size.zero
-                      ? loadedImageSize.height
-                      : 100,
-                  width: loadedImageSize != Size.zero
-                      ? loadedImageSize.width
-                      : 100,
-                  padding: EdgeInsets.all(20),
-                  child: CircularProgressIndicator(),
-                );
-              },
-              imageUrl: this.widget.url,
+      child: Container(
+        height: loadedImageSize != Size.zero ? loadedImageSize.height : null,
+        width: loadedImageSize != Size.zero ? loadedImageSize.width : null,
+        child: Hero(
+          tag: this.widget.url + this.widget.postId.toString(),
+          child: CachedNetworkImage(
+            imageBuilder: (context, imageProvider) {
+              return MeasuredSize(
+                onChange: (size) {
+                  if (!hasCachedSize) {
+                    var sizeMap = Map();
+                    sizeMap['height'] = size.height;
+                    sizeMap['width'] = size.width;
+                    box.writeIfNull(this.widget.url, sizeMap);
+                  }
+                },
+                child: Image(
+                  image: imageProvider,
+                ),
+              );
+            },
+            placeholder: (context, url) => Container(
+              height: hasCachedSize ? loadedImageSize.height : 100,
+              width: hasCachedSize ? loadedImageSize.width : 100,
+              padding: EdgeInsets.all(20),
+              child: CircularProgressIndicator(),
             ),
+            imageUrl: this.widget.url,
           ),
         ),
       ),

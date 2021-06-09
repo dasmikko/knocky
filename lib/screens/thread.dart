@@ -70,6 +70,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
         child: ScrollablePositionedList.builder(
           itemScrollController: itemScrollController,
           addAutomaticKeepAlives: true,
+          minCacheExtent: MediaQuery.of(context).size.height,
           itemCount: threadController.thread.value?.posts?.length ?? 0,
           itemBuilder: (BuildContext context, int index) {
             ThreadPost post = threadController.thread.value.posts[index];
