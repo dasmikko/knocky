@@ -9,6 +9,7 @@ import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/screens/event.dart';
 import 'package:knocky/screens/login.dart';
+import 'package:knocky/screens/settings.dart';
 import 'package:knocky/screens/significantThreads.dart';
 import 'package:knocky/screens/subscriptions.dart';
 import 'package:knocky/widgets/drawer/drawerNotificationsListTile.dart';
@@ -27,7 +28,7 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
       Get.put(MainDrawerController());
 
   navigateTo(Widget screen) {
-    Get.to(screen);
+    Get.to(() => screen);
   }
 
   onListTileTap(BuildContext context, Function onTap) {
@@ -111,7 +112,9 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
       DrawerListTile(
         iconData: FontAwesomeIcons.cog,
         title: 'Settings',
-        onTap: () => {},
+        onTap: () => {
+          onListTileTap(context, () => navigateTo(SettingsScreen())),
+        },
       ),
       Obx(() => !authController.isAuthenticated.value
           ? DrawerListTile(
@@ -169,7 +172,9 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
       DrawerListTile(
         iconData: FontAwesomeIcons.cog,
         title: 'Settings',
-        onTap: () => {},
+        onTap: () => {
+          onListTileTap(context, () => navigateTo(SettingsScreen())),
+        },
       ),
       Obx(() => !authController.isAuthenticated.value
           ? DrawerListTile(

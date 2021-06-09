@@ -1,6 +1,10 @@
+import 'dart:ffi';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ffcache/ffcache.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/bbcodehelper.dart';
 import 'package:knocky/screens/imageViewer.dart';
 import 'package:measured_size/measured_size.dart';
@@ -24,10 +28,24 @@ class _ImageWidgetState extends State<ImageWidget> {
     return [this.widget.url];
   }
 
-  Size loadedImageSize = Size.zero;
-
   @override
   Widget build(BuildContext context) {
+    final box = GetStorage('sizeCache');
+    Size loadedImageSize = Size.zero;
+
+    // Check if we have cached the image size
+    if (box.hasData(this.widget.url)) {
+      print('Has size cache');
+      Map cachedSize = box.read(this.widget.url);
+      loadedImageSize = Size(
+        cachedSize['width'],
+        cachedSize['height'],
+      );
+    } else {
+      print(this.widget.url);
+      print('Has NOT size cache');
+    }
+
     return GestureDetector(
       onTap: () {
         Get.to(
@@ -40,28 +58,33 @@ class _ImageWidgetState extends State<ImageWidget> {
           transition: Transition.fadeIn,
         );
       },
-      child: Hero(
-        tag: this.widget.url + this.widget.postId.toString(),
-        child: MeasuredSize(
-          onChange: (Size size) {
-            if (loadedImageSize == Size.zero && size != Size(100, 100)) {
-              print('Image loaded, setting image size!');
-              setState(() {
-                loadedImageSize = size;
-              });
-            } else {
-              print(loadedImageSize);
-            }
-          },
-          child: Container(
-            height:
-                loadedImageSize != Size.zero ? loadedImageSize.height : null,
-            width: loadedImageSize != Size.zero ? loadedImageSize.width : null,
+      child: MeasuredSize(
+        onChange: (Size size) {
+          if (loadedImageSize == Size.zero && size != Size(100, 100)) {
+            print('Image loaded, setting image size!: ' + size.toString());
+            setState(() {
+              var sizeMap = Map();
+              sizeMap['height'] = size.height;
+              sizeMap['width'] = size.width;
+
+              box.write(this.widget.url, sizeMap);
+            });
+          }
+        },
+        child: Container(
+          height: loadedImageSize != Size.zero ? loadedImageSize.height : null,
+          width: loadedImageSize != Size.zero ? loadedImageSize.width : null,
+          child: Hero(
+            tag: this.widget.url + this.widget.postId.toString(),
             child: CachedNetworkImage(
               placeholder: (context, url) {
                 return Container(
-                  height: 100,
-                  width: 100,
+                  height: loadedImageSize != Size.zero
+                      ? loadedImageSize.height
+                      : 100,
+                  width: loadedImageSize != Size.zero
+                      ? loadedImageSize.width
+                      : 100,
                   padding: EdgeInsets.all(20),
                   child: CircularProgressIndicator(),
                 );
