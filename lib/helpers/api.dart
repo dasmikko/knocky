@@ -183,6 +183,12 @@ class KnockoutAPI {
     return wasRejected;
   }
 
+  Future<ThreadPost> getPost(int postId) async {
+    final response = await _request(type: 'get', url: 'post/$postId');
+    print(response);
+    return ThreadPost.fromJson(response.data);
+  }
+
   Future<void> newPost(dynamic content, int threadId) async {
     print(content);
     print(threadId);
