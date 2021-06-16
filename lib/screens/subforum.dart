@@ -27,6 +27,8 @@ class _SubforumScreenState extends State<SubforumScreen>
   Animation<double> animation;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  Function loadPageMethod;
+
   @override
   void initState() {
     super.initState();
@@ -89,6 +91,11 @@ class _SubforumScreenState extends State<SubforumScreen>
           subforumModel: widget.subforumModel,
           page: position + 1,
           bottomBarVisible: _bottomBarVisible,
+          onInit: (Function loadPage) {
+            setState(() {
+              this.loadPageMethod = loadPage;
+            });
+          },
           onError: () => onFetchError(context),
           isScrollingUp: () {
             expandController.reverse();
@@ -123,6 +130,14 @@ class _SubforumScreenState extends State<SubforumScreen>
       appBar: AppBar(
         title: Text(widget.subforumModel.name),
         leading: BackButton(),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () {
+              this.loadPageMethod();
+            },
+          ),
+        ],
       ),
       body: content(context),
       drawerEdgeDragWidth: 30.0,
