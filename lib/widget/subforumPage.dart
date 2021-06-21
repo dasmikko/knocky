@@ -16,6 +16,7 @@ class SubforumPage extends StatefulWidget {
   final bool isSwiping;
   final Function isScrollingDown;
   final Function isScrollingUp;
+  final Function onInit;
   final bool bottomBarVisible;
   final Function onError;
 
@@ -25,6 +26,7 @@ class SubforumPage extends StatefulWidget {
       this.isSwiping,
       this.isScrollingDown,
       this.isScrollingUp,
+      this.onInit,
       this.bottomBarVisible,
       this.onError});
 
@@ -41,6 +43,7 @@ class _SubforumPagenState extends State<SubforumPage>
 
   @override
   void afterFirstLayout(BuildContext context) async {
+    this.widget.onInit(loadPage);
     loadPage();
 
     scrollController.addListener(() {
