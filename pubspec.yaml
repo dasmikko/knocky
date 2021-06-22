@@ -53,6 +53,7 @@ dependencies:
   matrix4_transform: ^2.0.0
   ffcache: ^1.0.0
   tweet_ui: ^2.5.0-nullsafety.2
+  flutter_dotenv: ^5.0.0
 
 dev_dependencies:
   build_runner: ^1.11.5
@@ -70,6 +71,10 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+
+  assets:
+  - assets/.env
 
   # To add assets to your application, add an assets section, like this:
   # assets:

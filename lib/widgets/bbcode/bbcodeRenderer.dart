@@ -3,10 +3,13 @@ import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:bbob_dart/bbob_dart.dart' as bbob;
+import 'package:get/get.dart';
 import 'package:knocky/helpers/bbcodeparser.dart';
 import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/screens/imageViewer.dart';
 import 'package:knocky/widgets/post/postsElements/image.dart';
+import 'package:knocky/widgets/post/postsElements/twitter.dart';
 import 'package:knocky/widgets/post/postsElements/video.dart';
 import 'package:knocky/widgets/post/postsElements/youtube.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -65,22 +68,17 @@ class BBcodeRenderer extends StatelessWidget {
   }
 
   Widget twitterHandler(bbob.Element node) {
-    return Container();
-    // TODO:
-    /*
-    return TwitterEmbedWidget(
-      twitterUrl: node.textContent,
+    return TwitterCard(
+      tweetUrl: node.textContent,
       onTapImage: (List<String> allPhotos, int photoIndex, String hashcode) {
-        Navigator.of(parentContext, rootNavigator: true).push(
-          MaterialPageRoute(
-              builder: (context) => ImageViewerScreen(
-                    url: allPhotos[photoIndex],
-                    urls: allPhotos,
-                  )),
+        Get.to(
+          () => ImageViewerScreen(
+            url: allPhotos[photoIndex],
+            urls: allPhotos,
+          ),
         );
       },
     );
-    */
   }
 
   // TODO: Move out to own file

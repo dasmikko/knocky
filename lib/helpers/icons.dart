@@ -251,32 +251,80 @@ const double RATING_ICON_SIZE = 24;
 
 Map<String, RatingItem> ratingIconMap = {
   'agree': new RatingItem(
-      id: 'agree', name: 'Agree', url: "${_ratingsUrl}agree.png"),
+    id: 'agree',
+    name: 'Agree',
+    url: "${_ratingsUrl}agree.png",
+  ),
   'disagree': new RatingItem(
-      id: 'disagree', name: 'Disagree', url: "${_ratingsUrl}disagree.png"),
+    id: 'disagree',
+    name: 'Disagree',
+    url: "${_ratingsUrl}disagree.png",
+  ),
   'funny': new RatingItem(
-      id: 'funny', name: 'Funny', url: "${_ratingsUrl}funny.png"),
+    id: 'funny',
+    name: 'Funny',
+    url: "${_ratingsUrl}funny.png",
+  ),
+  'optimistic': new RatingItem(
+    id: 'optimistic',
+    name: 'Optimistic',
+    url: "${_ratingsUrl}optimistic.png",
+  ),
+  'zing': new RatingItem(
+    id: 'zing',
+    name: 'Zing',
+    url: "${_ratingsUrl}zing.png",
+  ),
   'friendly': new RatingItem(
-      id: 'friendly', name: 'Friendly', url: "${_ratingsUrl}friendly.png"),
-  'kawaii':
-      new RatingItem(id: 'kawaii', name: 'かわいい', url: "${_ratingsUrl}cute.png"),
-  'sad': new RatingItem(id: 'sad', name: 'Sad', url: "${_ratingsUrl}sad.png"),
+    id: 'friendly',
+    name: 'Friendly',
+    url: "${_ratingsUrl}friendly.png",
+  ),
+  'kawaii': new RatingItem(
+    id: 'kawaii',
+    name: 'かわいい',
+    url: "${_ratingsUrl}cute.png",
+  ),
+  'sad': new RatingItem(
+    id: 'sad',
+    name: 'Sad',
+    url: "${_ratingsUrl}sad.png",
+  ),
   'artistic': new RatingItem(
-      id: 'artistic', name: 'Artistic', url: "${_ratingsUrl}artistic.png"),
+    id: 'artistic',
+    name: 'Artistic',
+    url: "${_ratingsUrl}artistic.png",
+  ),
   'informative': new RatingItem(
-      id: 'informative',
-      name: 'Informative',
-      url: "${_ratingsUrl}informative.png"),
-  'idea':
-      new RatingItem(id: 'idea', name: 'Idea', url: "${_ratingsUrl}idea.png"),
+    id: 'informative',
+    name: 'Informative',
+    url: "${_ratingsUrl}informative.png",
+  ),
+  'idea': new RatingItem(
+    id: 'idea',
+    name: 'Idea',
+    url: "${_ratingsUrl}idea.png",
+  ),
   'winner': new RatingItem(
-      id: 'winner', name: 'Winner', url: "${_ratingsUrl}winner.png"),
+    id: 'winner',
+    name: 'Winner',
+    url: "${_ratingsUrl}winner.png",
+  ),
   'glasses': new RatingItem(
-      id: 'glasses', name: 'Bad Reading', url: "${_ratingsUrl}badreading.png"),
-  'late':
-      new RatingItem(id: 'late', name: 'Late', url: "${_ratingsUrl}late.png"),
-  'dumb':
-      new RatingItem(id: 'dumb', name: 'Dumb', url: "${_ratingsUrl}dumb.png"),
+    id: 'glasses',
+    name: 'Bad Reading',
+    url: "${_ratingsUrl}badreading.png",
+  ),
+  'late': new RatingItem(
+    id: 'late',
+    name: 'Late',
+    url: "${_ratingsUrl}late.png",
+  ),
+  'dumb': new RatingItem(
+    id: 'dumb',
+    name: 'Dumb',
+    url: "${_ratingsUrl}dumb.png",
+  ),
   'citation': new RatingItem(
       id: 'citation',
       name: 'Citation Needed',
