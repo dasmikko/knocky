@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/ratingsController.dart';
@@ -24,6 +25,8 @@ class _RatingsState extends State<Ratings> {
   List<ThreadPostRatings> ratings;
   bool showChooser = false;
 
+  Duration animatonDuration = Duration(milliseconds: 150);
+
   @override
   void initState() {
     super.initState();
@@ -33,26 +36,38 @@ class _RatingsState extends State<Ratings> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.fromLTRB(4, 16, 0, 0),
-        height: 48,
-        width: double.infinity,
-        child: showChooser ? showRatingsChooser() : showExistingRatings());
+      margin: EdgeInsets.fromLTRB(4, 16, 0, 0),
+      height: 48,
+      width: double.infinity,
+      child: showExistingRatings(),
+    );
   }
 
-  Widget showRatingsChooser() {
-    return Row(children: [
-      Expanded(
+  Widget showRatingsChooser(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width - 100,
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: Offset(0, 3),
+          )
+        ],
+        color: Colors.grey[900],
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(children: [
+        Expanded(
           child: RatingsChooser(
-              postId: widget.postId,
-              onRatingDone: onRatingDone,
-              onRatingClicked: () => toggleShowChooser(false))),
-      TextButton(
-          onPressed: () => toggleShowChooser(false),
-          child: Text(
-            'Close',
-            style: TextStyle(color: Colors.grey),
-          ))
-    ]);
+            postId: widget.postId,
+            onRatingDone: onRatingDone,
+            onRatingClicked: () => toggleShowChooser(false),
+          ),
+        ),
+      ]),
+    );
   }
 
   Widget showExistingRatings() {
@@ -62,12 +77,36 @@ class _RatingsState extends State<Ratings> {
         Expanded(child: ratingsList()),
         Obx(
           () => authController.isAuthenticated.value
-              ? TextButton(
-                  onPressed: () => toggleShowChooser(true),
-                  child: Text(
-                    'Rate',
-                    style: TextStyle(color: Colors.grey),
-                  ))
+              ? NotificationListener<ScrollNotification>(
+                  onNotification: (ScrollNotification notifiction) {
+                    print('Scroll');
+                    return true;
+                  },
+                  child: PortalEntry(
+                    portal: TweenAnimationBuilder<double>(
+                      duration: animatonDuration,
+                      curve: Curves.easeOut,
+                      tween: Tween(begin: 0, end: showChooser ? 1 : 0),
+                      builder: (context, opacity, _) {
+                        return Opacity(
+                          opacity: opacity,
+                          child: showRatingsChooser(context),
+                        );
+                      },
+                    ),
+                    closeDuration: animatonDuration,
+                    portalAnchor: Alignment.topRight,
+                    childAnchor: Alignment.bottomRight,
+                    visible: showChooser,
+                    child: TextButton(
+                      onPressed: () => toggleShowChooser(!showChooser),
+                      child: Text(
+                        'Rate',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                )
               : Container(),
         )
       ]),
@@ -122,8 +161,10 @@ class _RatingsState extends State<Ratings> {
           child: RatingsChooser.ratingButton(ratingItem, widget.postId,
               () => toggleShowChooser(false), onRatingDone),
         ),
-        Text(rating.count.toString(),
-            style: TextStyle(fontSize: 12, color: Colors.grey))
+        Text(
+          rating.count.toString(),
+          style: TextStyle(fontSize: 12, color: Colors.grey),
+        )
       ]),
     ]);
   }
