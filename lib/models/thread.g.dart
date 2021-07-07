@@ -137,7 +137,11 @@ ThreadPostRatings _$ThreadPostRatingsFromJson(Map<String, dynamic> json) {
     ratingId: _ratingIdHandler(json['rating_id']),
     rating: json['rating'] as String,
     count: json['count'] as int,
-    users: (json['users'] as List)?.map((e) => e as String)?.toList(),
+    users: (json['users'] as List)
+        ?.map((e) => e == null
+            ? null
+            : ThreadPostUser.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
   );
 }
 

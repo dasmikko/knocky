@@ -396,6 +396,8 @@ class BBcodeRenderer extends StatelessWidget {
             );
             break;
           case 'img':
+          case 'img thumbnail':
+            print(node);
             if (richTextContent.isNotEmpty) {
               widgetList.add(
                   RichText(text: TextSpan(children: richTextContent.toList())));
@@ -469,7 +471,11 @@ class BBcodeRenderer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> widgetList = List();
-    List<bbob.Node> nodes = new BBCodeParser().parse(this.bbcode);
+
+    // TODO: This is a dirty quickfix for images that should be displayed as thumbnails
+    String bbcodeCleaned = this.bbcode.replaceAll('[img thumbnail]', '[img]');
+
+    List<bbob.Node> nodes = new BBCodeParser().parse(bbcodeCleaned);
 
     widgetList = nodeChildrenHandler(nodes);
 

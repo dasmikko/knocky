@@ -139,7 +139,7 @@ class ThreadPostRatings {
   final String ratingId;
   final String rating;
   final int count;
-  final List<String> users;
+  final List<ThreadPostUser> users;
 
   ThreadPostRatings({
     this.ratingId,

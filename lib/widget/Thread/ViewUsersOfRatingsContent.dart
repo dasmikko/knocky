@@ -73,7 +73,7 @@ class _ViewUsersOfRatingsContentState extends State<ViewUsersOfRatingsContent> {
                                     (user) => Container(
                                       padding: EdgeInsets.only(
                                           bottom: 12, left: 12, right: 12),
-                                      child: Text(user),
+                                      child: Text(user.username),
                                     ),
                                   )
                                   .toList(),
