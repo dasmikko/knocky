@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:knocky/models/slateDocument.dart';
 import 'dart:convert';
 
+import 'package:knocky/models/usergroup.dart';
+
 part 'thread.g.dart';
 
 @JsonSerializable()
@@ -52,7 +54,7 @@ class Thread {
 
 @JsonSerializable()
 class ThreadUser {
-  final int usergroup;
+  final Usergroup usergroup;
   final String username;
 
   ThreadUser({this.usergroup, this.username});
@@ -160,7 +162,7 @@ class ThreadPostUser {
   final String avatarUrl;
   final String backgroundUrl;
   final bool isBanned;
-  final int usergroup;
+  final Usergroup usergroup;
   final String username;
 
   ThreadPostUser(

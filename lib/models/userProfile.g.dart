@@ -9,7 +9,7 @@ part of 'userProfile.dart';
 UserProfile _$UserProfileFromJson(Map<String, dynamic> json) {
   return UserProfile(
     id: json['id'] as int,
-    usergroup: json['usergroup'] as int,
+    usergroup: Usergroup.values[json['usergroup'] as int],
     avatarUrl: json['avatarUrl'] as String,
     backgroundUrl: json['backgroundUrl'] as String,
     banned: json['banned'] as bool,

@@ -48,9 +48,8 @@ class AppColors {
     return Color.fromRGBO(255, 201, 63, 1);
   }
 
-  Color userGroupToColor(int usergroup) {
-    Usergroup group = Usergroup.values[usergroup];
-    switch (group) {
+  Color userGroupToColor(Usergroup usergroup) {
+    switch (usergroup) {
       case Usergroup.banned:
         return HexColor('e04545');
       case Usergroup.regular:

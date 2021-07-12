@@ -59,7 +59,7 @@ Map<String, dynamic> _$ThreadToJson(Thread instance) => <String, dynamic>{
 
 ThreadUser _$ThreadUserFromJson(Map<String, dynamic> json) {
   return ThreadUser(
-    usergroup: json['usergroup'] as int,
+    usergroup: Usergroup.values[json['usergroup'] as int],
     username: json['username'] as String,
   );
 }
@@ -151,7 +151,7 @@ ThreadPostUser _$ThreadPostUserFromJson(Map<String, dynamic> json) {
     avatarUrl: json['avatarUrl'] as String,
     backgroundUrl: json['backgroundUrl'] as String,
     isBanned: json['isBanned'] as bool,
-    usergroup: json['usergroup'] as int,
+    usergroup: Usergroup.values[json['usergroup'] as int],
     username: json['username'] as String,
   );
 }

@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:knocky/models/subforumDetails.dart';
+import 'package:knocky/models/usergroup.dart';
 
 part 'subforum.g.dart';
 
@@ -99,7 +100,7 @@ class SubForumLastPostThread {
 @JsonSerializable()
 class SubforumLastPostUser {
   final bool isBanned;
-  final int usergroup;
+  final Usergroup usergroup;
   final String username;
 
   SubforumLastPostUser({
