@@ -8,12 +8,14 @@ class Username extends StatelessWidget {
   final bool bold;
   final Function onClick;
   final double fontSize;
+  final bool banned;
 
   Username(
       {@required this.username,
       @required this.usergroup,
       this.bold,
       this.onClick,
+      this.banned = false,
       this.fontSize = 14});
 
   @override
@@ -26,7 +28,8 @@ class Username extends StatelessWidget {
         child: Text(username,
             style: TextStyle(
                 fontSize: fontSize,
-                color: AppColors(context).userGroupToColor(usergroup),
+                color: AppColors(context)
+                    .userGroupToColor(usergroup, banned: banned),
                 fontWeight: bold ? FontWeight.bold : FontWeight.normal)));
   }
 }

@@ -9,6 +9,7 @@ class ProfileController extends GetxController {
   final profile = UserProfile().obs;
   final details = UserProfileDetails().obs;
   final ratings = UserProfileRatings().obs;
+  // final bans;
   int id;
 
   @override

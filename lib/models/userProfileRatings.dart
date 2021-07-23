@@ -3,13 +3,6 @@ import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
-class UserProfileRating {
-  final int count;
-  final String name;
-  UserProfileRating({this.count, this.name});
-}
-
-@JsonSerializable()
 class UserProfileRatings {
   final List<UserProfileRating> ratings;
 
@@ -25,4 +18,11 @@ UserProfileRatings fromJson(String json) {
           name: mapEntries['name'], count: mapEntries['count']))
       .toList();
   return new UserProfileRatings(ratings: ratings);
+}
+
+@JsonSerializable()
+class UserProfileRating {
+  final int count;
+  final String name;
+  UserProfileRating({this.count, this.name});
 }

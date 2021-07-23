@@ -10,6 +10,7 @@ import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/models/readThreads.dart';
 import 'package:dio/dio.dart';
 import 'package:knocky/models/threadAlertPage.dart';
+import 'package:knocky/models/userBans.dart';
 import 'package:knocky/models/userProfile.dart';
 import 'package:knocky/models/userProfileDetails.dart';
 import 'package:knocky/models/userProfilePosts.dart';
@@ -249,6 +250,15 @@ class KnockoutAPI {
     );
 
     return UserProfile.fromJson(response.data);
+  }
+
+  Future<UserBans> getUserBans(int userId) async {
+    final response = await _request(
+      url: 'user/' + userId.toString() + '/bans',
+      type: 'get',
+    );
+
+    return UserBans.fromJson(response.data);
   }
 
   Future<UserProfileDetails> getUserProfileDetails(int userId) async {

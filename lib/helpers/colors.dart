@@ -48,10 +48,15 @@ class AppColors {
     return Color.fromRGBO(255, 201, 63, 1);
   }
 
-  Color userGroupToColor(Usergroup usergroup) {
+  Color bannedColor() {
+    return HexColor('e04545');
+  }
+
+  Color userGroupToColor(Usergroup usergroup, {bool banned = false}) {
+    if (banned) {
+      return bannedColor();
+    }
     switch (usergroup) {
-      case Usergroup.banned:
-        return HexColor('e04545');
       case Usergroup.regular:
         return HexColor('3facff');
       case Usergroup.gold:
