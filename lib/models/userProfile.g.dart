@@ -8,15 +8,17 @@ part of 'userProfile.dart';
 
 UserProfile _$UserProfileFromJson(Map<String, dynamic> json) {
   return UserProfile(
-    id: json['id'] as int,
-    usergroup: Usergroup.values[json['usergroup'] as int],
-    avatarUrl: json['avatarUrl'] as String,
-    backgroundUrl: json['backgroundUrl'] as String,
-    banned: json['banned'] as bool,
-    posts: json['posts'] as int,
-    threads: json['threads'] as int,
-    username: json['username'] as String,
-  );
+      id: json['id'] as int,
+      usergroup: Usergroup.values[json['usergroup'] as int],
+      avatarUrl: json['avatarUrl'] as String,
+      backgroundUrl: json['backgroundUrl'] as String,
+      banned: json['banned'] as bool,
+      posts: json['posts'] as int,
+      threads: json['threads'] as int,
+      username: json['username'] as String,
+      joinDate: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String));
 }
 
 Map<String, dynamic> _$UserProfileToJson(UserProfile instance) =>

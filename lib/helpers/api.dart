@@ -11,6 +11,7 @@ import 'package:knocky/models/readThreads.dart';
 import 'package:dio/dio.dart';
 import 'package:knocky/models/threadAlertPage.dart';
 import 'package:knocky/models/userProfile.dart';
+import 'package:knocky/models/userProfileDetails.dart';
 import 'package:knocky/models/userProfilePosts.dart';
 import 'package:knocky/models/userProfileThreads.dart';
 import 'package:get_storage/get_storage.dart';
@@ -247,6 +248,15 @@ class KnockoutAPI {
     );
 
     return UserProfile.fromJson(response.data);
+  }
+
+  Future<UserProfileDetails> getUserProfileDetails(int userId) async {
+    final response = await _request(
+      url: 'v2/users/' + userId.toString() + '/profile',
+      type: 'get',
+    );
+
+    return UserProfileDetails.fromJson(response.data);
   }
 
   Future<UserProfilePosts> getUserProfilePosts(int userId) async {

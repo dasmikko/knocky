@@ -13,17 +13,18 @@ class UserProfile {
   final String username;
   final int posts;
   final int threads;
+  final DateTime joinDate;
 
-  UserProfile({
-    this.id,
-    this.usergroup,
-    this.avatarUrl,
-    this.backgroundUrl,
-    this.banned,
-    this.posts,
-    this.threads,
-    this.username,
-  });
+  UserProfile(
+      {this.id,
+      this.usergroup,
+      this.avatarUrl,
+      this.backgroundUrl,
+      this.banned,
+      this.posts,
+      this.threads,
+      this.username,
+      this.joinDate});
 
   factory UserProfile.fromJson(Map<String, dynamic> json) =>
       _$UserProfileFromJson(json);
