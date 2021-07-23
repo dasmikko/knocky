@@ -9,6 +9,7 @@ import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/screens/event.dart';
 import 'package:knocky/screens/login.dart';
+import 'package:knocky/screens/profile.dart';
 import 'package:knocky/screens/settings.dart';
 import 'package:knocky/screens/significantThreads.dart';
 import 'package:knocky/screens/subscriptions.dart';
@@ -244,7 +245,8 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
                       tileColor: Colors.grey[900],
                       iconData: FontAwesomeIcons.user,
                       title: 'Profile',
-                      onTap: () {}),
+                      onTap: () => Get.to(
+                          ProfileScreen(id: authController.userId.value))),
                   DrawerListTile(
                       tileColor: Colors.grey[900],
                       iconData: FontAwesomeIcons.signOutAlt,
