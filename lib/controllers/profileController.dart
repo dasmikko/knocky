@@ -2,11 +2,13 @@ import 'package:get/get.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/userProfile.dart';
 import 'package:knocky/models/userProfileDetails.dart';
+import 'package:knocky/models/userProfileRatings.dart';
 
 class ProfileController extends GetxController {
   final isFetching = false.obs;
   final profile = UserProfile().obs;
   final details = UserProfileDetails().obs;
+  final ratings = UserProfileRatings().obs;
   int id;
 
   @override
@@ -25,6 +27,7 @@ class ProfileController extends GetxController {
     isFetching.value = true;
     profile.value = await KnockoutAPI().getUserProfile(this.id);
     details.value = await KnockoutAPI().getUserProfileDetails(this.id);
+    ratings.value = await KnockoutAPI().getUserProfileTopRatings(this.id);
     isFetching.value = false;
   }
 }

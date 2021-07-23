@@ -38,6 +38,11 @@ class RatingsChooser extends StatelessWidget {
         });
   }
 
+  static Widget ratingIcon(RatingItem ratingItem, {double size = 16}) {
+    return CachedNetworkImage(
+        imageUrl: ratingItem.url, width: size, height: size);
+  }
+
   static Widget ratingButton(RatingItem ratingItem, int postId,
       Function onRatingClicked, Function onRatingDone) {
     return IconButton(
@@ -47,7 +52,7 @@ class RatingsChooser extends StatelessWidget {
         visualDensity: VisualDensity.compact,
         onPressed: () => onRatingPressed(
             postId, ratingItem.id, onRatingClicked, onRatingDone),
-        icon: CachedNetworkImage(imageUrl: ratingItem.url));
+        icon: ratingIcon(ratingItem));
   }
 
   static Future<void> onRatingPressed(int postId, String ratingId,

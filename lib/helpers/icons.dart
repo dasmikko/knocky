@@ -277,6 +277,12 @@ Map<String, RatingItem> ratingIconMap = {
       new RatingItem(id: 'late', name: 'Late', url: "${_ratingsUrl}late.png"),
   'dumb':
       new RatingItem(id: 'dumb', name: 'Dumb', url: "${_ratingsUrl}dumb.png"),
+  'optimistic': new RatingItem(
+      id: 'optimistic',
+      name: 'Optimistic',
+      url: "${_ratingsUrl}optimistic.png"),
+  'zing':
+      new RatingItem(id: 'zing', name: 'Zing', url: "${_ratingsUrl}zing.png"),
   'citation': new RatingItem(
       id: 'citation',
       name: 'Citation Needed',

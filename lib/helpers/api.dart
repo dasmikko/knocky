@@ -13,6 +13,7 @@ import 'package:knocky/models/threadAlertPage.dart';
 import 'package:knocky/models/userProfile.dart';
 import 'package:knocky/models/userProfileDetails.dart';
 import 'package:knocky/models/userProfilePosts.dart';
+import 'package:knocky/models/userProfileRatings.dart';
 import 'package:knocky/models/userProfileThreads.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -257,6 +258,15 @@ class KnockoutAPI {
     );
 
     return UserProfileDetails.fromJson(response.data);
+  }
+
+  Future<UserProfileRatings> getUserProfileTopRatings(int userId) async {
+    final response = await _request(
+      url: 'user/' + userId.toString() + '/topRatings',
+      type: 'get',
+    );
+
+    return UserProfileRatings.fromJson(response.data);
   }
 
   Future<UserProfilePosts> getUserProfilePosts(int userId) async {
