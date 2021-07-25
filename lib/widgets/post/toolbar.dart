@@ -4,8 +4,9 @@ import 'package:time_formatter/time_formatter.dart';
 
 class Toolbar extends StatelessWidget {
   final ThreadPost post;
+  final bool showThreadPostNumber;
 
-  Toolbar({@required this.post});
+  Toolbar({@required this.post, this.showThreadPostNumber = true});
 
   @override
   Widget build(BuildContext context) {
@@ -14,17 +15,31 @@ class Toolbar extends StatelessWidget {
         color: Theme.of(context).primaryColor,
         height: 30,
         child: Row(
-          children: [
-            Text(formatTime(post.createdAt.millisecondsSinceEpoch)),
-            Container(
-              margin: EdgeInsets.only(left: 8),
-              child: Text(
-                "#${post.threadPostNumber.toString()}",
-                style: TextStyle(color: Colors.white60),
-              ),
-            )
-          ],
-        ) // TODO: post metadata + controls
-        );
+          children: [...contents()],
+        ));
   }
+
+  @protected
+  List<Widget> contents() {
+    return [timestamp(), postNumber()];
+  }
+
+  @protected
+  Widget timestamp() {
+    return Text(formatTime(post.createdAt.millisecondsSinceEpoch));
+  }
+
+  Widget postNumber() {
+    return Container(
+        margin: EdgeInsets.only(left: 8),
+        child: Text(
+          "#${post.threadPostNumber.toString()}",
+          style: TextStyle(color: Colors.white60),
+        ));
+  }
+
+  // TODO: post tags + controls
+  Widget tags() {}
+
+  Widget controls() {}
 }

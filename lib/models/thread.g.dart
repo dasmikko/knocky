@@ -30,7 +30,8 @@ Thread _$ThreadFromJson(Map<String, dynamic> json) {
     subscriptionLastSeen: json['subscriptionLastSeen'] == null
         ? null
         : DateTime.parse(json['subscriptionLastSeen'] as String),
-    isSubscribedTo: json['isSubscribedTo'] as bool ?? 0,
+    isSubscribedTo:
+        json['isSubscribedTo'] as bool ?? json['subscribed'] as bool ?? false,
     userId: json['userId'] as int,
     threadBackgroundType: json['threadBackgroundType'] as String,
     threadBackgroundUrl: json['threadBackgroundUrl'] as String,
@@ -72,26 +73,30 @@ Map<String, dynamic> _$ThreadUserToJson(ThreadUser instance) =>
 
 ThreadPost _$ThreadPostFromJson(Map<String, dynamic> json) {
   return ThreadPost(
-    id: json['id'] as int,
-    content: _contentFromJson(json['content'] as String),
-    user: json['user'] == null
-        ? null
-        : ThreadPostUser.fromJson(json['user'] as Map<String, dynamic>),
-    ratings: (json['ratings'] as List)
-        ?.map((e) => e == null
-            ? null
-            : ThreadPostRatings.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-    createdAt: json['createdAt'] == null
-        ? null
-        : DateTime.parse(json['createdAt'] as String),
-    bans: (json['bans'] as List)
-        ?.map((e) => e == null
-            ? null
-            : ThreadPostBan.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-    threadPostNumber: json['threadPostNumber'] as int,
-  );
+      id: json['id'] as int,
+      content: _contentFromJson(json['content'] as String),
+      user: json['user'] == null
+          ? null
+          : ThreadPostUser.fromJson(json['user'] as Map<String, dynamic>),
+      ratings: (json['ratings'] as List)
+          ?.map((e) => e == null
+              ? null
+              : ThreadPostRatings.fromJson(e as Map<String, dynamic>))
+          ?.toList(),
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      bans: (json['bans'] as List)
+          ?.map((e) => e == null
+              ? null
+              : ThreadPostBan.fromJson(e as Map<String, dynamic>))
+          ?.toList(),
+      threadPostNumber: json['threadPostNumber'] as int,
+      page: json['page'] as int,
+      thread:
+          json.containsKey('thread') && json['thread'] is Map<String, dynamic>
+              ? Thread.fromJson(json['thread'])
+              : null);
 }
 
 Map<String, dynamic> _$ThreadPostToJson(ThreadPost instance) =>

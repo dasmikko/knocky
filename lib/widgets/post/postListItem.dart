@@ -10,9 +10,24 @@ import 'package:knocky/widgets/post/userInfo.dart';
 class PostListItem extends StatelessWidget {
   final ThreadPost post;
   final AuthController authController = Get.put(AuthController());
-  final bool showUserInfo;
-  PostListItem({@required this.post, this.showUserInfo = true});
+  PostListItem({@required this.post});
 
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [...contents(context)]),
+    );
+  }
+
+  @protected
+  List<Widget> contents(BuildContext context) {
+    return [UserInfo(user: post.user), Toolbar(post: post), postBody(context)];
+  }
+
+  @protected
   Widget postBody(BuildContext context) {
     return Container(
       padding: EdgeInsets.fromLTRB(8, 16, 16, 16),
@@ -23,25 +38,18 @@ class PostListItem extends StatelessWidget {
             bbcode: post.content,
             postDetails: post,
           ),
-          Ratings(postId: post.id, ratings: post.ratings, onRated: onRated)
+          ratings()
         ],
       ),
     );
   }
 
-  onRated() {
-    print('rated');
+  @protected
+  Widget ratings() {
+    return Ratings(postId: post.id, ratings: post.ratings, onRated: onRated);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        if (showUserInfo) UserInfo(user: post.user),
-        Toolbar(post: post),
-        postBody(context)
-      ]),
-    );
+  onRated() {
+    print('rated');
   }
 }
