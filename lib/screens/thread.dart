@@ -43,25 +43,14 @@ class _ThreadScreenState extends State<ThreadScreen> {
               child: RefreshIndicator(
                   onRefresh: () async => threadController.fetch(),
                   // TODO: this should probably be a column but there is an issue
-                  child: Stack(children: [pageSelector(), posts()])),
+                  child: Stack(children: [
+                    PageSelector.pageSelector(
+                        itemScrollController, threadController),
+                    posts()
+                  ])),
             ),
           ),
         ));
-  }
-
-  Widget pageSelector() {
-    return PageSelector(
-      onNext: () {
-        itemScrollController.jumpTo(index: 0);
-        threadController.nextPage();
-      },
-      onPage: (page) {
-        itemScrollController.jumpTo(index: 0);
-        threadController.goToPage(page);
-      },
-      pageCount: threadController.pageCount,
-      currentPage: threadController.page,
-    );
   }
 
   Widget posts() {

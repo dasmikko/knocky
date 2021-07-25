@@ -129,11 +129,16 @@ Map<String, dynamic> _$ThreadPostBanToJson(ThreadPostBan instance) =>
     };
 
 ThreadPostRatings _$ThreadPostRatingsFromJson(Map<String, dynamic> json) {
+  // 'users' are just List<string> for thread posts,
+  // but List<Map<string, dynamic>> for profile posts
+  var users = (json['users'] as List)
+      .map((user) => user is String ? user : user['username'] as String)
+      .toList();
   return ThreadPostRatings(
     ratingId: _ratingIdHandler(json['rating_id']),
     rating: json['rating'] as String,
     count: json['count'] as int,
-    users: (json['users'] as List)?.map((e) => e as String)?.toList(),
+    users: users,
   );
 }
 

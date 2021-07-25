@@ -10,8 +10,8 @@ import 'package:knocky/widgets/post/userInfo.dart';
 class PostListItem extends StatelessWidget {
   final ThreadPost post;
   final AuthController authController = Get.put(AuthController());
-
-  PostListItem({@required this.post});
+  final bool showUserInfo;
+  PostListItem({@required this.post, this.showUserInfo = true});
 
   Widget postBody(BuildContext context) {
     return Container(
@@ -38,7 +38,7 @@ class PostListItem extends StatelessWidget {
     return Card(
       margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        UserInfo(user: post.user),
+        if (showUserInfo) UserInfo(user: post.user),
         Toolbar(post: post),
         postBody(context)
       ]),

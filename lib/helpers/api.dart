@@ -279,9 +279,9 @@ class KnockoutAPI {
     return UserProfileRatings.fromJson(response.data);
   }
 
-  Future<UserProfilePosts> getUserProfilePosts(int userId) async {
+  Future<UserProfilePosts> getUserPosts(int userId, {int page = 1}) async {
     final response = await _request(
-      url: 'user/' + userId.toString() + '/posts',
+      url: 'user/$userId/posts/$page',
       type: 'get',
     );
 

@@ -14,6 +14,22 @@ class PageSelector extends StatelessWidget {
       @required this.pageCount,
       this.currentPage: 1});
 
+  static PageSelector pageSelector(
+      ItemScrollController itemScrollController, dynamic dataController) {
+    return PageSelector(
+      onNext: () {
+        itemScrollController.jumpTo(index: 0);
+        dataController.nextPage();
+      },
+      onPage: (page) {
+        itemScrollController.jumpTo(index: 0);
+        dataController.goToPage(page);
+      },
+      pageCount: dataController.pageCount,
+      currentPage: dataController.page,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
