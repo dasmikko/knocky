@@ -6,10 +6,10 @@ part 'userProfileThreads.g.dart';
 @JsonSerializable()
 class UserProfileThreads {
   final int currentPage;
-  final int totalPosts;
+  final int totalThreads;
   final List<SignificantThread> threads;
 
-  UserProfileThreads({this.currentPage, this.totalPosts, this.threads});
+  UserProfileThreads({this.currentPage, this.totalThreads, this.threads});
 
   factory UserProfileThreads.fromJson(Map<String, dynamic> json) =>
       _$UserProfileThreadsFromJson(json);

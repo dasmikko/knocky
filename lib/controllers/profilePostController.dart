@@ -5,7 +5,7 @@ import 'package:knocky/models/userProfilePosts.dart';
 
 class ProfilePostController extends GetxController {
   final isFetching = false.obs;
-  final thread = UserProfilePosts().obs;
+  final posts = UserProfilePosts().obs;
   final _page = 1.obs;
   int id;
 
@@ -16,7 +16,7 @@ class ProfilePostController extends GetxController {
   }
 
   initState(int id, int page) {
-    thread.value = null;
+    posts.value = null;
     this.id = id;
     _page.value = page;
     fetch();
@@ -24,14 +24,14 @@ class ProfilePostController extends GetxController {
 
   void fetch() async {
     isFetching.value = true;
-    thread.value = await KnockoutAPI().getUserPosts(id, page: page);
+    posts.value = await KnockoutAPI().getUserPosts(id, page: page);
     isFetching.value = false;
   }
 
   get page => _page.value;
 
   get pageCount =>
-      ((thread.value?.totalPosts ?? 0) / PostsPerPage.POSTS_PER_PAGE).ceil();
+      ((posts.value?.totalPosts ?? 0) / PostsPerPage.POSTS_PER_PAGE).ceil();
 
   nextPage() => _page.value++;
 

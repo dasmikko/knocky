@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:knocky/controllers/bansController.dart';
 import 'package:knocky/models/userProfile.dart';
 import 'package:knocky/widgets/profile/posts.dart';
+import 'package:knocky/widgets/profile/threads.dart';
 
 class ProfileBody extends StatefulWidget {
   final UserProfile profile;
@@ -52,7 +53,10 @@ class _ProfileBodyState extends State<ProfileBody> {
   }
 
   List<dynamic> tabContents() {
-    var tabContents = [ProfilePosts(id: widget.profile.id), Container()];
+    List<dynamic> tabContents = [
+      ProfilePosts(id: widget.profile.id),
+      ProfileThreads(id: widget.profile.id)
+    ];
     if (hasBans()) {
       tabContents.add(Container());
     }

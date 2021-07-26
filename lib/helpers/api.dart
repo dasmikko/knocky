@@ -288,9 +288,9 @@ class KnockoutAPI {
     return UserProfilePosts.fromJson(response.data);
   }
 
-  Future<UserProfileThreads> getUserProfileThreads(int userId) async {
+  Future<UserProfileThreads> getUserThreads(int userId, {int page = 1}) async {
     final response = await _request(
-      url: 'user/' + userId.toString() + 'threads',
+      url: 'user/$userId/threads/$page',
       type: 'get',
     );
 
