@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knocky/helpers/format.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:time_formatter/time_formatter.dart';
 
@@ -8,15 +9,19 @@ class Toolbar extends StatelessWidget {
 
   Toolbar({@required this.post, this.showThreadPostNumber = true});
 
-  @override
-  Widget build(BuildContext context) {
+  static Widget toolbarBox(Color color, List<Widget> contents) {
     return Container(
         padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
-        color: Theme.of(context).primaryColor,
+        color: color,
         height: 30,
         child: Row(
-          children: [...contents()],
+          children: [...contents],
         ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return toolbarBox(Theme.of(context).primaryColor, contents());
   }
 
   @protected
@@ -26,7 +31,7 @@ class Toolbar extends StatelessWidget {
 
   @protected
   Widget timestamp() {
-    return Text(formatTime(post.createdAt.millisecondsSinceEpoch));
+    return Text(Format.humanReadableTimeSince(post.createdAt));
   }
 
   Widget postNumber() {

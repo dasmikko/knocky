@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/bansController.dart';
 import 'package:knocky/models/userProfile.dart';
+import 'package:knocky/widgets/profile/bans.dart';
 import 'package:knocky/widgets/profile/posts.dart';
 import 'package:knocky/widgets/profile/threads.dart';
 
@@ -58,7 +59,7 @@ class _ProfileBodyState extends State<ProfileBody> {
       ProfileThreads(id: widget.profile.id)
     ];
     if (hasBans()) {
-      tabContents.add(Container());
+      tabContents.add(ProfileBans(bans: bansController.bans.value));
     }
     return tabContents;
   }
