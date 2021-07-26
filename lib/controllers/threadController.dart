@@ -1,43 +1,23 @@
-import 'package:get/get.dart';
+import 'package:knocky/controllers/paginatedController.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
 import 'package:knocky/models/thread.dart';
 
-class ThreadController extends GetxController {
-  final isFetching = false.obs;
-  final thread = Thread().obs;
-  final _page = 1.obs;
-  int id;
+class ThreadController extends PaginatedController<Thread> {
+  @override
+  Future fetchData() async {
+    data.value = await KnockoutAPI().getThread(id, page: page);
+  }
 
   @override
-  onInit() {
-    super.onInit();
-    ever(_page, (_) => fetch());
-  }
-
-  initState(int id, int page) {
-    thread.value = null;
-    this.id = id;
-    _page.value = page;
-    fetch();
-  }
-
-  void fetch() async {
-    isFetching.value = true;
-    thread.value = await KnockoutAPI().getThread(id, page: page);
-    isFetching.value = false;
-  }
-
-  get title => thread.value?.title;
-
-  get page => _page.value;
-
   get pageCount =>
-      ((thread.value?.totalPosts ?? 0) / PostsPerPage.POSTS_PER_PAGE).ceil();
+      ((data.value?.totalPosts ?? 0) / PostsPerPage.POSTS_PER_PAGE).ceil();
 
-  nextPage() => _page.value++;
+  get title => data.value?.title;
 
-  previousPage() => _page.value--;
+  @override
+  int get dataInPageCount => data.value?.posts?.length ?? 0;
 
-  goToPage(pageNumber) => _page.value = pageNumber;
+  @override
+  dynamic dataAtIndex(int index) => data.value?.posts[index];
 }

@@ -4,9 +4,9 @@ import 'package:knocky/widgets/post/postListItem.dart';
 import 'package:knocky/widgets/post/ratings.dart';
 import 'package:knocky/widgets/profile/toolbar.dart';
 
-class ProfilePost extends PostListItem {
+class ProfilePostListItem extends PostListItem {
   final ThreadPost post;
-  ProfilePost({@required this.post}) : super(post: post);
+  ProfilePostListItem({@required this.post}) : super(post: post);
 
   @override
   List<Widget> contents(BuildContext context) {
