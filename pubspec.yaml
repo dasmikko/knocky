@@ -53,8 +53,9 @@ dependencies:
   matrix4_transform: ^2.0.0
   ffcache: ^1.0.0
   flutter_portal: ^0.4.0
-  tweet_ui: ^2.5.0-nullsafety.2
+  tweet_ui: ^3.0.0
   flutter_dotenv: ^5.0.0
+  popover: ^0.2.6+2
 
 dev_dependencies:
   build_runner: ^1.11.5
