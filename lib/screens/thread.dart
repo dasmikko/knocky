@@ -41,9 +41,9 @@ class _ThreadScreenState extends State<ThreadScreen> {
             () => KnockoutLoadingIndicator(
               show: threadController.isFetching.value,
               child: RefreshIndicator(
-                  onRefresh: () async => threadController.fetch(),
-                  // TODO: this should probably be a column but there is an issue
-                  child: Stack(children: [pageSelector(), posts()])),
+                onRefresh: () async => threadController.fetch(),
+                child: posts(),
+              ),
             ),
           ),
         ));
@@ -66,14 +66,46 @@ class _ThreadScreenState extends State<ThreadScreen> {
 
   Widget posts() {
     return Container(
-        padding: EdgeInsets.fromLTRB(0, 48, 0, 0),
+        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: ScrollablePositionedList.builder(
           itemScrollController: itemScrollController,
           addAutomaticKeepAlives: true,
           minCacheExtent: MediaQuery.of(context).size.height,
-          itemCount: threadController.thread.value?.posts?.length ?? 0,
+          itemCount: (threadController.thread.value?.posts?.length) ?? 0,
           itemBuilder: (BuildContext context, int index) {
+            print(threadController.thread.value.posts.length);
+            print(index);
             ThreadPost post = threadController.thread.value.posts[index];
+
+            if (index == 0) {
+              // Insert header
+              return Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    child: pageSelector(),
+                  ),
+                  PostListItem(
+                    post: post,
+                  )
+                ],
+              );
+            }
+
+            if (index == (threadController.thread.value.posts.length - 1)) {
+              return Column(
+                children: [
+                  PostListItem(
+                    post: post,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 8),
+                    child: pageSelector(),
+                  ),
+                ],
+              );
+            }
+
             return PostListItem(
               post: post,
             );
