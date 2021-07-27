@@ -46,17 +46,6 @@ class BBcodeRenderer extends StatelessWidget {
   }
 
   Widget videoHandler(bbob.Element node) {
-    // TODO:
-    /*
-    if (node.textContent.endsWith('.wav') ||
-        node.textContent.endsWith('.mp3') ||
-        node.textContent.endsWith('.ogg')) {
-      return AudioElement(
-        url: node.textContent,
-        scaffoldKey: this.scaffoldKey,
-      );
-    }
-    */
     return VideoEmbed(
       url: node.textContent,
     );
