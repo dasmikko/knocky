@@ -8,6 +8,7 @@ import 'package:knocky/helpers/bbcodeparser.dart';
 import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/screens/imageViewer.dart';
+import 'package:knocky/widgets/post/postsElements/Embed.dart';
 import 'package:knocky/widgets/post/postsElements/image.dart';
 import 'package:knocky/widgets/post/postsElements/twitter.dart';
 import 'package:knocky/widgets/post/postsElements/video.dart';
@@ -273,6 +274,7 @@ class BBcodeRenderer extends StatelessWidget {
           case 'i':
           case 'u':
           case 'url':
+          case 'url smart':
           case 'spoiler':
             TextStyle textStyle = Theme.of(parentContext)
                 .textTheme
@@ -290,7 +292,7 @@ class BBcodeRenderer extends StatelessWidget {
                         ? Theme.of(parentContext).textTheme.bodyText1.color
                         : null);
 
-            if (node.tag == 'url') {
+            if (node.tag == 'url' || node.tag == 'url smart') {
               String url;
 
               if (node.attributes.containsKey('href')) {
@@ -299,15 +301,12 @@ class BBcodeRenderer extends StatelessWidget {
                 url = node.textContent;
               }
 
-              print(node.attributes);
+              print(node);
 
-              if (node.attributes['smart'] == 'smart') {
-                // TODO:
-                /*
+              if (node.attributes.containsKey('smart')) {
                 widgetList.add(EmbedWidget(
                   url: url,
                 ));
-                */
               } else {
                 richTextContent.add(
                   TextSpan(
@@ -473,6 +472,7 @@ class BBcodeRenderer extends StatelessWidget {
 
     // TODO: This is a dirty quickfix for images that should be displayed as thumbnails
     String bbcodeCleaned = this.bbcode.replaceAll('[img thumbnail]', '[img]');
+    bbcodeCleaned = bbcodeCleaned.replaceAll('[url smart]', '[url smart=true]');
 
     List<bbob.Node> nodes = new BBCodeParser().parse(bbcodeCleaned);
 
