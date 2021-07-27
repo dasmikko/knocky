@@ -22,11 +22,8 @@ class SubforumListItem extends ThreadListItem {
       ),
     );
 
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                ThreadScreen(id: threadDetails.id, page: page)));
+    if (page != null)
+      Get.to(() => ThreadScreen(id: threadDetails.id, page: page));
   }
 
   @override
