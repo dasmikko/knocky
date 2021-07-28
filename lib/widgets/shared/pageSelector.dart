@@ -16,12 +16,16 @@ class PageSelector extends StatelessWidget {
       this.currentPage: 1});
 
   void changePage(int page) {
+    onPage(page);
+    updateCurrentPagePosition();
+  }
+
+  void updateCurrentPagePosition() {
     scrollController.scrollTo(
       curve: Curves.easeOutCirc,
-      index: page - 1,
+      index: currentPage - 1,
       duration: Duration(milliseconds: 500),
     );
-    onPage(page);
   }
 
   @override
@@ -46,6 +50,7 @@ class PageSelector extends StatelessWidget {
                 physics: BouncingScrollPhysics(),
                 initialScrollIndex: currentPage - 1,
                 scrollDirection: Axis.horizontal,
+
                 itemCount: pageCount,
                 itemBuilder: (BuildContext context, int i) {
                   return navigatorButton(context, Text((i + 1).toString()),
