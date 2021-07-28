@@ -7,6 +7,7 @@ class PageSelector extends StatelessWidget {
   final Function onPage;
   final int pageCount;
   final int currentPage;
+  final ItemScrollController scrollController = new ItemScrollController();
 
   PageSelector(
       {@required this.onNext,
@@ -14,19 +15,30 @@ class PageSelector extends StatelessWidget {
       @required this.pageCount,
       this.currentPage: 1});
 
+  void changePage(int page) {
+    scrollController.scrollTo(
+      curve: Curves.easeOutCirc,
+      index: page - 1,
+      duration: Duration(milliseconds: 500),
+    );
+    onPage(page);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
+      padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
       height: 32,
       child: Row(
         children: [
-          navigatorButton(context, '<', () => onPage(currentPage - 1),
+          navigatorButton(context, Icon(Icons.arrow_left),
+              () => changePage(currentPage - 1),
               disabled: currentPage == 1),
           Expanded(
             child: Container(
               margin: EdgeInsets.only(right: 4, left: 4),
               child: ScrollablePositionedList.separated(
+                itemScrollController: scrollController,
                 // we're missing shrinkWrap in this widget to deal with resizing
                 separatorBuilder: (BuildContext context, int i) {
                   return Container(width: 4, height: double.infinity);
@@ -36,21 +48,22 @@ class PageSelector extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: pageCount,
                 itemBuilder: (BuildContext context, int i) {
-                  return navigatorButton(
-                      context, (i + 1).toString(), () => onPage(i + 1),
+                  return navigatorButton(context, Text((i + 1).toString()),
+                      () => changePage(i + 1),
                       highlight: currentPage == i + 1);
                 },
               ),
             ),
           ),
-          navigatorButton(context, '>', () => onPage(currentPage + 1),
+          navigatorButton(context, Icon(Icons.arrow_right),
+              () => changePage(currentPage + 1),
               disabled: currentPage == pageCount),
         ],
       ),
     );
   }
 
-  Widget navigatorButton(context, text, onClick,
+  Widget navigatorButton(context, Widget content, onClick,
       {highlight = false, disabled = false}) {
     return Container(
       width: 32,
@@ -60,13 +73,7 @@ class PageSelector extends StatelessWidget {
             children: [
               Container(
                 height: double.infinity,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    text,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
+                child: Align(alignment: Alignment.center, child: content),
               ),
               if (highlight) highlightCaret(context)
             ],
