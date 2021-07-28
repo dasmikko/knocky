@@ -1,3 +1,4 @@
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/threadController.dart';
@@ -20,29 +21,22 @@ class ThreadScreen extends StatefulWidget {
   _ThreadScreenState createState() => _ThreadScreenState();
 }
 
-class _ThreadScreenState extends State<ThreadScreen> {
+class _ThreadScreenState extends State<ThreadScreen>
+    with SingleTickerProviderStateMixin {
   final ThreadController threadController = Get.put(ThreadController());
   final ItemScrollController itemScrollController = new ItemScrollController();
-
-  PageSelector pageSelectorWidget;
+  final ItemPositionsListener itemPositionListener =
+      ItemPositionsListener.create();
 
   @override
   void initState() {
     super.initState();
     threadController.initState(widget.id, widget.page);
+  }
 
-    pageSelectorWidget = PageSelector(
-      onNext: () {
-        itemScrollController.jumpTo(index: 0);
-        threadController.nextPage();
-      },
-      onPage: (page) {
-        itemScrollController.jumpTo(index: 0);
-        threadController.goToPage(page);
-      },
-      pageCount: threadController.pageCount,
-      currentPage: threadController.page,
-    );
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   void showJumpDialog() async {
@@ -60,29 +54,72 @@ class _ThreadScreenState extends State<ThreadScreen> {
     }
   }
 
+  goToPage(int pageNum) {
+    itemScrollController.jumpTo(index: 0);
+    threadController.goToPage(pageNum);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Obx(() => Text(threadController.title ?? 'Loading thread...')),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.redo),
-              onPressed: () => showJumpDialog(),
-            )
-          ],
-        ),
-        body: Container(
-          child: Obx(
-            () => KnockoutLoadingIndicator(
-              show: threadController.isFetching.value,
-              child: RefreshIndicator(
-                onRefresh: () async => threadController.fetch(),
-                child: posts(),
-              ),
+      appBar: AppBar(
+        title: Obx(() => Text(threadController.title ?? 'Loading thread...')),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.redo),
+            onPressed: () => showJumpDialog(),
+          )
+        ],
+      ),
+      body: Container(
+        child: Obx(
+          () => KnockoutLoadingIndicator(
+            show: threadController.isFetching.value,
+            child: RefreshIndicator(
+              onRefresh: () async => threadController.fetch(),
+              child: posts(),
             ),
           ),
-        ));
+        ),
+      ),
+      bottomNavigationBar: Obx(
+        () => BottomAppBar(
+          shape: CircularNotchedRectangle(),
+          child: Container(
+            padding: EdgeInsets.only(left: 10, right: 10),
+            height: 56,
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Text('Page ' +
+                      threadController.page.toString() +
+                      ' of ' +
+                      threadController.pageCount.toString()),
+                ),
+                IconButton(
+                  icon: Icon(Icons.chevron_left),
+                  onPressed: threadController.page == 1
+                      ? null
+                      : () => goToPage(threadController.page - 1),
+                ),
+                IconButton(
+                  onPressed:
+                      threadController.pageCount > 1 ? showJumpDialog : null,
+                  icon: Icon(Icons.redo),
+                  tooltip: 'Jump to page',
+                ),
+                IconButton(
+                  icon: Icon(Icons.chevron_right),
+                  onPressed: threadController.pageCount == threadController.page
+                      ? null
+                      : () => goToPage(threadController.page + 1),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget pageSelector() {
@@ -106,6 +143,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
         child: ScrollablePositionedList.builder(
           itemScrollController: itemScrollController,
           addAutomaticKeepAlives: true,
+          itemPositionsListener: itemPositionListener,
           minCacheExtent: MediaQuery.of(context).size.height,
           itemCount: (threadController.thread.value?.posts?.length) ?? 0,
           itemBuilder: (BuildContext context, int index) {
