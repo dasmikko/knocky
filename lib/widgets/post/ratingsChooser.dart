@@ -19,9 +19,10 @@ class RatingsChooser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.fromLTRB(0, 8, 0, 8),
-        height: 48,
-        child: ratingsList());
+      margin: EdgeInsets.fromLTRB(0, 8, 0, 8),
+      height: 48,
+      child: ratingsList(),
+    );
   }
 
   Widget ratingsList() {
@@ -29,6 +30,7 @@ class RatingsChooser extends StatelessWidget {
             Usergroup.values[authController.usergroup?.value], 1)
         .entries;
     return ListView.builder(
+        padding: EdgeInsets.only(left: 8, right: 8),
         scrollDirection: Axis.horizontal,
         itemCount: ratings.length,
         itemBuilder: (context, index) {
@@ -44,8 +46,9 @@ class RatingsChooser extends StatelessWidget {
   }
 
   static Widget ratingButton(RatingItem ratingItem, int postId,
-      Function onRatingClicked, Function onRatingDone, canRate) {
-    return IconButton(
+      Function onRatingClicked, Function onRatingDone, bool canRate) {
+    return Container(
+      child: IconButton(
         color: Colors.green,
         padding: EdgeInsets.all(4),
         splashRadius: 16,
@@ -54,7 +57,9 @@ class RatingsChooser extends StatelessWidget {
             ? onRatingPressed(
                 postId, ratingItem.id, onRatingClicked, onRatingDone)
             : {},
-        icon: ratingIcon(ratingItem));
+        icon: CachedNetworkImage(imageUrl: ratingItem.url),
+      ),
+    );
   }
 
   static Future<void> onRatingPressed(int postId, String ratingId,

@@ -5,7 +5,9 @@ import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/ratingsController.dart';
 import 'package:knocky/helpers/icons.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/widgets/post/rateButton.dart';
 import 'package:knocky/widgets/post/ratingsChooser.dart';
+import 'package:popover/popover.dart';
 
 class Ratings extends StatefulWidget {
   final List<ThreadPostRatings> ratings;
@@ -26,6 +28,8 @@ class _RatingsState extends State<Ratings> {
   List<ThreadPostRatings> ratings;
   bool showChooser = false;
 
+  Duration animatonDuration = Duration(milliseconds: 150);
+
   @override
   void initState() {
     super.initState();
@@ -35,26 +39,27 @@ class _RatingsState extends State<Ratings> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.fromLTRB(4, 16, 0, 0),
-        height: 48,
-        width: double.infinity,
-        child: showChooser ? showRatingsChooser() : showExistingRatings());
+      margin: EdgeInsets.fromLTRB(4, 16, 0, 0),
+      height: 48,
+      width: double.infinity,
+      child: showExistingRatings(),
+    );
   }
 
-  Widget showRatingsChooser() {
-    return Row(children: [
-      Expanded(
-          child: RatingsChooser(
+  Widget showRatingsChooser(BuildContext context) {
+    return Container(
+      child: Row(
+        children: [
+          Expanded(
+            child: RatingsChooser(
               postId: widget.postId,
               onRatingDone: onRatingDone,
-              onRatingClicked: () => toggleShowChooser(false))),
-      TextButton(
-          onPressed: () => toggleShowChooser(false),
-          child: Text(
-            'Close',
-            style: TextStyle(color: Colors.grey),
-          ))
-    ]);
+              onRatingClicked: () => Get.back(),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget showExistingRatings() {
@@ -64,22 +69,13 @@ class _RatingsState extends State<Ratings> {
         Expanded(child: ratingsList()),
         Obx(
           () => authController.isAuthenticated.value && widget.canRate
-              ? TextButton(
-                  onPressed: () => toggleShowChooser(true),
-                  child: Text(
-                    'Rate',
-                    style: TextStyle(color: Colors.grey),
-                  ))
+              ? RateButton(
+                  popOverContent: showRatingsChooser(context),
+                )
               : Container(),
         )
       ]),
     );
-  }
-
-  toggleShowChooser(bool toggled) {
-    setState(() {
-      showChooser = toggled;
-    });
   }
 
   onRatingDone() async {
@@ -122,10 +118,12 @@ class _RatingsState extends State<Ratings> {
           height: RATING_ICON_SIZE,
           margin: EdgeInsets.only(bottom: 4),
           child: RatingsChooser.ratingButton(ratingItem, widget.postId,
-              () => toggleShowChooser(false), onRatingDone, widget.canRate),
+              () => {}, onRatingDone, widget.canRate),
         ),
-        Text(rating.count.toString(),
-            style: TextStyle(fontSize: 12, color: Colors.grey))
+        Text(
+          rating.count.toString(),
+          style: TextStyle(fontSize: 12, color: Colors.grey),
+        )
       ]),
     ]);
   }

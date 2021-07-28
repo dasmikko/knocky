@@ -46,9 +46,11 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
   void getVideoInfo(String url) async {
     GetConnect().get('https://noembed.com/embed?url=${url}').then((res) {
       Map jsonData = jsonDecode(res.bodyString);
-      setState(() {
-        _title = jsonData['title'];
-      });
+      if (this.mounted) {
+        setState(() {
+          _title = jsonData['title'];
+        });
+      }
     });
   }
 

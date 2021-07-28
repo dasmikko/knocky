@@ -32,6 +32,8 @@ class PostListItem extends StatelessWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(8, 16, 16, 16),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           BBcodeRenderer(
             parentContext: context,

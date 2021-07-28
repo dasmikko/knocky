@@ -3,10 +3,14 @@ import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:bbob_dart/bbob_dart.dart' as bbob;
+import 'package:get/get.dart';
 import 'package:knocky/helpers/bbcodeparser.dart';
 import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/screens/imageViewer.dart';
+import 'package:knocky/widgets/post/postsElements/Embed.dart';
 import 'package:knocky/widgets/post/postsElements/image.dart';
+import 'package:knocky/widgets/post/postsElements/twitter.dart';
 import 'package:knocky/widgets/post/postsElements/video.dart';
 import 'package:knocky/widgets/post/postsElements/youtube.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -42,17 +46,6 @@ class BBcodeRenderer extends StatelessWidget {
   }
 
   Widget videoHandler(bbob.Element node) {
-    // TODO:
-    /*
-    if (node.textContent.endsWith('.wav') ||
-        node.textContent.endsWith('.mp3') ||
-        node.textContent.endsWith('.ogg')) {
-      return AudioElement(
-        url: node.textContent,
-        scaffoldKey: this.scaffoldKey,
-      );
-    }
-    */
     return VideoEmbed(
       url: node.textContent,
     );
@@ -65,22 +58,17 @@ class BBcodeRenderer extends StatelessWidget {
   }
 
   Widget twitterHandler(bbob.Element node) {
-    return Container();
-    // TODO:
-    /*
-    return TwitterEmbedWidget(
-      twitterUrl: node.textContent,
+    return TwitterCard(
+      tweetUrl: node.textContent,
       onTapImage: (List<String> allPhotos, int photoIndex, String hashcode) {
-        Navigator.of(parentContext, rootNavigator: true).push(
-          MaterialPageRoute(
-              builder: (context) => ImageViewerScreen(
-                    url: allPhotos[photoIndex],
-                    urls: allPhotos,
-                  )),
+        Get.to(
+          () => ImageViewerScreen(
+            url: allPhotos[photoIndex],
+            urls: allPhotos,
+          ),
         );
       },
     );
-    */
   }
 
   // TODO: Move out to own file
@@ -275,6 +263,7 @@ class BBcodeRenderer extends StatelessWidget {
           case 'i':
           case 'u':
           case 'url':
+          case 'url smart':
           case 'spoiler':
             TextStyle textStyle = Theme.of(parentContext)
                 .textTheme
@@ -292,7 +281,7 @@ class BBcodeRenderer extends StatelessWidget {
                         ? Theme.of(parentContext).textTheme.bodyText1.color
                         : null);
 
-            if (node.tag == 'url') {
+            if (node.tag == 'url' || node.tag == 'url smart') {
               String url;
 
               if (node.attributes.containsKey('href')) {
@@ -301,15 +290,12 @@ class BBcodeRenderer extends StatelessWidget {
                 url = node.textContent;
               }
 
-              print(node.attributes);
+              print(node);
 
-              if (node.attributes['smart'] == 'smart') {
-                // TODO:
-                /*
+              if (node.attributes.containsKey('smart')) {
                 widgetList.add(EmbedWidget(
                   url: url,
                 ));
-                */
               } else {
                 richTextContent.add(
                   TextSpan(
@@ -475,6 +461,7 @@ class BBcodeRenderer extends StatelessWidget {
 
     // TODO: This is a dirty quickfix for images that should be displayed as thumbnails
     String bbcodeCleaned = this.bbcode.replaceAll('[img thumbnail]', '[img]');
+    bbcodeCleaned = bbcodeCleaned.replaceAll('[url smart]', '[url smart=true]');
 
     List<bbob.Node> nodes = new BBCodeParser().parse(bbcodeCleaned);
 

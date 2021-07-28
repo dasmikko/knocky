@@ -118,7 +118,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
     return bbcode;
   }
 
-  String _inlineHandler(SlateNode object, SlateNode node) {
+  /*String _inlineHandler(SlateNode object, SlateNode node) {
     StringBuffer content = new StringBuffer();
 
     if (node.type == 'link') {
@@ -137,7 +137,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
       });
     }
     return content.toString();
-  }
+  }*/
 
   dynamic _handleNodes(List<SlateNode> nodes,
       {bool isChild = false, bool asList = false}) {
@@ -182,7 +182,6 @@ class BBCodeHandler implements bbob.NodeVisitor {
     if (asList) {
       return contentItems;
     }
-    print(content.toString());
     return content.toString();
   }
 

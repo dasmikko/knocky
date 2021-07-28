@@ -8,6 +8,7 @@ class PageSelector extends StatelessWidget {
   final Function onPage;
   final int pageCount;
   final int currentPage;
+  final ItemScrollController scrollController = new ItemScrollController();
 
   PageSelector(
       {@required this.onNext,
@@ -31,16 +32,34 @@ class PageSelector extends StatelessWidget {
     );
   }
 
+  void changePage(int page) {
+    onPage(page);
+    updateCurrentPagePosition();
+  }
+
+  void updateCurrentPagePosition() {
+    scrollController.scrollTo(
+      curve: Curves.easeOutCirc,
+      index: currentPage - 1,
+      duration: Duration(milliseconds: 500),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.fromLTRB(0, 8, 8, 0),
-        height: 40,
-        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          Container(
-              width: 150,
-              margin: EdgeInsets.only(right: 4),
+      padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+      height: 32,
+      child: Row(
+        children: [
+          navigatorButton(context, Icon(Icons.arrow_left),
+              () => changePage(currentPage - 1),
+              disabled: currentPage == 1),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(right: 4, left: 4),
               child: ScrollablePositionedList.separated(
+                itemScrollController: scrollController,
                 // we're missing shrinkWrap in this widget to deal with resizing
                 separatorBuilder: (BuildContext context, int i) {
                   return Container(width: 4, height: double.infinity);
@@ -48,45 +67,58 @@ class PageSelector extends StatelessWidget {
                 physics: BouncingScrollPhysics(),
                 initialScrollIndex: currentPage - 1,
                 scrollDirection: Axis.horizontal,
+
                 itemCount: pageCount,
                 itemBuilder: (BuildContext context, int i) {
-                  return navigatorButton(
-                      context, (i + 1).toString(), () => onPage(i + 1),
+                  return navigatorButton(context, Text((i + 1).toString()),
+                      () => changePage(i + 1),
                       highlight: currentPage == i + 1);
                 },
-              )),
-          if (currentPage != pageCount) navigatorButton(context, '>', onNext)
-        ]));
+              ),
+            ),
+          ),
+          navigatorButton(context, Icon(Icons.arrow_right),
+              () => changePage(currentPage + 1),
+              disabled: currentPage == pageCount),
+        ],
+      ),
+    );
   }
 
-  Widget navigatorButton(context, text, onClick, {highlight = false}) {
+  Widget navigatorButton(context, Widget content, onClick,
+      {highlight = false, disabled = false}) {
     return Container(
-        width: 32,
-        child: ElevatedButton(
-            child: Stack(fit: StackFit.loose, children: [
+      width: 32,
+      child: ElevatedButton(
+          child: Stack(
+            fit: StackFit.loose,
+            children: [
               Container(
-                  height: double.infinity,
-                  child: Align(
-                      alignment: Alignment.center,
-                      child:
-                          Text(text, style: TextStyle(color: Colors.white)))),
+                height: double.infinity,
+                child: Align(alignment: Alignment.center, child: content),
+              ),
               if (highlight) highlightCaret(context)
-            ]),
-            style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.zero,
-              primary: Theme.of(context).primaryColor,
-            ),
-            onPressed: onClick));
+            ],
+          ),
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.zero,
+            primary: Theme.of(context).primaryColor,
+          ),
+          onPressed: disabled ? null : onClick),
+    );
   }
 
   Widget highlightCaret(context) {
     return Container(
-        height: double.infinity,
-        child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-                margin: EdgeInsets.only(top: 20),
-                child: FaIcon(FontAwesomeIcons.caretUp,
-                    size: 16, color: Theme.of(context).accentColor))));
+      height: double.infinity,
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          margin: EdgeInsets.only(top: 20),
+          child: FaIcon(FontAwesomeIcons.caretUp,
+              size: 16, color: Theme.of(context).accentColor),
+        ),
+      ),
+    );
   }
 }
