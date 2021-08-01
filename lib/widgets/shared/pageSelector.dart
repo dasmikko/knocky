@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-class PageSelector extends StatelessWidget {
+class PageSelector extends StatefulWidget {
   final Function onNext;
   final Function onPage;
   final int pageCount;
   final int currentPage;
-  final ItemScrollController scrollController = new ItemScrollController();
 
   PageSelector(
       {@required this.onNext,
@@ -15,29 +15,51 @@ class PageSelector extends StatelessWidget {
       @required this.pageCount,
       this.currentPage: 1});
 
+  @override
+  _PageSelectorState createState() => _PageSelectorState();
+}
+
+class _PageSelectorState extends State<PageSelector> {
+  ItemScrollController scrollController = new ItemScrollController();
+
   void changePage(int page) {
-    onPage(page);
-    updateCurrentPagePosition();
+    widget.onPage(page);
   }
 
   void updateCurrentPagePosition() {
-    scrollController.scrollTo(
-      curve: Curves.easeOutCirc,
-      index: currentPage - 1,
-      duration: Duration(milliseconds: 500),
-    );
+    var alignment = _getAlignmentValue();
+    scrollController.jumpTo(
+        index: widget.currentPage - 1, alignment: alignment);
+  }
+
+  // this just exists to make sure we don't go over bounds on either sides
+  double _getAlignmentValue() {
+    var alignment = 0.5;
+    var index = widget.currentPage - 1;
+    var middleIndexCount = 4;
+    var selectorWidth = (0.5 / middleIndexCount);
+    if (index < middleIndexCount) {
+      alignment = selectorWidth * index;
+    } else if (index > widget.pageCount - middleIndexCount) {
+      alignment = 1 +
+          (index - ((widget.pageCount) - 1)) * selectorWidth -
+          selectorWidth;
+    }
+    return alignment;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    SchedulerBinding.instance
+        .addPostFrameCallback((_) => updateCurrentPagePosition());
+    var selector = Container(
       padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
       height: 32,
       child: Row(
         children: [
           navigatorButton(context, Icon(Icons.arrow_left),
-              () => changePage(currentPage - 1),
-              disabled: currentPage == 1),
+              () => changePage(widget.currentPage - 1),
+              disabled: widget.currentPage == 1),
           Expanded(
             child: Container(
               margin: EdgeInsets.only(right: 4, left: 4),
@@ -47,25 +69,26 @@ class PageSelector extends StatelessWidget {
                 separatorBuilder: (BuildContext context, int i) {
                   return Container(width: 4, height: double.infinity);
                 },
-                physics: BouncingScrollPhysics(),
-                initialScrollIndex: currentPage - 1,
+                physics: ClampingScrollPhysics(),
+                initialScrollIndex: widget.currentPage - 1,
                 scrollDirection: Axis.horizontal,
 
-                itemCount: pageCount,
+                itemCount: widget.pageCount,
                 itemBuilder: (BuildContext context, int i) {
                   return navigatorButton(context, Text((i + 1).toString()),
                       () => changePage(i + 1),
-                      highlight: currentPage == i + 1);
+                      highlight: widget.currentPage == i + 1);
                 },
               ),
             ),
           ),
           navigatorButton(context, Icon(Icons.arrow_right),
-              () => changePage(currentPage + 1),
-              disabled: currentPage == pageCount),
+              () => changePage(widget.currentPage + 1),
+              disabled: widget.currentPage == widget.pageCount),
         ],
       ),
     );
+    return selector;
   }
 
   Widget navigatorButton(context, Widget content, onClick,
