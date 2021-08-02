@@ -10,8 +10,11 @@ import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/models/readThreads.dart';
 import 'package:dio/dio.dart';
 import 'package:knocky/models/threadAlertPage.dart';
+import 'package:knocky/models/userBans.dart';
 import 'package:knocky/models/userProfile.dart';
+import 'package:knocky/models/userProfileDetails.dart';
 import 'package:knocky/models/userProfilePosts.dart';
+import 'package:knocky/models/userProfileRatings.dart';
 import 'package:knocky/models/userProfileThreads.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -249,18 +252,45 @@ class KnockoutAPI {
     return UserProfile.fromJson(response.data);
   }
 
-  Future<UserProfilePosts> getUserProfilePosts(int userId) async {
+  Future<UserBans> getUserBans(int userId) async {
     final response = await _request(
-      url: 'user/' + userId.toString() + '/posts',
+      url: 'user/' + userId.toString() + '/bans',
+      type: 'get',
+    );
+
+    return UserBans.fromJson(response.data);
+  }
+
+  Future<UserProfileDetails> getUserProfileDetails(int userId) async {
+    final response = await _request(
+      url: 'v2/users/' + userId.toString() + '/profile',
+      type: 'get',
+    );
+
+    return UserProfileDetails.fromJson(response.data);
+  }
+
+  Future<UserProfileRatings> getUserProfileTopRatings(int userId) async {
+    final response = await _request(
+      url: 'user/' + userId.toString() + '/topRatings',
+      type: 'get',
+    );
+
+    return UserProfileRatings.fromJson(response.data);
+  }
+
+  Future<UserProfilePosts> getUserPosts(int userId, {int page = 1}) async {
+    final response = await _request(
+      url: 'user/$userId/posts/$page',
       type: 'get',
     );
 
     return UserProfilePosts.fromJson(response.data);
   }
 
-  Future<UserProfileThreads> getUserProfileThreads(int userId) async {
+  Future<UserProfileThreads> getUserThreads(int userId, {int page = 1}) async {
     final response = await _request(
-      url: 'user/' + userId.toString() + 'threads',
+      url: 'user/$userId/threads/$page',
       type: 'get',
     );
 

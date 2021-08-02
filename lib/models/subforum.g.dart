@@ -107,7 +107,7 @@ Map<String, dynamic> _$SubForumLastPostThreadToJson(
 SubforumLastPostUser _$SubforumLastPostUserFromJson(Map<String, dynamic> json) {
   return SubforumLastPostUser(
     isBanned: json['isBanned'] as bool,
-    usergroup: json['usergroup'] as int,
+    usergroup: Usergroup.values[json['usergroup'] as int],
     username: json['username'] as String,
   );
 }

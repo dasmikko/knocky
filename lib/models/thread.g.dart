@@ -30,7 +30,8 @@ Thread _$ThreadFromJson(Map<String, dynamic> json) {
     subscriptionLastSeen: json['subscriptionLastSeen'] == null
         ? null
         : DateTime.parse(json['subscriptionLastSeen'] as String),
-    isSubscribedTo: json['isSubscribedTo'] as bool ?? 0,
+    isSubscribedTo:
+        json['isSubscribedTo'] as bool ?? json['subscribed'] as bool ?? false,
     userId: json['userId'] as int,
     threadBackgroundType: json['threadBackgroundType'] as String,
     threadBackgroundUrl: json['threadBackgroundUrl'] as String,
@@ -59,7 +60,7 @@ Map<String, dynamic> _$ThreadToJson(Thread instance) => <String, dynamic>{
 
 ThreadUser _$ThreadUserFromJson(Map<String, dynamic> json) {
   return ThreadUser(
-    usergroup: json['usergroup'] as int,
+    usergroup: Usergroup.values[json['usergroup'] as int],
     username: json['username'] as String,
   );
 }
@@ -72,26 +73,30 @@ Map<String, dynamic> _$ThreadUserToJson(ThreadUser instance) =>
 
 ThreadPost _$ThreadPostFromJson(Map<String, dynamic> json) {
   return ThreadPost(
-    id: json['id'] as int,
-    content: _contentFromJson(json['content'] as String),
-    user: json['user'] == null
-        ? null
-        : ThreadPostUser.fromJson(json['user'] as Map<String, dynamic>),
-    ratings: (json['ratings'] as List)
-        ?.map((e) => e == null
-            ? null
-            : ThreadPostRatings.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-    createdAt: json['createdAt'] == null
-        ? null
-        : DateTime.parse(json['createdAt'] as String),
-    bans: (json['bans'] as List)
-        ?.map((e) => e == null
-            ? null
-            : ThreadPostBan.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-    threadPostNumber: json['threadPostNumber'] as int,
-  );
+      id: json['id'] as int,
+      content: _contentFromJson(json['content'] as String),
+      user: json['user'] == null
+          ? null
+          : ThreadPostUser.fromJson(json['user'] as Map<String, dynamic>),
+      ratings: (json['ratings'] as List)
+          ?.map((e) => e == null
+              ? null
+              : ThreadPostRatings.fromJson(e as Map<String, dynamic>))
+          ?.toList(),
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      bans: (json['bans'] as List)
+          ?.map((e) => e == null
+              ? null
+              : ThreadPostBan.fromJson(e as Map<String, dynamic>))
+          ?.toList(),
+      threadPostNumber: json['threadPostNumber'] as int,
+      page: json['page'] as int,
+      thread:
+          json.containsKey('thread') && json['thread'] is Map<String, dynamic>
+              ? Thread.fromJson(json['thread'])
+              : null);
 }
 
 Map<String, dynamic> _$ThreadPostToJson(ThreadPost instance) =>
@@ -129,11 +134,16 @@ Map<String, dynamic> _$ThreadPostBanToJson(ThreadPostBan instance) =>
     };
 
 ThreadPostRatings _$ThreadPostRatingsFromJson(Map<String, dynamic> json) {
+  // 'users' are just List<string> for thread posts,
+  // but List<Map<string, dynamic>> for profile posts
+  var users = (json['users'] as List)
+      .map((user) => user is String ? user : user['username'] as String)
+      .toList();
   return ThreadPostRatings(
     ratingId: _ratingIdHandler(json['rating_id']),
     rating: json['rating'] as String,
     count: json['count'] as int,
-    users: (json['users'] as List)?.map((e) => e as String)?.toList(),
+    users: users,
   );
 }
 
@@ -151,7 +161,7 @@ ThreadPostUser _$ThreadPostUserFromJson(Map<String, dynamic> json) {
     avatarUrl: json['avatarUrl'] as String,
     backgroundUrl: json['backgroundUrl'] as String,
     isBanned: json['isBanned'] as bool,
-    usergroup: json['usergroup'] as int,
+    usergroup: Usergroup.values[json['usergroup'] as int],
     username: json['username'] as String,
   );
 }

@@ -145,9 +145,9 @@ class _ThreadScreenState extends State<ThreadScreen>
           addAutomaticKeepAlives: true,
           itemPositionsListener: itemPositionListener,
           minCacheExtent: MediaQuery.of(context).size.height,
-          itemCount: (threadController.thread.value?.posts?.length) ?? 0,
+          itemCount: (threadController.data.value?.posts?.length) ?? 0,
           itemBuilder: (BuildContext context, int index) {
-            ThreadPost post = threadController.thread.value.posts[index];
+            ThreadPost post = threadController.data.value.posts[index];
 
             if (index == 0) {
               // Insert header
@@ -164,7 +164,7 @@ class _ThreadScreenState extends State<ThreadScreen>
               );
             }
 
-            if (index == (threadController.thread.value.posts.length - 1)) {
+            if (index == (threadController.data.value.posts.length - 1)) {
               return Column(
                 children: [
                   PostListItem(

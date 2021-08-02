@@ -36,20 +36,27 @@ class RatingsChooser extends StatelessWidget {
         itemBuilder: (context, index) {
           var rating = ratings.elementAt(index);
           return ratingButton(
-              rating.value, postId, onRatingClicked, onRatingDone);
+              rating.value, postId, onRatingClicked, onRatingDone, true);
         });
   }
 
+  static Widget ratingIcon(RatingItem ratingItem, {double size = 16}) {
+    return CachedNetworkImage(
+        imageUrl: ratingItem.url, width: size, height: size);
+  }
+
   static Widget ratingButton(RatingItem ratingItem, int postId,
-      Function onRatingClicked, Function onRatingDone) {
+      Function onRatingClicked, Function onRatingDone, bool canRate) {
     return Container(
       child: IconButton(
         color: Colors.green,
         padding: EdgeInsets.all(4),
         splashRadius: 16,
         visualDensity: VisualDensity.compact,
-        onPressed: () => onRatingPressed(
-            postId, ratingItem.id, onRatingClicked, onRatingDone),
+        onPressed: () => canRate
+            ? onRatingPressed(
+                postId, ratingItem.id, onRatingClicked, onRatingDone)
+            : {},
         icon: CachedNetworkImage(imageUrl: ratingItem.url),
       ),
     );

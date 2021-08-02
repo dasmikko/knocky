@@ -13,8 +13,10 @@ class Ratings extends StatefulWidget {
   final List<ThreadPostRatings> ratings;
   final int postId;
   final Function onRated;
+  final bool canRate;
 
-  Ratings({@required this.postId, this.ratings, this.onRated});
+  Ratings(
+      {@required this.postId, this.ratings, this.onRated, this.canRate = true});
 
   @override
   _RatingsState createState() => _RatingsState();
@@ -66,7 +68,7 @@ class _RatingsState extends State<Ratings> {
       child: Row(children: [
         Expanded(child: ratingsList()),
         Obx(
-          () => authController.isAuthenticated.value
+          () => authController.isAuthenticated.value && widget.canRate
               ? RateButton(
                   popOverContent: showRatingsChooser(context),
                 )
@@ -115,8 +117,8 @@ class _RatingsState extends State<Ratings> {
           width: RATING_ICON_SIZE,
           height: RATING_ICON_SIZE,
           margin: EdgeInsets.only(bottom: 4),
-          child: RatingsChooser.ratingButton(
-              ratingItem, widget.postId, () => {}, onRatingDone),
+          child: RatingsChooser.ratingButton(ratingItem, widget.postId,
+              () => {}, onRatingDone, widget.canRate),
         ),
         Text(
           rating.count.toString(),

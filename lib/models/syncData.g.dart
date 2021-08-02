@@ -11,7 +11,7 @@ SyncDataModel _$SyncDataModelFromJson(Map<String, dynamic> json) {
       avatarUrl: json['avatarUrl'] as String,
       backgroundUrl: json['backgroundUrl'] as String,
       id: json['id'] as int,
-      usergroup: json['usergroup'] as int,
+      usergroup: Usergroup.values[json['usergroup'] as int],
       username: json['username'] as String,
       isBanned: json['isBanned'] as bool,
       mentions: (json['mentions'] as List)

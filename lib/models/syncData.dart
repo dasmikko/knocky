@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:knocky/models/threadAlert.dart';
+import 'package:knocky/models/usergroup.dart';
 
 part 'syncData.g.dart';
 
@@ -11,7 +12,7 @@ class SyncDataModel {
   final int id;
   final bool isBanned;
   final List<SyncDataMentionModel> mentions;
-  final int usergroup;
+  final Usergroup usergroup;
   final String username;
   final List<ThreadAlert> subscriptions;
 

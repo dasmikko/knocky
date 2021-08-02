@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:knocky/controllers/paginatedController.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class PageSelector extends StatefulWidget {
@@ -21,6 +22,22 @@ class PageSelector extends StatefulWidget {
 
 class _PageSelectorState extends State<PageSelector> {
   ItemScrollController scrollController = new ItemScrollController();
+  
+  static PageSelector pageSelector(ItemScrollController itemScrollController,
+      PaginatedController dataController) {
+    return PageSelector(
+      onNext: () {
+        itemScrollController.jumpTo(index: 0);
+        dataController.nextPage();
+      },
+      onPage: (page) {
+        itemScrollController.jumpTo(index: 0);
+        dataController.goToPage(page);
+      },
+      pageCount: dataController.pageCount,
+      currentPage: dataController.page,
+    );
+  }
 
   void changePage(int page) {
     widget.onPage(page);
