@@ -1,18 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/colors.dart';
+import 'package:knocky/models/usergroup.dart';
 
 class Username extends StatelessWidget {
   final String username;
-  final int usergroup;
+  final Usergroup usergroup;
   final bool bold;
+  final Function onClick;
+  final double fontSize;
+  final bool banned;
 
-  Username({@required this.username, @required this.usergroup, this.bold});
+  Username(
+      {@required this.username,
+      @required this.usergroup,
+      this.bold,
+      this.onClick,
+      this.banned = false,
+      this.fontSize = 14});
 
   @override
   Widget build(BuildContext context) {
-    return Text(username,
-        style: TextStyle(
-            color: AppColors(context).userGroupToColor(usergroup),
-            fontWeight: bold ? FontWeight.bold : FontWeight.normal));
+    return TextButton(
+        style: ButtonStyle(
+            padding:
+                MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero)),
+        onPressed: onClick,
+        child: Text(username,
+            style: TextStyle(
+                fontSize: fontSize,
+                color: AppColors(context)
+                    .userGroupToColor(usergroup, banned: banned),
+                fontWeight: bold ? FontWeight.bold : FontWeight.normal)));
   }
 }

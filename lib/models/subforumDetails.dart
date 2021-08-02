@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:knocky/models/subforum.dart';
+import 'package:knocky/models/usergroup.dart';
 import 'package:knocky/models/viewers.dart';
 
 part 'subforumDetails.g.dart';
@@ -116,7 +117,7 @@ class SignificantThread {
 
 @JsonSerializable()
 class SubforumThreadUser {
-  final int usergroup;
+  final Usergroup usergroup;
   @JsonKey(name: 'avatar_url')
   final String avatarUrl;
   final String username;
@@ -165,7 +166,7 @@ class SubforumThreadLastPostThread {
 
 @JsonSerializable()
 class SubforumThreadLastPostUser {
-  final int usergroup;
+  final Usergroup usergroup;
   @JsonKey(name: 'avatar_url')
   final String avatarUrl;
   final String username;

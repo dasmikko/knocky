@@ -26,7 +26,7 @@ ThreadAlert _$ThreadAlertFromJson(Map<String, dynamic> json) {
 
 ThreadUser _$ThreadAlertUser(Map<String, dynamic> json) {
   return ThreadUser(
-    usergroup: json['threadUserUsergroup'] as int,
+    usergroup: Usergroup.values[json['threadUserUsergroup'] as int],
     username: json['threadUsername'] as String,
   );
 }
@@ -95,7 +95,7 @@ Map<String, dynamic> _$ThreadAlertLastPostThreadToJson(
 ThreadAlertLastPostUser _$ThreadAlertLastPostUserFromJson(
     Map<String, dynamic> json) {
   return ThreadAlertLastPostUser(
-    usergroup: json['usergroup'] as int,
+    usergroup: Usergroup.values[json['usergroup'] as int],
     username: json['username'] as String,
     avatarUrl: json['avatarUrl'] as String,
   );

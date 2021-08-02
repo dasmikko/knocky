@@ -135,7 +135,7 @@ Map<String, dynamic> _$SignificantThreadToJson(SignificantThread instance) =>
 
 SubforumThreadUser _$SubforumThreadUserFromJson(Map<String, dynamic> json) {
   return SubforumThreadUser(
-    usergroup: json['usergroup'] as int,
+    usergroup: Usergroup.values[json['usergroup'] as int],
     username: json['username'] as String,
     avatarUrl: json['avatar_url'] as String,
     isBanned: json['isBanned'] as bool,
@@ -206,7 +206,7 @@ Map<String, dynamic> _$SubforumThreadLastPostThreadToJson(
 SubforumThreadLastPostUser _$SubforumThreadLastPostUserFromJson(
     Map<String, dynamic> json) {
   return SubforumThreadLastPostUser(
-    usergroup: json['usergroup'] as int,
+    usergroup: Usergroup.values[json['usergroup'] as int],
     username: json['username'] as String,
     avatarUrl: json['avatar_url'] as String,
   );

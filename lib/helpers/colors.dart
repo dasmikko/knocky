@@ -48,11 +48,15 @@ class AppColors {
     return Color.fromRGBO(255, 201, 63, 1);
   }
 
-  Color userGroupToColor(int usergroup) {
-    Usergroup group = Usergroup.values[usergroup];
-    switch (group) {
-      case Usergroup.banned:
-        return HexColor('e04545');
+  Color bannedColor() {
+    return HexColor('e04545');
+  }
+
+  Color userGroupToColor(Usergroup usergroup, {bool banned = false}) {
+    if (banned) {
+      return bannedColor();
+    }
+    switch (usergroup) {
       case Usergroup.regular:
         return HexColor('3facff');
       case Usergroup.gold:
@@ -66,6 +70,25 @@ class AppColors {
       default:
         return HexColor('3facff');
     }
+  }
+
+  Color darken(Color color, [double amount = .1]) {
+    assert(amount >= 0 && amount <= 1);
+
+    final hsl = HSLColor.fromColor(color);
+    final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
+
+    return hslDark.toColor();
+  }
+
+  Color lighten(Color color, [double amount = .1]) {
+    assert(amount >= 0 && amount <= 1);
+
+    final hsl = HSLColor.fromColor(color);
+    final hslLight =
+        hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
+
+    return hslLight.toColor();
   }
 }
 

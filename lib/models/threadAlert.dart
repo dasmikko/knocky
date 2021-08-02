@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/models/usergroup.dart';
 
 part 'threadAlert.g.dart';
 
@@ -76,7 +77,7 @@ class ThreadAlertLastPostThread {
 
 @JsonSerializable()
 class ThreadAlertLastPostUser {
-  final int usergroup;
+  final Usergroup usergroup;
   final String avatarUrl;
   final String username;
 
