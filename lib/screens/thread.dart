@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/threadController.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widgets/jumpToPageDialog.dart';
 import 'package:knocky/widgets/post/postListItem.dart';
 import 'package:knocky/widgets/shared/pageSelector.dart';
+import 'package:knocky/widgets/shared/postEditorBBCode.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ThreadScreen extends StatefulWidget {
@@ -22,6 +24,7 @@ class ThreadScreen extends StatefulWidget {
 class _ThreadScreenState extends State<ThreadScreen>
     with SingleTickerProviderStateMixin {
   final ThreadController threadController = Get.put(ThreadController());
+  final AuthController authController = Get.put(AuthController());
   final ItemScrollController itemScrollController = new ItemScrollController();
   final ItemPositionsListener itemPositionListener =
       ItemPositionsListener.create();
@@ -129,7 +132,8 @@ class _ThreadScreenState extends State<ThreadScreen>
         children: <Widget>[
           PageSelector.pageSelector(itemScrollController, threadController),
           posts(),
-          PageSelector.pageSelector(itemScrollController, threadController)
+          PageSelector.pageSelector(itemScrollController, threadController),
+          postEditor()
         ],
       ),
     )));
@@ -145,5 +149,13 @@ class _ThreadScreenState extends State<ThreadScreen>
     return Container(
         padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
         child: Column(children: [...posts]));
+  }
+
+  Widget postEditor() {
+    if (!authController.isAuthenticated.value) {
+      return Container();
+    }
+    return Container(
+        height: 300, padding: EdgeInsets.all(8), child: PostEditorBBCode());
   }
 }
