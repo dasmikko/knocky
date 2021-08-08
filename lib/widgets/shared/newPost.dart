@@ -18,6 +18,17 @@ class _NewPostState extends State<NewPost> {
   @override
   void initState() {
     super.initState();
+    // rebuild the widget when text is changed so we can enable/disable
+    // the submit button
+    textEditingController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
   }
 
   Widget body(BuildContext context) {
@@ -44,13 +55,16 @@ class _NewPostState extends State<NewPost> {
 
   Widget footer(BuildContext context) {
     return Container(
-        color: Theme.of(context).primaryColorDark,
+        color: Theme.of(context).primaryColor,
         child: Expanded(child: Row(children: [preview(), submit()])));
   }
 
   Widget preview() {
     return Expanded(
         child: TextButton.icon(
+            style: ButtonStyle(
+                foregroundColor:
+                    MaterialStateColor.resolveWith((states) => Colors.white)),
             icon: Icon(
                 previewing ? FontAwesomeIcons.edit : FontAwesomeIcons.eye,
                 size: 16),
@@ -61,11 +75,12 @@ class _NewPostState extends State<NewPost> {
   }
 
   Widget submit() {
+    var onClick = textEditingController.text.length < 1 ? null : submitClicked;
     return Expanded(
         child: TextButton.icon(
             icon: Icon(FontAwesomeIcons.paperPlane, size: 16),
             label: Text('Submit'),
-            onPressed: submitClicked));
+            onPressed: onClick));
   }
 
   submitClicked() async {
