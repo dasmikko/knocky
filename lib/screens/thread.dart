@@ -5,6 +5,7 @@ import 'package:knocky/controllers/threadController.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widgets/jumpToPageDialog.dart';
 import 'package:knocky/widgets/post/postListItem.dart';
+import 'package:knocky/widgets/shared/newPost.dart';
 import 'package:knocky/widgets/shared/pageSelector.dart';
 import 'package:knocky/widgets/shared/postEditorBBCode.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -132,8 +133,8 @@ class _ThreadScreenState extends State<ThreadScreen>
         children: <Widget>[
           PageSelector.pageSelector(itemScrollController, threadController),
           posts(),
+          postEditor(),
           PageSelector.pageSelector(itemScrollController, threadController),
-          postEditor()
         ],
       ),
     )));
@@ -155,7 +156,6 @@ class _ThreadScreenState extends State<ThreadScreen>
     if (!authController.isAuthenticated.value) {
       return Container();
     }
-    return Container(
-        height: 300, padding: EdgeInsets.all(8), child: PostEditorBBCode());
+    return Container(padding: EdgeInsets.all(8), child: NewPost());
   }
 }
