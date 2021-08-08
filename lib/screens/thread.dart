@@ -126,24 +126,13 @@ class _ThreadScreenState extends State<ThreadScreen>
             child: Container(
       padding: EdgeInsets.symmetric(vertical: 8),
       child: Column(
-        children: <Widget>[pageSelector(), posts(), pageSelector()],
+        children: <Widget>[
+          PageSelector.pageSelector(itemScrollController, threadController),
+          posts(),
+          PageSelector.pageSelector(itemScrollController, threadController)
+        ],
       ),
     )));
-  }
-
-  Widget pageSelector() {
-    return PageSelector(
-      onNext: () {
-        itemScrollController.jumpTo(index: 0);
-        threadController.nextPage();
-      },
-      onPage: (page) {
-        itemScrollController.jumpTo(index: 0);
-        threadController.goToPage(page);
-      },
-      pageCount: threadController.pageCount,
-      currentPage: threadController.page,
-    );
   }
 
   Widget posts() {
