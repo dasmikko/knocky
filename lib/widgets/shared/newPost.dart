@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
-import 'package:knocky/controllers/authController.dart';
+import 'package:knocky/helpers/api.dart';
 import 'package:knocky/widgets/bbcode/bbcodeRenderer.dart';
 import 'package:knocky/widgets/shared/postEditorBBCode.dart';
 
 class NewPost extends StatefulWidget {
+  final int threadId;
+  final Function onSubmit;
+  NewPost({this.threadId, this.onSubmit});
   @override
   _NewPostState createState() => _NewPostState();
 }
@@ -59,7 +61,17 @@ class _NewPostState extends State<NewPost> {
   }
 
   Widget submit() {
-    return Expanded(child: TextButton(child: Text('Submit')));
+    return Expanded(
+        child: TextButton.icon(
+            icon: Icon(FontAwesomeIcons.paperPlane, size: 16),
+            label: Text('Submit'),
+            onPressed: submitClicked));
+  }
+
+  submitClicked() async {
+    await KnockoutAPI().newPost(textEditingController.text, widget.threadId);
+    textEditingController.text = '';
+    widget.onSubmit.call();
   }
 
   @override

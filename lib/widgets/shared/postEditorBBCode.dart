@@ -44,6 +44,7 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
           () => addTag.call('blockquote')),
       btn('Unordered list', FontAwesomeIcons.listUl, () => addTag.call('ul')),
       btn('Ordered list', FontAwesomeIcons.listOl, () => addTag.call('ol')),
+      // TODO: remaining buttons
     ];
     return Container(
         color: Theme.of(context).primaryColor, child: Wrap(children: buttons));
