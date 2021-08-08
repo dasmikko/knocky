@@ -77,7 +77,7 @@ class _ThreadScreenState extends State<ThreadScreen>
             show: threadController.isFetching.value,
             child: RefreshIndicator(
               onRefresh: () async => threadController.fetch(),
-              child: posts(),
+              child: bodyWidgets(),
             ),
           ),
         ),
@@ -122,6 +122,17 @@ class _ThreadScreenState extends State<ThreadScreen>
     );
   }
 
+  Widget bodyWidgets() {
+    return SingleChildScrollView(
+        child: IntrinsicHeight(
+            child: Container(
+      padding: EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        children: <Widget>[pageSelector(), posts(), pageSelector()],
+      ),
+    )));
+  }
+
   Widget pageSelector() {
     return PageSelector(
       onNext: () {
@@ -138,50 +149,14 @@ class _ThreadScreenState extends State<ThreadScreen>
   }
 
   Widget posts() {
+    if (threadController.data.value?.posts == null) {
+      return Container();
+    }
+
+    var posts = threadController.data.value.posts
+        .map((post) => PostListItem(post: post));
     return Container(
-        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-        child: ScrollablePositionedList.builder(
-          itemScrollController: itemScrollController,
-          addAutomaticKeepAlives: true,
-          itemPositionsListener: itemPositionListener,
-          minCacheExtent: MediaQuery.of(context).size.height,
-          itemCount: (threadController.data.value?.posts?.length) ?? 0,
-          itemBuilder: (BuildContext context, int index) {
-            ThreadPost post = threadController.data.value.posts[index];
-
-            if (index == 0) {
-              // Insert header
-              return Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    child: pageSelector(),
-                  ),
-                  PostListItem(
-                    post: post,
-                  )
-                ],
-              );
-            }
-
-            if (index == (threadController.data.value.posts.length - 1)) {
-              return Column(
-                children: [
-                  PostListItem(
-                    post: post,
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 8),
-                    child: pageSelector(),
-                  ),
-                ],
-              );
-            }
-
-            return PostListItem(
-              post: post,
-            );
-          },
-        ));
+        padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+        child: Column(children: [...posts]));
   }
 }
