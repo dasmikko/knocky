@@ -47,7 +47,6 @@ dependencies:
   extended_image: ^4.1.0
   measured_size: ^1.0.0
   cached_value: ^0.2.0
-  better_player: ^0.0.68
   gallery_saver: ^2.1.0
   share: ^2.0.4
   permission_handler: ^8.0.0+2
@@ -56,6 +55,9 @@ dependencies:
   duration: ^3.0.6
   flutter_portal: ^0.4.0
   tweet_ui: ^3.0.0
+  better_player: 0.0.63
+  video_player: 2.0.2
+  video_player_platform_interface: 4.0.0
   flutter_dotenv: ^5.0.0
   popover: ^0.2.6+2
 
