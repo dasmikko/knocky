@@ -2,9 +2,9 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/helpers/twitterApi.dart';
-import 'package:tweet_ui/models/api/tweet.dart';
-import 'package:tweet_ui/tweet_ui.dart';
-import 'package:tweet_ui/tweet_view.dart';
+//import 'package:tweet_ui/models/api/tweet.dart';
+//import 'package:tweet_ui/tweet_ui.dart';
+//import 'package:tweet_ui/tweet_view.dart';
 
 class TwitterCard extends StatefulWidget {
   final String tweetUrl;
@@ -54,10 +54,13 @@ class _TwitterCardState extends State<TwitterCard>
   Widget build(BuildContext context) {
     if (_isLoading) return CircularProgressIndicator();
     if (_failed) return Text('failed to load tweet');
+    return Container();
+    /*
     return EmbeddedTweetView.fromTweet(
       Tweet.fromJson(_twitterJson),
       backgroundColor: Get.isDarkMode ? Colors.grey[800] : Colors.white,
       darkMode: Get.isDarkMode,
     );
+    */
   }
 }
