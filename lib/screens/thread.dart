@@ -1,8 +1,6 @@
-import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/threadController.dart';
-import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widgets/jumpToPageDialog.dart';
 import 'package:knocky/widgets/post/postListItem.dart';
@@ -12,7 +10,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 class ThreadScreen extends StatefulWidget {
   final int id;
   final int page;
-  // TODO: actually use this
+  // TODO: https://stackoverflow.com/questions/48900769/how-to-scroll-singlechildscrollview-programmatically
   final int linkedPostId;
 
   ThreadScreen({@required this.id, this.page: 1, this.linkedPostId});
