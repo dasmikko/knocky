@@ -14,6 +14,7 @@ class NewPost extends StatefulWidget {
 
 class _NewPostState extends State<NewPost> {
   final textEditingController = new TextEditingController();
+  final double height = 300;
   bool previewing = false;
   @override
   void initState() {
@@ -39,7 +40,7 @@ class _NewPostState extends State<NewPost> {
 
   Widget renderer() {
     return Container(
-        height: 300,
+        height: height,
         padding: EdgeInsets.all(8),
         child: BBcodeRenderer(
           parentContext: context,
@@ -49,7 +50,7 @@ class _NewPostState extends State<NewPost> {
 
   Widget editor() {
     return Container(
-        height: 300,
+        height: height,
         child: PostEditorBBCode(textEditingController: textEditingController));
   }
 

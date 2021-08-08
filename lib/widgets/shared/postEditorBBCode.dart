@@ -44,7 +44,12 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
           () => addTag.call('blockquote')),
       btn('Unordered list', FontAwesomeIcons.listUl, () => addTag.call('ul')),
       btn('Ordered list', FontAwesomeIcons.listOl, () => addTag.call('ol')),
-      // TODO: remaining buttons
+      // TODO:
+      // btn('Image', FontAwesomeIcons.image, () => {}),
+      // btn('YouTube', FontAwesomeIcons.youtube, () {}),
+      // btn('Video', FontAwesomeIcons.video, () {}),
+      // btn('Twitter', FontAwesomeIcons.twitter, () {}),
+      // btn('Strawpoll', FontAwesomeIcons.poll, () {})
     ];
     return Container(
         color: Theme.of(context).primaryColor, child: Wrap(children: buttons));
