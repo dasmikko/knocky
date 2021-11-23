@@ -144,7 +144,7 @@ class _ThreadScreenState extends State<ThreadScreen>
           itemScrollController: itemScrollController,
           addAutomaticKeepAlives: true,
           itemPositionsListener: itemPositionListener,
-          minCacheExtent: MediaQuery.of(context).size.height,
+          //minCacheExtent: MediaQuery.of(context).size.height,
           itemCount: (threadController.data.value?.posts?.length) ?? 0,
           itemBuilder: (BuildContext context, int index) {
             ThreadPost post = threadController.data.value.posts[index];
