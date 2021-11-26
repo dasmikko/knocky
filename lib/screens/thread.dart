@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:after_layout/after_layout.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/threadController.dart';
@@ -28,14 +31,38 @@ class _ThreadScreenState extends State<ThreadScreen>
   final ItemPositionsListener itemPositionListener =
       ItemPositionsListener.create();
 
+  var subscription;
+
   @override
   void initState() {
     super.initState();
     threadController.initState(widget.id, widget.page);
+
+    // Listen for when we have fetched the thread data, and scroll to specific post, if requested
+    subscription = threadController.data.listen((Thread thread) async {
+      if (thread != null) {
+        // User request to scroll to specific post
+        if (this.widget.linkedPostId != null) {
+          // The delayed if a huge stupid fucking hack, to make it work while in debug mode.
+          await Future.delayed(Duration(milliseconds: 100));
+
+          // Find the index of the post to scroll to
+          int postIndex =
+              thread.posts.indexWhere((o) => o.id == this.widget.linkedPostId);
+
+          // If we can't find the postIndex, just scroll to the top.
+          itemScrollController.jumpTo(index: postIndex == -1 ? 0 : postIndex);
+
+          // Stop listening for more change, as we will never have to scroll to specific post anymore
+          subscription.cancel();
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
+    subscription.cancel();
     super.dispose();
   }
 
@@ -139,49 +166,50 @@ class _ThreadScreenState extends State<ThreadScreen>
 
   Widget posts() {
     return Container(
-        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-        child: ScrollablePositionedList.builder(
-          itemScrollController: itemScrollController,
-          addAutomaticKeepAlives: true,
-          itemPositionsListener: itemPositionListener,
-          //minCacheExtent: MediaQuery.of(context).size.height,
-          itemCount: (threadController.data.value?.posts?.length) ?? 0,
-          itemBuilder: (BuildContext context, int index) {
-            ThreadPost post = threadController.data.value.posts[index];
+      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+      child: ScrollablePositionedList.builder(
+        itemScrollController: itemScrollController,
+        addAutomaticKeepAlives: true,
+        itemPositionsListener: itemPositionListener,
+        //minCacheExtent: MediaQuery.of(context).size.height,
+        itemCount: (threadController.data.value?.posts?.length) ?? 0,
+        itemBuilder: (BuildContext context, int index) {
+          ThreadPost post = threadController.data.value.posts[index];
 
-            if (index == 0) {
-              // Insert header
-              return Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    child: pageSelector(),
-                  ),
-                  PostListItem(
-                    post: post,
-                  )
-                ],
-              );
-            }
-
-            if (index == (threadController.data.value.posts.length - 1)) {
-              return Column(
-                children: [
-                  PostListItem(
-                    post: post,
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 8),
-                    child: pageSelector(),
-                  ),
-                ],
-              );
-            }
-
-            return PostListItem(
-              post: post,
+          if (index == 0) {
+            // Insert header
+            return Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  child: pageSelector(),
+                ),
+                PostListItem(
+                  post: post,
+                )
+              ],
             );
-          },
-        ));
+          }
+
+          if (index == (threadController.data.value.posts.length - 1)) {
+            return Column(
+              children: [
+                PostListItem(
+                  post: post,
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 8),
+                  child: pageSelector(),
+                ),
+              ],
+            );
+          }
+
+          return PostListItem(
+            post: post,
+          );
+        },
+      ),
+    );
   }
 }
