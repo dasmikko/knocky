@@ -56,23 +56,35 @@ class _NewPostState extends State<NewPost> {
 
   Widget footer(BuildContext context) {
     return Container(
-        color: Theme.of(context).primaryColor,
-        child: Expanded(child: Row(children: [preview(), submit()])));
+      color: Theme.of(context).primaryColor,
+      child: Row(
+        children: [
+          Expanded(
+            child: Row(
+              children: [preview(), submit()],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget preview() {
     return Expanded(
-        child: TextButton.icon(
-            style: ButtonStyle(
-                foregroundColor:
-                    MaterialStateColor.resolveWith((states) => Colors.white)),
-            icon: Icon(
-                previewing ? FontAwesomeIcons.edit : FontAwesomeIcons.eye,
-                size: 16),
-            label: Text(previewing ? 'Edit' : 'Preview'),
-            onPressed: () => setState(() {
-                  previewing = !previewing;
-                })));
+      child: TextButton.icon(
+        style: ButtonStyle(
+            foregroundColor:
+                MaterialStateColor.resolveWith((states) => Colors.white)),
+        icon: Icon(previewing ? FontAwesomeIcons.edit : FontAwesomeIcons.eye,
+            size: 16),
+        label: Text(previewing ? 'Edit' : 'Preview'),
+        onPressed: () => setState(
+          () {
+            previewing = !previewing;
+          },
+        ),
+      ),
+    );
   }
 
   Widget submit() {
