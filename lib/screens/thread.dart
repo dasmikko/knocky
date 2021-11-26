@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'package:after_layout/after_layout.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
@@ -30,14 +33,38 @@ class _ThreadScreenState extends State<ThreadScreen>
   final AuthController authController = Get.put(AuthController());
   final ScrollController scrollController = ScrollController();
 
+  var subscription;
+
   @override
   void initState() {
     super.initState();
     threadController.initState(widget.id, widget.page);
+
+    // Listen for when we have fetched the thread data, and scroll to specific post, if requested
+    subscription = threadController.data.listen((Thread thread) async {
+      if (thread != null) {
+        // User request to scroll to specific post
+        if (this.widget.linkedPostId != null) {
+          // The delayed if a huge stupid fucking hack, to make it work while in debug mode.
+          await Future.delayed(Duration(milliseconds: 100));
+
+          // Find the index of the post to scroll to
+          int postIndex =
+              thread.posts.indexWhere((o) => o.id == this.widget.linkedPostId);
+
+          // If we can't find the postIndex, just scroll to the top.
+          itemScrollController.jumpTo(index: postIndex == -1 ? 0 : postIndex);
+
+          // Stop listening for more change, as we will never have to scroll to specific post anymore
+          subscription.cancel();
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
+    subscription.cancel();
     super.dispose();
   }
 

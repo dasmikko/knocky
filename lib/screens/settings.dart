@@ -22,7 +22,7 @@ class SettingsScreen extends StatelessWidget {
 
                 Get.snackbar('Success', 'Image size cache cleared');
               },
-            )
+            ),
           ],
         ),
       ),
