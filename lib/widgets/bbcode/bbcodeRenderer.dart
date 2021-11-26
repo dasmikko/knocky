@@ -144,7 +144,7 @@ class BBcodeRenderer extends StatelessWidget {
               height: 5.0,
               width: 5.0,
               decoration: new BoxDecoration(
-                color: Theme.of(parentContext).textTheme.body1.color,
+                color: Theme.of(parentContext).textTheme.bodyText1.color,
                 shape: BoxShape.circle,
               ),
             ),
@@ -169,7 +169,7 @@ class BBcodeRenderer extends StatelessWidget {
         TextStyle textStyle;
 
         if (currentTextStyle == null) {
-          textStyle = Theme.of(parentContext).textTheme.body1.copyWith(
+          textStyle = Theme.of(parentContext).textTheme.bodyText1.copyWith(
                 fontFamily: item.tag == 'code' ? 'RobotoMono' : 'Roboto',
                 decoration: item.tag == 'u'
                     ? TextDecoration.underline
@@ -267,7 +267,7 @@ class BBcodeRenderer extends StatelessWidget {
           case 'spoiler':
             TextStyle textStyle = Theme.of(parentContext)
                 .textTheme
-                .body1
+                .bodyText1
                 .copyWith(
                     fontFamily: node.tag == 'code' ? 'RobotoMono' : 'Roboto',
                     decoration: node.tag == 'u'
