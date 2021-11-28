@@ -7,6 +7,7 @@ class ThreadController extends PaginatedController<Thread> {
   @override
   Future fetchData() async {
     data.value = await KnockoutAPI().getThread(id, page: page);
+    updateReadThread(data.value);
   }
 
   @override
@@ -20,4 +21,8 @@ class ThreadController extends PaginatedController<Thread> {
 
   @override
   dynamic dataAtIndex(int index) => data.value?.posts[index];
+
+  void updateReadThread (Thread thread) {
+    int lastPostNumber = thread.posts.last.threadPostNumber;
+  }
 }

@@ -2,9 +2,6 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/models/usergroup.dart';
 
-part 'subforum.g.dart';
-
-@JsonSerializable()
 class Subforum {
   final int id;
   final String icon;
@@ -12,7 +9,6 @@ class Subforum {
   final String description;
   final int totalPosts;
   final int totalThreads;
-  @JsonKey(name: 'lastPost_id')
   final int lastPostId;
   final SubforumOldLastPost lastPost;
 
@@ -27,9 +23,30 @@ class Subforum {
     this.lastPost,
   });
 
-  factory Subforum.fromJson(Map<String, dynamic> json) =>
-      _$SubforumFromJson(json);
-  Map<String, dynamic> toJson() => _$SubforumToJson(this);
+  factory Subforum.fromJson(Map<String, dynamic> json) => 
+    Subforum(
+      id: json['id'] as int,
+    icon: json['icon'] as String,
+    name: json['name'] as String,
+    description: json['description'] as String,
+    totalPosts: json['totalPosts'] as int,
+    totalThreads: json['totalThreads'] as int,
+    lastPostId: json['lastPost_id'] as int,
+    lastPost: json['lastPost'] == null
+        ? null
+        : SubforumOldLastPost.fromJson(
+            json['lastPost'] as Map<String, dynamic>),
+    );
+  Map<String, dynamic> toJson() => {
+      'id': id,
+      'icon': icon,
+      'name': name,
+      'description': description,
+      'totalPosts': totalPosts,
+      'totalThreads': totalThreads,
+      'lastPostId': lastPostId,
+      'lastPost': lastPost,
+  };
 }
 
 @JsonSerializable()
@@ -48,9 +65,25 @@ class SubforumLastPost {
     this.page,
   });
 
-  factory SubforumLastPost.fromJson(Map<String, dynamic> json) =>
-      _$SubforumLastPostFromJson(json);
-  Map<String, dynamic> toJson() => _$SubforumLastPostToJson(this);
+  factory SubforumLastPost.fromJson(Map<String, dynamic> json) => 
+    SubforumLastPost(
+      id: json['id'] as int,
+    createdAt: json['createdAt'] == null
+        ? null
+        : DateTime.parse(json['createdAt'] as String),
+    thread: json['thread'] as int,
+    user: json['user'] == null
+        ? null
+        : SubforumLastPostUser.fromJson(json['user'] as Map<String, dynamic>),
+    page: json['page'] as int,
+    );
+  Map<String, dynamic> toJson() => {
+      'id': id,
+      'createdAt': createdAt,
+      'thread': thread,
+      'user': user,
+      'page': page,
+  };
 }
 
 @JsonSerializable()

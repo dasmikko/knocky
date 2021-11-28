@@ -21,11 +21,12 @@ class Thread {
   final DateTime readThreadLastSeen;
   @JsonKey(nullable: true)
   final DateTime subscriptionLastSeen;
+  final int subscriptionLastPostNumber;
   final List<ThreadPost> posts;
   final ThreadUser user;
   final int userId;
   @JsonKey(defaultValue: 0)
-  final bool isSubscribedTo;
+  final bool subscribed;
   final String threadBackgroundType;
   final String threadBackgroundUrl;
 
@@ -43,7 +44,8 @@ class Thread {
       this.posts,
       this.user,
       this.subscriptionLastSeen,
-      this.isSubscribedTo,
+      this.subscriptionLastPostNumber,
+      this.subscribed,
       this.userId,
       this.threadBackgroundType,
       this.threadBackgroundUrl});
