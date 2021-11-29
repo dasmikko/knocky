@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/format.dart';
 import 'package:knocky/models/thread.dart';
-import 'package:time_formatter/time_formatter.dart';
 
 class Toolbar extends StatelessWidget {
   final ThreadPost post;

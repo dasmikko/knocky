@@ -7,7 +7,6 @@ import 'package:knocky/helpers/icons.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/post/rateButton.dart';
 import 'package:knocky/widgets/post/ratingsChooser.dart';
-import 'package:popover/popover.dart';
 
 class Ratings extends StatefulWidget {
   final List<ThreadPostRatings> ratings;

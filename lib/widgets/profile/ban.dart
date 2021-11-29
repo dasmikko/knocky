@@ -5,7 +5,6 @@ import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/helpers/format.dart';
 import 'package:knocky/models/userBans.dart';
 import 'package:knocky/widgets/post/toolbar.dart';
-import 'package:time_formatter/time_formatter.dart';
 
 class ProfileBan extends StatelessWidget {
   final UserBan ban;
