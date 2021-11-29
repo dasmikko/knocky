@@ -45,7 +45,7 @@ class _CustomZoomWidgetState extends State<CustomZoomWidget>
 
   void _handleTapDown(TapDownDetails details) async {
     print('tap tap tap');
-    final RenderBox referenceBox = context.findRenderObject();
+    //final RenderBox referenceBox = context.findRenderObject();
 
     print(details);
 

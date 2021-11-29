@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:better_player/better_player.dart';
-import 'package:flutter/services.dart';
 
 class VideoEmbed extends StatefulWidget {
   final String url;

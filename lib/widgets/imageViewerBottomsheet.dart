@@ -54,9 +54,9 @@ class ImageViewerBottomSheet extends StatelessWidget {
 
     if (isDirectSharable) {
       // Download the element
-      Ddio.Response response;
       Ddio.Dio dio = new Ddio.Dio();
-      response = await dio.download(url, fileUrl, deleteOnError: true);
+      //Ddio.Response response =
+      await dio.download(url, fileUrl, deleteOnError: true);
 
       print(lookupMimeType(fileUrl));
       // Share the temp file

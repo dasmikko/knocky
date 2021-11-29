@@ -1,7 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:knocky/models/threadAlert.dart';
 
-@JsonSerializable()
 class ThreadAlertPage {
   final List<ThreadAlert> alerts;
   final int totalAlerts;

@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_brace_in_string_interps
+
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_storage/get_storage.dart';

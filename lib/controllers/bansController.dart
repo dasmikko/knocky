@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/userBans.dart';
-import 'package:knocky/models/userProfile.dart';
 
 class BansController extends GetxController {
   final isFetching = false.obs;

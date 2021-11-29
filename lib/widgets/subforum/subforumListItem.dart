@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
 import 'package:knocky/models/subforumDetails.dart';
-import 'package:knocky/widgets/InkWellOnWidget.dart';
 import 'package:knocky/widgets/jumpToPageDialog.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widgets/shared/threadListItem.dart';

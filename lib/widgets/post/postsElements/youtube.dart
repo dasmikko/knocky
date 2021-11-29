@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_brace_in_string_interps
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -32,12 +34,9 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
       id = this.widget.url.split("/").last.split('?').first;
     }
 
-    maxResThumbnail =
-        "https://img.youtube.com/vi/${id}/0.jpg"; //ignore: unnecessary_brace_in_string_interps
-    sdResThumbnail =
-        "https://img.youtube.com/vi/${id}/sddefault.jpg"; //ignore: unnecessary_brace_in_string_interps
-    defaultThumbnail =
-        "https://img.youtube.com/vi/${id}/default.jpg"; //ignore: unnecessary_brace_in_string_interps
+    maxResThumbnail = "https://img.youtube.com/vi/${id}/0.jpg";
+    sdResThumbnail = "https://img.youtube.com/vi/${id}/sddefault.jpg";
+    defaultThumbnail = "https://img.youtube.com/vi/${id}/default.jpg";
     res = 'max';
 
     this.getVideoInfo(this.widget.url);

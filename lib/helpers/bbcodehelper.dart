@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -66,6 +64,7 @@ class BBCodeHelper implements bbob.NodeVisitor {
 
   static void addTag(
       TextEditingController controller, String tag, String content) {
+    // ignore: unnecessary_brace_in_string_interps
     String tagToAdd = '[${tag}]' +
         content +
         '[/${tag}]'; //ignore: unnecessary_brace_in_string_interps

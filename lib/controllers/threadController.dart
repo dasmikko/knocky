@@ -22,7 +22,7 @@ class ThreadController extends PaginatedController<Thread> {
   @override
   dynamic dataAtIndex(int index) => data.value?.posts[index];
 
-  void updateReadThread (Thread thread) {
-    int lastPostNumber = thread.posts.last.threadPostNumber;
+  void updateReadThread(Thread thread) {
+    //int lastPostNumber = thread.posts.last.threadPostNumber;
   }
 }

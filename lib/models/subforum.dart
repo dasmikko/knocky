@@ -23,33 +23,31 @@ class Subforum {
     this.lastPost,
   });
 
-  factory Subforum.fromJson(Map<String, dynamic> json) => 
-    Subforum(
-      id: json['id'] as int,
-    icon: json['icon'] as String,
-    name: json['name'] as String,
-    description: json['description'] as String,
-    totalPosts: json['totalPosts'] as int,
-    totalThreads: json['totalThreads'] as int,
-    lastPostId: json['lastPost_id'] as int,
-    lastPost: json['lastPost'] == null
-        ? null
-        : SubforumOldLastPost.fromJson(
-            json['lastPost'] as Map<String, dynamic>),
-    );
+  factory Subforum.fromJson(Map<String, dynamic> json) => Subforum(
+        id: json['id'] as int,
+        icon: json['icon'] as String,
+        name: json['name'] as String,
+        description: json['description'] as String,
+        totalPosts: json['totalPosts'] as int,
+        totalThreads: json['totalThreads'] as int,
+        lastPostId: json['lastPost_id'] as int,
+        lastPost: json['lastPost'] == null
+            ? null
+            : SubforumOldLastPost.fromJson(
+                json['lastPost'] as Map<String, dynamic>),
+      );
   Map<String, dynamic> toJson() => {
-      'id': id,
-      'icon': icon,
-      'name': name,
-      'description': description,
-      'totalPosts': totalPosts,
-      'totalThreads': totalThreads,
-      'lastPostId': lastPostId,
-      'lastPost': lastPost,
-  };
+        'id': id,
+        'icon': icon,
+        'name': name,
+        'description': description,
+        'totalPosts': totalPosts,
+        'totalThreads': totalThreads,
+        'lastPostId': lastPostId,
+        'lastPost': lastPost,
+      };
 }
 
-@JsonSerializable()
 class SubforumLastPost {
   final DateTime createdAt;
   final int id;
@@ -65,28 +63,28 @@ class SubforumLastPost {
     this.page,
   });
 
-  factory SubforumLastPost.fromJson(Map<String, dynamic> json) => 
-    SubforumLastPost(
-      id: json['id'] as int,
-    createdAt: json['createdAt'] == null
-        ? null
-        : DateTime.parse(json['createdAt'] as String),
-    thread: json['thread'] as int,
-    user: json['user'] == null
-        ? null
-        : SubforumLastPostUser.fromJson(json['user'] as Map<String, dynamic>),
-    page: json['page'] as int,
-    );
+  factory SubforumLastPost.fromJson(Map<String, dynamic> json) =>
+      SubforumLastPost(
+        id: json['id'] as int,
+        createdAt: json['createdAt'] == null
+            ? null
+            : DateTime.parse(json['createdAt'] as String),
+        thread: json['thread'] as int,
+        user: json['user'] == null
+            ? null
+            : SubforumLastPostUser.fromJson(
+                json['user'] as Map<String, dynamic>),
+        page: json['page'] as int,
+      );
   Map<String, dynamic> toJson() => {
-      'id': id,
-      'createdAt': createdAt,
-      'thread': thread,
-      'user': user,
-      'page': page,
-  };
+        'id': id,
+        'createdAt': createdAt,
+        'thread': thread,
+        'user': user,
+        'page': page,
+      };
 }
 
-@JsonSerializable()
 class SubforumOldLastPost {
   final DateTime createdAt;
   final int id;
@@ -102,17 +100,34 @@ class SubforumOldLastPost {
     this.page,
   });
 
-  factory SubforumOldLastPost.fromJson(Map<String, dynamic> json) =>
-      _$SubforumOldLastPostFromJson(json);
-  Map<String, dynamic> toJson() => _$SubforumOldLastPostToJson(this);
+  factory SubforumOldLastPost.fromJson(Map<String, dynamic> json) {
+    return SubforumOldLastPost(
+      id: json['id'] as int,
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      thread: json['thread'] == null
+          ? null
+          : SubforumThreadLastPostThread.fromJson(
+              json['thread'] as Map<String, dynamic>),
+      user: json['user'] == null
+          ? null
+          : SubforumLastPostUser.fromJson(json['user'] as Map<String, dynamic>),
+      page: json['page'] as int,
+    );
+  }
+  Map<String, dynamic> toJson() => {
+        'createdAt': createdAt?.toIso8601String(),
+        'id': id,
+        'thread': thread,
+        'user': user,
+        'page': page,
+      };
 }
 
-@JsonSerializable()
 class SubForumLastPostThread {
   final int id;
-  @JsonKey(name: 'post_count')
   final int postCount;
-  @JsonKey(name: 'subforum_id')
   final int subforumId;
   final String title;
   final int page;
@@ -125,12 +140,24 @@ class SubForumLastPostThread {
     this.page,
   });
 
-  factory SubForumLastPostThread.fromJson(Map<String, dynamic> json) =>
-      _$SubForumLastPostThreadFromJson(json);
-  Map<String, dynamic> toJson() => _$SubForumLastPostThreadToJson(this);
+  factory SubForumLastPostThread.fromJson(Map<String, dynamic> json) {
+    return SubForumLastPostThread(
+      id: json['id'] as int,
+      postCount: json['post_count'] as int,
+      subforumId: json['subforum_id'] as int,
+      title: json['title'] as String,
+      page: json['page'] as int,
+    );
+  }
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'post_count': postCount,
+        'subforum_id': subforumId,
+        'title': title,
+        'page': page,
+      };
 }
 
-@JsonSerializable()
 class SubforumLastPostUser {
   final bool isBanned;
   final Usergroup usergroup;
@@ -142,7 +169,16 @@ class SubforumLastPostUser {
     this.username,
   });
 
-  factory SubforumLastPostUser.fromJson(Map<String, dynamic> json) =>
-      _$SubforumLastPostUserFromJson(json);
-  Map<String, dynamic> toJson() => _$SubforumLastPostUserToJson(this);
+  factory SubforumLastPostUser.fromJson(Map<String, dynamic> json) {
+    return SubforumLastPostUser(
+      isBanned: json['isBanned'] as bool,
+      usergroup: Usergroup.values[json['usergroup'] as int],
+      username: json['username'] as String,
+    );
+  }
+  Map<String, dynamic> toJson() => {
+        'isBanned': isBanned,
+        'usergroup': usergroup,
+        'username': username,
+      };
 }

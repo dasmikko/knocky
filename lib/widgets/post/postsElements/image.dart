@@ -1,7 +1,4 @@
-import 'dart:ffi';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ffcache/ffcache.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -28,7 +25,7 @@ class _ImageWidgetState extends State<ImageWidget> {
     return [this.widget.url];
   }
 
-  final _imageWidgetKey = GlobalKey();
+  //final _imageWidgetKey = GlobalKey();
   bool imageIsLoaded = false;
 
   @override

@@ -1,9 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:knocky/models/usergroup.dart';
 
-part 'userProfile.g.dart';
-
-@JsonSerializable()
 class UserProfile {
   final int id;
   final String avatarUrl;
@@ -26,7 +22,28 @@ class UserProfile {
       this.username,
       this.joinDate});
 
-  factory UserProfile.fromJson(Map<String, dynamic> json) =>
-      _$UserProfileFromJson(json);
-  Map<String, dynamic> toJson() => _$UserProfileToJson(this);
+  factory UserProfile.fromJson(Map<String, dynamic> json) {
+    return UserProfile(
+        id: json['id'] as int,
+        usergroup: Usergroup.values[json['usergroup'] as int],
+        avatarUrl: json['avatarUrl'] as String,
+        backgroundUrl: json['backgroundUrl'] as String,
+        banned: json['banned'] as bool,
+        posts: json['posts'] as int,
+        threads: json['threads'] as int,
+        username: json['username'] as String,
+        joinDate: json['createdAt'] == null
+            ? null
+            : DateTime.parse(json['createdAt'] as String));
+  }
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'avatarUrl': avatarUrl,
+        'backgroundUrl': backgroundUrl,
+        'banned': banned,
+        'usergroup': usergroup,
+        'username': username,
+        'posts': posts,
+        'threads': threads,
+      };
 }

@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:knocky/helpers/twitterApi.dart';
 import 'package:tweet_ui/models/api/tweet.dart';
 import 'package:tweet_ui/tweet_ui.dart';
-import 'package:tweet_ui/tweet_view.dart';
 
 class TwitterCard extends StatefulWidget {
   final String tweetUrl;

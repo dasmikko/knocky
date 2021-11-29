@@ -1,9 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:knocky/models/subforumDetails.dart';
 
-part 'userProfileThreads.g.dart';
-
-@JsonSerializable()
 class UserProfileThreads {
   final int currentPage;
   final int totalThreads;
@@ -11,7 +7,20 @@ class UserProfileThreads {
 
   UserProfileThreads({this.currentPage, this.totalThreads, this.threads});
 
-  factory UserProfileThreads.fromJson(Map<String, dynamic> json) =>
-      _$UserProfileThreadsFromJson(json);
-  Map<String, dynamic> toJson() => _$UserProfileThreadsToJson(this);
+  factory UserProfileThreads.fromJson(Map<String, dynamic> json) {
+    return UserProfileThreads(
+      currentPage: json['currentPage'] as int,
+      totalThreads: json['totalThreads'] as int,
+      threads: (json['threads'] as List)
+          ?.map((e) => e == null
+              ? null
+              : SignificantThread.fromJson(e as Map<String, dynamic>))
+          ?.toList(),
+    );
+  }
+  Map<String, dynamic> toJson() => {
+        'currentPage': currentPage,
+        'totalThreads': totalThreads,
+        'threads': threads,
+      };
 }
