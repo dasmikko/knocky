@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
 import 'package:knocky/helpers/api.dart';
+import 'package:knocky/models/syncData.dart';
 
 class SyncController extends GetxController {
   final isFetching = false.obs;
   final subscriptionNotificationCount = 0.obs;
+  final mentions = <SyncDataMentionModel>[].obs;
 
   static final SyncController _singleton = SyncController._internal();
 
@@ -22,6 +24,8 @@ class SyncController extends GetxController {
           .where((threadAlert) => threadAlert.unreadPostCount > 0)
           .length;
     }
+
+    mentions.value = syncDataValue.mentions;
 
     isFetching.value = false;
   }

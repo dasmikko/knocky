@@ -11,7 +11,7 @@ class ReadThreads {
       threadId: json['thread_id']
     );
   Map<String, dynamic> toJson() => {
-    'last_seen': lastSeen,
+    'last_seen': lastSeen.toIso8601String(),
     'thread_id': threadId
   };
 }
