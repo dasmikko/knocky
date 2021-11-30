@@ -106,7 +106,13 @@ class _ThreadScreenState extends State<ThreadScreen>
           ),
         ),
       ),
-      bottomNavigationBar: Obx(
+
+    );
+  }
+
+  /*
+    OLD BOTTOM APPBAR
+    bottomNavigationBar: Obx(
         () => BottomAppBar(
           shape: CircularNotchedRectangle(),
           child: Container(
@@ -143,8 +149,8 @@ class _ThreadScreenState extends State<ThreadScreen>
           ),
         ),
       ),
-    );
-  }
+
+   */
 
   goToPage(int pageNum) {
     itemScrollController.jumpTo(index: 0);
