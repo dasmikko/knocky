@@ -7,11 +7,11 @@ class ReadThreads {
 
   factory ReadThreads.fromJson(Map<String, dynamic> json) => 
     ReadThreads(
-      lastSeen: json['last_seen'],
-      threadId: json['thread_id']
+      lastSeen: json['lastSeen'],
+      threadId: json['threadId']
     );
   Map<String, dynamic> toJson() => {
-    'last_seen': lastSeen.toIso8601String(),
-    'thread_id': threadId
+    'lastSeen': lastSeen.toIso8601String(),
+    'threadId': threadId
   };
-}
+} 

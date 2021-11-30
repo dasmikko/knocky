@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:knocky/models/ad.dart';
+import 'package:knocky/models/alert.dart';
 import 'package:knocky/models/events.dart';
 import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/models/subforum.dart';
@@ -147,10 +148,12 @@ class KnockoutAPI {
     await _request(type: 'post', url: 'readThreads', data: jsonToPost.toJson());
   }
 
-  Future<void> readThreadSubsciption(DateTime lastseen, int threadId) async {
-    ReadThreads jsonToPost =
-        new ReadThreads(lastSeen: lastseen, threadId: threadId);
-    await _request(type: 'post', url: 'alert', data: jsonToPost.toJson());
+  Future<void> createAlert(int threadId, int lastPostNumber) async {
+    Alert jsonToPost =
+        new Alert(threadId: threadId, lastPostNumber: lastPostNumber);
+    var result = await _request(type: 'post', url: 'alert', data: jsonToPost.toJson());
+    print(result.data);
+    print(lastPostNumber);
   }
 
   Future<List<KnockoutEvent>> getEvents() async {

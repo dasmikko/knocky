@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/paginatedController.dart';
 import 'package:knocky/controllers/syncController.dart';
 import 'package:knocky/helpers/api.dart';
@@ -7,10 +8,16 @@ import 'package:knocky/models/syncData.dart';
 import 'package:knocky/models/thread.dart';
 
 class ThreadController extends PaginatedController<Thread> {
+  final AuthController authController = Get.put(AuthController());
+
   @override
   Future fetchData() async {
     data.value = await KnockoutAPI().getThread(id, page: page);
-    updateReadThread(data.value);
+
+    if (authController.isAuthenticated.value) {
+      updateAlerts(data.value);
+      updateReadThread(data.value);
+    }
   }
 
   @override
@@ -25,54 +32,29 @@ class ThreadController extends PaginatedController<Thread> {
   @override
   dynamic dataAtIndex(int index) => data.value?.posts[index];
 
+  void updateAlerts(Thread thread) async {
+    int lastPostNumber = thread.posts.last.threadPostNumber;
+    print(lastPostNumber);
+    
+    if (thread.subscribed) {
+      if (thread.subscriptionLastPostNumber == null ||
+          thread.subscriptionLastPostNumber <
+          thread.posts.last.threadPostNumber) {
+            print('create alert');
+        await KnockoutAPI().createAlert(
+          thread.id,
+          lastPostNumber
+        );
+      }
+    }
+  }
+
   void updateReadThread(Thread thread) async {
-    //int lastPostNumber = thread.posts.last.threadPostNumber;
-    DateTime lastPostDate = data.value.posts.last.createdAt;
-
-    // Check if last read is null
-    if (data.value.readThreadLastSeen == null) {
-      await KnockoutAPI().readThreads(lastPostDate, data.value.id).then((res) {});
-    } else if (data.value.readThreadLastSeen.isBefore(lastPostDate)) {
-      await KnockoutAPI().readThreads(lastPostDate, data.value.id).then((res) {});
+    DateTime lastPostDate = thread.posts.last.createdAt;
+    if (thread.readThreadLastSeen.isBefore(lastPostDate)) {
+      print('Update read thread');
+      await KnockoutAPI().readThreads(lastPostDate, thread.id);
     }
-
-    if (data.value.subscribed == true) {
-      // Handle for subscribed thread
-      // Check if last read is null
-      if (data.value.subscriptionLastPostNumber == null ||
-          data.value.subscriptionLastPostNumber <
-              data.value.posts.last.threadPostNumber) {
-        await KnockoutAPI()
-            .readThreadSubsciption(
-                data.value.posts.last.createdAt, data.value.id)
-            .then((res) {});
-      }
-    } else {
-      if (data.value.subscriptionLastSeen == null) {
-        await KnockoutAPI()
-            .readThreads(lastPostDate, data.value.id)
-            .then((res) {});
-      }
-    }
-
-    SyncController syncController = Get.put(SyncController());
-    syncController.fetch();
-
-    // Handle mentions too!
-    final List<SyncDataMentionModel> mentions = syncController.mentions;
-
-    List<int> mentionsPostIds = mentions.map((o) => o.postId).toList();
-    List<int> threadPostIds = data.value.posts.map((o) => o.id).toList();
-    List<int> idsToMarkRead = [];
-
-    mentionsPostIds.forEach((postId) {
-      if (threadPostIds.contains(postId)) {
-        idsToMarkRead.add(postId);
-      }
-    });
-
-    if (idsToMarkRead.length > 0) {
-      syncController.fetch();
-    }
+    
   }
 }
