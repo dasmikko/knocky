@@ -14,6 +14,8 @@ class ThreadController extends PaginatedController<Thread> {
   Future fetchData() async {
     data.value = await KnockoutAPI().getThread(id, page: page);
 
+    print('YOU SHOULD PRINT THIS!');
+
     if (authController.isAuthenticated.value) {
       updateAlerts(data.value);
       updateReadThread(data.value);
@@ -40,7 +42,6 @@ class ThreadController extends PaginatedController<Thread> {
       if (thread.subscriptionLastPostNumber == null ||
           thread.subscriptionLastPostNumber <
           thread.posts.last.threadPostNumber) {
-            print('create alert');
         await KnockoutAPI().createAlert(
           thread.id,
           lastPostNumber
@@ -51,8 +52,7 @@ class ThreadController extends PaginatedController<Thread> {
 
   void updateReadThread(Thread thread) async {
     DateTime lastPostDate = thread.posts.last.createdAt;
-    if (thread.readThreadLastSeen.isBefore(lastPostDate)) {
-      print('Update read thread');
+    if (thread.readThreadLastSeen == null || thread.readThreadLastSeen.isBefore(lastPostDate)) {
       await KnockoutAPI().readThreads(lastPostDate, thread.id);
     }
     

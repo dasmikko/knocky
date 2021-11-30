@@ -8,7 +8,7 @@ class KnockoutAd {
   factory KnockoutAd.fromJson(Map<String, dynamic> json) =>
       KnockoutAd(
         description: json['description'] as String,
-        imageUrl: json['image_url'] as String,
+        imageUrl: json['imageUrl'] as String,
         query: json['query'] as String,
       );
   Map<String, dynamic> toJson() => {

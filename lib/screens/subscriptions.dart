@@ -25,18 +25,29 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Subscriptions'),
+      appBar: AppBar(
+        title: Text('Subscriptions'),
+      ),
+      body: Container(
+        child: Obx(
+          () => KnockoutLoadingIndicator(
+            show: subscriptionController.isFetching.value,
+            child: RefreshIndicator(
+              onRefresh: () async => subscriptionController.fetch(),
+              child: Container(
+                padding: EdgeInsets.only(top: 8),
+                child: Stack(
+                  children: [
+                    pageSelector(),
+                    subscriptions(),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
-        body: Container(
-          padding: EdgeInsets.only(top: 12),
-            child: Obx(() => KnockoutLoadingIndicator(
-                  show: subscriptionController.isFetching.value,
-                  child: RefreshIndicator(
-                    onRefresh: () async => subscriptionController.fetch(),
-                    child: Stack(children: [pageSelector(), subscriptions()]),
-                  ),
-                ))));
+      ),
+    );
   }
 
   Widget pageSelector() {
@@ -50,7 +61,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
 
   Widget subscriptions() {
     return Container(
-        padding: EdgeInsets.fromLTRB(4, 32, 4, 4),
+        padding: EdgeInsets.fromLTRB(4, 38, 4, 4),
         child: ScrollablePositionedList.builder(
             // ignore: invalid_use_of_protected_member
             itemCount:

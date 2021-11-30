@@ -10,5 +10,6 @@ class MainDrawerController extends GetxController {
     KnockoutAd ad = await KnockoutAPI().randomAd();
 
     adImageUrl.value = ad.imageUrl;
+    print(ad.imageUrl);
   }
 }
