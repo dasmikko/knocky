@@ -184,7 +184,7 @@ class _ThreadScreenState extends State<ThreadScreen>
   }
 
   Widget postEditor() {
-    if (!authController.isAuthenticated.value) {
+    if (!authController.isAuthenticated.value || threadController.data.value.locked) {
       return Container();
     }
     return Container(

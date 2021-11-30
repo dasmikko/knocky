@@ -29,6 +29,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
           title: Text('Subscriptions'),
         ),
         body: Container(
+          padding: EdgeInsets.only(top: 12),
             child: Obx(() => KnockoutLoadingIndicator(
                   show: subscriptionController.isFetching.value,
                   child: RefreshIndicator(
@@ -49,7 +50,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
 
   Widget subscriptions() {
     return Container(
-        padding: EdgeInsets.fromLTRB(4, 48, 4, 4),
+        padding: EdgeInsets.fromLTRB(4, 32, 4, 4),
         child: ScrollablePositionedList.builder(
             // ignore: invalid_use_of_protected_member
             itemCount:
