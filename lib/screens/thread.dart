@@ -142,7 +142,19 @@ class _ThreadScreenState extends State<ThreadScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Obx(() => Text(threadController.title ?? 'Loading thread...')),
+        title: Obx(
+          () => GestureDetector(
+            onTap: () {
+              print('Tapped title');
+              itemScrollController.scrollTo(
+                index: 0,
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeOutCirc,
+              );
+            },
+            child: Text(threadController.title ?? 'Loading thread...'),
+          ),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.redo),

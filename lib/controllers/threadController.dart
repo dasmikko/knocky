@@ -1,10 +1,8 @@
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/paginatedController.dart';
-import 'package:knocky/controllers/syncController.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
-import 'package:knocky/models/syncData.dart';
 import 'package:knocky/models/thread.dart';
 
 class ThreadController extends PaginatedController<Thread> {
