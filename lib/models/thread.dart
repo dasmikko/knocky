@@ -50,8 +50,8 @@ class Thread {
           ? null
           : DateTime.parse(json['readThreadLastSeen'] as String),
       id: json['id'] as int,
-      locked: json['locked'] as bool,
-      pinned: json['pinned'] as bool,
+      locked: json['locked'] == null ? false : json['locked'] as bool,
+      pinned: json['pinned'] == null ? false : json['pinned'] as bool,
       title: json['title'] as String,
       totalPosts: json['totalPosts'] as int,
       subforumId: json['subforumId'] as int,

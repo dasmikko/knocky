@@ -10,7 +10,8 @@ import 'package:knocky/widgets/post/userInfo.dart';
 class PostListItem extends StatelessWidget {
   final ThreadPost post;
   final AuthController authController = Get.put(AuthController());
-  PostListItem({@required this.post});
+  final DateTime readThreadLastSeen;
+  PostListItem({@required this.post, this.readThreadLastSeen});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,20 @@ class PostListItem extends StatelessWidget {
 
   @protected
   List<Widget> contents(BuildContext context) {
-    return [UserInfo(user: post.user), Toolbar(post: post), postBody(context)];
+    bool isNewPost = false;
+    if (readThreadLastSeen != null &&
+        readThreadLastSeen.isBefore(post.createdAt)) {
+      isNewPost = true;
+    }
+
+    return [
+      UserInfo(
+        user: post.user,
+        isNewPost: isNewPost,
+      ),
+      Toolbar(post: post),
+      postBody(context),
+    ];
   }
 
   @protected

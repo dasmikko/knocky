@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/threadController.dart';
@@ -33,12 +34,65 @@ class _ThreadScreenState extends State<ThreadScreen>
   final ItemPositionsListener itemPositionListener =
       ItemPositionsListener.create();
 
+  ItemPosition lastItemPostion;
+
+  bool hideFab = false;
+
   var subscription;
 
   @override
   void initState() {
     super.initState();
     threadController.initState(widget.id, widget.page);
+
+    itemPositionListener.itemPositions.addListener(() {
+      ItemPosition newItemPosition =
+          itemPositionListener.itemPositions.value.first;
+
+      String scrollDirection = 'none';
+
+      if (lastItemPostion == null) {
+        lastItemPostion = newItemPosition;
+      } else {
+        if (newItemPosition.index != lastItemPostion.index) {
+          // If index is going up, user is scrolling down
+          if (newItemPosition.index > lastItemPostion.index) {
+            scrollDirection = 'down';
+          }
+          if (newItemPosition.index < lastItemPostion.index) {
+            scrollDirection = 'up';
+          }
+        }
+
+        // If index are the same, compare scroll positons
+        if (newItemPosition.index == lastItemPostion.index) {
+          if (newItemPosition.itemLeadingEdge <
+              lastItemPostion.itemLeadingEdge) {
+            scrollDirection = 'down';
+          }
+
+          if (newItemPosition.itemLeadingEdge >
+              lastItemPostion.itemLeadingEdge) {
+            scrollDirection = 'up';
+          }
+        }
+
+        if (scrollDirection == 'down' && hideFab != true) {
+          setState(() {
+            hideFab = true;
+          });
+        }
+
+        if (scrollDirection == 'up' && hideFab != false) {
+          setState(() {
+            hideFab = false;
+          });
+        }
+
+        // Update lastItemPosition
+        lastItemPostion = newItemPosition;
+      }
+    });
 
     // Listen for when we have fetched the thread data, and scroll to specific post, if requested
     subscription = threadController.data.listen((Thread thread) async {
@@ -50,7 +104,8 @@ class _ThreadScreenState extends State<ThreadScreen>
 
           // Find the index of the post to scroll to
           int postIndex =
-              thread.posts.indexWhere((o) => o.id == this.widget.linkedPostId);
+              thread.posts.indexWhere((o) => o.id == this.widget.linkedPostId) +
+                  1;
 
           // If we can't find the postIndex, just scroll to the top.
           itemScrollController.jumpTo(index: postIndex == -1 ? 0 : postIndex);
@@ -101,12 +156,21 @@ class _ThreadScreenState extends State<ThreadScreen>
             show: threadController.isFetching.value,
             child: RefreshIndicator(
               onRefresh: () async => threadController.fetch(),
-              child: posts(),
+              child:
+                  threadController.data.value != null ? posts() : Container(),
             ),
           ),
         ),
       ),
-
+      floatingActionButton: hideFab == false
+          ? FloatingActionButton(
+              child: Icon(FontAwesomeIcons.paperPlane),
+              onPressed: () {
+                itemScrollController.jumpTo(index: 9999);
+                //scrollController.jumpTo(999);
+              },
+            )
+          : null,
     );
   }
 
@@ -184,7 +248,8 @@ class _ThreadScreenState extends State<ThreadScreen>
   }
 
   Widget postEditor() {
-    if (!authController.isAuthenticated.value || threadController.data.value.locked) {
+    if (!authController.isAuthenticated.value ||
+        threadController.data.value.locked) {
       return Container();
     }
     return Container(
@@ -196,6 +261,38 @@ class _ThreadScreenState extends State<ThreadScreen>
   }
 
   Widget posts() {
+    List<Widget> widgets = [];
+
+    // Add paginator
+    widgets.add(
+      Container(
+        margin: EdgeInsets.symmetric(vertical: 8),
+        child: pageSelector(),
+      ),
+    );
+
+    if (threadController.data.value != null) {
+      threadController.data.value.posts.forEach((post) {
+        widgets.add(
+          PostListItem(
+            post: post,
+            readThreadLastSeen: threadController.data.value.readThreadLastSeen,
+          ),
+        );
+      });
+    }
+
+    widgets.add(
+      postEditor(),
+    );
+
+    widgets.add(
+      Container(
+        margin: EdgeInsets.only(bottom: 8),
+        child: pageSelector(),
+      ),
+    );
+
     return Container(
       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
       child: ScrollablePositionedList.builder(
@@ -203,9 +300,12 @@ class _ThreadScreenState extends State<ThreadScreen>
         addAutomaticKeepAlives: true,
         itemPositionsListener: itemPositionListener,
         //minCacheExtent: MediaQuery.of(context).size.height,
-        itemCount: (threadController.data.value?.posts?.length) ?? 0,
+        itemCount:
+            widgets.length, //(threadController.data.value?.posts?.length) ?? 0,
         itemBuilder: (BuildContext context, int index) {
-          ThreadPost post = threadController.data.value.posts[index];
+          return widgets[index];
+
+          /*ThreadPost post = threadController.data.value.posts[index];
 
           if (index == 0) {
             // Insert header
@@ -240,6 +340,7 @@ class _ThreadScreenState extends State<ThreadScreen>
           return PostListItem(
             post: post,
           );
+          */
         },
       ),
     );
