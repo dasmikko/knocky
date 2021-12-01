@@ -151,9 +151,7 @@ class KnockoutAPI {
   Future<void> createAlert(int threadId, int lastPostNumber) async {
     Alert jsonToPost =
         new Alert(threadId: threadId, lastPostNumber: lastPostNumber);
-    var result = await _request(type: 'post', url: 'alert', data: jsonToPost.toJson());
-    print(result.data);
-    print(lastPostNumber);
+    await _request(type: 'post', url: 'alert', data: jsonToPost.toJson());
   }
 
   Future<List<KnockoutEvent>> getEvents() async {

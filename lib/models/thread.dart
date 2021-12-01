@@ -66,6 +66,7 @@ class Thread {
       subscriptionLastSeen: json['subscriptionLastSeen'] == null
           ? null
           : DateTime.parse(json['subscriptionLastSeen'] as String),
+      subscriptionLastPostNumber: json['subscriptionLastPostNumber'] as int,
       subscribed:
           json['isSubscribedTo'] as bool ?? json['subscribed'] as bool ?? false,
       userId: json['userId'] as int,

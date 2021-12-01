@@ -13,8 +13,8 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="knocky"
-        android:icon="@mipmap/ic_launcher">
+        android:label="knocky_v2"
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
