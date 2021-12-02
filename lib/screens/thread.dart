@@ -145,7 +145,6 @@ class _ThreadScreenState extends State<ThreadScreen>
         title: Obx(
           () => GestureDetector(
             onTap: () {
-              print('Tapped title');
               itemScrollController.scrollTo(
                 index: 0,
                 duration: Duration(milliseconds: 500),
@@ -176,10 +175,13 @@ class _ThreadScreenState extends State<ThreadScreen>
       ),
       floatingActionButton: hideFab == false
           ? FloatingActionButton(
-              child: Icon(FontAwesomeIcons.paperPlane),
+              child: FaIcon(FontAwesomeIcons.chevronDown),
               onPressed: () {
-                itemScrollController.jumpTo(index: 9999);
-                //scrollController.jumpTo(999);
+                itemScrollController.scrollTo(
+                  index: 999,
+                  duration: Duration(milliseconds: 500),
+                  curve: Curves.easeOutCirc,
+                );
               },
             )
           : null,
