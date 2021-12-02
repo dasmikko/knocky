@@ -180,6 +180,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       ),
       floatingActionButton: Obx(
         () => AnimatedScale(
+          curve: Curves.easeOutCirc,
           scale: threadController.hideFAB.value ? 0.0 : 1.0,
           duration: Duration(milliseconds: 250),
           child: FloatingActionButton(
