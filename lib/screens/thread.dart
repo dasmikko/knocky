@@ -36,8 +36,6 @@ class _ThreadScreenState extends State<ThreadScreen>
 
   ItemPosition lastItemPostion;
 
-  bool hideFab = false;
-
   var subscription;
 
   @override
@@ -49,7 +47,15 @@ class _ThreadScreenState extends State<ThreadScreen>
       ItemPosition newItemPosition =
           itemPositionListener.itemPositions.value.first;
 
-      String scrollDirection = 'none';
+      print(newItemPosition.index);
+
+      if (newItemPosition.index >= 20) {
+        threadController.hideFAB.value = true;
+      } else {
+        threadController.hideFAB.value = false;
+      }
+
+      /*String scrollDirection = 'none';
 
       if (lastItemPostion == null) {
         lastItemPostion = newItemPosition;
@@ -77,21 +83,20 @@ class _ThreadScreenState extends State<ThreadScreen>
           }
         }
 
-        if (scrollDirection == 'down' && hideFab != true) {
-          setState(() {
-            hideFab = true;
-          });
+        if (scrollDirection == 'down' &&
+            threadController.hideFAB.value != true) {
+          threadController.hideFAB.value = true;
         }
 
-        if (scrollDirection == 'up' && hideFab != false) {
-          setState(() {
-            hideFab = false;
-          });
+        if (scrollDirection == 'up' &&
+            threadController.hideFAB.value != false) {
+          threadController.hideFAB.value = false;
         }
 
         // Update lastItemPosition
         lastItemPostion = newItemPosition;
       }
+      */
     });
 
     // Listen for when we have fetched the thread data, and scroll to specific post, if requested
@@ -173,18 +178,22 @@ class _ThreadScreenState extends State<ThreadScreen>
           ),
         ),
       ),
-      floatingActionButton: hideFab == false
-          ? FloatingActionButton(
-              child: FaIcon(FontAwesomeIcons.chevronDown),
-              onPressed: () {
-                itemScrollController.scrollTo(
-                  index: 999,
-                  duration: Duration(milliseconds: 500),
-                  curve: Curves.easeOutCirc,
-                );
-              },
-            )
-          : null,
+      floatingActionButton: Obx(
+        () => AnimatedScale(
+          scale: threadController.hideFAB.value ? 0.0 : 1.0,
+          duration: Duration(milliseconds: 250),
+          child: FloatingActionButton(
+            child: FaIcon(FontAwesomeIcons.chevronDown),
+            onPressed: () {
+              itemScrollController.scrollTo(
+                index: 999,
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeOutCirc,
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 

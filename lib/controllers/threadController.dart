@@ -8,6 +8,8 @@ import 'package:knocky/models/thread.dart';
 class ThreadController extends PaginatedController<Thread> {
   final AuthController authController = Get.put(AuthController());
 
+  final hideFAB = false.obs;
+
   @override
   Future fetchData() async {
     data.value = await KnockoutAPI().getThread(id, page: page);
