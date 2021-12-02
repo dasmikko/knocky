@@ -47,9 +47,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       ItemPosition newItemPosition =
           itemPositionListener.itemPositions.value.first;
 
-      print(newItemPosition.index);
-
-      if (newItemPosition.index >= 20) {
+      if (itemPositionListener.itemPositions.value.last.index >= 20) {
         threadController.hideFAB.value = true;
       } else {
         threadController.hideFAB.value = false;
