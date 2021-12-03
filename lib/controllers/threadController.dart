@@ -14,6 +14,8 @@ class ThreadController extends PaginatedController<Thread> {
   Future fetchData() async {
     data.value = await KnockoutAPI().getThread(id, page: page);
 
+    hideFAB.value = false;
+
     if (authController.isAuthenticated.value) {
       updateAlerts(data.value);
       updateReadThread(data.value);

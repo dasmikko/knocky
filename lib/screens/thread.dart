@@ -47,13 +47,14 @@ class _ThreadScreenState extends State<ThreadScreen>
       ItemPosition newItemPosition =
           itemPositionListener.itemPositions.value.first;
 
-      if (itemPositionListener.itemPositions.value.last.index >= 21) {
+      print(itemPositionListener.itemPositions.value.last.index);
+
+      if (itemPositionListener.itemPositions.value.last.index >= 20) {
         threadController.hideFAB.value = true;
-      } else {
-        threadController.hideFAB.value = false;
+        return;
       }
 
-      /*String scrollDirection = 'none';
+      String scrollDirection = 'none';
 
       if (lastItemPostion == null) {
         lastItemPostion = newItemPosition;
@@ -94,7 +95,6 @@ class _ThreadScreenState extends State<ThreadScreen>
         // Update lastItemPosition
         lastItemPostion = newItemPosition;
       }
-      */
     });
 
     // Listen for when we have fetched the thread data, and scroll to specific post, if requested
@@ -177,21 +177,23 @@ class _ThreadScreenState extends State<ThreadScreen>
         ),
       ),
       floatingActionButton: Obx(
-        () => AnimatedScale(
-          curve: Curves.easeOutCirc,
-          scale: threadController.hideFAB.value ? 0.0 : 1.0,
-          duration: Duration(milliseconds: 250),
-          child: FloatingActionButton(
-            child: FaIcon(FontAwesomeIcons.chevronDown),
-            onPressed: () {
-              itemScrollController.scrollTo(
-                index: 999,
-                duration: Duration(milliseconds: 500),
+        () => authController.isAuthenticated.value
+            ? AnimatedScale(
                 curve: Curves.easeOutCirc,
-              );
-            },
-          ),
-        ),
+                scale: threadController.hideFAB.value ? 0.0 : 1.0,
+                duration: Duration(milliseconds: 250),
+                child: FloatingActionButton(
+                  child: FaIcon(FontAwesomeIcons.chevronDown),
+                  onPressed: () {
+                    itemScrollController.scrollTo(
+                      index: 999,
+                      duration: Duration(milliseconds: 500),
+                      curve: Curves.easeOutCirc,
+                    );
+                  },
+                ),
+              )
+            : null,
       ),
     );
   }
