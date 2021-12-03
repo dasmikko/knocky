@@ -9,6 +9,6 @@
             android:height="200dp"
             android:width="200dp"
             android:gravity="center"
-            android:src="@drawable/ic_launcher_foreground" />
+            android:src="@drawable/logo" />
     </item>
 </layer-list>
