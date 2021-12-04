@@ -49,7 +49,7 @@ class PageSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
-      height: 32,
+      height: 38,
       child: Row(
         children: [
           navigatorButton(context, Icon(Icons.arrow_left),
@@ -88,7 +88,7 @@ class PageSelector extends StatelessWidget {
   Widget navigatorButton(context, Widget content, onClick,
       {highlight = false, disabled = false}) {
     return Container(
-      width: 32,
+      width: 38,
       child: ElevatedButton(
           child: Stack(
             fit: StackFit.loose,
