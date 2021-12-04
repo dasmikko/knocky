@@ -47,9 +47,9 @@ class _ThreadScreenState extends State<ThreadScreen>
       ItemPosition newItemPosition =
           itemPositionListener.itemPositions.value.first;
 
-      print(itemPositionListener.itemPositions.value.last.index);
-
-      if (itemPositionListener.itemPositions.value.last.index >= 20) {
+      int widgetlistLength = generateWidgetList().length - 2;
+      if (itemPositionListener.itemPositions.value.last.index >=
+          (widgetlistLength - 2)) {
         threadController.hideFAB.value = true;
         return;
       }
@@ -183,7 +183,10 @@ class _ThreadScreenState extends State<ThreadScreen>
                 scale: threadController.hideFAB.value ? 0.0 : 1.0,
                 duration: Duration(milliseconds: 250),
                 child: FloatingActionButton(
-                  child: FaIcon(FontAwesomeIcons.chevronDown),
+                  child: FaIcon(
+                    FontAwesomeIcons.chevronDown,
+                    color: Theme.of(context).textTheme.bodyText1.color,
+                  ),
                   onPressed: () {
                     itemScrollController.scrollTo(
                       index: 999,
@@ -284,7 +287,7 @@ class _ThreadScreenState extends State<ThreadScreen>
         ));
   }
 
-  Widget posts() {
+  List<Widget> generateWidgetList() {
     List<Widget> widgets = [];
 
     // Add paginator
@@ -316,6 +319,12 @@ class _ThreadScreenState extends State<ThreadScreen>
         child: pageSelector(),
       ),
     );
+
+    return widgets;
+  }
+
+  Widget posts() {
+    List<Widget> widgets = generateWidgetList();
 
     return Container(
       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),

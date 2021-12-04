@@ -24,6 +24,9 @@ ThemeData darkTheme() {
       primary: Colors.red,
       secondary: Colors.red,
     ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      foregroundColor: Colors.white,
+    ),
     progressIndicatorTheme: ProgressIndicatorThemeData(
       refreshBackgroundColor: Colors.grey[800],
       color: Colors.red,
