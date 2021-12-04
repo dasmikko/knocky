@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:knocky/controllers/forumController.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:knocky/screens/subforum.dart';
+import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widgets/drawer/mainDrawer.dart';
 import 'package:knocky/widgets/forum/ForumListItem.dart';
@@ -53,6 +54,11 @@ class _ForumScreenState extends State<ForumScreen>
                     onTapItem: (Subforum subforumItem) {
                       Get.to(
                         () => SubforumScreen(subforum: subforum),
+                      );
+                    },
+                    onTapItemFooter: (int threadId, int page) {
+                      Get.to(
+                        () => ThreadScreen(id: threadId, page: page),
                       );
                     },
                   );

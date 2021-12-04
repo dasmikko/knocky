@@ -7,8 +7,12 @@ import 'package:timeago/timeago.dart' as timeago;
 class ForumListItem extends StatelessWidget {
   final Subforum subforum;
   final Function(Subforum subforum) onTapItem;
+  final Function(int threadId, int page) onTapItemFooter;
 
-  ForumListItem({@required this.subforum, @required this.onTapItem});
+  ForumListItem(
+      {@required this.subforum,
+      @required this.onTapItem,
+      @required this.onTapItemFooter});
 
   Color getSubforumBorderColor(int id) {
     switch (id) {
@@ -149,8 +153,9 @@ class ForumListItem extends StatelessWidget {
             child: subforum.lastPost != null
                 ? InkWell(
                     onTap: () {
-                      //int page = subforum.lastPost.thread.lastPost.page;
-                      // TODO: Add on tap thread handler
+                      this.onTapItemFooter(
+                          subforum.lastPost.thread.lastPost.thread,
+                          subforum.lastPost.thread.lastPost.page);
                     },
                     child: Container(
                       padding: EdgeInsets.all(10),
