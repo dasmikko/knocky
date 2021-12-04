@@ -140,7 +140,9 @@ class BBCodeHandler implements bbob.NodeVisitor {
   }*/
 
   dynamic _handleNodes(List<SlateNode> nodes,
-      {bool isChild = false, bool asList = false}) {
+      // ignore: unused_element
+      {bool isChild = false,
+      bool asList = false}) {
     StringBuffer content = new StringBuffer();
     List<String> contentItems = [];
 

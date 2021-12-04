@@ -130,6 +130,9 @@ class BBcodeRenderer extends StatelessWidget {
         child: Column(children: nodeChildrenHandler(node.children)),
       );
     }
+
+    // If all fails, return an empty container
+    return Container();
   }
 
   Widget unorderedListHandler(bbob.Element node) {
