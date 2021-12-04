@@ -5,7 +5,8 @@ Color primary = Color.fromRGBO(45, 45, 48, 1);
 Color primaryDark = Color.fromRGBO(34, 34, 38, 1);
 
 ThemeData darkTheme() {
-  return ThemeData(
+  final theme = ThemeData();
+  return theme.copyWith(
     backgroundColor: Color.fromRGBO(13, 16, 19, 1),
     cardTheme: CardTheme(color: primaryDark, clipBehavior: Clip.antiAlias),
     primaryColor: primary,
@@ -18,8 +19,9 @@ ThemeData darkTheme() {
     bottomAppBarTheme: BottomAppBarTheme(
       color: Colors.grey[900],
     ),
-    primarySwatch: Colors.red,
-    accentColor: Colors.red,
+    //primarySwatch: Colors.red,
+    colorScheme: theme.colorScheme.copyWith(secondary: Colors.red),
+    //accentColor: Colors.red,
     scaffoldBackgroundColor: HexColor('#141414'),
     cardColor: Color.fromRGBO(45, 45, 45, 1),
     snackBarTheme: SnackBarThemeData(

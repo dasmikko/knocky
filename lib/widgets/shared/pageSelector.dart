@@ -116,7 +116,7 @@ class PageSelector extends StatelessWidget {
         child: Container(
           margin: EdgeInsets.only(top: 20),
           child: FaIcon(FontAwesomeIcons.caretUp,
-              size: 16, color: Theme.of(context).accentColor),
+              size: 16, color: Theme.of(context).colorScheme.secondary),
         ),
       ),
     );

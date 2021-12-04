@@ -38,7 +38,7 @@ class NotificationIndicator extends StatelessWidget {
               child: Container(
                   child: countText(),
                   decoration: BoxDecoration(
-                      color: Theme.of(context).accentColor,
+                      color: Theme.of(context).colorScheme.secondary,
                       shape: BoxShape.circle)),
             )),
       ),
