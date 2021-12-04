@@ -177,8 +177,10 @@ class _ThreadScreenState extends State<ThreadScreen>
         ),
       ),
       floatingActionButton: Obx(
-        () => authController.isAuthenticated.value ||
-                threadController.data.value.locked
+        () => authController.isAuthenticated.value &&
+                (threadController.data.value != null &&
+                    (threadController.data.value.locked != null &&
+                        !threadController.data.value.locked))
             ? AnimatedScale(
                 curve: Curves.easeOutCirc,
                 scale: threadController.hideFAB.value ? 0.0 : 1.0,
@@ -197,7 +199,7 @@ class _ThreadScreenState extends State<ThreadScreen>
                   },
                 ),
               )
-            : null,
+            : Container(),
       ),
     );
   }
