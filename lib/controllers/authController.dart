@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:knocky/helpers/api.dart';
+import 'package:knocky/models/syncData.dart';
 
 class AuthController extends GetxController {
   var isAuthenticated = false.obs;
@@ -42,6 +44,29 @@ class AuthController extends GetxController {
     prefs.write('background', background);
     prefs.write('usergroup', usergroup);
     prefs.write('cookieString', jwt);
+  }
+
+  loginWithJWTOnly(jwt) async {
+    GetStorage prefs = GetStorage();
+    this.isAuthenticated.value = true;
+    prefs.write('isAuthenticated', this.isAuthenticated.value);
+    await prefs.write('cookieString', 'knockoutJwt=' + jwt);
+    this.jwt.value = 'knockoutJwt=' + jwt;
+
+    SyncDataModel syncData = await KnockoutAPI().getSyncData();
+
+    print(syncData.username);
+    prefs.write('userId', syncData.id);
+    prefs.write('username', syncData.username);
+    prefs.write('avatar', syncData.avatarUrl);
+    prefs.write('background', syncData.backgroundUrl);
+    prefs.write('usergroup', syncData.usergroup.index);
+
+    this.userId.value = syncData.id;
+    this.username.value = syncData.username;
+    this.avatar.value = syncData.avatarUrl;
+    this.background.value = syncData.backgroundUrl;
+    this.usergroup.value = syncData.usergroup.index;
   }
 
   logout() {

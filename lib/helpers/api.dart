@@ -303,7 +303,6 @@ class KnockoutAPI {
       url: 'user/syncData',
       type: 'get',
     );
-
     return SyncDataModel.fromJson(response.data);
   }
 

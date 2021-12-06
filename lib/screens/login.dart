@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/screens/forum.dart';
 import 'package:knocky/screens/loginWebview.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -22,6 +24,40 @@ class _LoginScreenState extends State<LoginScreen> {
       Get.snackbar(
         'Success',
         'Login was successfull!',
+        icon: Icon(Icons.check),
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } else {
+      Get.snackbar(
+        'Error',
+        'Login was canceled',
+        icon: Icon(Icons.warning),
+        snackPosition: SnackPosition.BOTTOM,
+        animationDuration: Duration(milliseconds: 500),
+        forwardAnimationCurve: Curves.easeOutCirc,
+        reverseAnimationCurve: Curves.easeOutCirc,
+        margin: EdgeInsets.only(
+          bottom: 14,
+          left: 14,
+          right: 14,
+        ),
+      );
+    }
+  }
+
+  void scanQRCode() async {
+    AuthController authController = Get.put(AuthController());
+
+    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+        "#ff6666", "Cancel", false, ScanMode.DEFAULT);
+
+    if (barcodeScanRes != null) {
+      await authController.loginWithJWTOnly(barcodeScanRes);
+      Get.offAll(ForumScreen());
+      Get.snackbar(
+        'Success',
+        'Login was successfull',
         icon: Icon(Icons.check),
         backgroundColor: Colors.green,
         colorText: Colors.white,
@@ -187,21 +223,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                onPressed: () =>
-                    {Get.snackbar('TODO', 'Feature not ready yet!')},
+                onPressed: scanQRCode,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
                       margin: EdgeInsets.only(right: 10),
                       child: Icon(
-                        FontAwesomeIcons.key,
+                        FontAwesomeIcons.camera,
                         color: Colors.white,
                         size: 24.0,
                       ),
                     ),
                     Text(
-                      'JWT token',
+                      'Scan QR Code',
                       style: TextStyle(fontSize: 18),
                     )
                   ],
