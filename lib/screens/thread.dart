@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/threadController.dart';
+import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
@@ -141,29 +142,89 @@ class _ThreadScreenState extends State<ThreadScreen>
     }
   }
 
+  void onTapSubscribe() async {
+    Thread thread = threadController.data.value;
+
+    try {
+      SnackbarController snackbarController = Get.snackbar(
+        "Subscribing...", // title
+        "Subscribing thread...", // message
+        borderRadius: 0,
+        isDismissible: false,
+        showProgressIndicator: true,
+      );
+      await KnockoutAPI()
+          .subscribe(thread.posts.last.threadPostNumber, thread.id);
+      snackbarController.close();
+      threadController.fetch();
+
+      Get.snackbar(
+        "Success", // title
+        "Subscribed thread", // message
+        borderRadius: 0,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (error) {}
+  }
+
+  void onTabUnsubscribed() async {
+    Thread thread = threadController.data.value;
+    SnackbarController snackbarController = Get.snackbar(
+      "Unsubscribing...", // title
+      "Unsubscribing thread...", // message
+      borderRadius: 0,
+      isDismissible: false,
+      showProgressIndicator: true,
+    );
+
+    await KnockoutAPI().deleteThreadAlert(thread.id);
+    snackbarController.close();
+    threadController.fetch();
+
+    Get.snackbar(
+      "Success", // title
+      "Unsubscribed thread", // message
+      borderRadius: 0,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Obx(
-          () => GestureDetector(
-            onTap: () {
-              itemScrollController.scrollTo(
-                index: 0,
-                duration: Duration(milliseconds: 500),
-                curve: Curves.easeOutCirc,
-              );
-            },
-            child: Text(threadController.title ?? 'Loading thread...'),
+          title: Obx(
+            () => GestureDetector(
+              onTap: () {
+                itemScrollController.scrollTo(
+                  index: 0,
+                  duration: Duration(milliseconds: 500),
+                  curve: Curves.easeOutCirc,
+                );
+              },
+              child: Text(threadController.title ?? 'Loading thread...'),
+            ),
           ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.redo),
-            onPressed: () => showJumpDialog(),
-          )
-        ],
-      ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.redo),
+              onPressed: () => showJumpDialog(),
+            ),
+            Obx(() {
+              if (threadController.data.value == null) return Container();
+              return threadController.data.value.subscribed
+                  ? IconButton(
+                      icon: FaIcon(FontAwesomeIcons.solidBellSlash),
+                      onPressed: () => onTabUnsubscribed(),
+                    )
+                  : IconButton(
+                      icon: FaIcon(FontAwesomeIcons.solidBell),
+                      onPressed: () => onTapSubscribe(),
+                    );
+            }),
+          ]),
       body: Container(
         child: Obx(
           () => KnockoutLoadingIndicator(

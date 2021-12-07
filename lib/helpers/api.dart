@@ -169,11 +169,11 @@ class KnockoutAPI {
     if (response.statusCode == 200) {}
   }
 
-  Future<void> subscribe(DateTime lastSeen, int threadid) async {
+  Future<void> subscribe(int lastPostNumber, int threadid) async {
     final response = await _request(
         url: 'alert',
         type: 'post',
-        data: {'lastSeen': lastSeen.toIso8601String(), 'threadId': threadid});
+        data: {'lastPostNumber': lastPostNumber, 'threadId': threadid});
 
     if (response.statusCode == 200) {}
   }

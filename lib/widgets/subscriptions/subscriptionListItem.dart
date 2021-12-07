@@ -61,6 +61,7 @@ class SubscriptionListItem extends ThreadListItem {
                   isDismissible: false,
                   showProgressIndicator: true,
                 );
+
                 await KnockoutAPI().deleteThreadAlert(threadDetails.id);
                 snackbarController.close();
                 subscriptionController.fetch();
