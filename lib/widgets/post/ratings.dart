@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/ratingsController.dart';
 import 'package:knocky/helpers/icons.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/widgets/post/ViewUsersOfRatingsContent.dart';
 import 'package:knocky/widgets/post/rateButton.dart';
 import 'package:knocky/widgets/post/ratingsChooser.dart';
 
@@ -64,16 +66,40 @@ class _RatingsState extends State<Ratings> {
   Widget showExistingRatings() {
     return Container(
       margin: EdgeInsets.only(top: 4),
-      child: Row(children: [
-        Expanded(child: ratingsList()),
-        Obx(
-          () => authController.isAuthenticated.value && widget.canRate
-              ? RateButton(
-                  popOverContent: showRatingsChooser(context),
+      child: Row(
+        children: [
+          ratings.length > 0
+              ? IconButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                        context: context,
+                        elevation: 10,
+                        builder: (BuildContext bContext) {
+                          return ViewUsersOfRatingsContent(
+                            buildContext: context,
+                            ratings: widget.ratings,
+                          );
+                        });
+                  },
+                  icon: FaIcon(
+                    FontAwesomeIcons.eye,
+                    size: 15.0,
+                    color: Colors.grey[600],
+                  ),
                 )
               : Container(),
-        )
-      ]),
+          Expanded(
+            child: ratingsList(),
+          ),
+          Obx(
+            () => authController.isAuthenticated.value && widget.canRate
+                ? RateButton(
+                    popOverContent: showRatingsChooser(context),
+                  )
+                : Container(),
+          )
+        ],
+      ),
     );
   }
 

@@ -50,7 +50,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void scanQRCode() async {
     GetStorage prefs = GetStorage();
-    if (await prefs.read('qrDialogRemember')) {
+
+    bool qrDialogRemember = await prefs.read('qrDialogRemember') != null
+        ? await prefs.read('qrDialogRemember')
+        : false;
+
+    if (!qrDialogRemember) {
       var dialogResult = await Get.dialog(QRDialog());
 
       if (!dialogResult) return;

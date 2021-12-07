@@ -62,6 +62,7 @@ dependencies:
   popover: ^0.2.6+2
   image_picker: ^0.8.3+1
   flutter_barcode_scanner: ^2.0.0
+  sticky_headers: ^0.2.0
 
 dev_dependencies:
   build_runner: ^1.0.0
