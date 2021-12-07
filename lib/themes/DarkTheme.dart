@@ -11,6 +11,7 @@ ThemeData darkTheme() {
     cardTheme: CardTheme(color: primaryDark, clipBehavior: Clip.antiAlias),
     primaryColor: primary,
     primaryColorDark: primaryDark,
+    accentColor: Colors.red,
     brightness: Brightness.dark,
     appBarTheme: AppBarTheme(
       color: Colors.grey[900],
@@ -19,6 +20,11 @@ ThemeData darkTheme() {
     bottomAppBarTheme: BottomAppBarTheme(
       color: Colors.grey[900],
     ),
+    buttonTheme: ButtonThemeData(
+      colorScheme: ColorScheme.dark(
+        primary: Colors.red,
+      ),
+    ),
     //primarySwatch: Colors.red,
     colorScheme: theme.colorScheme.copyWith(
       primary: Colors.red,
@@ -26,6 +32,14 @@ ThemeData darkTheme() {
     ),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       foregroundColor: Colors.white,
+    ),
+    checkboxTheme: theme.checkboxTheme.copyWith(
+      fillColor: MaterialStateColor.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return Colors.red; // the color when checkbox is selected;
+        }
+        return Colors.white; //the color when checkbox is unselected;
+      }),
     ),
     progressIndicatorTheme: ProgressIndicatorThemeData(
       refreshBackgroundColor: Colors.grey[800],
