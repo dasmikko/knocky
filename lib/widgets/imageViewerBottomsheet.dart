@@ -26,7 +26,11 @@ class ImageViewerBottomSheet extends StatelessWidget {
 
   void copyUrl(context) {
     Clipboard.setData(new ClipboardData(text: url));
-    Get.snackbar('URL', 'URL copied to clipboard');
+    Get.snackbar(
+      'URL',
+      'URL copied to clipboard',
+      borderRadius: 0,
+    );
     Get.back();
   }
 
@@ -92,6 +96,7 @@ class ImageViewerBottomSheet extends StatelessWidget {
             'Image was saved to gallery',
             colorText: Colors.white,
             backgroundColor: Colors.green,
+            borderRadius: 0,
           );
         } else {
           Get.back();
@@ -100,6 +105,7 @@ class ImageViewerBottomSheet extends StatelessWidget {
             'Image was saved to gallery',
             colorText: Colors.white,
             backgroundColor: Colors.red,
+            borderRadius: 0,
           );
         }
       },

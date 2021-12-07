@@ -87,6 +87,6 @@ class AuthController extends GetxController {
     prefs.write('usergroup', 0);
     prefs.write('cookieString', '');
 
-    Get.snackbar('Success', 'You are now logged out');
+    Get.snackbar('Success', 'You are now logged out', borderRadius: 0);
   }
 }

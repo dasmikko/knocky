@@ -29,11 +29,13 @@ class _LoginScreenState extends State<LoginScreen> {
         icon: Icon(Icons.check),
         backgroundColor: Colors.green,
         colorText: Colors.white,
+        borderRadius: 0,
       );
     } else {
       Get.snackbar(
         'Error',
         'Login was canceled',
+        borderRadius: 0,
         icon: Icon(Icons.warning),
         snackPosition: SnackPosition.BOTTOM,
         animationDuration: Duration(milliseconds: 500),
@@ -75,6 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
         icon: Icon(Icons.check),
         backgroundColor: Colors.green,
         colorText: Colors.white,
+        borderRadius: 0,
       );
     } else {
       Get.snackbar(
@@ -85,6 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
         animationDuration: Duration(milliseconds: 500),
         forwardAnimationCurve: Curves.easeOutCirc,
         reverseAnimationCurve: Curves.easeOutCirc,
+        borderRadius: 0,
         margin: EdgeInsets.only(
           bottom: 14,
           left: 14,
