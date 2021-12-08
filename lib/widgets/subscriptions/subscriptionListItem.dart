@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/subscriptionController.dart';
+import 'package:knocky/dialogs/confirmDialog.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
 import 'package:knocky/models/threadAlert.dart';
@@ -54,6 +55,13 @@ class SubscriptionListItem extends ThreadListItem {
               title: Text('Unsubscribe'),
               onTap: () async {
                 Get.back();
+
+                bool confirmResult = await Get.dialog(ConfirmDialog(
+                  content: "Do you want to unsubscribe?",
+                ));
+
+                if (!confirmResult) return;
+
                 SnackbarController snackbarController = Get.snackbar(
                   "Unsubscribing...", // title
                   "Unsubscribing thread...", // message
