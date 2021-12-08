@@ -44,12 +44,12 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
           () => addTag.call('blockquote')),
       btn('Unordered list', FontAwesomeIcons.listUl, () => addTag.call('ul')),
       btn('Ordered list', FontAwesomeIcons.listOl, () => addTag.call('ol')),
-      // TODO:
-      // btn('Image', FontAwesomeIcons.image, () => {}),
-      // btn('YouTube', FontAwesomeIcons.youtube, () {}),
-      // btn('Video', FontAwesomeIcons.video, () {}),
-      // btn('Twitter', FontAwesomeIcons.twitter, () {}),
-      // btn('Strawpoll', FontAwesomeIcons.poll, () {})
+      // TODO: Make an imgur uplaod dialog, steal from old app
+      btn('Image', FontAwesomeIcons.image, () => addTag.call('img')),
+      btn('YouTube', FontAwesomeIcons.youtube, () => addTag.call('youtube')),
+      btn('Video', FontAwesomeIcons.video, () => addTag.call('video')),
+      btn('Twitter', FontAwesomeIcons.twitter, () => addTag.call('twitter')),
+      btn('Strawpoll', FontAwesomeIcons.poll, () => addTag.call('strawpoll'))
     ];
     return Container(
         color: Theme.of(context).primaryColor, child: Wrap(children: buttons));
@@ -60,18 +60,24 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
         child: TextField(
       controller: widget.textEditingController,
       textInputAction: TextInputAction.newline,
+      textCapitalization: TextCapitalization.sentences,
       maxLines: null,
       expands: true,
       onChanged: this.widget.onInputChange,
-      decoration:
-          InputDecoration(contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8)),
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+      ),
     ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[editor(context), toolbar(context)]);
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        editor(context),
+        toolbar(context),
+      ],
+    );
   }
 }

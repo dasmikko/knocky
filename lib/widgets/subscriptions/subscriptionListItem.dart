@@ -44,9 +44,8 @@ class SubscriptionListItem extends ThreadListItem {
       Get.to(() => ThreadScreen(id: threadDetails.id, page: page));
   }
 
-  @override
-  void onLongPressItem(BuildContext context) {
-    Get.bottomSheet(Container(
+  Widget longPressBottomSheetContent() {
+    return Container(
       color: Get.theme.bottomAppBarColor,
       child: Wrap(
         children: <Widget>[
@@ -92,6 +91,15 @@ class SubscriptionListItem extends ThreadListItem {
           ),
         ],
       ),
-    ));
+    );
+  }
+
+  @override
+  void onLongPressItem(BuildContext context) {
+    Get.bottomSheet(
+      longPressBottomSheetContent(),
+      enterBottomSheetDuration: Duration(milliseconds: 150),
+      exitBottomSheetDuration: Duration(milliseconds: 150),
+    );
   }
 }
