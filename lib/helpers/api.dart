@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:knocky/models/ad.dart';
 import 'package:knocky/models/alert.dart';
 import 'package:knocky/models/events.dart';
+import 'package:knocky/models/motd.dart';
 import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:knocky/models/subforumDetails.dart';
@@ -318,5 +319,13 @@ class KnockoutAPI {
     final response = await _request(url: 'threadAds/random', type: 'get');
 
     return KnockoutAd.fromJson(response.data);
+  }
+
+  Future<List<KnockoutMotd>> motd() async {
+    final response = await _request(url: 'motd', type: 'get');
+
+    return response.data
+        .map<KnockoutMotd>((json) => KnockoutMotd.fromJson(json))
+        .toList();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/forumController.dart';
 import 'package:knocky/models/subforum.dart';
@@ -26,6 +27,7 @@ class _ForumScreenState extends State<ForumScreen>
   @override
   void afterFirstLayout(BuildContext context) {
     forumController.fetchSubforums();
+    forumController.fetchMotd();
   }
 
   @override
@@ -36,7 +38,10 @@ class _ForumScreenState extends State<ForumScreen>
           actions: [
             IconButton(
               icon: Icon(Icons.refresh),
-              onPressed: forumController.fetchSubforums,
+              onPressed: () {
+                forumController.fetchSubforums();
+                forumController.fetchMotd();
+              },
             ),
           ],
         ),
@@ -44,27 +49,79 @@ class _ForumScreenState extends State<ForumScreen>
           () => KnockoutLoadingIndicator(
             show: forumController.isFetching.value,
             child: RefreshIndicator(
-              onRefresh: () async => forumController.fetchSubforums(),
-              child: ListView.builder(
-                itemCount: forumController.subforums.length,
-                itemBuilder: (BuildContext context, int index) {
-                  Subforum subforum = forumController.subforums[index];
-                  return ForumListItem(
-                    subforum: subforum,
-                    onTapItem: (Subforum subforumItem) {
-                      Get.to(
-                        () => SubforumScreen(subforum: subforum),
-                      );
-                    },
-                    onTapItemFooter: (int threadId, int page) {
-                      Get.to(
-                        () => ThreadScreen(id: threadId, page: page),
-                      );
-                    },
-                  );
+                onRefresh: () async {
+                  forumController.fetchSubforums();
+                  forumController.fetchMotd();
                 },
-              ),
-            ),
+                child: Stack(
+                  children: [
+                    forumController.motd.value.length > 0
+                        ? Container(
+                            height: 100,
+                            padding: EdgeInsets.symmetric(horizontal: 18),
+                            color: Colors.blue[700],
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Expanded(
+                                  child:
+                                      Text(forumController.motd.first.message),
+                                ),
+                                SizedBox(
+                                  width: 18,
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Colors.blue[700],
+                                      side: BorderSide(color: Colors.white),
+                                      elevation: 0,
+                                    ),
+                                    child: Text(
+                                        forumController.motd.first.buttonName),
+                                  ),
+                                ),
+                                Container(
+                                  child: IconButton(
+                                    alignment: Alignment.centerRight,
+                                    onPressed: () {},
+                                    icon: FaIcon(
+                                      FontAwesomeIcons.times,
+                                      size: 18,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : null,
+                    Container(
+                      padding: forumController.motd.value.length > 0
+                          ? EdgeInsets.only(top: 100)
+                          : null,
+                      child: ListView.builder(
+                        itemCount: forumController.subforums.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          Subforum subforum = forumController.subforums[index];
+                          return ForumListItem(
+                            subforum: subforum,
+                            onTapItem: (Subforum subforumItem) {
+                              Get.to(
+                                () => SubforumScreen(subforum: subforum),
+                              );
+                            },
+                            onTapItemFooter: (int threadId, int page) {
+                              Get.to(
+                                () => ThreadScreen(id: threadId, page: page),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                )),
           ),
         ),
         drawer: MainDrawer());
