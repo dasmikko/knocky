@@ -30,6 +30,48 @@ class _ForumScreenState extends State<ForumScreen>
     forumController.fetchMotd();
   }
 
+  Widget motd() {
+    return forumController.motd.value.length > 0
+        ? Container(
+            height: 100,
+            padding: EdgeInsets.symmetric(horizontal: 18),
+            color: Colors.blue[700],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Expanded(
+                  child: Text(forumController.motd.first.message),
+                ),
+                SizedBox(
+                  width: 18,
+                ),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.blue[700],
+                      side: BorderSide(color: Colors.white),
+                      elevation: 0,
+                    ),
+                    child: Text(forumController.motd.first.buttonName),
+                  ),
+                ),
+                Container(
+                  child: IconButton(
+                    alignment: Alignment.centerRight,
+                    onPressed: () {},
+                    icon: FaIcon(
+                      FontAwesomeIcons.times,
+                      size: 18,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        : null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,47 +97,7 @@ class _ForumScreenState extends State<ForumScreen>
                 },
                 child: Stack(
                   children: [
-                    forumController.motd.value.length > 0
-                        ? Container(
-                            height: 100,
-                            padding: EdgeInsets.symmetric(horizontal: 18),
-                            color: Colors.blue[700],
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Expanded(
-                                  child:
-                                      Text(forumController.motd.first.message),
-                                ),
-                                SizedBox(
-                                  width: 18,
-                                ),
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      primary: Colors.blue[700],
-                                      side: BorderSide(color: Colors.white),
-                                      elevation: 0,
-                                    ),
-                                    child: Text(
-                                        forumController.motd.first.buttonName),
-                                  ),
-                                ),
-                                Container(
-                                  child: IconButton(
-                                    alignment: Alignment.centerRight,
-                                    onPressed: () {},
-                                    icon: FaIcon(
-                                      FontAwesomeIcons.times,
-                                      size: 18,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        : null,
+                    motd(),
                     Container(
                       padding: forumController.motd.value.length > 0
                           ? EdgeInsets.only(top: 100)
