@@ -14,6 +14,7 @@ import 'package:knocky/screens/settings.dart';
 import 'package:knocky/screens/significantThreads.dart';
 import 'package:knocky/screens/subscriptions.dart';
 import 'package:knocky/widgets/drawer/drawerNotificationsListTile.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'drawerListTile.dart';
 
@@ -134,7 +135,14 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
       DrawerListTile(
           iconData: FontAwesomeIcons.discord,
           title: 'Discord',
-          onTap: () => {}),
+          onTap: () async {
+            String url = 'https://discord.com/invite/wjWpapC';
+            if (await canLaunch(url)) {
+              await launch(url);
+            } else {
+              throw 'Could not launch url';
+            }
+          }),
       DrawerListTile(
           iconData: FontAwesomeIcons.solidComment,
           title: 'Mentions',
