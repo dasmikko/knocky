@@ -14,6 +14,7 @@ import 'package:knocky/widgets/post/postListItem.dart';
 import 'package:knocky/widgets/shared/newPost.dart';
 import 'package:knocky/widgets/shared/pageSelector.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ThreadScreen extends StatefulWidget {
   final int id;
@@ -210,13 +211,14 @@ class _ThreadScreenState extends State<ThreadScreen>
           ),
           actions: [
             IconButton(
+              tooltip: "Jump to page",
               icon: Icon(Icons.redo),
               onPressed: () => showJumpDialog(),
             ),
             GetBuilder<ThreadController>(
               init: ThreadController(), // INIT IT ONLY THE FIRST TIME
               builder: (_) => PopupMenuButton(
-                onSelected: (value) {
+                onSelected: (value) async {
                   switch (value) {
                     case 1:
                       Clipboard.setData(new ClipboardData(
@@ -228,6 +230,15 @@ class _ThreadScreenState extends State<ThreadScreen>
                       break;
                     case 3:
                       onTapSubscribe();
+                      break;
+                    case 4:
+                      String url =
+                          'https://knockout.chat/thread/${_.id}/${_.page}';
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      } else {
+                        throw 'Could not launch url';
+                      }
                       break;
                   }
                 },
@@ -257,6 +268,13 @@ class _ThreadScreenState extends State<ThreadScreen>
                       ),
                       'Copy link to thread',
                       1),
+                  overFlowItem(
+                      FaIcon(
+                        FontAwesomeIcons.chrome,
+                        size: 15,
+                      ),
+                      'Open in browser',
+                      4),
                 ],
               ),
             )
