@@ -31,6 +31,8 @@ class _ForumScreenState extends State<ForumScreen>
   }
 
   Widget motd() {
+    if (forumController.motd == null) return Container();
+
     return forumController.motd.value.length > 0
         ? Container(
             height: 100,
@@ -69,7 +71,7 @@ class _ForumScreenState extends State<ForumScreen>
               ],
             ),
           )
-        : null;
+        : Container();
   }
 
   @override
