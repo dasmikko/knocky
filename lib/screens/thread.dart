@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
@@ -212,18 +213,53 @@ class _ThreadScreenState extends State<ThreadScreen>
               icon: Icon(Icons.redo),
               onPressed: () => showJumpDialog(),
             ),
-            Obx(() {
-              if (threadController.data.value == null) return Container();
-              return threadController.data.value.subscribed
-                  ? IconButton(
-                      icon: FaIcon(FontAwesomeIcons.solidBellSlash),
-                      onPressed: () => onTabUnsubscribed(),
-                    )
-                  : IconButton(
-                      icon: FaIcon(FontAwesomeIcons.solidBell),
-                      onPressed: () => onTapSubscribe(),
-                    );
-            }),
+            GetBuilder<ThreadController>(
+              init: ThreadController(), // INIT IT ONLY THE FIRST TIME
+              builder: (_) => PopupMenuButton(
+                onSelected: (value) {
+                  switch (value) {
+                    case 1:
+                      Clipboard.setData(new ClipboardData(
+                          text:
+                              'https://knockout.chat/thread/${_.id}/${_.page}'));
+                      break;
+                    case 2:
+                      onTabUnsubscribed();
+                      break;
+                    case 3:
+                      onTapSubscribe();
+                      break;
+                  }
+                },
+                itemBuilder: (context) => [
+                  _.data.value.subscribed
+                      ? overFlowItem(
+                          FaIcon(
+                            FontAwesomeIcons.solidBellSlash,
+                            size: 15,
+                          ),
+                          'Unsubscribe',
+                          2)
+                      : null,
+                  !_.data.value.subscribed
+                      ? overFlowItem(
+                          FaIcon(
+                            FontAwesomeIcons.solidBell,
+                            size: 15,
+                          ),
+                          'Subscribe',
+                          3)
+                      : null,
+                  overFlowItem(
+                      FaIcon(
+                        FontAwesomeIcons.copy,
+                        size: 15,
+                      ),
+                      'Copy link to thread',
+                      1),
+                ],
+              ),
+            )
           ]),
       body: Container(
         child: Obx(
@@ -265,47 +301,20 @@ class _ThreadScreenState extends State<ThreadScreen>
     );
   }
 
-  /*
-    OLD BOTTOM APPBAR
-    bottomNavigationBar: Obx(
-        () => BottomAppBar(
-          shape: CircularNotchedRectangle(),
-          child: Container(
-            padding: EdgeInsets.only(left: 10, right: 10),
-            height: 56,
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text('Page ' +
-                      threadController.page.toString() +
-                      ' of ' +
-                      threadController.pageCount.toString()),
-                ),
-                IconButton(
-                  icon: Icon(Icons.chevron_left),
-                  onPressed: threadController.page == 1
-                      ? null
-                      : () => goToPage(threadController.page - 1),
-                ),
-                IconButton(
-                  onPressed:
-                      threadController.pageCount > 1 ? showJumpDialog : null,
-                  icon: Icon(Icons.redo),
-                  tooltip: 'Jump to page',
-                ),
-                IconButton(
-                  icon: Icon(Icons.chevron_right),
-                  onPressed: threadController.pageCount == threadController.page
-                      ? null
-                      : () => goToPage(threadController.page + 1),
-                )
-              ],
-            ),
+  PopupMenuItem<int> overFlowItem(Widget icon, String title, int value) {
+    return PopupMenuItem<int>(
+      value: value,
+      child: Row(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(right: 15),
+            child: icon,
           ),
-        ),
+          Text(title)
+        ],
       ),
-
-   */
+    );
+  }
 
   goToPage(int pageNum) {
     itemScrollController.jumpTo(index: 0);
@@ -395,48 +404,10 @@ class _ThreadScreenState extends State<ThreadScreen>
       child: ScrollablePositionedList.builder(
         itemScrollController: itemScrollController,
         itemPositionsListener: itemPositionListener,
-        //minCacheExtent: MediaQuery.of(context).size.height,
         itemCount:
             widgets.length, //(threadController.data.value?.posts?.length) ?? 0,
         itemBuilder: (BuildContext context, int index) {
           return widgets[index];
-
-          /*ThreadPost post = threadController.data.value.posts[index];
-
-          if (index == 0) {
-            // Insert header
-            return Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 8),
-                  child: pageSelector(),
-                ),
-                PostListItem(
-                  post: post,
-                )
-              ],
-            );
-          }
-
-          if (index == (threadController.data.value.posts.length - 1)) {
-            return Column(
-              children: [
-                PostListItem(
-                  post: post,
-                ),
-                postEditor(),
-                Container(
-                  margin: EdgeInsets.only(bottom: 8),
-                  child: pageSelector(),
-                ),
-              ],
-            );
-          }
-
-          return PostListItem(
-            post: post,
-          );
-          */
         },
       ),
     );

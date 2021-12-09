@@ -291,8 +291,6 @@ class BBcodeRenderer extends StatelessWidget {
                 url = node.textContent;
               }
 
-              print(node);
-
               if (node.attributes.containsKey('smart')) {
                 widgetList.add(EmbedWidget(
                   url: url,
@@ -311,20 +309,17 @@ class BBcodeRenderer extends StatelessWidget {
                         } else {
                           throw 'Could not launch $url';
                         }
-                        print('Clicked link: ' + url);
                       },
                   ),
                 );
               }
             } else if (node.tag == 'spoiler') {
-              print('spoiler element');
               richTextContent.add(
                 TextSpan(
                   text: node.textContent,
                   style: textStyle,
                   recognizer: TapGestureRecognizer()
                     ..onTap = () async {
-                      print(node.textContent);
                       return showDialog<void>(
                         context: parentContext,
                         barrierDismissible: false, // user must tap button!

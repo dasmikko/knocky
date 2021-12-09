@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/paginatedController.dart';
@@ -7,7 +10,6 @@ import 'package:knocky/models/thread.dart';
 
 class ThreadController extends PaginatedController<Thread> {
   final AuthController authController = Get.put(AuthController());
-
   final hideFAB = false.obs;
 
   @override
