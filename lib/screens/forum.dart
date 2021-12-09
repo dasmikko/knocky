@@ -33,7 +33,7 @@ class _ForumScreenState extends State<ForumScreen>
   Widget motd() {
     if (forumController.motd == null) return Container();
 
-    return forumController.motd.value.length > 0
+    return forumController.motd.length > 0
         ? Container(
             height: 100,
             padding: EdgeInsets.symmetric(horizontal: 18),
@@ -101,7 +101,7 @@ class _ForumScreenState extends State<ForumScreen>
                   children: [
                     motd(),
                     Container(
-                      padding: forumController.motd.value.length > 0
+                      padding: forumController.motd.length > 0
                           ? EdgeInsets.only(top: 100)
                           : null,
                       child: ListView.builder(
