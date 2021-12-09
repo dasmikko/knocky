@@ -98,6 +98,7 @@ class KnockoutAPI {
     try {
       final response = await _request(
           url: 'subforum/' + id.toString() + '/' + page.toString());
+
       return SubforumDetails.fromJson(response.data);
     } on DioError catch (e) {
       print(e);

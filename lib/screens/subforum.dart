@@ -4,6 +4,7 @@ import 'package:knocky/controllers/subforumController.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
+import 'package:knocky/widgets/shared/pageSelector.dart';
 import 'package:knocky/widgets/subforum/subforumListItem.dart';
 
 class SubforumScreen extends StatefulWidget {
@@ -20,8 +21,65 @@ class _SubforumScreenState extends State<SubforumScreen> {
 
   @override
   void initState() {
-    subforumController.fetchSubforum(this.widget.subforum.id);
     super.initState();
+    subforumController.initState(widget.subforum.id, 1);
+  }
+
+  Widget pageSelector() {
+    return PageSelector(
+      onNext: () {
+        //itemScrollController.jumpTo(index: 0);
+        subforumController.nextPage();
+      },
+      onPage: (page) {
+        //itemScrollController.jumpTo(index: 0);
+        subforumController.goToPage(page);
+      },
+      pageCount: subforumController.pageCount,
+      currentPage: subforumController.page,
+    );
+  }
+
+  List<Widget> generateWidgetList() {
+    List<Widget> widgets = [];
+
+    // Add paginator
+    widgets.add(
+      Container(
+        margin: EdgeInsets.symmetric(vertical: 8),
+        child: pageSelector(),
+      ),
+    );
+
+    if (subforumController.data.value.threads != null) {
+      subforumController.data.value.threads.forEach((thread) {
+        widgets.add(
+          SubforumListItem(
+            threadDetails: thread,
+          ),
+        );
+      });
+    }
+
+    widgets.add(
+      Container(
+        margin: EdgeInsets.only(bottom: 8),
+        child: pageSelector(),
+      ),
+    );
+
+    return widgets;
+  }
+
+  Widget threads() {
+    List<Widget> widgets = generateWidgetList();
+
+    return ListView.builder(
+      itemCount: widgets.length,
+      itemBuilder: (BuildContext context, int index) {
+        return widgets[index];
+      },
+    );
   }
 
   @override
@@ -35,20 +93,10 @@ class _SubforumScreenState extends State<SubforumScreen> {
           () => KnockoutLoadingIndicator(
             show: subforumController.isFetching.value,
             child: RefreshIndicator(
-              onRefresh: () async =>
-                  subforumController.fetchSubforum(this.widget.subforum.id),
-              child: ListView.builder(
-                itemCount: subforumController.subforum.value.threads != null
-                    ? subforumController.subforum.value.threads.length
-                    : 0,
-                itemBuilder: (BuildContext context, int index) {
-                  SubforumThread thread =
-                      subforumController.subforum.value.threads[index];
-                  return SubforumListItem(
-                    threadDetails: thread,
-                  );
-                },
-              ),
+              onRefresh: () async => subforumController.fetchData(),
+              child: subforumController.data.value != null
+                  ? threads()
+                  : Container(),
             ),
           ),
         ),
