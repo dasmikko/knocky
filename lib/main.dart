@@ -5,7 +5,6 @@ import 'package:knocky/helpers/twitterApi.dart';
 import 'package:knocky/screens/forum.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/themes/DarkTheme.dart';
-import 'package:flutter_portal/flutter_portal.dart';
 //import 'package:knocky/themes/DefaultTheme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -37,13 +36,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Portal(
-      // Portal is for overlaying widgets
-      child: GetMaterialApp(
-        title: 'Flutter Demo',
-        theme: darkTheme(),
-        home: ForumScreen(),
-      ),
+    return GetMaterialApp(
+      title: 'Flutter Demo',
+      theme: darkTheme(),
+      home: ForumScreen(),
     );
   }
 }
