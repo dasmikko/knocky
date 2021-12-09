@@ -2,6 +2,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:knocky/controllers/forumController.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:knocky/screens/subforum.dart';
@@ -32,6 +33,8 @@ class _ForumScreenState extends State<ForumScreen>
 
   Widget motd() {
     if (forumController.motd == null) return Container();
+    if (forumController.motdIsHidden(forumController.motd.first.id))
+      return Container();
 
     return forumController.motd.length > 0
         ? Container(
@@ -61,7 +64,14 @@ class _ForumScreenState extends State<ForumScreen>
                 Container(
                   child: IconButton(
                     alignment: Alignment.centerRight,
-                    onPressed: () {},
+                    onPressed: () {
+                      forumController.hiddenMotds
+                          .add(forumController.motd.first.id);
+                      GetStorage storage = GetStorage();
+                      storage.write(
+                          'hiddenMotds', forumController.hiddenMotds.value);
+                      forumController.fetchMotd();
+                    },
                     icon: FaIcon(
                       FontAwesomeIcons.times,
                       size: 18,
@@ -101,7 +111,9 @@ class _ForumScreenState extends State<ForumScreen>
                   children: [
                     motd(),
                     Container(
-                      padding: forumController.motd.length > 0
+                      padding: forumController.motd.length > 0 &&
+                              !forumController
+                                  .motdIsHidden(forumController.motd.first.id)
                           ? EdgeInsets.only(top: 100)
                           : null,
                       child: ListView.builder(
