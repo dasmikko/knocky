@@ -54,6 +54,9 @@ dependencies:
   flutter_barcode_scanner: 2.0.0
   sticky_headers: 0.2.0
 
+dependency_overrides:
+  visibility_detector: 0.2.2
+
 dev_dependencies:
   build_runner: ^1.0.0
   json_serializable: 3.5.1
