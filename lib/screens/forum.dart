@@ -33,7 +33,8 @@ class _ForumScreenState extends State<ForumScreen>
 
   Widget motd() {
     if (forumController.motd == null) return Container();
-    if (forumController.motdIsHidden(forumController.motd.first.id))
+    if (forumController.motd.isEmpty ||
+        forumController.motdIsHidden(forumController.motd.first.id))
       return Container();
 
     return forumController.motd.length > 0
