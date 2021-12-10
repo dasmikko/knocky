@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/format.dart';
 import 'package:knocky/models/thread.dart';
 
@@ -10,7 +11,7 @@ class Toolbar extends StatelessWidget {
 
   static Widget toolbarBox(Color color, List<Widget> contents) {
     return Container(
-        padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+        padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
         color: color,
         height: 30,
         child: Row(
@@ -25,7 +26,7 @@ class Toolbar extends StatelessWidget {
 
   @protected
   List<Widget> contents() {
-    return [timestamp(), postNumber()];
+    return [timestamp(), postNumber(), Expanded(child: controls())];
   }
 
   @protected
@@ -47,5 +48,27 @@ class Toolbar extends StatelessWidget {
   Widget tags() {}
 
   // ignore: missing_return
-  Widget controls() {}
+  Widget controls() {
+    return Material(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          IconButton(
+            iconSize: 12,
+            icon: FaIcon(
+              FontAwesomeIcons.code,
+            ),
+            onPressed: () {},
+          ),
+          IconButton(
+            iconSize: 12,
+            icon: FaIcon(
+              FontAwesomeIcons.reply,
+            ),
+            onPressed: () {},
+          )
+        ],
+      ),
+    );
+  }
 }
