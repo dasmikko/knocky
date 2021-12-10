@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -22,6 +24,10 @@ class _NewPostState extends State<NewPost> {
   final ThreadController threadController = Get.put(ThreadController());
   final double height = 300;
   bool previewing = false;
+  StreamSubscription<ReplyEvent> eventlistener;
+
+  // TODO: Store contents of post in a controller, or else it gets wiped when user scrolls up
+
   @override
   void initState() {
     super.initState();
@@ -31,26 +37,25 @@ class _NewPostState extends State<NewPost> {
       setState(() {});
     });
 
-    eventBus.on<ReplyEvent>().listen((event) {
+    eventlistener = eventBus.on<ReplyEvent>().listen((event) async {
       ThreadPost post = event.post;
       String currentText = textEditingController.text;
 
       String contentToInsert =
-          '[quote mentionsUser="${post.user.id}" postId="${post.id}" threadPage="${post.page}" threadId="${post.thread}" username="${post.user.username}"]${post.content}[/quote]';
+          '[quote mentionsUser="${post.user.id}" postId="${post.id}" threadPage="${post.page}" threadId="${post.threadId}" username="${post.user.username}"]${post.content}[/quote]';
 
       if (currentText.isEmpty) {
         textEditingController.text = contentToInsert;
       } else {
         textEditingController.text = '\n' + contentToInsert;
       }
-      threadController.itemScrollController
-          .scrollTo(index: 999, duration: Duration(milliseconds: 1000));
     });
   }
 
   @override
   void dispose() {
     textEditingController.dispose();
+    eventlistener.cancel();
     super.dispose();
   }
 

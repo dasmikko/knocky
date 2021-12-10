@@ -69,7 +69,9 @@ class Toolbar extends StatelessWidget {
             icon: FaIcon(
               FontAwesomeIcons.reply,
             ),
-            onPressed: () {
+            onPressed: () async {
+              threadController.itemScrollController.jumpTo(index: 999);
+              await Future.delayed(Duration(milliseconds: 100));
               eventBus.fire(ReplyEvent(post));
             },
           )
