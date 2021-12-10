@@ -25,7 +25,7 @@ class ProfilePostToolbar extends Toolbar {
                       EdgeInsets.zero)),
               onPressed: () => Get.to(ThreadScreen(
                   id: post.threadId, page: post.page, linkedPostId: post.id)),
-              child: Text('',
+              child: Text(post.thread?.title,
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.white),
                   overflow: TextOverflow.ellipsis)))
