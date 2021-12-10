@@ -61,7 +61,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
 
   Widget subscriptions() {
     return Container(
-        padding: EdgeInsets.fromLTRB(4, 42, 4, 4),
+        padding: EdgeInsets.fromLTRB(0, 48, 0, 4),
         child: ScrollablePositionedList.builder(
             // ignore: invalid_use_of_protected_member
             itemCount:
