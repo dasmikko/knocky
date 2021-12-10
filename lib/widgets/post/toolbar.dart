@@ -47,7 +47,7 @@ class Toolbar extends StatelessWidget {
         ));
   }
 
-  // TODO: post tags + controls
+  // TODO: post tags
   // ignore: missing_return
   Widget tags() {}
 
