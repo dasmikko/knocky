@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:knocky/controllers/threadController.dart';
 import 'package:knocky/events/events.dart';
 import 'package:knocky/helpers/api.dart';
+import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/bbcode/bbcodeRenderer.dart';
 import 'package:knocky/widgets/shared/postEditorBBCode.dart';
@@ -121,7 +122,13 @@ class _NewPostState extends State<NewPost> {
   }
 
   submitClicked() async {
+    SnackbarController snackbarController = KnockySnackbar.normal(
+        'Submitting', "Submitting your post...",
+        isDismissible: false, showProgressIndicator: true);
     await KnockoutAPI().newPost(textEditingController.text, widget.threadId);
+    snackbarController.close();
+
+    KnockySnackbar.success('Post was submitted');
     textEditingController.text = '';
     widget.onSubmit.call();
   }
