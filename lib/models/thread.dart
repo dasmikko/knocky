@@ -129,7 +129,8 @@ class ThreadPost {
   final List<ThreadPostRatings> ratings;
   final List<ThreadPostBan> bans;
   final int threadPostNumber;
-  final int thread;
+  final int threadId;
+  final Thread thread;
   final int page;
 
   ThreadPost(
@@ -141,6 +142,7 @@ class ThreadPost {
       this.bans,
       this.threadPostNumber,
       this.page,
+      this.threadId,
       this.thread});
 
   factory ThreadPost.fromJson(Map<String, dynamic> json) {
@@ -165,7 +167,11 @@ class ThreadPost {
             ?.toList(),
         threadPostNumber: json['threadPostNumber'] as int,
         page: json['page'] as int,
-        thread: json['thread'] as int);
+        threadId:
+            json['thread'].runtimeType == int ? json['thread'] as int : null,
+        thread: json['thread'].runtimeType == Map
+            ? json['thread'] as Thread
+            : null);
   }
   Map<String, dynamic> toJson() => {
         'id': id,

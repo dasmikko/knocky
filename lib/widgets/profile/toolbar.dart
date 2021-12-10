@@ -24,7 +24,7 @@ class ProfilePostToolbar extends Toolbar {
                   padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
                       EdgeInsets.zero)),
               onPressed: () => Get.to(ThreadScreen(
-                  id: post.thread, page: post.page, linkedPostId: post.id)),
+                  id: post.threadId, page: post.page, linkedPostId: post.id)),
               child: Text('',
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.white),
