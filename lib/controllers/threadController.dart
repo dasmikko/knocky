@@ -1,15 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/paginatedController.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ThreadController extends PaginatedController<Thread> {
   final AuthController authController = Get.put(AuthController());
+  final ItemScrollController itemScrollController = new ItemScrollController();
   final hideFAB = false.obs;
 
   @override

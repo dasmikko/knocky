@@ -32,9 +32,9 @@ class _ThreadScreenState extends State<ThreadScreen>
     with SingleTickerProviderStateMixin {
   final ThreadController threadController = Get.put(ThreadController());
   final AuthController authController = Get.put(AuthController());
-  final ScrollController scrollController = ScrollController();
+  //final ScrollController scrollController = ScrollController();
 
-  final ItemScrollController itemScrollController = new ItemScrollController();
+  //final ItemScrollController itemScrollController = new ItemScrollController();
   final ItemPositionsListener itemPositionListener =
       ItemPositionsListener.create();
 
@@ -115,7 +115,8 @@ class _ThreadScreenState extends State<ThreadScreen>
                   1;
 
           // If we can't find the postIndex, just scroll to the top.
-          itemScrollController.jumpTo(index: postIndex == -1 ? 0 : postIndex);
+          threadController.itemScrollController
+              .jumpTo(index: postIndex == -1 ? 0 : postIndex);
 
           // Stop listening for more change, as we will never have to scroll to specific post anymore
           subscription.cancel();
@@ -140,7 +141,7 @@ class _ThreadScreenState extends State<ThreadScreen>
     );
 
     if (page != null) {
-      itemScrollController.jumpTo(index: 0);
+      threadController.itemScrollController.jumpTo(index: 0);
       threadController.goToPage(page);
     }
   }
@@ -185,7 +186,7 @@ class _ThreadScreenState extends State<ThreadScreen>
           title: Obx(
             () => GestureDetector(
               onTap: () {
-                itemScrollController.scrollTo(
+                threadController.itemScrollController.scrollTo(
                   index: 0,
                   duration: Duration(milliseconds: 500),
                   curve: Curves.easeOutCirc,
@@ -294,7 +295,7 @@ class _ThreadScreenState extends State<ThreadScreen>
                     color: Theme.of(context).textTheme.bodyText1.color,
                   ),
                   onPressed: () {
-                    itemScrollController.scrollTo(
+                    threadController.itemScrollController.scrollTo(
                       index: 999,
                       duration: Duration(milliseconds: 500),
                       curve: Curves.easeOutCirc,
@@ -319,18 +320,18 @@ class _ThreadScreenState extends State<ThreadScreen>
   }
 
   goToPage(int pageNum) {
-    itemScrollController.jumpTo(index: 0);
+    threadController.itemScrollController.jumpTo(index: 0);
     threadController.goToPage(pageNum);
   }
 
   Widget pageSelector() {
     return PageSelector(
       onNext: () {
-        itemScrollController.jumpTo(index: 0);
+        threadController.itemScrollController.jumpTo(index: 0);
         threadController.nextPage();
       },
       onPage: (page) {
-        itemScrollController.jumpTo(index: 0);
+        threadController.itemScrollController.jumpTo(index: 0);
         threadController.goToPage(page);
       },
       pageCount: threadController.pageCount,
@@ -339,10 +340,10 @@ class _ThreadScreenState extends State<ThreadScreen>
   }
 
   void onSubmit() {
-    scrollController.jumpTo(0);
+    threadController.itemScrollController.jumpTo(index: 0);
     if (threadController.data.value.posts.length ==
         PostsPerPage.POSTS_PER_PAGE) {
-      scrollController.jumpTo(0);
+      threadController.itemScrollController.jumpTo(index: 0);
       threadController.nextPage();
     } else {
       threadController.fetch();
@@ -404,7 +405,7 @@ class _ThreadScreenState extends State<ThreadScreen>
     return Container(
       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
       child: ScrollablePositionedList.builder(
-        itemScrollController: itemScrollController,
+        itemScrollController: threadController.itemScrollController,
         itemPositionsListener: itemPositionListener,
         itemCount:
             widgets.length, //(threadController.data.value?.posts?.length) ?? 0,

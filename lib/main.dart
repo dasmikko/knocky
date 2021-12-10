@@ -9,7 +9,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:knocky/themes/DarkTheme.dart';
 //import 'package:knocky/themes/DefaultTheme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:knocky/themes/DefaultTheme.dart';
 
 void main() async {
   final AuthController authController = Get.put(AuthController());

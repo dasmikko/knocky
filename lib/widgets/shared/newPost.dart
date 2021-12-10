@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:knocky/controllers/threadController.dart';
+import 'package:knocky/events/events.dart';
 import 'package:knocky/helpers/api.dart';
+import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/bbcode/bbcodeRenderer.dart';
 import 'package:knocky/widgets/shared/postEditorBBCode.dart';
 
@@ -14,6 +18,7 @@ class NewPost extends StatefulWidget {
 
 class _NewPostState extends State<NewPost> {
   final textEditingController = new TextEditingController();
+  final ThreadController threadController = Get.put(ThreadController());
   final double height = 300;
   bool previewing = false;
   @override
@@ -23,6 +28,22 @@ class _NewPostState extends State<NewPost> {
     // the submit button
     textEditingController.addListener(() {
       setState(() {});
+    });
+
+    eventBus.on<ReplyEvent>().listen((event) {
+      ThreadPost post = event.post;
+      String currentText = textEditingController.text;
+
+      String contentToInsert =
+          '[quote mentionsUser="${post.user.id}" postId="${post.id}" threadPage="${post.page}" threadId="${post.thread}" username="${post.user.username}"]${post.content}[/quote]';
+
+      if (currentText.isEmpty) {
+        textEditingController.text = contentToInsert;
+      } else {
+        textEditingController.text = '\n' + contentToInsert;
+      }
+      threadController.itemScrollController
+          .scrollTo(index: 999, duration: Duration(milliseconds: 1000));
     });
   }
 
@@ -40,12 +61,15 @@ class _NewPostState extends State<NewPost> {
 
   Widget renderer() {
     return Container(
-        height: height,
-        padding: EdgeInsets.all(8),
+      height: height,
+      padding: EdgeInsets.all(8),
+      child: SingleChildScrollView(
         child: BBcodeRenderer(
           parentContext: context,
           bbcode: textEditingController.text,
-        ));
+        ),
+      ),
+    );
   }
 
   Widget editor() {

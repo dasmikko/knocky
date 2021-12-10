@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:knocky/controllers/threadController.dart';
+import 'package:knocky/events/events.dart';
 import 'package:knocky/helpers/format.dart';
 import 'package:knocky/models/thread.dart';
 
 class Toolbar extends StatelessWidget {
   final ThreadPost post;
   final bool showThreadPostNumber;
+  final ThreadController threadController = Get.put(ThreadController());
 
   Toolbar({@required this.post, this.showThreadPostNumber = true});
 
@@ -65,7 +69,9 @@ class Toolbar extends StatelessWidget {
             icon: FaIcon(
               FontAwesomeIcons.reply,
             ),
-            onPressed: () {},
+            onPressed: () {
+              eventBus.fire(ReplyEvent(post));
+            },
           )
         ],
       ),

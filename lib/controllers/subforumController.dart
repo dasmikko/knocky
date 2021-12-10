@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:knocky/controllers/paginatedController.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
-import 'package:knocky/models/subforum.dart';
 import 'package:knocky/models/subforumDetails.dart';
 
 class SubforumController extends PaginatedController<SubforumDetails> {

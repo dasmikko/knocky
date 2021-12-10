@@ -129,7 +129,7 @@ class ThreadPost {
   final List<ThreadPostRatings> ratings;
   final List<ThreadPostBan> bans;
   final int threadPostNumber;
-  final Thread thread;
+  final int thread;
   final int page;
 
   ThreadPost(
@@ -165,15 +165,12 @@ class ThreadPost {
             ?.toList(),
         threadPostNumber: json['threadPostNumber'] as int,
         page: json['page'] as int,
-        thread:
-            json.containsKey('thread') && json['thread'] is Map<String, dynamic>
-                ? Thread.fromJson(json['thread'])
-                : null);
+        thread: json['thread'] as int);
   }
   Map<String, dynamic> toJson() => {
         'id': id,
         'createdAt': createdAt?.toIso8601String(),
-        'content': _contentToJson(content),
+        'content': content,
         'user': user,
         'ratings': ratings,
         'bans': bans,
@@ -198,8 +195,6 @@ dynamic _contentFromJson(String jsonString) {
     return jsonString;
   }
 }
-
-Map _contentToJson(SlateObject slateObject) => slateObject.toJson();
 
 class ThreadPostBan {
   final String banBannedBy;
