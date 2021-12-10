@@ -5,6 +5,7 @@ import 'package:knocky/controllers/subscriptionController.dart';
 import 'package:knocky/dialogs/confirmDialog.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
+import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widgets/jumpToPageDialog.dart';
@@ -61,10 +62,9 @@ class SubscriptionListItem extends ThreadListItem {
 
                 if (!confirmResult) return;
 
-                SnackbarController snackbarController = Get.snackbar(
-                  "Unsubscribing...", // title
-                  "Unsubscribing thread...", // message
-                  borderRadius: 0,
+                SnackbarController snackbarController = KnockySnackbar.normal(
+                  "Unsubscribing...",
+                  "Unsubscribing thread...",
                   isDismissible: false,
                   showProgressIndicator: true,
                 );
@@ -73,13 +73,7 @@ class SubscriptionListItem extends ThreadListItem {
                 snackbarController.close();
                 subscriptionController.fetch();
 
-                Get.snackbar(
-                  "Success", // title
-                  "Unsubscribed thread", // message
-                  borderRadius: 0,
-                  backgroundColor: Colors.green,
-                  colorText: Colors.white,
-                );
+                KnockySnackbar.success("Unsubscribed thread");
               }),
           ListTile(
             leading: FaIcon(FontAwesomeIcons.redo),

@@ -4,6 +4,7 @@ import 'package:dio/dio.dart' as Ddio;
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:knocky/helpers/snackbar.dart';
 import 'package:mime/mime.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share/share.dart';
@@ -26,11 +27,8 @@ class ImageViewerBottomSheet extends StatelessWidget {
 
   void copyUrl(context) {
     Clipboard.setData(new ClipboardData(text: url));
-    Get.snackbar(
-      'URL',
-      'URL copied to clipboard',
-      borderRadius: 0,
-    );
+
+    KnockySnackbar.success("Thread link was copied");
     Get.back();
   }
 
@@ -91,22 +89,10 @@ class ImageViewerBottomSheet extends StatelessWidget {
       (bool success) async {
         if (success) {
           Get.back();
-          Get.snackbar(
-            'Success',
-            'Image was saved to gallery',
-            colorText: Colors.white,
-            backgroundColor: Colors.green,
-            borderRadius: 0,
-          );
+          KnockySnackbar.success('Image was saved to gallery');
         } else {
           Get.back();
-          Get.snackbar(
-            'Success',
-            'Image was saved to gallery',
-            colorText: Colors.white,
-            backgroundColor: Colors.red,
-            borderRadius: 0,
-          );
+          KnockySnackbar.error('Image could not be saved to gallery');
         }
       },
     );

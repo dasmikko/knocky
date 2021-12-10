@@ -109,41 +109,43 @@ class _ForumScreenState extends State<ForumScreen>
           () => KnockoutLoadingIndicator(
             show: forumController.isFetching.value,
             child: RefreshIndicator(
-                onRefresh: () async {
-                  forumController.fetchSubforums();
-                  forumController.fetchMotd();
-                },
-                child: Stack(
-                  children: [
-                    motd(),
-                    Container(
-                      padding: forumController.motd.length > 0 &&
-                              !forumController
-                                  .motdIsHidden(forumController.motd.first.id)
-                          ? EdgeInsets.only(top: 100)
-                          : null,
-                      child: ListView.builder(
-                        itemCount: forumController.subforums.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          Subforum subforum = forumController.subforums[index];
-                          return ForumListItem(
-                            subforum: subforum,
-                            onTapItem: (Subforum subforumItem) {
-                              Get.to(
-                                () => SubforumScreen(subforum: subforum),
-                              );
-                            },
-                            onTapItemFooter: (int threadId, int page) {
-                              Get.to(
-                                () => ThreadScreen(id: threadId, page: page),
-                              );
-                            },
-                          );
-                        },
-                      ),
+              onRefresh: () async {
+                forumController.fetchSubforums();
+                forumController.fetchMotd();
+              },
+              child: Stack(
+                children: [
+                  motd(),
+                  Container(
+                    padding: forumController.motd.length > 0 &&
+                            !forumController
+                                .motdIsHidden(forumController.motd.first.id)
+                        ? EdgeInsets.only(top: 100)
+                        : null,
+                    child: ListView.builder(
+                      padding: EdgeInsets.fromLTRB(4, 8, 4, 8),
+                      itemCount: forumController.subforums.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        Subforum subforum = forumController.subforums[index];
+                        return ForumListItem(
+                          subforum: subforum,
+                          onTapItem: (Subforum subforumItem) {
+                            Get.to(
+                              () => SubforumScreen(subforum: subforum),
+                            );
+                          },
+                          onTapItemFooter: (int threadId, int page) {
+                            Get.to(
+                              () => ThreadScreen(id: threadId, page: page),
+                            );
+                          },
+                        );
+                      },
                     ),
-                  ],
-                )),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
         drawer: MainDrawer());

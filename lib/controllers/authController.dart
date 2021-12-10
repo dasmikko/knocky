@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/api.dart';
+import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/models/syncData.dart';
 
 class AuthController extends GetxController {
@@ -87,6 +88,6 @@ class AuthController extends GetxController {
     prefs.write('usergroup', 0);
     prefs.write('cookieString', '');
 
-    Get.snackbar('Success', 'You are now logged out', borderRadius: 0);
+    KnockySnackbar.success('You are now logged out');
   }
 }

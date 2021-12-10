@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
+import 'package:knocky/helpers/themeService.dart';
 import 'package:knocky/helpers/twitterApi.dart';
 import 'package:knocky/screens/forum.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/themes/DarkTheme.dart';
 //import 'package:knocky/themes/DefaultTheme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:knocky/themes/DefaultTheme.dart';
 
 void main() async {
   final AuthController authController = Get.put(AuthController());
@@ -29,6 +32,10 @@ void main() async {
     print('Fetching bearer token failed');
   }
 
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.grey[900],
+      systemNavigationBarIconBrightness: Brightness.light));
+
   runApp(MyApp());
 }
 
@@ -39,6 +46,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Flutter Demo',
       theme: darkTheme(),
+      darkTheme: darkTheme(),
+      themeMode: ThemeService().theme,
       home: ForumScreen(),
     );
   }

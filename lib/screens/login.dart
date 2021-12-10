@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/dialogs/qrDialog.dart';
+import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/screens/forum.dart';
 import 'package:knocky/screens/loginWebview.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -23,30 +24,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (loginResult == true) {
       Get.offAll(ForumScreen());
-      Get.snackbar(
-        'Success',
-        'Login was successfull!',
-        icon: Icon(Icons.check),
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        borderRadius: 0,
-      );
+      KnockySnackbar.success('Login was successfull!', icon: Icon(Icons.check));
     } else {
-      Get.snackbar(
-        'Error',
-        'Login was canceled',
-        borderRadius: 0,
-        icon: Icon(Icons.warning),
-        snackPosition: SnackPosition.BOTTOM,
-        animationDuration: Duration(milliseconds: 500),
-        forwardAnimationCurve: Curves.easeOutCirc,
-        reverseAnimationCurve: Curves.easeOutCirc,
-        margin: EdgeInsets.only(
-          bottom: 14,
-          left: 14,
-          right: 14,
-        ),
-      );
+      KnockySnackbar.error('Login was canceled', icon: Icon(Icons.warning));
     }
   }
 
@@ -69,32 +49,17 @@ class _LoginScreenState extends State<LoginScreen> {
         "#ff6666", "Cancel", false, ScanMode.DEFAULT);
 
     if (barcodeScanRes != null) {
+      SnackbarController snackbarController = KnockySnackbar.normal(
+          'Logging in', 'Got QR code, logging in with it...',
+          isDismissible: false, showProgressIndicator: true);
+
+      // login and fetch user info
       await authController.loginWithJWTOnly(barcodeScanRes);
+      snackbarController.close();
       Get.offAll(ForumScreen());
-      Get.snackbar(
-        'Success',
-        'Login was successfull',
-        icon: Icon(Icons.check),
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        borderRadius: 0,
-      );
+      KnockySnackbar.success('Login was successfull!', icon: Icon(Icons.check));
     } else {
-      Get.snackbar(
-        'Error',
-        'Login was canceled',
-        icon: Icon(Icons.warning),
-        snackPosition: SnackPosition.BOTTOM,
-        animationDuration: Duration(milliseconds: 500),
-        forwardAnimationCurve: Curves.easeOutCirc,
-        reverseAnimationCurve: Curves.easeOutCirc,
-        borderRadius: 0,
-        margin: EdgeInsets.only(
-          bottom: 14,
-          left: 14,
-          right: 14,
-        ),
-      );
+      KnockySnackbar.error('Login was canceled', icon: Icon(Icons.warning));
     }
   }
 

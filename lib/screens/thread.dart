@@ -7,6 +7,7 @@ import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/threadController.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
+import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widgets/jumpToPageDialog.dart';
@@ -148,10 +149,9 @@ class _ThreadScreenState extends State<ThreadScreen>
     Thread thread = threadController.data.value;
 
     try {
-      SnackbarController snackbarController = Get.snackbar(
-        "Subscribing...", // title
-        "Subscribing thread...", // message
-        borderRadius: 0,
+      SnackbarController snackbarController = KnockySnackbar.normal(
+        "Subscribing...",
+        "Subscribing thread...",
         isDismissible: false,
         showProgressIndicator: true,
       );
@@ -159,23 +159,15 @@ class _ThreadScreenState extends State<ThreadScreen>
           .subscribe(thread.posts.last.threadPostNumber, thread.id);
       snackbarController.close();
       threadController.fetch();
-
-      Get.snackbar(
-        "Success", // title
-        "Subscribed thread", // message
-        borderRadius: 0,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      KnockySnackbar.success("Subscribed thread");
     } catch (error) {}
   }
 
   void onTabUnsubscribed() async {
     Thread thread = threadController.data.value;
-    SnackbarController snackbarController = Get.snackbar(
-      "Unsubscribing...", // title
-      "Unsubscribing thread...", // message
-      borderRadius: 0,
+    SnackbarController snackbarController = KnockySnackbar.normal(
+      "Unsubscribing...",
+      "Unsubscribing thread...",
       isDismissible: false,
       showProgressIndicator: true,
     );
@@ -183,14 +175,7 @@ class _ThreadScreenState extends State<ThreadScreen>
     await KnockoutAPI().deleteThreadAlert(thread.id);
     snackbarController.close();
     threadController.fetch();
-
-    Get.snackbar(
-      "Success", // title
-      "Unsubscribed thread", // message
-      borderRadius: 0,
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-    );
+    KnockySnackbar.success("Unsubscribed thread");
   }
 
   @override
@@ -221,9 +206,12 @@ class _ThreadScreenState extends State<ThreadScreen>
                 onSelected: (value) async {
                   switch (value) {
                     case 1:
-                      Clipboard.setData(new ClipboardData(
-                          text:
-                              'https://knockout.chat/thread/${_.id}/${_.page}'));
+                      Clipboard.setData(
+                        new ClipboardData(
+                            text:
+                                'https://knockout.chat/thread/${_.id}/${_.page}'),
+                      );
+                      KnockySnackbar.success("Thread link was copied");
                       break;
                     case 2:
                       onTabUnsubscribed();
@@ -322,14 +310,10 @@ class _ThreadScreenState extends State<ThreadScreen>
   PopupMenuItem<int> overFlowItem(Widget icon, String title, int value) {
     return PopupMenuItem<int>(
       value: value,
-      child: Row(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(right: 15),
-            child: icon,
-          ),
-          Text(title)
-        ],
+      child: ListTile(
+        horizontalTitleGap: 0,
+        leading: icon,
+        title: Text(title),
       ),
     );
   }

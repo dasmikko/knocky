@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/controllers/forumController.dart';
+import 'package:knocky/helpers/snackbar.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key key}) : super(key: key);
@@ -21,7 +22,7 @@ class SettingsScreen extends StatelessWidget {
                 final box = GetStorage('sizeCache');
                 box.erase();
 
-                Get.snackbar('Success', 'Image size cache cleared');
+                KnockySnackbar.success('Image size cache cleared');
               },
             ),
             ListTile(
@@ -32,7 +33,7 @@ class SettingsScreen extends StatelessWidget {
 
                 forumController.hiddenMotds.value = [];
                 storage.write('hiddenMotds', forumController.hiddenMotds.value);
-                Get.snackbar('Success', 'Hidden Motds cleared');
+                KnockySnackbar.success('Hidden Motds cleared');
               },
             ),
           ],
