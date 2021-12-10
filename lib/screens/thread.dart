@@ -339,7 +339,7 @@ class _ThreadScreenState extends State<ThreadScreen>
     );
   }
 
-  void onSubmit() {
+  void onSubmit() async {
     threadController.itemScrollController.jumpTo(index: 0);
     if (threadController.data.value.posts.length ==
         PostsPerPage.POSTS_PER_PAGE) {
@@ -347,6 +347,13 @@ class _ThreadScreenState extends State<ThreadScreen>
       threadController.nextPage();
     } else {
       threadController.fetch();
+    }
+    Thread thread = threadController.data.value;
+
+    // Subscribe to the thread if not!
+    if (!thread.subscribed) {
+      await KnockoutAPI()
+          .subscribe(thread.posts.last.threadPostNumber, thread.id);
     }
   }
 
