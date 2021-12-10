@@ -53,7 +53,12 @@ class _ForumScreenState extends State<ForumScreen>
                 ),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      String stringUrl = forumController.motd.first.buttonLink;
+                      int threadId = int.parse(stringUrl.split('/').last);
+
+                      Get.to(ThreadScreen(id: threadId));
+                    },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.blue[700],
                       side: BorderSide(color: Colors.white),
