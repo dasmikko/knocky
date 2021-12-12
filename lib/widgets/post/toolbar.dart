@@ -8,9 +8,13 @@ import 'package:knocky/models/thread.dart';
 class Toolbar extends StatelessWidget {
   final ThreadPost post;
   final bool showThreadPostNumber;
+  final Function onToggleBBCode;
   final ThreadController threadController = Get.put(ThreadController());
 
-  Toolbar({@required this.post, this.showThreadPostNumber = true});
+  Toolbar(
+      {@required this.post,
+      this.showThreadPostNumber = true,
+      this.onToggleBBCode});
 
   static Widget toolbarBox(Color color, List<Widget> contents) {
     return Container(
@@ -61,7 +65,7 @@ class Toolbar extends StatelessWidget {
             icon: FaIcon(
               FontAwesomeIcons.code,
             ),
-            onPressed: () {},
+            onPressed: () => this.onToggleBBCode.call(),
           ),
           IconButton(
             iconSize: 12,

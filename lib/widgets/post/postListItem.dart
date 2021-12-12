@@ -7,11 +7,18 @@ import 'package:knocky/widgets/post/ratings.dart';
 import 'package:knocky/widgets/post/toolbar.dart';
 import 'package:knocky/widgets/post/userInfo.dart';
 
-class PostListItem extends StatelessWidget {
+class PostListItem extends StatefulWidget {
   final ThreadPost post;
-  final AuthController authController = Get.put(AuthController());
   final DateTime readThreadLastSeen;
   PostListItem({@required this.post, this.readThreadLastSeen});
+
+  @override
+  State<PostListItem> createState() => _PostListItemState();
+}
+
+class _PostListItemState extends State<PostListItem> {
+  final AuthController authController = Get.put(AuthController());
+  bool showBBCode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,17 +33,24 @@ class PostListItem extends StatelessWidget {
   @protected
   List<Widget> contents(BuildContext context) {
     bool isNewPost = false;
-    if (readThreadLastSeen != null &&
-        readThreadLastSeen.isBefore(post.createdAt)) {
+    if (widget.readThreadLastSeen != null &&
+        widget.readThreadLastSeen.isBefore(widget.post.createdAt)) {
       isNewPost = true;
     }
 
     return [
       UserInfo(
-        user: post.user,
+        user: widget.post.user,
         isNewPost: isNewPost,
       ),
-      Toolbar(post: post),
+      Toolbar(
+        post: widget.post,
+        onToggleBBCode: () {
+          setState(() {
+            showBBCode = !showBBCode;
+          });
+        },
+      ),
       postBody(context),
     ];
   }
@@ -49,11 +63,13 @@ class PostListItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BBcodeRenderer(
-            parentContext: context,
-            bbcode: post.content,
-            postDetails: post,
-          ),
+          showBBCode
+              ? SelectableText(widget.post.content)
+              : BBcodeRenderer(
+                  parentContext: context,
+                  bbcode: widget.post.content,
+                  postDetails: widget.post,
+                ),
           ratings()
         ],
       ),
@@ -62,7 +78,8 @@ class PostListItem extends StatelessWidget {
 
   @protected
   Widget ratings() {
-    return Ratings(postId: post.id, ratings: post.ratings, onRated: onRated);
+    return Ratings(
+        postId: widget.post.id, ratings: widget.post.ratings, onRated: onRated);
   }
 
   onRated() {

@@ -55,7 +55,6 @@ class _SignificantThreadsScreenState extends State<SignificantThreadsScreen> {
     return Container(
         padding: EdgeInsets.all(4),
         child: ScrollablePositionedList.builder(
-          //  TODO: how do we see if the list is null or not without accessing .value?
           // ignore: invalid_use_of_protected_member
           itemCount: controller.threads.value?.length ?? 0,
           itemBuilder: (BuildContext context, int index) {

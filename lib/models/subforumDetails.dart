@@ -148,6 +148,7 @@ class SignificantThread {
   final int unreadType;
   final SubforumThreadUser user;
   final SubforumLastPost lastPost;
+  final int subforumId;
   final String backgroundUrl;
   final Viewers viewers;
 
@@ -166,7 +167,8 @@ class SignificantThread {
       this.user,
       this.lastPost,
       this.backgroundUrl,
-      this.viewers});
+      this.viewers,
+      this.subforumId});
 
   factory SignificantThread.fromJson(Map<String, dynamic> json) {
     return SignificantThread(
@@ -183,6 +185,7 @@ class SignificantThread {
       unreadPostCount: json['unreadPostCount'] as int ?? 0,
       title: json['title'] as String,
       unreadType: json['unreadType'] as int,
+      subforumId: json['subforumId'] as int,
       user: json['user'] == null
           ? null
           : SubforumThreadUser.fromJson(json['user'] as Map<String, dynamic>),

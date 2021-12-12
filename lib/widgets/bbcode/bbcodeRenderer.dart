@@ -19,13 +19,15 @@ class BBcodeRenderer extends StatelessWidget {
   final GlobalKey scaffoldKey;
   final ThreadPost postDetails;
 
+  // TODO: Make another version where the root element is a SelectableText.rich() and all children are simply InlineSpan's, to make test selection easier and general widget generation better
+
   BBcodeRenderer(
       {this.parentContext, this.bbcode, this.scaffoldKey, this.postDetails});
 
   dynamic textHandler(bbob.Node node, bool isRoot) {
     if (isRoot) {
-      return RichText(
-        text: TextSpan(
+      return SelectableText.rich(
+        TextSpan(
           style: TextStyle(height: 2),
           text: node.textContent,
         ),
@@ -114,8 +116,8 @@ class BBcodeRenderer extends StatelessWidget {
   Widget listItemHandler(node) {
     if (node is bbob.Text) {
       return Container(
-        child: RichText(
-          text: TextSpan(
+        child: SelectableText.rich(
+          TextSpan(
             text: node.text,
             style: TextStyle(height: 2),
           ),
@@ -230,14 +232,14 @@ class BBcodeRenderer extends StatelessWidget {
         switch (node.tag) {
           case 'h1':
             if (richTextContent.isNotEmpty) {
-              widgetList.add(
-                  RichText(text: TextSpan(children: richTextContent.toList())));
+              widgetList.add(SelectableText.rich(
+                  TextSpan(children: richTextContent.toList())));
               richTextContent.clear();
             }
 
             widgetList.add(
-              RichText(
-                text: TextSpan(
+              SelectableText.rich(
+                TextSpan(
                   text: node.textContent,
                   style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
                 ),
@@ -246,14 +248,14 @@ class BBcodeRenderer extends StatelessWidget {
             break;
           case 'h2':
             if (richTextContent.isNotEmpty) {
-              widgetList.add(
-                  RichText(text: TextSpan(children: richTextContent.toList())));
+              widgetList.add(SelectableText.rich(
+                  TextSpan(children: richTextContent.toList())));
               richTextContent.clear();
             }
 
             widgetList.add(
-              RichText(
-                text: TextSpan(
+              SelectableText.rich(
+                TextSpan(
                   text: node.textContent,
                   style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
                 ),
@@ -329,8 +331,8 @@ class BBcodeRenderer extends StatelessWidget {
                             content: SingleChildScrollView(
                               child: ListBody(
                                 children: <Widget>[
-                                  RichText(
-                                    text: textElementHandler(node.children),
+                                  SelectableText.rich(
+                                    textElementHandler(node.children),
                                   ),
                                 ],
                               ),
@@ -358,8 +360,8 @@ class BBcodeRenderer extends StatelessWidget {
             break;
           case 'blockquote':
             if (richTextContent.isNotEmpty) {
-              widgetList.add(
-                  RichText(text: TextSpan(children: richTextContent.toList())));
+              widgetList.add(SelectableText.rich(
+                  TextSpan(children: richTextContent.toList())));
               richTextContent.clear();
             }
 
@@ -373,8 +375,8 @@ class BBcodeRenderer extends StatelessWidget {
                   ),
                   color: Color.fromRGBO(128, 128, 128, 0.1),
                 ),
-                child: RichText(
-                  text: textElementHandler(node.children),
+                child: SelectableText.rich(
+                  textElementHandler(node.children),
                 ),
               ),
             );
@@ -382,8 +384,8 @@ class BBcodeRenderer extends StatelessWidget {
           case 'img':
           case 'img thumbnail':
             if (richTextContent.isNotEmpty) {
-              widgetList.add(
-                  RichText(text: TextSpan(children: richTextContent.toList())));
+              widgetList.add(SelectableText.rich(
+                  TextSpan(children: richTextContent.toList())));
               richTextContent.clear();
             }
 
@@ -391,8 +393,8 @@ class BBcodeRenderer extends StatelessWidget {
             break;
           case 'video':
             if (richTextContent.isNotEmpty) {
-              widgetList.add(
-                  RichText(text: TextSpan(children: richTextContent.toList())));
+              widgetList.add(SelectableText.rich(
+                  TextSpan(children: richTextContent.toList())));
               richTextContent.clear();
             }
 
@@ -400,8 +402,8 @@ class BBcodeRenderer extends StatelessWidget {
             break;
           case 'youtube':
             if (richTextContent.isNotEmpty) {
-              widgetList.add(
-                  RichText(text: TextSpan(children: richTextContent.toList())));
+              widgetList.add(SelectableText.rich(
+                  TextSpan(children: richTextContent.toList())));
               richTextContent.clear();
             }
 
@@ -409,8 +411,8 @@ class BBcodeRenderer extends StatelessWidget {
             break;
           case 'twitter':
             if (richTextContent.isNotEmpty) {
-              widgetList.add(
-                  RichText(text: TextSpan(children: richTextContent.toList())));
+              widgetList.add(SelectableText.rich(
+                  TextSpan(children: richTextContent.toList())));
               richTextContent.clear();
             }
 
@@ -418,8 +420,8 @@ class BBcodeRenderer extends StatelessWidget {
             break;
           case 'quote':
             if (richTextContent.isNotEmpty) {
-              widgetList.add(
-                  RichText(text: TextSpan(children: richTextContent.toList())));
+              widgetList.add(SelectableText.rich(
+                  TextSpan(children: richTextContent.toList())));
               richTextContent.clear();
             }
 
@@ -427,8 +429,8 @@ class BBcodeRenderer extends StatelessWidget {
             break;
           case 'ul':
             if (richTextContent.isNotEmpty) {
-              widgetList.add(
-                  RichText(text: TextSpan(children: richTextContent.toList())));
+              widgetList.add(SelectableText.rich(
+                  TextSpan(children: richTextContent.toList())));
               richTextContent.clear();
             }
 
@@ -444,8 +446,8 @@ class BBcodeRenderer extends StatelessWidget {
     });
 
     if (richTextContent.isNotEmpty) {
-      widgetList
-          .add(RichText(text: TextSpan(children: richTextContent.toList())));
+      widgetList.add(
+          SelectableText.rich(TextSpan(children: richTextContent.toList())));
     }
 
     return widgetList;

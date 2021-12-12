@@ -10,7 +10,9 @@ class ProfilePostListItem extends PostListItem {
 
   @override
   List<Widget> contents(BuildContext context) {
-    return [ProfilePostToolbar(post: post), postBody(context)];
+    return [
+      ProfilePostToolbar(post: post),
+    ];
   }
 
   @override
