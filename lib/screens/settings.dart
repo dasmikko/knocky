@@ -32,7 +32,7 @@ class SettingsScreen extends StatelessWidget {
                 GetStorage storage = GetStorage();
 
                 forumController.hiddenMotds.value = [];
-                storage.write('hiddenMotds', forumController.hiddenMotds.value);
+                storage.write('hiddenMotds', forumController.hiddenMotds);
                 KnockySnackbar.success('Hidden Motds cleared');
               },
             ),

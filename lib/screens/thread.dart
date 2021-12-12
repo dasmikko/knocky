@@ -32,9 +32,6 @@ class _ThreadScreenState extends State<ThreadScreen>
     with SingleTickerProviderStateMixin {
   final ThreadController threadController = Get.put(ThreadController());
   final AuthController authController = Get.put(AuthController());
-  //final ScrollController scrollController = ScrollController();
-
-  //final ItemScrollController itemScrollController = new ItemScrollController();
   final ItemPositionsListener itemPositionListener =
       ItemPositionsListener.create();
 
@@ -128,6 +125,9 @@ class _ThreadScreenState extends State<ThreadScreen>
   @override
   void dispose() {
     subscription.cancel();
+
+    // Clear new text as we have leaved the thread
+    threadController.currentNewPostText.value = '';
     super.dispose();
   }
 

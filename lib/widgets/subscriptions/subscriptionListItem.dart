@@ -13,7 +13,7 @@ import 'package:knocky/widgets/shared/threadListItem.dart';
 
 class SubscriptionListItem extends ThreadListItem {
   final ThreadAlert threadAlert;
-  SubscriptionController subscriptionController =
+  final SubscriptionController subscriptionController =
       Get.put(SubscriptionController());
 
   SubscriptionListItem({@required this.threadAlert})

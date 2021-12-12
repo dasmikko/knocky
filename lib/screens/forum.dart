@@ -74,8 +74,7 @@ class _ForumScreenState extends State<ForumScreen>
                       forumController.hiddenMotds
                           .add(forumController.motd.first.id);
                       GetStorage storage = GetStorage();
-                      storage.write(
-                          'hiddenMotds', forumController.hiddenMotds.value);
+                      storage.write('hiddenMotds', forumController.hiddenMotds);
                       forumController.fetchMotd();
                     },
                     icon: FaIcon(

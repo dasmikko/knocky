@@ -9,6 +9,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 class ThreadController extends PaginatedController<Thread> {
   final AuthController authController = Get.put(AuthController());
   final ItemScrollController itemScrollController = new ItemScrollController();
+  final currentNewPostText = ''.obs;
   final hideFAB = false.obs;
 
   @override

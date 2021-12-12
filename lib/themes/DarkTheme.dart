@@ -11,6 +11,7 @@ ThemeData darkTheme() {
     cardTheme: CardTheme(color: primaryDark, clipBehavior: Clip.antiAlias),
     primaryColor: primary,
     primaryColorDark: primaryDark,
+    // ignore: deprecated_member_use
     accentColor: Colors.red,
     brightness: Brightness.dark,
     appBarTheme: AppBarTheme(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/threadController.dart';
-import 'package:knocky/events/events.dart';
 import 'package:knocky/helpers/format.dart';
 import 'package:knocky/models/thread.dart';
 
@@ -70,9 +69,21 @@ class Toolbar extends StatelessWidget {
               FontAwesomeIcons.reply,
             ),
             onPressed: () async {
+              // TODO: Test if threadid is recieved
+              String contentToInsert =
+                  '[quote mentionsUser="${post.user.id}" postId="${post.id}" threadPage="${post.page}" threadId="${post.threadId}" username="${post.user.username}"]${post.content}[/quote]';
+
+              if (threadController.currentNewPostText.value.isEmpty) {
+                threadController.currentNewPostText.value =
+                    threadController.currentNewPostText.value + contentToInsert;
+              } else {
+                threadController.currentNewPostText.value =
+                    threadController.currentNewPostText.value +
+                        '\n' +
+                        contentToInsert;
+              }
+
               threadController.itemScrollController.jumpTo(index: 999);
-              await Future.delayed(Duration(milliseconds: 100));
-              eventBus.fire(ReplyEvent(post));
             },
           )
         ],
