@@ -40,9 +40,20 @@ class _NewPostState extends State<NewPost> {
     // Use the text inside the thread controller
     textEditingController.text = threadController.currentNewPostText.value;
 
-    subscription =
-        threadController.currentNewPostText.listen((String newValue) {
-      textEditingController.text = threadController.currentNewPostText.value;
+    // Insert reply if there is any when initializing
+    if (threadController.replyToAdd != null) {
+      textEditingController.text =
+          textEditingController.text + threadController.replyToAdd.value;
+      // Reset the replyToAdd variable
+      threadController.replyToAdd.value = '';
+    }
+
+    // Listen for changes, in case user modifies the replyToAdd variable, and add it to the post text if so. If the newPost widget is mounted
+    subscription = threadController.replyToAdd.listen((String newValue) {
+      if (newValue != null || newValue.isEmpty) {
+        textEditingController.text = textEditingController.text + newValue;
+        threadController.replyToAdd.value = '';
+      }
     });
   }
 

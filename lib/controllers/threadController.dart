@@ -10,6 +10,7 @@ class ThreadController extends PaginatedController<Thread> {
   final AuthController authController = Get.put(AuthController());
   final ItemScrollController itemScrollController = new ItemScrollController();
   final currentNewPostText = ''.obs;
+  final replyToAdd = ''.obs;
   final hideFAB = false.obs;
 
   @override

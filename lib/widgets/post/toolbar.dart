@@ -73,16 +73,7 @@ class Toolbar extends StatelessWidget {
               String contentToInsert =
                   '[quote mentionsUser="${post.user.id}" postId="${post.id}" threadPage="${post.page}" threadId="${post.threadId}" username="${post.user.username}"]${post.content}[/quote]';
 
-              if (threadController.currentNewPostText.value.isEmpty) {
-                threadController.currentNewPostText.value =
-                    threadController.currentNewPostText.value + contentToInsert;
-              } else {
-                threadController.currentNewPostText.value =
-                    threadController.currentNewPostText.value +
-                        '\n' +
-                        contentToInsert;
-              }
-
+              threadController.replyToAdd.value = contentToInsert;
               threadController.itemScrollController.jumpTo(index: 999);
             },
           )

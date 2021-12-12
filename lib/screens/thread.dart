@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/threadController.dart';
+import 'package:knocky/dialogs/confirmDialog.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
 import 'package:knocky/helpers/snackbar.dart';
@@ -181,129 +182,140 @@ class _ThreadScreenState extends State<ThreadScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: Obx(
-            () => GestureDetector(
-              onTap: () {
-                threadController.itemScrollController.scrollTo(
-                  index: 0,
-                  duration: Duration(milliseconds: 500),
-                  curve: Curves.easeOutCirc,
-                );
-              },
-              child: Text(threadController.title ?? 'Loading thread...'),
-            ),
-          ),
-          actions: [
-            IconButton(
-              tooltip: "Jump to page",
-              icon: Icon(Icons.redo),
-              onPressed: () => showJumpDialog(),
-            ),
-            GetBuilder<ThreadController>(
-              init: ThreadController(), // INIT IT ONLY THE FIRST TIME
-              builder: (_) => PopupMenuButton(
-                onSelected: (value) async {
-                  switch (value) {
-                    case 1:
-                      Clipboard.setData(
-                        new ClipboardData(
-                            text:
-                                'https://knockout.chat/thread/${_.id}/${_.page}'),
-                      );
-                      KnockySnackbar.success("Thread link was copied");
-                      break;
-                    case 2:
-                      onTabUnsubscribed();
-                      break;
-                    case 3:
-                      onTapSubscribe();
-                      break;
-                    case 4:
-                      String url =
-                          'https://knockout.chat/thread/${_.id}/${_.page}';
-                      if (await canLaunch(url)) {
-                        await launch(url);
-                      } else {
-                        throw 'Could not launch url';
-                      }
-                      break;
-                  }
+    return WillPopScope(
+      onWillPop: () async {
+        if (threadController.currentNewPostText.value.isNotEmpty) {
+          return await Get.dialog(ConfirmDialog(
+            content:
+                'You seem to be writing a post, are you sure you want to leave the thread and lose the post content?',
+          ));
+        }
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+            title: Obx(
+              () => GestureDetector(
+                onTap: () {
+                  threadController.itemScrollController.scrollTo(
+                    index: 0,
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.easeOutCirc,
+                  );
                 },
-                itemBuilder: (context) => [
-                  _.data.value.subscribed
-                      ? overFlowItem(
-                          FaIcon(
-                            FontAwesomeIcons.solidBellSlash,
-                            size: 15,
-                          ),
-                          'Unsubscribe',
-                          2)
-                      : null,
-                  !_.data.value.subscribed
-                      ? overFlowItem(
-                          FaIcon(
-                            FontAwesomeIcons.solidBell,
-                            size: 15,
-                          ),
-                          'Subscribe',
-                          3)
-                      : null,
-                  overFlowItem(
-                      FaIcon(
-                        FontAwesomeIcons.copy,
-                        size: 15,
-                      ),
-                      'Copy link to thread',
-                      1),
-                  overFlowItem(
-                      FaIcon(
-                        FontAwesomeIcons.chrome,
-                        size: 15,
-                      ),
-                      'Open in browser',
-                      4),
-                ],
+                child: Text(threadController.title ?? 'Loading thread...'),
               ),
-            )
-          ]),
-      body: Container(
-        child: Obx(
-          () => KnockoutLoadingIndicator(
-            show: threadController.isFetching.value,
-            child: RefreshIndicator(
-              onRefresh: () async => threadController.fetch(),
-              child:
-                  threadController.data.value != null ? posts() : Container(),
+            ),
+            actions: [
+              IconButton(
+                tooltip: "Jump to page",
+                icon: Icon(Icons.redo),
+                onPressed: () => showJumpDialog(),
+              ),
+              GetBuilder<ThreadController>(
+                init: ThreadController(), // INIT IT ONLY THE FIRST TIME
+                builder: (_) => PopupMenuButton(
+                  onSelected: (value) async {
+                    switch (value) {
+                      case 1:
+                        Clipboard.setData(
+                          new ClipboardData(
+                              text:
+                                  'https://knockout.chat/thread/${_.id}/${_.page}'),
+                        );
+                        KnockySnackbar.success("Thread link was copied");
+                        break;
+                      case 2:
+                        onTabUnsubscribed();
+                        break;
+                      case 3:
+                        onTapSubscribe();
+                        break;
+                      case 4:
+                        String url =
+                            'https://knockout.chat/thread/${_.id}/${_.page}';
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        } else {
+                          throw 'Could not launch url';
+                        }
+                        break;
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    _.data.value.subscribed
+                        ? overFlowItem(
+                            FaIcon(
+                              FontAwesomeIcons.solidBellSlash,
+                              size: 15,
+                            ),
+                            'Unsubscribe',
+                            2)
+                        : null,
+                    !_.data.value.subscribed
+                        ? overFlowItem(
+                            FaIcon(
+                              FontAwesomeIcons.solidBell,
+                              size: 15,
+                            ),
+                            'Subscribe',
+                            3)
+                        : null,
+                    overFlowItem(
+                        FaIcon(
+                          FontAwesomeIcons.copy,
+                          size: 15,
+                        ),
+                        'Copy link to thread',
+                        1),
+                    overFlowItem(
+                        FaIcon(
+                          FontAwesomeIcons.chrome,
+                          size: 15,
+                        ),
+                        'Open in browser',
+                        4),
+                  ],
+                ),
+              )
+            ]),
+        body: Container(
+          child: Obx(
+            () => KnockoutLoadingIndicator(
+              show: threadController.isFetching.value,
+              child: RefreshIndicator(
+                onRefresh: () async => threadController.fetch(),
+                child:
+                    threadController.data.value != null ? posts() : Container(),
+              ),
             ),
           ),
         ),
-      ),
-      floatingActionButton: Obx(
-        () => authController.isAuthenticated.value &&
-                (threadController.data.value != null &&
-                    (threadController.data.value.locked != null &&
-                        !threadController.data.value.locked))
-            ? AnimatedScale(
-                curve: Curves.easeOutCirc,
-                scale: threadController.hideFAB.value ? 0.0 : 1.0,
-                duration: Duration(milliseconds: 250),
-                child: FloatingActionButton(
-                  child: FaIcon(
-                    FontAwesomeIcons.chevronDown,
-                    color: Theme.of(context).textTheme.bodyText1.color,
+        floatingActionButton: Obx(
+          () => authController.isAuthenticated.value &&
+                  (threadController.data.value != null &&
+                      (threadController.data.value.locked != null &&
+                          !threadController.data.value.locked))
+              ? AnimatedScale(
+                  curve: Curves.easeOutCirc,
+                  scale: threadController.hideFAB.value ? 0.0 : 1.0,
+                  duration: Duration(milliseconds: 250),
+                  child: FloatingActionButton(
+                    child: FaIcon(
+                      FontAwesomeIcons.chevronDown,
+                      color: Theme.of(context).textTheme.bodyText1.color,
+                    ),
+                    onPressed: () {
+                      threadController.itemScrollController.scrollTo(
+                        index: 999,
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.easeOutCirc,
+                      );
+                    },
                   ),
-                  onPressed: () {
-                    threadController.itemScrollController.scrollTo(
-                      index: 999,
-                      duration: Duration(milliseconds: 500),
-                      curve: Curves.easeOutCirc,
-                    );
-                  },
-                ),
-              )
-            : Container(),
+                )
+              : Container(),
+        ),
       ),
     );
   }
