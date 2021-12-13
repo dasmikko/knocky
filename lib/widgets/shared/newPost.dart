@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:knocky/controllers/threadController.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/snackbar.dart';
-import 'package:knocky/widgets/bbcode/bbcodeRenderer.dart';
 import 'package:knocky/widgets/bbcode/bbcodeRendererNew.dart';
 import 'package:knocky/widgets/shared/postEditorBBCode.dart';
 
@@ -23,8 +22,6 @@ class _NewPostState extends State<NewPost> {
   final ThreadController threadController = Get.put(ThreadController());
   final double height = 300;
   bool previewing = false;
-
-  // TODO: Store contents of post in a controller, or else it gets wiped when user scrolls up
   StreamSubscription subscription;
 
   @override

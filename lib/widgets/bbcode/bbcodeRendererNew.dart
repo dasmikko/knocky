@@ -19,8 +19,6 @@ class BBcodeRendererNew extends StatelessWidget {
   final GlobalKey scaffoldKey;
   final ThreadPost postDetails;
 
-  // TODO: Make another version where the root element is a SelectableText.rich() and all children are simply InlineSpan's, to make test selection easier and general widget generation better
-
   BBcodeRendererNew(
       {this.parentContext, this.bbcode, this.scaffoldKey, this.postDetails});
 

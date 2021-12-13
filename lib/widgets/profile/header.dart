@@ -8,6 +8,7 @@ import 'package:knocky/widgets/shared/avatar.dart';
 import 'package:knocky/widgets/shared/background.dart';
 import 'package:knocky/widgets/shared/usergroup.dart';
 import 'package:knocky/widgets/shared/username.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileHeader extends StatefulWidget {
   final UserProfileRatings ratings;
@@ -132,16 +133,26 @@ class _ProfileHeaderState extends State<ProfileHeader>
     }
     String textLabel = extractionMethod(widget.details.social[key]);
     return [
-      Container(
+      GestureDetector(
+        onTap: () async {
+          if (await canLaunch(textLabel)) {
+            launch(textLabel);
+          }
+        },
+        child: Container(
           margin: EdgeInsets.only(bottom: 8),
-          child: Row(children: [
-            Container(
-                margin: EdgeInsets.only(right: 4),
-                height: _linkIconSize,
-                width: _linkIconSize,
-                child: Center(child: FaIcon(icon, size: _linkIconSize))),
-            Expanded(child: Text(textLabel, overflow: TextOverflow.clip))
-          ]))
+          child: Row(
+            children: [
+              Container(
+                  margin: EdgeInsets.only(right: 4),
+                  height: _linkIconSize,
+                  width: _linkIconSize,
+                  child: Center(child: FaIcon(icon, size: _linkIconSize))),
+              Expanded(child: Text(textLabel, overflow: TextOverflow.clip))
+            ],
+          ),
+        ),
+      )
     ];
   }
 

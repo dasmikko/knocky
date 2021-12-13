@@ -87,7 +87,6 @@ class Toolbar extends StatelessWidget {
               FontAwesomeIcons.reply,
             ),
             onPressed: () async {
-              // TODO: Test if threadid is recieved
               String contentToInsert =
                   '[quote mentionsUser="${post.user.id}" postId="${post.id}" threadPage="${post.page}" threadId="${post.threadId}" username="${post.user.username}"]${post.content}[/quote]';
 

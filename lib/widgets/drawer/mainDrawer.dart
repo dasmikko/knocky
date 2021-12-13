@@ -46,7 +46,6 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     mainDrawerController.isUserListOpen.value = false;
     super.dispose();
   }
@@ -143,10 +142,10 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
               throw 'Could not launch url';
             }
           }),
-      DrawerListTile(
+      /*DrawerListTile(
           iconData: FontAwesomeIcons.solidComment,
           title: 'Mentions',
-          onTap: () => {}),
+          onTap: () => {}),*/
     ];
   }
 

@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/models/thread.dart';
-import 'package:knocky/widgets/bbcode/bbcodeRenderer.dart';
 import 'package:knocky/widgets/bbcode/bbcodeRendererNew.dart';
 import 'package:knocky/widgets/post/ratings.dart';
 import 'package:knocky/widgets/post/toolbar.dart';
 import 'package:knocky/widgets/post/userInfo.dart';
 import 'package:knocky/widgets/shared/editPost.dart';
-import 'package:knocky/widgets/shared/postEditorBBCode.dart';
 
 class PostListItem extends StatefulWidget {
   final ThreadPost post;

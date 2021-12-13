@@ -9,6 +9,7 @@ class ProfilePostListItem extends PostListItem {
   ProfilePostListItem({@required this.post}) : super(post: post);
 
   @override
+  // ignore: override_on_non_overriding_member
   List<Widget> contents(BuildContext context) {
     return [
       ProfilePostToolbar(post: post),
@@ -16,6 +17,7 @@ class ProfilePostListItem extends PostListItem {
   }
 
   @override
+  // ignore: override_on_non_overriding_member
   Widget ratings() {
     return Ratings(postId: post.id, ratings: post.ratings, canRate: false);
   }

@@ -182,9 +182,7 @@ class KnockoutAPI {
 
   Future<bool> ratePost(int postId, String rating) async {
     final response = await _request(
-        url: 'v2/posts/${postId}/ratings',
-        type: 'put',
-        data: {'rating': rating});
+        url: 'v2/posts/$postId/ratings', type: 'put', data: {'rating': rating});
 
     bool wasRejected = response.data['isRejected'];
 
@@ -218,7 +216,7 @@ class KnockoutAPI {
 
   Future<void> updatePost(String content, int postId) async {
     try {
-      await _request(type: 'put', url: 'v2/posts/${postId}', data: {
+      await _request(type: 'put', url: 'v2/posts/$postId', data: {
         'content': content,
         'appname': 'Knocky',
       });
