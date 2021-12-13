@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/threadController.dart';
 import 'package:knocky/helpers/format.dart';
 import 'package:knocky/models/thread.dart';
@@ -9,12 +10,15 @@ class Toolbar extends StatelessWidget {
   final ThreadPost post;
   final bool showThreadPostNumber;
   final Function onToggleBBCode;
+  final Function onToggleEditPost;
   final ThreadController threadController = Get.put(ThreadController());
+  final AuthController authController = Get.put(AuthController());
 
   Toolbar(
       {@required this.post,
       this.showThreadPostNumber = true,
-      this.onToggleBBCode});
+      this.onToggleBBCode,
+      this.onToggleEditPost});
 
   static Widget toolbarBox(Color color, List<Widget> contents) {
     return Container(
@@ -60,6 +64,16 @@ class Toolbar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          (authController.isAuthenticated.value &&
+                  post.user.id == authController.userId.value)
+              ? IconButton(
+                  iconSize: 12,
+                  icon: FaIcon(
+                    FontAwesomeIcons.pen,
+                  ),
+                  onPressed: () => this.onToggleEditPost.call(),
+                )
+              : Container(),
           IconButton(
             iconSize: 12,
             icon: FaIcon(

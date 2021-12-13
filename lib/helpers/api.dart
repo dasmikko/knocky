@@ -214,12 +214,11 @@ class KnockoutAPI {
     }
   }
 
-  Future<void> updatePost(dynamic content, int postId, int threadId) async {
+  Future<void> updatePost(String content, int postId) async {
     try {
-      await _request(type: 'put', url: 'post', data: {
-        'content': content.toString(),
-        'id': postId,
-        'thread_id': threadId
+      await _request(type: 'put', url: 'v2/posts/${postId}', data: {
+        'content': content,
+        'appname': 'Knocky',
       });
     } on DioError catch (e) {
       print(e);

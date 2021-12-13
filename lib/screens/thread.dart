@@ -399,6 +399,7 @@ class _ThreadScreenState extends State<ThreadScreen>
           PostListItem(
             post: post,
             readThreadLastSeen: threadController.data.value.readThreadLastSeen,
+            onPostUpdate: () => threadController.fetch(),
           ),
         );
       });

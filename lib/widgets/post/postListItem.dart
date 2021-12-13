@@ -7,11 +7,15 @@ import 'package:knocky/widgets/bbcode/bbcodeRendererNew.dart';
 import 'package:knocky/widgets/post/ratings.dart';
 import 'package:knocky/widgets/post/toolbar.dart';
 import 'package:knocky/widgets/post/userInfo.dart';
+import 'package:knocky/widgets/shared/editPost.dart';
+import 'package:knocky/widgets/shared/postEditorBBCode.dart';
 
 class PostListItem extends StatefulWidget {
   final ThreadPost post;
   final DateTime readThreadLastSeen;
-  PostListItem({@required this.post, this.readThreadLastSeen});
+  final Function onPostUpdate;
+  PostListItem(
+      {@required this.post, this.readThreadLastSeen, this.onPostUpdate});
 
   @override
   State<PostListItem> createState() => _PostListItemState();
@@ -19,7 +23,9 @@ class PostListItem extends StatefulWidget {
 
 class _PostListItemState extends State<PostListItem> {
   final AuthController authController = Get.put(AuthController());
+  final textEditingController = new TextEditingController();
   bool showBBCode = false;
+  bool editPost = false;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +57,11 @@ class _PostListItemState extends State<PostListItem> {
             showBBCode = !showBBCode;
           });
         },
+        onToggleEditPost: () {
+          setState(() {
+            editPost = !editPost;
+          });
+        },
       ),
       postBody(context),
     ];
@@ -58,21 +69,35 @@ class _PostListItemState extends State<PostListItem> {
 
   @protected
   Widget postBody(BuildContext context) {
+    Widget innerBody;
+
+    if (editPost) {
+      innerBody = EditPost(
+        postId: widget.post.id,
+        content: widget.post.content,
+        onSubmit: () {
+          setState(() {
+            editPost = false;
+          });
+          widget.onPostUpdate.call();
+        },
+      );
+    } else if (showBBCode) {
+      innerBody = SelectableText(widget.post.content);
+    } else {
+      innerBody = BBcodeRendererNew(
+        parentContext: context,
+        bbcode: widget.post.content,
+        postDetails: widget.post,
+      );
+    }
+
     return Container(
       padding: EdgeInsets.fromLTRB(8, 16, 16, 16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          showBBCode
-              ? SelectableText(widget.post.content)
-              : BBcodeRendererNew(
-                  parentContext: context,
-                  bbcode: widget.post.content,
-                  postDetails: widget.post,
-                ),
-          ratings()
-        ],
+        children: [innerBody, ratings()],
       ),
     );
   }

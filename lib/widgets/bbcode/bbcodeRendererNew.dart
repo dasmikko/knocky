@@ -26,11 +26,13 @@ class BBcodeRendererNew extends StatelessWidget {
 
   InlineSpan _imageNodeHandler(bbob.Element node) {
     return WidgetSpan(
-        child: ImageWidget(
-      postId: postDetails.id,
-      url: node.textContent,
-      bbcode: this.bbcode,
-    ));
+        child: Container(
+            margin: EdgeInsets.only(bottom: 8),
+            child: ImageWidget(
+              postId: postDetails?.id,
+              url: node.textContent,
+              bbcode: this.bbcode,
+            )));
   }
 
   InlineSpan _videoNodeHandler(bbob.Element node) {
@@ -73,7 +75,7 @@ class BBcodeRendererNew extends StatelessWidget {
               node.tag == 'u' ? TextDecoration.underline : TextDecoration.none,
           fontWeight: node.tag == 'b' ? FontWeight.bold : FontWeight.normal,
           fontStyle: node.tag == 'i' ? FontStyle.italic : FontStyle.normal,
-          fontSize: Theme.of(parentContext).textTheme.bodyText1.fontSize,
+          fontSize: 14,
           backgroundColor: node.tag == 'spoiler' ? Colors.white : null);
     } else {
       switch (node.tag) {
@@ -175,6 +177,7 @@ class BBcodeRendererNew extends StatelessWidget {
 
     return WidgetSpan(
       child: Container(
+        margin: EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
             border: Border.all(color: Colors.black),
             color: appColors.userQuoteBodyBackground(),
@@ -197,12 +200,15 @@ class BBcodeRendererNew extends StatelessWidget {
                     node.attributes['username'] != null
                         ? node.attributes['username']
                         : 'User' + ' posted:',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                    style:
+                        TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
               ),
               Container(
-                  padding: EdgeInsets.all(10),
-                  child: SelectableText.rich(
-                      TextSpan(children: _handleNodes(node.children)))),
+                padding: EdgeInsets.all(10),
+                child: RichText(
+                  text: TextSpan(children: _handleNodes(node.children)),
+                ),
+              ),
             ],
           ),
         ),

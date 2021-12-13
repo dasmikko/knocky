@@ -10,15 +10,16 @@ import 'package:knocky/widgets/bbcode/bbcodeRenderer.dart';
 import 'package:knocky/widgets/bbcode/bbcodeRendererNew.dart';
 import 'package:knocky/widgets/shared/postEditorBBCode.dart';
 
-class NewPost extends StatefulWidget {
-  final int threadId;
+class EditPost extends StatefulWidget {
+  final int postId;
+  final String content;
   final Function onSubmit;
-  NewPost({this.threadId, this.onSubmit});
+  EditPost({this.postId, this.onSubmit, this.content});
   @override
-  _NewPostState createState() => _NewPostState();
+  _EditPostState createState() => _EditPostState();
 }
 
-class _NewPostState extends State<NewPost> {
+class _EditPostState extends State<EditPost> {
   final textEditingController = new TextEditingController();
   final ThreadController threadController = Get.put(ThreadController());
   final double height = 300;
@@ -32,36 +33,12 @@ class _NewPostState extends State<NewPost> {
     super.initState();
     // rebuild the widget when text is changed so we can enable/disable
     // the submit button
-    textEditingController.addListener(() {
-      setState(() {});
-      // Update the threadController newpost text
-      threadController.currentNewPostText.value = textEditingController.text;
-    });
-
-    // Use the text inside the thread controller
-    textEditingController.text = threadController.currentNewPostText.value;
-
-    // Insert reply if there is any when initializing
-    if (threadController.replyToAdd != null) {
-      textEditingController.text =
-          textEditingController.text + threadController.replyToAdd.value;
-      // Reset the replyToAdd variable
-      threadController.replyToAdd.value = '';
-    }
-
-    // Listen for changes, in case user modifies the replyToAdd variable, and add it to the post text if so. If the newPost widget is mounted
-    subscription = threadController.replyToAdd.listen((String newValue) {
-      if (newValue != null || newValue.isEmpty) {
-        textEditingController.text = textEditingController.text + newValue;
-        threadController.replyToAdd.value = '';
-      }
-    });
+    textEditingController.text = widget.content;
   }
 
   @override
   void dispose() {
     textEditingController.dispose();
-    subscription.cancel();
     super.dispose();
   }
 
@@ -134,12 +111,12 @@ class _NewPostState extends State<NewPost> {
 
   submitClicked() async {
     SnackbarController snackbarController = KnockySnackbar.normal(
-        'Submitting', "Submitting your post...",
+        'Submitting', "Submitting your post update...",
         isDismissible: false, showProgressIndicator: true);
-    await KnockoutAPI().newPost(textEditingController.text, widget.threadId);
+    await KnockoutAPI().updatePost(textEditingController.text, widget.postId);
     snackbarController.close();
 
-    KnockySnackbar.success('Post was submitted');
+    KnockySnackbar.success('Post was updated');
     textEditingController.text = '';
     widget.onSubmit.call();
   }
