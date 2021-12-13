@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/bbcode/bbcodeRenderer.dart';
+import 'package:knocky/widgets/bbcode/bbcodeRendererNew.dart';
 import 'package:knocky/widgets/post/ratings.dart';
 import 'package:knocky/widgets/post/toolbar.dart';
 import 'package:knocky/widgets/post/userInfo.dart';
@@ -65,7 +66,7 @@ class _PostListItemState extends State<PostListItem> {
         children: [
           showBBCode
               ? SelectableText(widget.post.content)
-              : BBcodeRenderer(
+              : BBcodeRendererNew(
                   parentContext: context,
                   bbcode: widget.post.content,
                   postDetails: widget.post,
