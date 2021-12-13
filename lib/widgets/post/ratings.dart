@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/ratingsController.dart';
 import 'package:knocky/helpers/icons.dart';
+import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/post/ViewUsersOfRatingsContent.dart';
 import 'package:knocky/widgets/post/rateButton.dart';
@@ -25,6 +26,7 @@ class Ratings extends StatefulWidget {
 class _RatingsState extends State<Ratings> {
   final RatingsController ratingsController = Get.put(RatingsController());
   final AuthController authController = Get.put(AuthController());
+  SnackbarController snackbarController;
   List<ThreadPostRatings> ratings;
   bool showChooser = false;
 
@@ -54,7 +56,12 @@ class _RatingsState extends State<Ratings> {
             child: RatingsChooser(
               postId: widget.postId,
               onRatingDone: onRatingDone,
-              onRatingClicked: () => Get.back(),
+              onRatingClicked: () {
+                snackbarController = KnockySnackbar.normal(
+                    'Rating', 'Rating post...',
+                    showProgressIndicator: true, isDismissible: true);
+                Get.back();
+              },
             ),
           ),
         ],
@@ -107,6 +114,8 @@ class _RatingsState extends State<Ratings> {
     setState(() {
       this.ratings = ratings;
     });
+    snackbarController.close();
+    KnockySnackbar.success('Post was rated');
   }
 
   Widget ratingsList() {
