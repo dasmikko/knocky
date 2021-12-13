@@ -57,10 +57,10 @@ class _RatingsState extends State<Ratings> {
               postId: widget.postId,
               onRatingDone: onRatingDone,
               onRatingClicked: () {
+                Get.back();
                 snackbarController = KnockySnackbar.normal(
                     'Rating', 'Rating post...',
                     showProgressIndicator: true, isDismissible: true);
-                Get.back();
               },
             ),
           ),
