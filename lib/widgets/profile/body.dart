@@ -37,6 +37,7 @@ class _ProfileBodyState extends State<ProfileBody> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   new TabBar(
+                    indicatorColor: Get.theme.colorScheme.primary,
                     tabs: [...tabs()],
                   ),
                 ],

@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:get/get.dart' as Getx;
+import 'package:knocky/controllers/settingsController.dart';
 import 'package:knocky/models/ad.dart';
 import 'package:knocky/models/alert.dart';
 import 'package:knocky/models/events.dart';
@@ -30,6 +32,9 @@ class KnockoutAPI {
 
   static bool _isDev = false;
   String currentEnv = 'knockout';
+
+  final SettingsController settingsController =
+      Getx.Get.put(SettingsController());
 
   static String baseurlSite =
       !_isDev ? "https://knockout.chat/" : "https://forums.stylepunch.club/";
@@ -63,6 +68,9 @@ class KnockoutAPI {
     dio.options.contentType = ContentType.json.toString();
     dio.options.headers = mHeaders;
     dio.options.receiveDataWhenStatusError = true;
+    if (!settingsController.showNSFWThreads.value) {
+      dio.options.queryParameters = {'hideNsfw': 1};
+    }
 
     switch (type) {
       case 'get':

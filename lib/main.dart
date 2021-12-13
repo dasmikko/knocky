@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
+import 'package:knocky/controllers/settingsController.dart';
 import 'package:knocky/helpers/themeService.dart';
 import 'package:knocky/helpers/twitterApi.dart';
 import 'package:knocky/screens/forum.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   final AuthController authController = Get.put(AuthController());
+  final SettingsController settingsController = Get.put(SettingsController());
   await GetStorage.init();
 
   // Init dotenv
@@ -21,6 +23,12 @@ void main() async {
 
   if (prefs.read('env') == null) {
     await prefs.write('env', 'knockout');
+  }
+
+  if (!prefs.hasData('showNSFW')) {
+    await prefs.write('showNSFW', false);
+  } else {
+    settingsController.showNSFWThreads.value = prefs.read('showNSFW');
   }
 
   authController.getStoredAuthInfo();
