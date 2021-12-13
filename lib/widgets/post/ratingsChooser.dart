@@ -53,8 +53,11 @@ class RatingsChooser extends StatelessWidget {
         splashRadius: 16,
         visualDensity: VisualDensity.compact,
         onPressed: () => canRate
-            ? onRatingPressed(
-                postId, ratingItem.id, onRatingClicked, onRatingDone)
+            ? {
+                onRatingClicked(),
+                onRatingPressed(
+                    postId, ratingItem.id, onRatingClicked, onRatingDone)
+              }
             : {},
         icon: CachedNetworkImage(imageUrl: ratingItem.url),
       ),
