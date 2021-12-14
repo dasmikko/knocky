@@ -1,34 +1,27 @@
 # Knocky!
-[![Codemagic build status](https://api.codemagic.io/apps/5d189637f145f60009c33390/5d189637f145f60009c3338f/status_badge.svg)](https://codemagic.io/apps/5d189637f145f60009c33390/5d189637f145f60009c3338f/latest_build)
-
-![Codemagic build status](https://github.com/dasmikko/knocky/blob/master/screenshot.png?raw=true)
+[![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dknockyapp%26type%3Dpatrons&style=for-the-badge)](https://patreon.com/knockyapp)
 
 A client for Knockout!
 Browse the Knockout forum the native way!
 
 ## Features
-- Browse the whole forum
-- Watch YouTube directly in the app!
-- Image Viewer (With zoom, downloading and url copy)
-- View video embeds
-- View/Edit/Add Subscriptions
-- Authentication
-- Twitter embeds
-- Rating posts
-- Posting
-- Latest/Popular threads
+A native way to browse knockout
+Image Viewer (With zoom, downloading and url copy)
+View/Edit/Add Subscriptions
+Twitter embeds
+Posting
+Rating
+Latest/Popular threads
+Events screen
 
 
-### What is to implemented﻿
-- Events screen
-- And probably more
+### What is to implemented
+- Dm's
+- Mentions
+- Ticker
 
 ## Where can I follow the development?
 You can on Trello. There you can see my ideas, bugs and stuff in development.
 
 https://trello.com/b/mxg5QnAK/knocky
 
-## Discord
-Join the Discord, for discussing and other stuff related to the app.
-
-https://discord.gg/CvyCUnz
