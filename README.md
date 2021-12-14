@@ -5,14 +5,14 @@ A client for Knockout!
 Browse the Knockout forum the native way!
 
 ## Features
-A native way to browse knockout
-Image Viewer (With zoom, downloading and url copy)
-View/Edit/Add Subscriptions
-Twitter embeds
-Posting
-Rating
-Latest/Popular threads
-Events screen
+- A native way to browse knockout
+- Image Viewer (With zoom, downloading and url copy)
+- View/Edit/Add Subscriptions
+- Twitter embeds
+- Posting
+- Rating
+- Latest/Popular threads
+- Events screen
 
 
 ### What is to implemented
