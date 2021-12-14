@@ -1,10 +1,7 @@
-import 'package:json_annotation/json_annotation.dart';
-import 'package:knocky_edge/models/slateDocument.dart';
+import 'package:knocky/models/slateDocument.dart';
 import 'dart:convert';
+import 'package:knocky/models/usergroup.dart';
 
-part 'thread.g.dart';
-
-@JsonSerializable()
 class Thread {
   final int id;
   final int currentPage;
@@ -13,17 +10,14 @@ class Thread {
   final bool pinned;
   final int subforumId;
   final String subforumName;
-  String title;
+  final String title;
   final int totalPosts;
-  @JsonKey(nullable: true)
   final DateTime readThreadLastSeen;
-  @JsonKey(nullable: true)
   final DateTime subscriptionLastSeen;
   final int subscriptionLastPostNumber;
   final List<ThreadPost> posts;
   final ThreadUser user;
   final int userId;
-  @JsonKey(defaultValue: 0)
   final bool subscribed;
   final String threadBackgroundType;
   final String threadBackgroundUrl;
@@ -48,48 +42,146 @@ class Thread {
       this.threadBackgroundType,
       this.threadBackgroundUrl});
 
-  factory Thread.fromJson(Map<String, dynamic> json) => _$ThreadFromJson(json);
-  Map<String, dynamic> toJson() => _$ThreadToJson(this);
+  factory Thread.fromJson(Map<String, dynamic> json) {
+    return Thread(
+      currentPage: json['currentPage'] as int,
+      iconId: json['iconId'] as int,
+      readThreadLastSeen: json['readThreadLastSeen'] == null
+          ? null
+          : DateTime.parse(json['readThreadLastSeen'] as String),
+      id: json['id'] as int,
+      locked: json['locked'] == null ? false : json['locked'] as bool,
+      pinned: json['pinned'] == null ? false : json['pinned'] as bool,
+      title: json['title'] as String,
+      totalPosts: json['totalPosts'] as int,
+      subforumId: json['subforumId'] as int,
+      subforumName: json['subforumName'] as String,
+      posts: (json['posts'] as List)
+          ?.map((e) =>
+              e == null ? null : ThreadPost.fromJson(e as Map<String, dynamic>))
+          ?.toList(),
+      user: json['user'] == null
+          ? null
+          : ThreadUser.fromJson(json['user'] as Map<String, dynamic>),
+      subscriptionLastSeen: json['subscriptionLastSeen'] == null
+          ? null
+          : DateTime.parse(json['subscriptionLastSeen'] as String),
+      subscriptionLastPostNumber: json['subscriptionLastPostNumber'] as int,
+      subscribed:
+          json['isSubscribedTo'] as bool ?? json['subscribed'] as bool ?? false,
+      userId: json['userId'] as int,
+      threadBackgroundType: json['threadBackgroundType'] as String,
+      threadBackgroundUrl: json['threadBackgroundUrl'] as String,
+    );
+  }
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'currentPage': currentPage,
+        'iconId': iconId,
+        'locked': locked,
+        'pinned': pinned,
+        'subforumId': subforumId,
+        'subforumName': subforumName,
+        'title': title,
+        'totalPosts': totalPosts,
+        'readThreadLastSeen': readThreadLastSeen?.toIso8601String(),
+        'subscriptionLastSeen': subscriptionLastSeen?.toIso8601String(),
+        'posts': posts,
+        'user': user,
+        'userId': userId,
+        'isSubscribedTo': subscribed,
+        'threadBackgroundType': threadBackgroundType,
+        'threadBackgroundUrl': threadBackgroundUrl,
+      };
 }
 
-@JsonSerializable()
 class ThreadUser {
-  final int usergroup;
+  final Usergroup usergroup;
   final String username;
 
   ThreadUser({this.usergroup, this.username});
 
-  factory ThreadUser.fromJson(Map<String, dynamic> json) =>
-      _$ThreadUserFromJson(json);
-  Map<String, dynamic> toJson() => _$ThreadUserToJson(this);
+  factory ThreadUser.fromJson(Map<String, dynamic> json) {
+    return ThreadUser(
+      usergroup: Usergroup.values[json['usergroup'] as int],
+      username: json['username'] as String,
+    );
+  }
+
+  factory ThreadUser.threadAlertUser(Map<String, dynamic> json) {
+    return ThreadUser(
+      usergroup: Usergroup.values[json['threadUserUsergroup'] as int],
+      username: json['threadUsername'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'usergroup': usergroup,
+        'username': username,
+      };
 }
 
-@JsonSerializable()
 class ThreadPost {
   final int id;
   final DateTime createdAt;
-  @JsonKey(fromJson: _contentFromJson, toJson: _contentToJson)
   final dynamic content;
   final ThreadPostUser user;
   final List<ThreadPostRatings> ratings;
-  final int thread;
-  final int threadPostNumber;
-  @JsonKey(nullable: true)
   final List<ThreadPostBan> bans;
+  final int threadPostNumber;
+  final int threadId;
+  final Thread thread;
+  final int page;
 
   ThreadPost(
       {this.id,
       this.content,
       this.user,
-      this.thread,
-      this.threadPostNumber,
       this.ratings,
       this.createdAt,
-      this.bans});
+      this.bans,
+      this.threadPostNumber,
+      this.page,
+      this.threadId,
+      this.thread});
 
-  factory ThreadPost.fromJson(Map<String, dynamic> json) =>
-      _$ThreadPostFromJson(json);
-  Map<String, dynamic> toJson() => _$ThreadPostToJson(this);
+  factory ThreadPost.fromJson(Map<String, dynamic> json) {
+    return ThreadPost(
+        id: json['id'] as int,
+        content: _contentFromJson(json['content'] as String),
+        user: json['user'] == null
+            ? null
+            : ThreadPostUser.fromJson(json['user'] as Map<String, dynamic>),
+        ratings: (json['ratings'] as List)
+            ?.map((e) => e == null
+                ? null
+                : ThreadPostRatings.fromJson(e as Map<String, dynamic>))
+            ?.toList(),
+        createdAt: json['createdAt'] == null
+            ? null
+            : DateTime.parse(json['createdAt'] as String),
+        bans: (json['bans'] as List)
+            ?.map((e) => e == null
+                ? null
+                : ThreadPostBan.fromJson(e as Map<String, dynamic>))
+            ?.toList(),
+        threadPostNumber: json['threadPostNumber'] as int,
+        page: json['page'] as int,
+        threadId:
+            json['thread'].runtimeType == int ? json['thread'] as int : null,
+        thread: json['thread'].runtimeType == Map
+            ? json['thread'] as Thread
+            : null);
+  }
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'createdAt': createdAt?.toIso8601String(),
+        'content': content,
+        'user': user,
+        'ratings': ratings,
+        'bans': bans,
+        'threadPostNumber': threadPostNumber,
+      };
 
   ThreadPost.clone(ThreadPost post)
       : this(
@@ -110,36 +202,48 @@ dynamic _contentFromJson(String jsonString) {
   }
 }
 
-Map _contentToJson(SlateObject slateObject) => slateObject.toJson();
-
-@JsonSerializable()
 class ThreadPostBan {
   final String banBannedBy;
-  final DateTime createdAt;
-  final DateTime expiresAt;
-  final int post;
+  final DateTime banCreatedAt;
+  final DateTime banExpiresAt;
+  final int banPostId;
   final String banReason;
 
   ThreadPostBan({
     this.banBannedBy,
-    this.createdAt,
-    this.expiresAt,
-    this.post,
+    this.banCreatedAt,
+    this.banExpiresAt,
+    this.banPostId,
     this.banReason,
   });
 
-  factory ThreadPostBan.fromJson(Map<String, dynamic> json) =>
-      _$ThreadPostBanFromJson(json);
-  Map<String, dynamic> toJson() => _$ThreadPostBanToJson(this);
+  factory ThreadPostBan.fromJson(Map<String, dynamic> json) {
+    return ThreadPostBan(
+      banBannedBy: json['banBannedBy'] as String,
+      banCreatedAt: json['banCreatedAt'] == null
+          ? null
+          : DateTime.parse(json['banCreatedAt'] as String),
+      banExpiresAt: json['banExpiresAt'] == null
+          ? null
+          : DateTime.parse(json['banExpiresAt'] as String),
+      banPostId: json['banPostId'] as int,
+      banReason: json['banReason'] as String,
+    );
+  }
+  Map<String, dynamic> toJson() => {
+        'banBannedBy': banBannedBy,
+        'banCreatedAt': banCreatedAt?.toIso8601String(),
+        'banExpiresAt': banExpiresAt?.toIso8601String(),
+        'banPostId': banPostId,
+        'banReason': banReason,
+      };
 }
 
-@JsonSerializable()
 class ThreadPostRatings {
-  @JsonKey(name: 'rating_id', fromJson: _ratingIdHandler)
   final String ratingId;
   final String rating;
   final int count;
-  final List<ThreadPostUser> users;
+  final List<String> users;
 
   ThreadPostRatings({
     this.ratingId,
@@ -148,9 +252,25 @@ class ThreadPostRatings {
     this.users,
   });
 
-  factory ThreadPostRatings.fromJson(Map<String, dynamic> json) =>
-      _$ThreadPostRatingsFromJson(json);
-  Map<String, dynamic> toJson() => _$ThreadPostRatingsToJson(this);
+  factory ThreadPostRatings.fromJson(Map<String, dynamic> json) {
+    // 'users' are just List<string> for thread posts,
+    // but List<Map<string, dynamic>> for profile posts
+    var users = (json['users'] as List)
+        .map((user) => user is String ? user : user['username'] as String)
+        .toList();
+    return ThreadPostRatings(
+      ratingId: _ratingIdHandler(json['rating_id']),
+      rating: json['rating'] as String,
+      count: json['count'] as int,
+      users: users,
+    );
+  }
+  Map<String, dynamic> toJson() => {
+        'rating_id': ratingId,
+        'rating': rating,
+        'count': count,
+        'users': users,
+      };
 }
 
 String _ratingIdHandler(dynamic id) {
@@ -158,13 +278,12 @@ String _ratingIdHandler(dynamic id) {
   return id;
 }
 
-@JsonSerializable()
 class ThreadPostUser {
   final int id;
   final String avatarUrl;
   final String backgroundUrl;
   final bool isBanned;
-  final int usergroup;
+  final Usergroup usergroup;
   final String username;
 
   ThreadPostUser(
@@ -175,7 +294,22 @@ class ThreadPostUser {
       this.usergroup,
       this.username});
 
-  factory ThreadPostUser.fromJson(Map<String, dynamic> json) =>
-      _$ThreadPostUserFromJson(json);
-  Map<String, dynamic> toJson() => _$ThreadPostUserToJson(this);
+  factory ThreadPostUser.fromJson(Map<String, dynamic> json) {
+    return ThreadPostUser(
+      id: json['id'] as int,
+      avatarUrl: json['avatarUrl'] as String,
+      backgroundUrl: json['backgroundUrl'] as String,
+      isBanned: json['isBanned'] as bool,
+      usergroup: Usergroup.values[json['usergroup'] as int],
+      username: json['username'] as String,
+    );
+  }
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'avatarUrl': avatarUrl,
+        'backgroundUrl': backgroundUrl,
+        'isBanned': isBanned,
+        'usergroup': usergroup,
+        'username': username,
+      };
 }

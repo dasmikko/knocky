@@ -1,9 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
-import 'package:knocky_edge/models/thread.dart';
+import 'package:knocky/models/thread.dart';
 
-part 'userProfilePosts.g.dart';
-
-@JsonSerializable()
 class UserProfilePosts {
   final int currentPage;
   final int totalPosts;
@@ -11,7 +7,19 @@ class UserProfilePosts {
 
   UserProfilePosts({this.currentPage, this.totalPosts, this.posts});
 
-  factory UserProfilePosts.fromJson(Map<String, dynamic> json) =>
-      _$UserProfilePostsFromJson(json);
-  Map<String, dynamic> toJson() => _$UserProfilePostsToJson(this);
+  factory UserProfilePosts.fromJson(Map<String, dynamic> json) {
+    return UserProfilePosts(
+      currentPage: json['currentPage'] as int,
+      totalPosts: json['totalPosts'] as int,
+      posts: (json['posts'] as List)
+          ?.map((e) =>
+              e == null ? null : ThreadPost.fromJson(e as Map<String, dynamic>))
+          ?.toList(),
+    );
+  }
+  Map<String, dynamic> toJson() => {
+        'currentPage': currentPage,
+        'totalPosts': totalPosts,
+        'posts': posts,
+      };
 }

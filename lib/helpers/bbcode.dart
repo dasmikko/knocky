@@ -1,12 +1,12 @@
 import 'package:bbob_dart/bbob_dart.dart' as bbob;
-import 'package:knocky_edge/models/slateDocument.dart';
+import 'package:knocky/models/slateDocument.dart';
 
 class BBCodeHandler implements bbob.NodeVisitor {
-  SlateNode paragraph = SlateNode(object: 'block', nodes: List());
+  SlateNode paragraph = SlateNode(object: 'block', nodes: []);
   StringBuffer _leafContentBuffer = StringBuffer();
 
   SlateNode _lastElement;
-  List<SlateLeafMark> _leafMarks = List();
+  List<SlateLeafMark> _leafMarks = [];
 
   SlateNode parse(String text, {type: 'paragraph'}) {
     paragraph.type = type;
@@ -51,7 +51,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
       ]);
 
       // Reset leaf marks
-      _leafMarks = List();
+      _leafMarks = [];
 
       paragraph.nodes.add(textNode);
       _leafContentBuffer = StringBuffer();
@@ -107,7 +107,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
     ]);
 
     // Reset leaf marks
-    _leafMarks = List();
+    _leafMarks = [];
 
     paragraph.nodes.add(textNode);
     _leafContentBuffer = StringBuffer();
@@ -118,7 +118,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
     return bbcode;
   }
 
-  String _inlineHandler(SlateNode object, SlateNode node) {
+  /*String _inlineHandler(SlateNode object, SlateNode node) {
     StringBuffer content = new StringBuffer();
 
     if (node.type == 'link') {
@@ -137,12 +137,14 @@ class BBCodeHandler implements bbob.NodeVisitor {
       });
     }
     return content.toString();
-  }
+  }*/
 
   dynamic _handleNodes(List<SlateNode> nodes,
-      {bool isChild = false, bool asList = false}) {
+      // ignore: unused_element
+      {bool isChild = false,
+      bool asList = false}) {
     StringBuffer content = new StringBuffer();
-    List<String> contentItems = List();
+    List<String> contentItems = [];
 
     nodes.forEach((line) {
       if (line.leaves != null) {
@@ -182,7 +184,6 @@ class BBCodeHandler implements bbob.NodeVisitor {
     if (asList) {
       return contentItems;
     }
-    print(content.toString());
     return content.toString();
   }
 

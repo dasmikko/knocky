@@ -1,173 +1,101 @@
 import 'package:flutter/material.dart';
-import 'package:knocky_edge/models/subforum.dart';
-import 'package:after_layout/after_layout.dart';
-import 'package:knocky_edge/models/subforumDetails.dart';
-import 'package:knocky_edge/widget/subforumPage.dart';
-import 'package:knocky_edge/widget/Drawer.dart';
-import 'package:numberpicker/numberpicker.dart';
+import 'package:get/get.dart';
+import 'package:knocky/controllers/subforumController.dart';
+import 'package:knocky/models/subforum.dart';
+import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
+import 'package:knocky/widgets/shared/pageSelector.dart';
+import 'package:knocky/widgets/subforum/subforumListItem.dart';
 
 class SubforumScreen extends StatefulWidget {
-  final Subforum subforumModel;
+  final Subforum subforum;
 
-  SubforumScreen({this.subforumModel});
+  SubforumScreen({@required this.subforum});
 
   @override
   _SubforumScreenState createState() => _SubforumScreenState();
 }
 
-class _SubforumScreenState extends State<SubforumScreen>
-    with AfterLayoutMixin<SubforumScreen>, SingleTickerProviderStateMixin {
-  SubforumDetails details;
-  PageController _pageController = new PageController();
-  bool isSwiping = false;
-  int _totalPages;
-  int _currentPage = 1;
-  bool _bottomBarVisible = true;
-  AnimationController expandController;
-  Animation<double> animation;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  Function loadPageMethod;
+class _SubforumScreenState extends State<SubforumScreen> {
+  final SubforumController subforumController = Get.put(SubforumController());
 
   @override
   void initState() {
     super.initState();
-    prepareAnimations();
-    if (widget.subforumModel.totalThreads != null)
-      _totalPages = (widget.subforumModel.totalThreads / 40).ceil();
+    subforumController.initState(widget.subforum.id, 1);
   }
 
-  @override
-  void afterFirstLayout(BuildContext context) async {
-    setState(() {});
-  }
-
-  void prepareAnimations() {
-    expandController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 250));
-    Animation curve = CurvedAnimation(
-      parent: expandController,
-      curve: Curves.fastOutSlowIn,
-    );
-    animation = Tween(begin: 1.0, end: 0.0).animate(curve);
-  }
-
-  void showJumpDialog() {
-    showDialog<int>(
-        context: context,
-        builder: (BuildContext context) {
-          return new NumberPickerDialog.integer(
-            minValue: 1,
-            maxValue: _totalPages,
-            title: new Text("Jump to page"),
-            initialIntegerValue: 1,
-          );
-        }).then((int value) {
-      if (value != null) _pageController.jumpToPage(value - 1);
-    });
-  }
-
-  Widget content(sContext) {
-    return PageView.builder(
-      itemCount: _totalPages,
-      onPageChanged: (int page) {
-        // Show bottombar on page change
-        if (!_bottomBarVisible) {
-          expandController.reverse();
-        }
-
-        setState(() {
-          _currentPage = page + 1;
-
-          // Show bottombar on page change
-          if (!_bottomBarVisible) {
-            _bottomBarVisible = true;
-          }
-        });
+  Widget pageSelector() {
+    return PageSelector(
+      onNext: () {
+        //itemScrollController.jumpTo(index: 0);
+        subforumController.nextPage();
       },
-      controller: _pageController,
-      itemBuilder: (BuildContext context, int position) {
-        return SubforumPage(
-          subforumModel: widget.subforumModel,
-          page: position + 1,
-          bottomBarVisible: _bottomBarVisible,
-          onInit: (Function loadPage) {
-            setState(() {
-              this.loadPageMethod = loadPage;
-            });
-          },
-          onError: () => onFetchError(context),
-          isScrollingUp: () {
-            expandController.reverse();
-            setState(() {
-              _bottomBarVisible = true;
-            });
-          },
-          isScrollingDown: () {
-            expandController.forward();
-            setState(() {
-              _bottomBarVisible = false;
-            });
-          },
+      onPage: (page) {
+        //itemScrollController.jumpTo(index: 0);
+        subforumController.goToPage(page);
+      },
+      pageCount: subforumController.pageCount,
+      currentPage: subforumController.page,
+    );
+  }
+
+  List<Widget> generateWidgetList() {
+    List<Widget> widgets = [];
+
+    // Add paginator
+    widgets.add(
+      Container(
+        margin: EdgeInsets.symmetric(vertical: 8),
+        child: pageSelector(),
+      ),
+    );
+
+    if (subforumController.data.value.threads != null) {
+      subforumController.data.value.threads.forEach((thread) {
+        widgets.add(
+          SubforumListItem(
+            threadDetails: thread,
+          ),
         );
-      },
+      });
+    }
+
+    widgets.add(
+      Container(
+        margin: EdgeInsets.only(bottom: 8),
+        child: pageSelector(),
+      ),
     );
+
+    return widgets;
   }
 
-  void onFetchError(context) {
-    Scaffold.of(context).hideCurrentSnackBar();
-    Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text('Failed to load page. Try again.'),
-      backgroundColor: Colors.red,
-      behavior: SnackBarBehavior.floating,
-    ));
+  Widget threads() {
+    List<Widget> widgets = generateWidgetList();
+
+    return ListView.builder(
+      itemCount: widgets.length,
+      itemBuilder: (BuildContext context, int index) {
+        return widgets[index];
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(widget.subforumModel.name),
-        leading: BackButton(),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.refresh),
-            onPressed: () {
-              this.loadPageMethod();
-            },
-          ),
-        ],
+        title: Text(this.widget.subforum.name),
       ),
-      body: content(context),
-      drawerEdgeDragWidth: 30.0,
-      drawer: DrawerWidget(
-        scaffoldKey: _scaffoldKey,
-      ),
-      extendBody: false,
-      bottomNavigationBar: SizeTransition(
-        axisAlignment: -1.0,
-        sizeFactor: animation,
-        child: BottomAppBar(
-          child: Container(
-            padding: EdgeInsets.only(left: 10, right: 10),
-            height: 56,
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text('Page ' +
-                      _currentPage.toString() +
-                      ' of ' +
-                      _totalPages.toString()),
-                ),
-                _totalPages != null
-                    ? IconButton(
-                        onPressed: _totalPages > 1 ? showJumpDialog : null,
-                        icon: Icon(Icons.redo),
-                        tooltip: 'Jump to page',
-                      )
-                    : null
-              ],
+      body: Container(
+        child: Obx(
+          () => KnockoutLoadingIndicator(
+            show: subforumController.isFetching.value,
+            child: RefreshIndicator(
+              onRefresh: () async => subforumController.fetchData(),
+              child: subforumController.data.value != null
+                  ? threads()
+                  : Container(),
             ),
           ),
         ),

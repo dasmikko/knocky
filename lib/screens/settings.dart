@@ -1,194 +1,106 @@
 import 'package:flutter/material.dart';
-import 'package:dynamic_theme/dynamic_theme.dart';
-import 'package:flutter/services.dart';
-import 'package:knocky_edge/screens/Settings/filter.dart';
-import 'package:knocky_edge/themes/DefaultTheme.dart';
-import 'package:knocky_edge/themes/DarkTheme.dart';
-import 'package:package_info/package_info.dart';
-import 'package:knocky_edge/state/authentication.dart';
-import 'package:knocky_edge/state/subscriptions.dart';
-import 'package:scoped_model/scoped_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:knocky/controllers/forumController.dart';
+import 'package:knocky/controllers/settingsController.dart';
+import 'package:knocky/helpers/snackbar.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-class SettingsScreen extends StatefulWidget {
-  final BuildContext appContext;
-
-  SettingsScreen({@required this.appContext});
-
-  @override
-  _SettingsScreenState createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
-  ThemeData selectedTheme = darkTheme();
-  String selectedEnv = 'knockout';
-  String _version = '';
-  bool _useInlineYoutubePlayer = true;
-
-  @override
-  void initState() {
-    super.initState();
-
-    updateAppInfo();
-    getEmbedSettings();
-
-    if (DynamicTheme.of(context).brightness == Brightness.light) {
-      selectedTheme = defaultTheme();
-    } else {
-      selectedTheme = darkTheme();
-    }
-  }
-
-  void getEmbedSettings() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    setState(() {
-      _useInlineYoutubePlayer = prefs.getBool('useInlineYoutubePlayer');
-    });
-  }
-
-  void updateAppInfo() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String env = prefs.getString('env');
-
-    setState(() {
-      _version = packageInfo.version;
-      selectedEnv = env;
-    });
-  }
-
-  void onSelectTheme(dynamic theme) {
-    DynamicTheme.of(context).setBrightness(theme.brightness);
-    DynamicTheme.of(context).setThemeData(theme);
-
-    if (theme.brightness == Brightness.light) {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-          systemNavigationBarColor: Colors.white,
-          systemNavigationBarIconBrightness: Brightness.dark));
-    } else {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-          systemNavigationBarColor: Colors.grey[900],
-          systemNavigationBarIconBrightness: Brightness.light));
-    }
-
-    setState(() {
-      selectedTheme = theme;
-    });
-  }
-
-  void onSelectEnv(dynamic env) async {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Are you sure?'),
-            content: Text('If you switch environment, you will be logged out.'),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('No'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              FlatButton(
-                child: Text('Yes'),
-                onPressed: () async {
-                  setState(() {
-                    selectedEnv = env;
-                  });
-
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  await prefs.setString('env', env);
-
-                  ScopedModel.of<AuthenticationModel>(context).logout();
-                  ScopedModel.of<SubscriptionModel>(context).clearList();
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final SettingsController settingsController = Get.put(SettingsController());
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Settings'),
       ),
       body: Container(
-        child: ListView(
-          padding: EdgeInsets.only(top: 8, bottom: 8),
-          children: <Widget>[
+        child: Column(
+          children: [
             ListTile(
-              title: Text(
-                'General',
-                style: TextStyle(color: Colors.grey),
-              ),
               dense: true,
+              title: Text(
+                'Filter',
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
             ),
-            ListTile(
-              enabled: true,
-              title: Text('Theme'),
-              trailing: DropdownButton(
-                value: selectedTheme,
-                onChanged: onSelectTheme,
-                items: <DropdownMenuItem>[
-                  DropdownMenuItem(
-                    child: Text('Light theme'),
-                    value: defaultTheme(),
-                  ),
-                  DropdownMenuItem(
-                    child: Text('Dark theme'),
-                    value: darkTheme(),
-                  )
-                ],
+            Obx(
+              () => SwitchListTile(
+                title: Text('Show NSFW Threads'),
+                value: settingsController.showNSFWThreads.value,
+                onChanged: (bool value) {
+                  settingsController.showNSFWThreads.value = value;
+                  GetStorage prefs = GetStorage();
+                  prefs.write('showNSFW', value);
+                },
               ),
             ),
             ListTile(
-              enabled: true,
-              title: Text('Environment'),
-              trailing: DropdownButton(
-                value: selectedEnv,
-                onChanged: onSelectEnv,
-                items: <DropdownMenuItem>[
-                  DropdownMenuItem(
-                    child: Text('Knockout'),
-                    value: 'knockout',
-                  ),
-                  DropdownMenuItem(
-                    child: Text('QA'),
-                    value: 'qa',
-                  ),
-                ],
+              dense: true,
+              title: Text(
+                'Cache',
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
               ),
             ),
             ListTile(
-              title: Text('Filter'),
-              subtitle: Text('Select what content to filter'),
+              title: Text('Reset image size cache'),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FilterScreen()),
-                );
+                final box = GetStorage('sizeCache');
+                box.erase();
+
+                KnockySnackbar.success('Image size cache cleared');
               },
             ),
-            Divider(
-              color: Colors.grey,
-            ),
             ListTile(
-              title: Text(
-                'App info',
-                style: TextStyle(color: Colors.grey),
-              ),
+              title: Text('Clear list of hidden motds'),
+              onTap: () {
+                ForumController forumController = Get.put(ForumController());
+                GetStorage storage = GetStorage();
+
+                forumController.hiddenMotds.value = [];
+                storage.write('hiddenMotds', forumController.hiddenMotds);
+                KnockySnackbar.success('Hidden Motds cleared');
+              },
+            ),
+
+            /**
+             * Other
+             */
+            ListTile(
               dense: true,
+              title: Text(
+                'Other',
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
             ),
             ListTile(
-              title: Text('Version'),
-              subtitle: Text(_version),
-            )
+              title: Text('About Knocky'),
+              onTap: () async {
+                PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+                Get.dialog(AboutDialog(
+                  applicationIcon: Image(
+                    width: 50,
+                    image: AssetImage('assets/logo.png'),
+                  ),
+                  applicationName: "Knocky",
+                  applicationVersion: packageInfo.version,
+                  children: [
+                    Text(
+                        'Huge thanks to PITR and NoRegard for their help and support!')
+                  ],
+                ));
+              },
+            ),
           ],
         ),
       ),

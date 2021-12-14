@@ -1,202 +1,234 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:after_layout/after_layout.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:knocky_edge/helpers/api.dart';
-import 'package:scoped_model/scoped_model.dart';
-import 'package:knocky_edge/state/authentication.dart';
-import 'dart:io' show Platform;
-
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:knocky/controllers/authController.dart';
+import 'package:knocky/dialogs/qrDialog.dart';
+import 'package:knocky/helpers/snackbar.dart';
+import 'package:knocky/screens/forum.dart';
+import 'package:knocky/screens/loginWebview.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class LoginScreen extends StatefulWidget {
-  final String loginUrl;
-
-  LoginScreen({this.loginUrl});
-
   @override
-  _ThreadScreenState createState() => _ThreadScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _ThreadScreenState extends State<LoginScreen>
-    with AfterLayoutMixin<LoginScreen> {
-  MyInAppBrowser browser;
+class _LoginScreenState extends State<LoginScreen> {
+  void initiateLogin(String provider) async {
+    var loginResult = await Get.to(
+      () => LoginWebviewScreen(
+        loginUrl: 'https://api.knockout.chat/auth/' + provider + '/login',
+      ),
+    );
 
-  @override
-  void initState() {
-    super.initState();
-
-    this.browser = new MyInAppBrowser(
-        context: this.context,
-        onBrowserExit: () {
-          bool isLoggedIn =
-              ScopedModel.of<AuthenticationModel>(context).isLoggedIn;
-          Navigator.of(context).pop(isLoggedIn);
-        });
-
-    this.browser.openUrl(
-          url: this.widget.loginUrl,
-          options: InAppBrowserClassOptions(
-            inAppWebViewGroupOptions: InAppWebViewGroupOptions(
-              crossPlatform: InAppWebViewOptions(
-                useShouldOverrideUrlLoading: true,
-                javaScriptEnabled: true,
-                userAgent:
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
-              ),
-              ios: IOSInAppWebViewOptions(
-                isPagingEnabled: true,
-              ),
-              android: AndroidInAppWebViewOptions(
-                allowContentAccess: true,
-                allowUniversalAccessFromFileURLs: true,
-                domStorageEnabled: true,
-                databaseEnabled: true,
-                disabledActionModeMenuItems:
-                    AndroidActionModeMenuItem.MENU_ITEM_SHARE,
-                mixedContentMode:
-                    AndroidMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
-              ),
-            ),
-          ),
-        );
+    if (loginResult == true) {
+      Get.offAll(ForumScreen());
+      KnockySnackbar.success('Login was successfull!', icon: Icon(Icons.check));
+    } else {
+      KnockySnackbar.error('Login was canceled', icon: Icon(Icons.warning));
+    }
   }
 
-  @override
-  void afterFirstLayout(BuildContext context) async {}
+  void scanQRCode() async {
+    GetStorage prefs = GetStorage();
 
-  Future<bool> _onWillPop() async {
-    if (await this.browser.webViewController.canGoBack()) {
-      this.browser.webViewController.goBack();
-      return false;
+    bool qrDialogRemember = await prefs.read('qrDialogRemember') != null
+        ? await prefs.read('qrDialogRemember')
+        : false;
+
+    if (!qrDialogRemember) {
+      var dialogResult = await Get.dialog(QRDialog());
+
+      if (!dialogResult) return;
+    }
+
+    AuthController authController = Get.put(AuthController());
+
+    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+        "#ff6666", "Cancel", false, ScanMode.DEFAULT);
+
+    if (barcodeScanRes != null) {
+      SnackbarController snackbarController = KnockySnackbar.normal(
+          'Logging in', 'Got QR code, logging in with it...',
+          isDismissible: false, showProgressIndicator: true);
+
+      // login and fetch user info
+      await authController.loginWithJWTOnly(barcodeScanRes);
+      snackbarController.close();
+      Get.offAll(ForumScreen());
+      KnockySnackbar.success('Login was successfull!', icon: Icon(Icons.check));
     } else {
-      return true;
+      KnockySnackbar.error('Login was canceled', icon: Icon(Icons.warning));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Login'),
-        ),
-        body: Container(
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login with'),
+      ),
+      body: Container(
+        padding: EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(bottom: 10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: EdgeInsets.all(10),
+                ),
+                onPressed: () async {
+                  initiateLogin('google');
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(right: 10),
+                      child: Icon(
+                        FontAwesomeIcons.google,
+                        color: Colors.white,
+                        size: 24.0,
+                      ),
+                    ),
+                    Text(
+                      'Google',
+                      style: TextStyle(fontSize: 18),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.all(10),
+                  primary: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: () => {initiateLogin('twitter')},
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(right: 10),
+                      child: Icon(
+                        FontAwesomeIcons.twitter,
+                        color: Colors.white,
+                        size: 24.0,
+                      ),
+                    ),
+                    Text(
+                      'Twitter',
+                      style: TextStyle(fontSize: 18),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.all(10),
+                  primary: Colors.grey[600],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: () => {initiateLogin('github')},
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(right: 10),
+                      child: Icon(
+                        FontAwesomeIcons.github,
+                        color: Colors.white,
+                        size: 24.0,
+                      ),
+                    ),
+                    Text(
+                      'Github',
+                      style: TextStyle(fontSize: 18),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.all(10),
+                  primary: Colors.grey[800],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: () => {initiateLogin('steam')},
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(right: 10),
+                      child: Icon(
+                        FontAwesomeIcons.steam,
+                        color: Colors.white,
+                        size: 24.0,
+                      ),
+                    ),
+                    Text(
+                      'Steam',
+                      style: TextStyle(fontSize: 18),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.all(10),
+                  primary: Colors.indigo[800],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: scanQRCode,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(right: 10),
+                      child: Icon(
+                        FontAwesomeIcons.camera,
+                        color: Colors.white,
+                        size: 24.0,
+                      ),
+                    ),
+                    Text(
+                      'Scan QR Code',
+                      style: TextStyle(fontSize: 18),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
-  }
-}
-
-class MyInAppBrowser extends InAppBrowser {
-  BuildContext context;
-  Function onBrowserExit;
-
-  MyInAppBrowser({this.context, this.onBrowserExit});
-
-  @override
-  Future onBrowserCreated() async {
-    print("\n\nBrowser Created!\n\n");
-  }
-
-  @override
-  Future onLoadStart(String url) async {
-    print("\n\nStarted $url\n\n");
-  }
-
-  @override
-  Future onLoadStop(String url) async {
-    print("\n\nStopped $url\n\n");
-  }
-
-  @override
-  void onLoadError(String url, int code, String message) {
-    print("Can't load $url.. Error: $message");
-  }
-
-  @override
-  void onProgressChanged(int progress) {
-    //print("Progress: $progress");
-  }
-
-  @override
-  void onExit() {
-    print("\n\nBrowser closed!\n\n");
-    this.onBrowserExit();
-  }
-
-  @override
-  Future<ShouldOverrideUrlLoadingAction> shouldOverrideUrlLoading(
-      ShouldOverrideUrlLoadingRequest shouldOverrideUrlLoadingRequest) async {
-    var url = shouldOverrideUrlLoadingRequest.url;
-    //print("\n\n override $url\n\n");
-
-    if (Platform.isAndroid) {
-      this.webViewController.loadUrl(url: url);
-    }
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    if (url.contains(prefs.getString('env') == 'knockout'
-        ? KnockoutAPI.KNOCKOUT_URL + "auth/finish"
-        : KnockoutAPI.QA_URL + "auth/finish")) {
-      Uri parsedUrl = Uri.parse(url);
-      String userJson = Uri.decodeFull(parsedUrl.queryParameters['user']);
-
-      Map valueMap = json.decode(userJson);
-
-      await ScopedModel.of<AuthenticationModel>(context).setLoginState(
-          true,
-          valueMap['id'],
-          valueMap['username'] != null
-              ? valueMap['username']
-              : 'User has no username?',
-          valueMap['avatar_url'],
-          valueMap['background_url'],
-          valueMap['usergroup']);
-
-      // Get the JWT token from the cookie inside the webview
-      String cookieUrl = prefs.getString('env') == 'knockout'
-          ? KnockoutAPI.KNOCKOUT_URL
-          : KnockoutAPI.QA_URL;
-
-      print('CookieUrl: ' + cookieUrl);
-
-      var cookieManager = new CookieManager();
-      var cookies = await cookieManager.getCookies(url: cookieUrl);
-      String cookieString = '';
-
-      print('Cookies' + cookies.toString());
-
-      // Get needed JWTToken
-      cookies.forEach((element) {
-        if (element.name == 'knockoutJwt') {
-          cookieString += element.name + "=" + element.value + "; ";
-        }
-      });
-
-      print(cookieString);
-
-      ScopedModel.of<AuthenticationModel>(context)
-          .setCookieString(cookieString);
-
-      this.close();
-    }
-
-    @override
-    void onLoadResource(LoadedResource response) {}
-
-    @override
-    void onConsoleMessage(ConsoleMessage consoleMessage) {
-      print("""
-      console output:
-        message: ${consoleMessage.message}
-        messageLevel: ${consoleMessage.messageLevel.toValue()}
-    """);
-    }
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:knocky/models/usergroup.dart';
 
 class AppColors {
   BuildContext context;
@@ -7,7 +7,7 @@ class AppColors {
 
   AppColors(BuildContext context) {
     this.context = context;
-    this.currentBrightness = DynamicTheme.of(this.context).brightness;
+    this.currentBrightness = Theme.of(this.context).brightness;
   }
 
   Color switchColor() {
@@ -44,41 +44,51 @@ class AppColors {
         : HexColor('000000');
   }
 
-  Color normalUserColor() {
-    return HexColor('3facff');
+  Color unreadPostsColor() {
+    return Color.fromRGBO(255, 201, 63, 1);
   }
 
-  Color modUserColor() {
-    return HexColor('08f760');
+  Color bannedColor() {
+    return HexColor('e04545');
   }
 
-  Color goldUserColor() {
-    return HexColor('fcbe20');
-  }
-
-  Color adminUserColor() {
-    return HexColor('c448ff');
-  }
-
-  Color devUserColor() {
-    return HexColor('ff6cb4');
-  }
-
-  Color userGroupToColor(int usergroup) {
-    switch (usergroup) {
-      case 1:
-        return normalUserColor();
-      case 2:
-        return goldUserColor();
-      case 3:
-        return modUserColor();
-      case 4:
-        return adminUserColor();
-      case 5:
-        return goldUserColor();
-      default:
-        return normalUserColor();
+  Color userGroupToColor(Usergroup usergroup, {bool banned = false}) {
+    if (banned) {
+      return bannedColor();
     }
+    switch (usergroup) {
+      case Usergroup.regular:
+        return HexColor('3facff');
+      case Usergroup.gold:
+        return HexColor('fcbe20');
+      case Usergroup.moderator:
+        return HexColor('08f760');
+      case Usergroup.admin:
+        return HexColor('c448ff');
+      case Usergroup.staff:
+        return HexColor('ff6cb4');
+      default:
+        return HexColor('3facff');
+    }
+  }
+
+  Color darken(Color color, [double amount = .1]) {
+    assert(amount >= 0 && amount <= 1);
+
+    final hsl = HSLColor.fromColor(color);
+    final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
+
+    return hslDark.toColor();
+  }
+
+  Color lighten(Color color, [double amount = .1]) {
+    assert(amount >= 0 && amount <= 1);
+
+    final hsl = HSLColor.fromColor(color);
+    final hslLight =
+        hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
+
+    return hslLight.toColor();
   }
 }
 

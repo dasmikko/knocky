@@ -1,26 +1,40 @@
 import 'dart:io';
-import 'package:knocky_edge/models/events.dart';
-import 'package:knocky_edge/models/subforum.dart';
-import 'package:knocky_edge/models/subforumDetails.dart';
-import 'package:knocky_edge/models/syncData.dart';
-import 'package:knocky_edge/models/thread.dart';
-import 'package:knocky_edge/models/threadAlert.dart';
-import 'package:knocky_edge/models/readThreads.dart';
+import 'package:get/get.dart' as Getx;
+import 'package:knocky/controllers/settingsController.dart';
+import 'package:knocky/models/ad.dart';
+import 'package:knocky/models/alert.dart';
+import 'package:knocky/models/events.dart';
+import 'package:knocky/models/motd.dart';
+import 'package:knocky/models/significantThreads.dart';
+import 'package:knocky/models/subforum.dart';
+import 'package:knocky/models/subforumDetails.dart';
+import 'package:knocky/models/syncData.dart';
+import 'package:knocky/models/thread.dart';
+import 'package:knocky/models/threadAlert.dart';
+import 'package:knocky/models/readThreads.dart';
 import 'package:dio/dio.dart';
-import 'package:knocky_edge/models/userProfile.dart';
-import 'package:knocky_edge/models/userProfilePosts.dart';
-import 'package:knocky_edge/models/userProfileThreads.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:knocky/models/threadAlertPage.dart';
+import 'package:knocky/models/userBans.dart';
+import 'package:knocky/models/userProfile.dart';
+import 'package:knocky/models/userProfileDetails.dart';
+import 'package:knocky/models/userProfilePosts.dart';
+import 'package:knocky/models/userProfileRatings.dart';
+import 'package:knocky/models/userProfileThreads.dart';
+import 'package:get_storage/get_storage.dart';
 
 class KnockoutAPI {
   static const KNOCKOUT_URL = "https://api.knockout.chat/";
   static const QA_URL = "https://forums.stylepunch.club:3000/";
+  static const CDN_URL = "https://cdn.knockout.chat/image";
 
   static const KNOCKOUT_SITE_URL = "https://knockout.chat/";
   static const QA_SITE_URL = "https://forums.stylepunch.club/";
 
   static bool _isDev = false;
   String currentEnv = 'knockout';
+
+  final SettingsController settingsController =
+      Getx.Get.put(SettingsController());
 
   static String baseurlSite =
       !_isDev ? "https://knockout.chat/" : "https://forums.stylepunch.club/";
@@ -37,17 +51,16 @@ class KnockoutAPI {
       throw ('URL not set!');
     }
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    GetStorage prefs = GetStorage();
 
     Map<String, dynamic> mHeaders = {
-      'Cookie': prefs.getString('cookieString'),
+      'Cookie': prefs.read('cookieString'),
       'Access-Control-Request-Headers': 'content-format-version,content-type',
       'content-format-version': '1'
     };
 
     if (headers != null) mHeaders.addAll(headers);
-    String mBaseurl =
-        prefs.getString('env') == 'knockout' ? KNOCKOUT_URL : QA_URL;
+    String mBaseurl = prefs.read('env') == 'knockout' ? KNOCKOUT_URL : QA_URL;
 
     //String mBaseurl = 'https://api.knockout.chat/';
     Dio dio = new Dio();
@@ -55,6 +68,9 @@ class KnockoutAPI {
     dio.options.contentType = ContentType.json.toString();
     dio.options.headers = mHeaders;
     dio.options.receiveDataWhenStatusError = true;
+    if (!settingsController.showNSFWThreads.value) {
+      dio.options.queryParameters = {'hideNsfw': 1};
+    }
 
     switch (type) {
       case 'get':
@@ -77,6 +93,7 @@ class KnockoutAPI {
   Future<List<Subforum>> getSubforums() async {
     try {
       final response2 = await _request(url: 'subforum');
+      print(response2);
       return response2.data['list']
           .map<Subforum>((json) => Subforum.fromJson(json))
           .toList();
@@ -89,6 +106,7 @@ class KnockoutAPI {
     try {
       final response = await _request(
           url: 'subforum/' + id.toString() + '/' + page.toString());
+
       return SubforumDetails.fromJson(response.data);
     } on DioError catch (e) {
       print(e);
@@ -97,8 +115,8 @@ class KnockoutAPI {
   }
 
   Future<Thread> getThread(int id, {int page: 1}) async {
-    final response = await _request(
-        url: 'v2/threads/' + id.toString() + '/' + page.toString());
+    final response =
+        await _request(url: 'thread/' + id.toString() + '/' + page.toString());
     return Thread.fromJson(response.data);
   }
 
@@ -109,6 +127,16 @@ class KnockoutAPI {
       return response.data;
     } on DioError catch (e) {
       return e.response.data;
+    }
+  }
+
+  Future<ThreadAlertPage> getAlertsPaginated({int page: 1}) async {
+    try {
+      final response = await _request(url: 'alerts/$page', type: 'get');
+      return ThreadAlertPage.fromJson(response.data);
+    } on DioError catch (e) {
+      print(e);
+      throw e;
     }
   }
 
@@ -130,9 +158,9 @@ class KnockoutAPI {
     await _request(type: 'post', url: 'readThreads', data: jsonToPost.toJson());
   }
 
-  Future<void> readThreadSubsciption(int lastPostNumber, int threadId) async {
-    ReadThreads jsonToPost =
-        new ReadThreads(lastPostNumber: lastPostNumber, threadId: threadId);
+  Future<void> createAlert(int threadId, int lastPostNumber) async {
+    Alert jsonToPost =
+        new Alert(threadId: threadId, lastPostNumber: lastPostNumber);
     await _request(type: 'post', url: 'alert', data: jsonToPost.toJson());
   }
 
@@ -151,22 +179,28 @@ class KnockoutAPI {
     if (response.statusCode == 200) {}
   }
 
-  Future<void> subscribe(DateTime lastSeen, int threadid) async {
+  Future<void> subscribe(int lastPostNumber, int threadid) async {
     final response = await _request(
         url: 'alert',
         type: 'post',
-        data: {'lastSeen': lastSeen.toIso8601String(), 'threadId': threadid});
+        data: {'lastPostNumber': lastPostNumber, 'threadId': threadid});
 
     if (response.statusCode == 200) {}
   }
 
   Future<bool> ratePost(int postId, String rating) async {
     final response = await _request(
-        url: 'rating', type: 'put', data: {'postId': postId, 'rating': rating});
+        url: 'v2/posts/$postId/ratings', type: 'put', data: {'rating': rating});
 
     bool wasRejected = response.data['isRejected'];
 
     return wasRejected;
+  }
+
+  Future<ThreadPost> getPost(int postId) async {
+    final response = await _request(type: 'get', url: 'post/$postId');
+    print(response);
+    return ThreadPost.fromJson(response.data);
   }
 
   Future<void> newPost(dynamic content, int threadId) async {
@@ -188,12 +222,11 @@ class KnockoutAPI {
     }
   }
 
-  Future<void> updatePost(dynamic content, int postId, int threadId) async {
+  Future<void> updatePost(String content, int postId) async {
     try {
-      await _request(type: 'put', url: 'post', data: {
-        'content': content.toString(),
-        'id': postId,
-        'thread_id': threadId
+      await _request(type: 'put', url: 'v2/posts/$postId', data: {
+        'content': content,
+        'appname': 'Knocky',
       });
     } on DioError catch (e) {
       print(e);
@@ -201,25 +234,13 @@ class KnockoutAPI {
     }
   }
 
-  Future<List<SubforumThreadLatestPopular>> latestThreads() async {
-    final response = await _request(type: 'get', url: 'thread/latest');
-
+  Future<List<SignificantThread>> getSignificantThreads(
+      SignificantThreads threadsToFetch) async {
+    final endpoint = "v2/threads/${threadsToFetch.name.toLowerCase()}";
+    final response = await _request(type: 'get', url: endpoint);
     print(response);
-
-    return response.data['list']
-        .map<SubforumThreadLatestPopular>(
-            (json) => SubforumThreadLatestPopular.fromJson(json))
-        .toList();
-  }
-
-  Future<List<SubforumThreadLatestPopular>> popularThreads() async {
-    final response = await _request(type: 'get', url: 'thread/popular');
-
-    print(response);
-
-    return response.data['list']
-        .map<SubforumThreadLatestPopular>(
-            (json) => SubforumThreadLatestPopular.fromJson(json))
+    return response.data
+        .map<SignificantThread>((json) => SignificantThread.fromJson(json))
         .toList();
   }
 
@@ -234,25 +255,52 @@ class KnockoutAPI {
 
   Future<UserProfile> getUserProfile(int userId) async {
     final response = await _request(
-      url: 'user/${userId}',
+      url: 'user/' + userId.toString(),
       type: 'get',
     );
 
     return UserProfile.fromJson(response.data);
   }
 
-  Future<UserProfilePosts> getUserProfilePosts(int userId) async {
+  Future<UserBans> getUserBans(int userId) async {
     final response = await _request(
-      url: 'user/${userId}/posts',
+      url: 'user/' + userId.toString() + '/bans',
+      type: 'get',
+    );
+
+    return UserBans.fromJson(response.data);
+  }
+
+  Future<UserProfileDetails> getUserProfileDetails(int userId) async {
+    final response = await _request(
+      url: 'v2/users/' + userId.toString() + '/profile',
+      type: 'get',
+    );
+
+    return UserProfileDetails.fromJson(response.data);
+  }
+
+  Future<UserProfileRatings> getUserProfileTopRatings(int userId) async {
+    final response = await _request(
+      url: 'user/' + userId.toString() + '/topRatings',
+      type: 'get',
+    );
+
+    return UserProfileRatings.fromJson(response.data);
+  }
+
+  Future<UserProfilePosts> getUserPosts(int userId, {int page = 1}) async {
+    final response = await _request(
+      url: 'user/$userId/posts/$page',
       type: 'get',
     );
 
     return UserProfilePosts.fromJson(response.data);
   }
 
-  Future<UserProfileThreads> getUserProfileThreads(int userId) async {
+  Future<UserProfileThreads> getUserThreads(int userId, {int page = 1}) async {
     final response = await _request(
-      url: 'user/${userId}/threads',
+      url: 'user/$userId/threads/$page',
       type: 'get',
     );
 
@@ -264,7 +312,6 @@ class KnockoutAPI {
       url: 'user/syncData',
       type: 'get',
     );
-
     return SyncDataModel.fromJson(response.data);
   }
 
@@ -274,5 +321,19 @@ class KnockoutAPI {
 
     if (response.statusCode == 200) return true;
     return false;
+  }
+
+  Future<KnockoutAd> randomAd() async {
+    final response = await _request(url: 'threadAds/random', type: 'get');
+
+    return KnockoutAd.fromJson(response.data);
+  }
+
+  Future<List<KnockoutMotd>> motd() async {
+    final response = await _request(url: 'motd', type: 'get');
+
+    return response.data
+        .map<KnockoutMotd>((json) => KnockoutMotd.fromJson(json))
+        .toList();
   }
 }

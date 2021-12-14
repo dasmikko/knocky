@@ -1,13 +1,9 @@
-import 'package:json_annotation/json_annotation.dart';
 
-part 'events.g.dart';
-
-@JsonSerializable()
 class KnockoutEvent {
-  String content;
-  DateTime createdAt;
-  int executedBy;
-  int id;
+  final String content;
+  final DateTime createdAt;
+  final int executedBy;
+  final int id;
 
   KnockoutEvent({
     this.content,
@@ -17,6 +13,17 @@ class KnockoutEvent {
   });
 
   factory KnockoutEvent.fromJson(Map<String, dynamic> json) =>
-      _$KnockoutEventFromJson(json);
-  Map<String, dynamic> toJson() => _$KnockoutEventToJson(this);
+      KnockoutEvent(
+        content: json['content'] as String,
+        createdAt: DateTime.parse(json['created_at'] as String),
+        id: json['id'],
+        executedBy: json['executed_by'],
+      );
+  
+  Map<String, dynamic> toJson() => {
+    'content': content,
+    'created_at': createdAt,
+    'id': id,
+    'executed_by': executedBy
+  };
 }

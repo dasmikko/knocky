@@ -1,11 +1,13 @@
+// ignore_for_file: unnecessary_brace_in_string_interps
+
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class TwitterHelper {
-  final String _consumerKey = DotEnv().env['TWITTER_CONSUMER'];
-  final String _consumerSecret = DotEnv().env['TWITTER_SECRET'];
+  final String _consumerKey = dotenv.env['TWITTER_CONSUMER'];
+  final String _consumerSecret = dotenv.env['TWITTER_SECRET'];
 
   Future<void> getBearerToken() async {
     var bytes = utf8.encode(_consumerKey + ':' + _consumerSecret);
@@ -13,7 +15,7 @@ class TwitterHelper {
 
     try {
       http.Response httpResponse =
-          await http.post('https://api.twitter.com/oauth2/token',
+          await http.post(Uri.parse('https://api.twitter.com/oauth2/token'),
               headers: {
                 'Authorization': 'Basic ${base64Str}',
                 'Content-Type':
@@ -22,21 +24,21 @@ class TwitterHelper {
               body: 'grant_type=client_credentials');
       Map json = jsonDecode(httpResponse.body);
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('twitterBearerToken', json['access_token']);
+      GetStorage prefs = GetStorage();
+      prefs.write('twitterBearerToken', json['access_token']);
     } catch (e) {
       print('Error');
     }
   }
 
   Future<Map<String, dynamic>> getTweet(int tweetId) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String bearerToken = prefs.getString('twitterBearerToken');
+    GetStorage prefs = GetStorage();
+    String bearerToken = prefs.read('twitterBearerToken');
 
     try {
       http.Response httpResponse = await http.get(
-          'https://api.twitter.com/1.1/statuses/show.json?id=' +
-              tweetId.toString(),
+          Uri.parse('https://api.twitter.com/1.1/statuses/show.json?id=' +
+              tweetId.toString()),
           headers: {
             'Authorization': 'Bearer ${bearerToken}',
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'

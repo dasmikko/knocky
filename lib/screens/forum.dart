@@ -1,250 +1,152 @@
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:knocky_edge/helpers/api.dart';
-import 'package:knocky_edge/helpers/twitterApi.dart';
-import 'package:knocky_edge/models/subforum.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:knocky_edge/models/syncData.dart';
-import 'package:knocky_edge/screens/subforum.dart';
-import 'package:knocky_edge/state/appState.dart';
-import 'package:knocky_edge/state/subscriptions.dart';
-import 'package:knocky_edge/widget/CategoryListItem.dart';
-import 'package:knocky_edge/widget/Drawer.dart';
-import 'package:knocky_edge/widget/KnockoutLoadingIndicator.dart';
-import 'package:scoped_model/scoped_model.dart';
-import 'package:knocky_edge/state/authentication.dart';
-import 'package:uni_links/uni_links.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:knocky/controllers/forumController.dart';
+import 'package:knocky/models/subforum.dart';
+import 'package:knocky/screens/subforum.dart';
+import 'package:knocky/screens/thread.dart';
+import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
+import 'package:knocky/widgets/drawer/mainDrawer.dart';
+import 'package:knocky/widgets/forum/ForumListItem.dart';
 
 class ForumScreen extends StatefulWidget {
-  final ScaffoldState scaffoldKey;
-  final Function onMenuClick;
-
-  ForumScreen({this.scaffoldKey, this.onMenuClick});
-
   @override
   _ForumScreenState createState() => _ForumScreenState();
 }
 
 class _ForumScreenState extends State<ForumScreen>
     with AfterLayoutMixin<ForumScreen> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Subforum> _subforums = new List<Subforum>();
-  bool _loginIsOpen;
-  bool _isFetching = false;
-  StreamSubscription<List<Subforum>> _dataSub;
-  StreamSubscription _sub;
+  final ForumController forumController = Get.put(ForumController());
 
+  @override
   void initState() {
     super.initState();
-
-    print('initState');
-
-    TwitterHelper().getBearerToken();
-
-    ScopedModel.of<AppStateModel>(context).updateSyncData();
-
-    // Not ready yet!
-    //initUniLinks();
-
-    _loginIsOpen = false;
   }
 
   @override
-  void afterFirstLayout(BuildContext context) async {
-    getSubforums(context);
-    await ScopedModel.of<AuthenticationModel>(context)
-        .getLoginStateFromSharedPreference(context);
-
-    if (ScopedModel.of<AuthenticationModel>(context).isLoggedIn) {
-      ScopedModel.of<SubscriptionModel>(context).getSubscriptions();
-    }
+  void afterFirstLayout(BuildContext context) {
+    forumController.fetchSubforums();
+    forumController.fetchMotd();
   }
 
-  @override
-  void dispose() {
-    _dataSub.cancel();
-    _sub.cancel();
-    super.dispose();
-  }
+  Widget motd() {
+    if (forumController.motd == null) return Container();
+    if (forumController.motd.isEmpty ||
+        forumController.motdIsHidden(forumController.motd.first.id))
+      return Container();
 
-  Future<Null> initUniLinks() async {
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      String initialLink = await getInitialLink();
-
-      if (initialLink != null) {
-        print(initialLink);
-
-        Uri url = Uri.parse(initialLink);
-
-        switch (url.pathSegments.length) {
-          case 2: // SubForum
-            print('Is subforum');
-            int forumId = int.parse(url.pathSegments[1]);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SubforumScreen(
-                  subforumModel: new Subforum(id: forumId, name: "loading!"),
+    return forumController.motd.length > 0
+        ? Container(
+            height: 100,
+            padding: EdgeInsets.symmetric(horizontal: 18),
+            color: Colors.blue[700],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Expanded(
+                  child: Text(forumController.motd.first.message),
                 ),
-              ),
-            );
+                SizedBox(
+                  width: 18,
+                ),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      String stringUrl = forumController.motd.first.buttonLink;
+                      int threadId = int.parse(stringUrl.split('/').last);
 
-            break;
-          case 3: // Thread
-            int forumId = int.parse(url.pathSegments[1]);
-            int threadId = int.parse(url.pathSegments[2]);
-            break;
-          default:
-        }
-        // Parse the link and warn the user, if it is not correct,
-        // but keep in mind it could be `null`.
-        print('initial link!\n\n\n');
-        print(url.pathSegments);
-        print(url.pathSegments.length);
-        print('initial link!\n\n\n');
-      }
-    } on PlatformException {
-      // Handle exception by warning the user their action did not succeed
-      // return?
-      print('initial link!\n\n\n');
-      print('Initial link error');
-      print('initial link!\n\n\n');
-    }
-  }
-
-  Future<void> getSubforums(context) {
-    setState(() {
-      _isFetching = true;
-    });
-
-    _dataSub?.cancel();
-    Future _future = KnockoutAPI().getSubforums();
-
-    _future.catchError((error) {
-      setState(() {
-        _isFetching = false;
-      });
-
-      Scaffold.of(context).hideCurrentSnackBar();
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to get categories. Try again.'),
-        backgroundColor: Colors.red,
-        behavior: SnackBarBehavior.floating,
-      ));
-
-      _dataSub?.cancel();
-    });
-
-    _dataSub = _future.asStream().listen((subforums) {
-      setState(() {
-        _subforums = subforums;
-        _isFetching = false;
-      });
-    });
-
-    return _future;
-  }
-
-  Future<bool> _onWillPop() async {
-    if (_loginIsOpen) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  bool notNull(Object o) => o != null;
-
-  void onTapItem(Subforum item) {
-    ScopedModel.of<AppStateModel>(context).updateSyncData();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SubforumScreen(
-          subforumModel: item,
-        ),
-      ),
-    );
+                      Get.to(ThreadScreen(id: threadId));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.blue[700],
+                      side: BorderSide(color: Colors.white),
+                      elevation: 0,
+                    ),
+                    child: Text(forumController.motd.first.buttonName),
+                  ),
+                ),
+                Container(
+                  child: IconButton(
+                    alignment: Alignment.centerRight,
+                    onPressed: () {
+                      forumController.hiddenMotds
+                          .add(forumController.motd.first.id);
+                      GetStorage storage = GetStorage();
+                      storage.write('hiddenMotds', forumController.hiddenMotds);
+                      forumController.fetchMotd();
+                    },
+                    icon: FaIcon(
+                      FontAwesomeIcons.times,
+                      size: 18,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        : Container();
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-
-    final List<SyncDataMentionModel> mentions =
-        ScopedModel.of<AppStateModel>(context, rebuildOnChange: true).mentions;
-
-    final int totalUnreadPosts =
-        ScopedModel.of<SubscriptionModel>(context, rebuildOnChange: true)
-            .totalUnreadPosts;
-
-    return WillPopScope(
-      onWillPop: _onWillPop,
-      child: Scaffold(
-        key: _scaffoldKey,
+    return Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-              icon: Stack(
-                overflow: Overflow.visible,
-                children: <Widget>[
-                  Icon(Icons.menu),
-                  if (totalUnreadPosts != null &&
-                      totalUnreadPosts >
-                          0) // Show a little indicator that you have mentions
-                    Positioned(
-                      top: -5,
-                      right: -5,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        child: Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                          color: Colors.red,
-                          child: Text(
-                            totalUnreadPosts.toString(),
-                            style: TextStyle(fontSize: 10),
-                          ),
-                        ),
-                      ),
-                    )
-                ],
-              ),
-              onPressed: () {
-                _scaffoldKey.currentState.openDrawer();
-              }),
           title: Text('Knocky'),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                forumController.fetchSubforums();
+                forumController.fetchMotd();
+              },
+            ),
+          ],
         ),
-        drawerEdgeDragWidth: 30.0,
-        drawer: DrawerWidget(
-          scaffoldKey: _scaffoldKey,
-        ),
-        body: KnockoutLoadingIndicator(
-          show: _isFetching,
-          child: Container(
+        body: Obx(
+          () => KnockoutLoadingIndicator(
+            show: forumController.isFetching.value,
             child: RefreshIndicator(
-              onRefresh: () => getSubforums(this.context),
-              child: ListView.builder(
-                padding: EdgeInsets.all(0.0),
-                itemCount: _subforums.length,
-                itemBuilder: (BuildContext context, int index) {
-                  Subforum item = _subforums[index];
-                  return CategoryListItem(
-                    subforum: item,
-                    onTapItem: onTapItem,
-                  );
-                },
+              onRefresh: () async {
+                forumController.fetchSubforums();
+                forumController.fetchMotd();
+              },
+              child: Stack(
+                children: [
+                  motd(),
+                  Container(
+                    padding: forumController.motd.length > 0 &&
+                            !forumController
+                                .motdIsHidden(forumController.motd.first.id)
+                        ? EdgeInsets.only(top: 100)
+                        : null,
+                    child: ListView.builder(
+                      padding: EdgeInsets.fromLTRB(4, 8, 4, 8),
+                      itemCount: forumController.subforums.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        Subforum subforum = forumController.subforums[index];
+                        return ForumListItem(
+                          subforum: subforum,
+                          onTapItem: (Subforum subforumItem) {
+                            Get.to(
+                              () => SubforumScreen(subforum: subforum),
+                            );
+                          },
+                          onTapItemFooter: (int threadId, int page) {
+                            Get.to(
+                              () => ThreadScreen(id: threadId, page: page),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
-      ),
-    );
+        drawer: MainDrawer());
   }
 }

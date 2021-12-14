@@ -1,10 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:knocky_edge/widget/ZoomWidget.dart';
-import 'package:knocky_edge/widget/ImageViewerBottomSheet.dart';
+import 'package:knocky/widgets/CustomZoomWidget.dart';
+import 'package:knocky/widgets/imageViewerBottomsheet.dart';
 //import 'package:knocky_edge/helpers/Download.dart';
 
 class ImageViewerScreen extends StatefulWidget {
