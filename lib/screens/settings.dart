@@ -83,7 +83,7 @@ class SettingsScreen extends StatelessWidget {
               ),
             ),
             ListTile(
-              title: Text('About'),
+              title: Text('About Knocky'),
               onTap: () async {
                 PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
@@ -94,6 +94,10 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   applicationName: "Knocky",
                   applicationVersion: packageInfo.version,
+                  children: [
+                    Text(
+                        'Huge thanks to PITR and NoRegard for their help and support!')
+                  ],
                 ));
               },
             ),

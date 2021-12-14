@@ -107,6 +107,6 @@ class _PostListItemState extends State<PostListItem> {
   }
 
   onRated() {
-    print('rated');
+    widget.onPostUpdate.call();
   }
 }

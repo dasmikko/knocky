@@ -27,7 +27,6 @@ class _RatingsState extends State<Ratings> {
   final RatingsController ratingsController = Get.put(RatingsController());
   final AuthController authController = Get.put(AuthController());
   SnackbarController snackbarController;
-  List<ThreadPostRatings> ratings;
   bool showChooser = false;
 
   Duration animatonDuration = Duration(milliseconds: 150);
@@ -35,7 +34,6 @@ class _RatingsState extends State<Ratings> {
   @override
   void initState() {
     super.initState();
-    ratings = widget.ratings;
   }
 
   @override
@@ -74,7 +72,7 @@ class _RatingsState extends State<Ratings> {
       margin: EdgeInsets.only(top: 4),
       child: Row(
         children: [
-          ratings.length > 0
+          widget.ratings.length > 0
               ? IconButton(
                   onPressed: () {
                     showModalBottomSheet(
@@ -110,10 +108,7 @@ class _RatingsState extends State<Ratings> {
   }
 
   onRatingDone() async {
-    var ratings = await ratingsController.getRatingsOf(widget.postId);
-    setState(() {
-      this.ratings = ratings;
-    });
+    widget.onRated.call();
     snackbarController.close();
     KnockySnackbar.success('Post was rated');
   }
@@ -121,10 +116,10 @@ class _RatingsState extends State<Ratings> {
   Widget ratingsList() {
     return ListView.separated(
         scrollDirection: Axis.horizontal,
-        itemCount: ratings.length,
+        itemCount: widget.ratings.length,
         separatorBuilder: (context, index) => Container(width: 4),
         itemBuilder: (context, index) {
-          var rating = ratings.elementAt(index);
+          var rating = widget.ratings.elementAt(index);
           return ratingColumn(rating);
         });
   }
