@@ -86,11 +86,22 @@ class _SubforumScreenState extends State<SubforumScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(this.widget.subforum.name),
+        bottom: PreferredSize(
+          preferredSize: Size(double.infinity, 0.0),
+          child: Obx(
+            () => AnimatedOpacity(
+              duration: Duration(milliseconds: 250),
+              opacity: subforumController.isFetching.value ? 1 : 0,
+              child: LinearProgressIndicator(),
+            ),
+          ),
+        ),
       ),
       body: Container(
         child: Obx(
           () => KnockoutLoadingIndicator(
-            show: subforumController.isFetching.value,
+            show: subforumController.data.value == null &&
+                subforumController.isFetching.value,
             child: RefreshIndicator(
               onRefresh: () async => subforumController.fetchData(),
               child: subforumController.data.value != null

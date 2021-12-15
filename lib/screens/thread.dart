@@ -194,105 +194,117 @@ class _ThreadScreenState extends State<ThreadScreen>
       },
       child: Scaffold(
         appBar: AppBar(
-            title: Obx(
-              () => GestureDetector(
-                onTap: () {
-                  threadController.itemScrollController.scrollTo(
-                    index: 0,
-                    duration: Duration(milliseconds: 500),
-                    curve: Curves.easeOutCirc,
-                  );
+          title: Obx(
+            () => GestureDetector(
+              onTap: () {
+                threadController.itemScrollController.scrollTo(
+                  index: 0,
+                  duration: Duration(milliseconds: 500),
+                  curve: Curves.easeOutCirc,
+                );
+              },
+              child: Text(threadController.title ?? 'Loading thread...'),
+            ),
+          ),
+          actions: [
+            IconButton(
+              tooltip: "Jump to page",
+              icon: Icon(Icons.redo),
+              onPressed: () => showJumpDialog(),
+            ),
+            GetBuilder<ThreadController>(
+              init: ThreadController(), // INIT IT ONLY THE FIRST TIME
+              builder: (_) => PopupMenuButton(
+                onSelected: (value) async {
+                  switch (value) {
+                    case 1:
+                      Clipboard.setData(
+                        new ClipboardData(
+                            text:
+                                'https://knockout.chat/thread/${_.id}/${_.page}'),
+                      );
+                      KnockySnackbar.success("Thread link was copied");
+                      break;
+                    case 2:
+                      onTabUnsubscribed();
+                      break;
+                    case 3:
+                      onTapSubscribe();
+                      break;
+                    case 4:
+                      String url =
+                          'https://knockout.chat/thread/${_.id}/${_.page}';
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      } else {
+                        throw 'Could not launch url';
+                      }
+                      break;
+                    case 5:
+                      threadController.fetch();
+                      break;
+                  }
                 },
-                child: Text(threadController.title ?? 'Loading thread...'),
+                itemBuilder: (context) => [
+                  overFlowItem(
+                      FaIcon(
+                        FontAwesomeIcons.syncAlt,
+                        size: 15,
+                      ),
+                      'Reload thread',
+                      5),
+                  _.data.value.subscribed
+                      ? overFlowItem(
+                          FaIcon(
+                            FontAwesomeIcons.solidBellSlash,
+                            size: 15,
+                          ),
+                          'Unsubscribe',
+                          2)
+                      : null,
+                  !_.data.value.subscribed
+                      ? overFlowItem(
+                          FaIcon(
+                            FontAwesomeIcons.solidBell,
+                            size: 15,
+                          ),
+                          'Subscribe',
+                          3)
+                      : null,
+                  overFlowItem(
+                      FaIcon(
+                        FontAwesomeIcons.copy,
+                        size: 15,
+                      ),
+                      'Copy link to thread',
+                      1),
+                  overFlowItem(
+                      FaIcon(
+                        FontAwesomeIcons.chrome,
+                        size: 15,
+                      ),
+                      'Open in browser',
+                      4),
+                ],
+              ),
+            )
+          ],
+          bottom: PreferredSize(
+            preferredSize: Size(double.infinity, 0.0),
+            child: Obx(
+              () => AnimatedOpacity(
+                duration: Duration(milliseconds: 250),
+                opacity: threadController.isFetching.value ? 1 : 0,
+                child: LinearProgressIndicator(),
               ),
             ),
-            actions: [
-              IconButton(
-                tooltip: "Jump to page",
-                icon: Icon(Icons.redo),
-                onPressed: () => showJumpDialog(),
-              ),
-              GetBuilder<ThreadController>(
-                init: ThreadController(), // INIT IT ONLY THE FIRST TIME
-                builder: (_) => PopupMenuButton(
-                  onSelected: (value) async {
-                    switch (value) {
-                      case 1:
-                        Clipboard.setData(
-                          new ClipboardData(
-                              text:
-                                  'https://knockout.chat/thread/${_.id}/${_.page}'),
-                        );
-                        KnockySnackbar.success("Thread link was copied");
-                        break;
-                      case 2:
-                        onTabUnsubscribed();
-                        break;
-                      case 3:
-                        onTapSubscribe();
-                        break;
-                      case 4:
-                        String url =
-                            'https://knockout.chat/thread/${_.id}/${_.page}';
-                        if (await canLaunch(url)) {
-                          await launch(url);
-                        } else {
-                          throw 'Could not launch url';
-                        }
-                        break;
-                      case 5:
-                        threadController.fetch();
-                        break;
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    overFlowItem(
-                        FaIcon(
-                          FontAwesomeIcons.syncAlt,
-                          size: 15,
-                        ),
-                        'Reload thread',
-                        5),
-                    _.data.value.subscribed
-                        ? overFlowItem(
-                            FaIcon(
-                              FontAwesomeIcons.solidBellSlash,
-                              size: 15,
-                            ),
-                            'Unsubscribe',
-                            2)
-                        : null,
-                    !_.data.value.subscribed
-                        ? overFlowItem(
-                            FaIcon(
-                              FontAwesomeIcons.solidBell,
-                              size: 15,
-                            ),
-                            'Subscribe',
-                            3)
-                        : null,
-                    overFlowItem(
-                        FaIcon(
-                          FontAwesomeIcons.copy,
-                          size: 15,
-                        ),
-                        'Copy link to thread',
-                        1),
-                    overFlowItem(
-                        FaIcon(
-                          FontAwesomeIcons.chrome,
-                          size: 15,
-                        ),
-                        'Open in browser',
-                        4),
-                  ],
-                ),
-              )
-            ]),
+          ),
+        ),
         body: Container(
           child: Obx(
             () => KnockoutLoadingIndicator(
-              show: threadController.isFetching.value,
+              show: threadController.data.value == null &&
+                  threadController.isFetching.value,
               child: RefreshIndicator(
                 onRefresh: () async => threadController.fetch(),
                 child:
