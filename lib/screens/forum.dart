@@ -105,15 +105,26 @@ class _ForumScreenState extends State<ForumScreen>
               },
             ),
           ],
+          bottom: PreferredSize(
+            preferredSize: Size(double.infinity, 0.0),
+            child: Obx(
+              () => AnimatedOpacity(
+                duration: Duration(milliseconds: 250),
+                opacity: forumController.isFetching.value ? 1 : 0,
+                child: LinearProgressIndicator(),
+              ),
+            ),
+          ),
         ),
         body: Obx(
-          () => KnockoutLoadingIndicator(
-            show: forumController.isFetching.value,
-            child: RefreshIndicator(
-              onRefresh: () async {
-                forumController.fetchSubforums();
-                forumController.fetchMotd();
-              },
+          () => RefreshIndicator(
+            onRefresh: () async {
+              forumController.fetchSubforums();
+              forumController.fetchMotd();
+            },
+            child: KnockoutLoadingIndicator(
+              show: forumController.subforums.length == 0 &&
+                  forumController.isFetching.value,
               child: ListView.builder(
                 padding: EdgeInsets.fromLTRB(4, 8, 4, 8),
                 itemCount: forumController.subforums.length,

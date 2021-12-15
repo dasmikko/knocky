@@ -63,17 +63,18 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
   Widget content() {
     return Center(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
           Container(
-            margin: EdgeInsets.only(bottom: 12),
-            child: Text(
-              'Node graph out of date. Rebuilding...',
-              style: TextStyle(fontSize: 14, fontFamily: 'RobotoMono'),
-            ),
+            margin: EdgeInsets.only(bottom: 24),
+            child: Image(width: 100, image: AssetImage('assets/logo.png')),
           ),
-          CircularProgressIndicator()
+          Text(
+            'Sending client info...',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )
         ],
       ),
     );

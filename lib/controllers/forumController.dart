@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/api.dart';
+import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/models/motd.dart';
 import 'package:knocky/models/subforum.dart';
 
@@ -19,8 +20,13 @@ class ForumController extends GetxController {
 
   void fetchSubforums() async {
     isFetching.value = true;
-    subforums.value = await KnockoutAPI().getSubforums();
-    isFetching.value = false;
+    try {
+      subforums.value = await KnockoutAPI().getSubforums();
+      isFetching.value = false;
+    } catch (e) {
+      isFetching.value = false;
+      KnockySnackbar.error("Failed loading subforums");
+    }
   }
 
   bool motdIsHidden(motdId) => hiddenMotds.contains(motdId);

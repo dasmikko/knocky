@@ -93,7 +93,6 @@ class KnockoutAPI {
   Future<List<Subforum>> getSubforums() async {
     try {
       final response2 = await _request(url: 'subforum');
-      print(response2);
       return response2.data['list']
           .map<Subforum>((json) => Subforum.fromJson(json))
           .toList();
