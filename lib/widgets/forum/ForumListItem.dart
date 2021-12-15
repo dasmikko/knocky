@@ -150,7 +150,7 @@ class ForumListItem extends StatelessWidget {
         children: <Widget>[
           Flexible(
             flex: 1,
-            child: subforum.lastPost != null
+            child: subforum.lastPost.thread != null
                 ? InkWell(
                     onTap: () {
                       this.onTapItemFooter(
@@ -210,8 +210,11 @@ class ForumListItem extends StatelessWidget {
                       ),
                     ),
                   )
-                : Row(
-                    children: <Widget>[Text('No posts here...')],
+                : Container(
+                    padding: EdgeInsets.all(10),
+                    child: Row(
+                      children: <Widget>[Text('No threads yet...')],
+                    ),
                   ),
           ),
         ],

@@ -240,9 +240,19 @@ class _ThreadScreenState extends State<ThreadScreen>
                           throw 'Could not launch url';
                         }
                         break;
+                      case 5:
+                        threadController.fetch();
+                        break;
                     }
                   },
                   itemBuilder: (context) => [
+                    overFlowItem(
+                        FaIcon(
+                          FontAwesomeIcons.syncAlt,
+                          size: 15,
+                        ),
+                        'Reload thread',
+                        5),
                     _.data.value.subscribed
                         ? overFlowItem(
                             FaIcon(
