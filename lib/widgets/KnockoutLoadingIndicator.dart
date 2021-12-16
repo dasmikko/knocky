@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -20,6 +21,14 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
   AnimationController controller;
   Animation<double> animation;
   bool isHidden = false;
+
+  List<String> messages = [
+    'Reticulating Splines...',
+    'Node Graph out of date. Rebuilding...',
+    'Sending client info...',
+    'hl2.exe is not responding...',
+    'i see you.',
+  ];
 
   initState() {
     super.initState();
@@ -61,6 +70,9 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
   }
 
   Widget content() {
+    Random random = new Random();
+    int randomNumber = random.nextInt(messages.length);
+
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -72,7 +84,7 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
             child: Image(width: 100, image: AssetImage('assets/logo.png')),
           ),
           Text(
-            'Sending client info...',
+            messages.elementAt(randomNumber),
             style: TextStyle(fontWeight: FontWeight.bold),
           )
         ],
