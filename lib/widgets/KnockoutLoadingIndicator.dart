@@ -21,6 +21,7 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
   AnimationController controller;
   Animation<double> animation;
   bool isHidden = false;
+  int messageIndex = 0;
 
   List<String> messages = [
     'Reticulating Splines...',
@@ -29,7 +30,6 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
     'hl2.exe is not responding...',
     'i see you.',
   ];
-  int messageIndex = 0;
 
   initState() {
     super.initState();
@@ -37,17 +37,22 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
         vsync: this, duration: const Duration(milliseconds: 250));
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
 
+    Random random = new Random();
+    int randomNumber = random.nextInt(messages.length);
+
+    print("init state" + randomNumber.toString());
+    setState(() {
+      messageIndex = randomNumber;
+    });
+
     animation.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         setState(() {
           isHidden = false;
         });
       } else if (status == AnimationStatus.dismissed) {
-        Random random = new Random();
-        int randomNumber = random.nextInt(messages.length);
         setState(() {
           isHidden = true;
-          messageIndex = randomNumber;
         });
       }
     });
@@ -56,6 +61,7 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
   @override
   void dispose() {
     controller.dispose();
+    print("dispose");
     super.dispose();
   }
 
@@ -85,7 +91,7 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
             child: Image(width: 100, image: AssetImage('assets/logo.png')),
           ),
           Text(
-            messages.elementAt(messageIndex),
+            messages.elementAt(this.messageIndex),
             style: TextStyle(fontWeight: FontWeight.bold),
           )
         ],
