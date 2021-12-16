@@ -70,6 +70,13 @@ class BBcodeRendererNew extends StatelessWidget {
     ));
   }
 
+  InlineSpan _tumblrNodeHandler(bbob.Element node) {
+    return WidgetSpan(
+        child: EmbedWidget(
+      url: node.textContent,
+    ));
+  }
+
   InlineSpan _styledTextNodeHandler(bbob.Element node,
       {TextStyle currentTextStyle}) {
     TextStyle textStyle;
@@ -282,6 +289,9 @@ class BBcodeRendererNew extends StatelessWidget {
             break;
           case 'vocaroo':
             spans.add(_vocarooNodeHandler(node));
+            break;
+          case 'tumblr':
+            spans.add(_tumblrNodeHandler(node));
             break;
           case 'img':
           case 'img thumbnail':
