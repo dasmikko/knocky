@@ -111,6 +111,13 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
         ),
       ),
       DrawerListTile(
+        iconData: FontAwesomeIcons.commentDots,
+        title: 'Mentions',
+        onTap: () => {
+          onListTileTap(context, () => {}),
+        },
+      ),
+      DrawerListTile(
         iconData: FontAwesomeIcons.cog,
         title: 'Settings',
         onTap: () => {
@@ -202,16 +209,13 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
           iconData: FontAwesomeIcons.discord,
           title: 'Discord',
           onTap: () => {}),
-      DrawerListTile(
-          iconData: FontAwesomeIcons.solidComment,
-          title: 'Mentions',
-          onTap: () => {}),
     ];
   }
 
   Widget guestDrawerHeader() {
     return DrawerHeader(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('Not logged in'),
         ],
