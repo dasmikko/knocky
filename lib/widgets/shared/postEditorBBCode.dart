@@ -52,6 +52,7 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
       btn('YouTube', FontAwesomeIcons.youtube, () => addTag.call('youtube')),
       btn('Video', FontAwesomeIcons.video, () => addTag.call('video')),
       btn('Twitter', FontAwesomeIcons.twitter, () => addTag.call('twitter')),
+      btn('Tumblr', FontAwesomeIcons.tumblr, () => addTag.call('tumblr')),
       btn('Strawpoll', FontAwesomeIcons.poll, () => addTag.call('strawpoll'))
     ];
     return Container(
