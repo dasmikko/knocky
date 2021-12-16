@@ -1,3 +1,5 @@
+import 'package:better_player/better_player.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
@@ -10,18 +12,43 @@ class VocarooEmbed extends StatelessWidget {
     String id = url.split('/').last;
 
     return Container(
-      height: 80,
       margin: EdgeInsets.only(bottom: 8),
-      child: InAppWebView(
-        initialOptions: InAppWebViewGroupOptions(
-            android: AndroidInAppWebViewOptions(
-          useWideViewPort: false,
-          initialScale: 0,
-          textZoom: 100,
-        )),
-        initialData: InAppWebViewInitialData(data: """
-        <iframe title="1b1Y4dq0sSfg" type="text/html" width="100%" height="auto" src="https://vocaroo.com/embed/$id" frameborder="0" allowfullscreen="" class="sc-clsHhM dcyGMh"></iframe>
-        """),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        clipBehavior: Clip.antiAlias,
+        child: BetterPlayer.network(
+          "https://media1.vocaroo.com/mp3/$id",
+          betterPlayerConfiguration: BetterPlayerConfiguration(
+            overlay: Container(
+              color: Color.fromARGB(255, 202, 255, 112),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(bottom: 12),
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          "https://cdn.vocaroo.com/images/mascot-robot-100px.png",
+                    ),
+                  ),
+                  Text(
+                    'Vocaroo',
+                    style: TextStyle(color: Colors.grey[800]),
+                  )
+                ],
+              ),
+            ),
+            controlsConfiguration: BetterPlayerControlsConfiguration(
+              enableQualities: false,
+              enableSubtitles: false,
+              enableAudioTracks: true,
+              enableFullscreen: false,
+              enableSkips: false,
+            ),
+            autoDetectFullscreenDeviceOrientation: true,
+            fit: BoxFit.contain,
+          ),
+        ),
       ),
     );
   }
