@@ -50,16 +50,19 @@ class BBcodeRendererNew extends StatelessWidget {
 
   InlineSpan _twitterNodeHandler(bbob.Element node) {
     return WidgetSpan(
-        child: TwitterCard(
-      tweetUrl: node.textContent,
-      onTapImage: (List<String> allPhotos, int photoIndex, String hashcode) {
-        Get.to(
-          () => ImageViewerScreen(
-            url: allPhotos[photoIndex],
-            urls: allPhotos,
-          ),
-        );
-      },
+        child: Container(
+      margin: EdgeInsets.only(bottom: 8),
+      child: TwitterCard(
+        tweetUrl: node.textContent,
+        onTapImage: (List<String> allPhotos, int photoIndex, String hashcode) {
+          Get.to(
+            () => ImageViewerScreen(
+              url: allPhotos[photoIndex],
+              urls: allPhotos,
+            ),
+          );
+        },
+      ),
     ));
   }
 
