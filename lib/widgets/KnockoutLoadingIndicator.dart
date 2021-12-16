@@ -29,6 +29,7 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
     'hl2.exe is not responding...',
     'i see you.',
   ];
+  int messageIndex = 0;
 
   initState() {
     super.initState();
@@ -42,8 +43,11 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
           isHidden = false;
         });
       } else if (status == AnimationStatus.dismissed) {
+        Random random = new Random();
+        int randomNumber = random.nextInt(messages.length);
         setState(() {
           isHidden = true;
+          messageIndex = randomNumber;
         });
       }
     });
@@ -70,9 +74,6 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
   }
 
   Widget content() {
-    Random random = new Random();
-    int randomNumber = random.nextInt(messages.length);
-
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -84,7 +85,7 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
             child: Image(width: 100, image: AssetImage('assets/logo.png')),
           ),
           Text(
-            messages.elementAt(randomNumber),
+            messages.elementAt(messageIndex),
             style: TextStyle(fontWeight: FontWeight.bold),
           )
         ],
