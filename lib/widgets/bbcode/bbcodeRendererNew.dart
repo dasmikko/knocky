@@ -10,6 +10,7 @@ import 'package:knocky/widgets/post/postsElements/Embed.dart';
 import 'package:knocky/widgets/post/postsElements/image.dart';
 import 'package:knocky/widgets/post/postsElements/twitter.dart';
 import 'package:knocky/widgets/post/postsElements/video.dart';
+import 'package:knocky/widgets/post/postsElements/vocaroo.dart';
 import 'package:knocky/widgets/post/postsElements/youtube.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -59,6 +60,13 @@ class BBcodeRendererNew extends StatelessWidget {
           ),
         );
       },
+    ));
+  }
+
+  InlineSpan _vocarooNodeHandler(bbob.Element node) {
+    return WidgetSpan(
+        child: VocarooEmbed(
+      url: node.textContent,
     ));
   }
 
@@ -271,6 +279,9 @@ class BBcodeRendererNew extends StatelessWidget {
             break;
           case 'youtube':
             spans.add(_youtubeNodeHandler(node));
+            break;
+          case 'vocaroo':
+            spans.add(_vocarooNodeHandler(node));
             break;
           case 'img':
           case 'img thumbnail':
