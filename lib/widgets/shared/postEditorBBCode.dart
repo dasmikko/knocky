@@ -27,8 +27,10 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
   }
 
   Widget toolbar(BuildContext context) {
-    var addTag = (tag) => BBCodeHelper.addTagAtSelection(
-        widget.textEditingController, tag, widget.onInputChange);
+    var addTag = (tag, {option}) => BBCodeHelper.addTagAtSelection(
+        widget.textEditingController, tag, widget.onInputChange,
+        option: option);
+
     var buttons = [
       btn('Bold', FontAwesomeIcons.bold, () => addTag.call('b')),
       btn('Italic', FontAwesomeIcons.italic, () => addTag.call('i')),
@@ -42,6 +44,7 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
       btn('H2', FontAwesomeIcons.font, () => addTag.call('h2')),
       btn('Quote', FontAwesomeIcons.quoteRight,
           () => addTag.call('blockquote')),
+      btn('Link', FontAwesomeIcons.link, () => addTag('url', option: 'href')),
       btn('Unordered list', FontAwesomeIcons.listUl, () => addTag.call('ul')),
       btn('Ordered list', FontAwesomeIcons.listOl, () => addTag.call('ol')),
       // TODO: Make an imgur uplaod dialog, steal from old app

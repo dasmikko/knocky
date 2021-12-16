@@ -84,7 +84,10 @@ class _NewPostState extends State<NewPost> {
   Widget editor() {
     return Container(
         height: height,
-        child: PostEditorBBCode(textEditingController: textEditingController));
+        child: PostEditorBBCode(
+          textEditingController: textEditingController,
+          onInputChange: (String text) {},
+        ));
   }
 
   Widget footer(BuildContext context) {

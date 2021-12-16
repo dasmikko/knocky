@@ -38,7 +38,9 @@ class BBCodeHelper implements bbob.NodeVisitor {
   }
 
   static void addTagAtSelection(
-      TextEditingController controller, String tag, Function onInputChange) {
+      TextEditingController controller, String tag, Function onInputChange,
+      {String option}) {
+    print(option);
     var start = controller.selection.start;
     var end = controller.selection.end;
     RegExp regExp = new RegExp(
@@ -54,11 +56,20 @@ class BBCodeHelper implements bbob.NodeVisitor {
       replaceWith = selectedText.replaceAll('[$tag]', '');
       replaceWith = replaceWith.replaceAll('[/$tag]', '');
     } else {
-      replaceWith = '[$tag]$selectedText[/$tag]';
+      if (option != null) {
+        replaceWith = '[$tag $option=""]$selectedText[/$tag]';
+      } else {
+        replaceWith = '[$tag]$selectedText[/$tag]';
+      }
     }
     controller.text = controller.text.replaceRange(start, end, replaceWith);
-    controller.selection =
-        TextSelection.collapsed(offset: start + (tag.length + 2));
+    if (option == null) {
+      controller.selection =
+          TextSelection.collapsed(offset: start + (tag.length + 2));
+    } else {
+      controller.selection = TextSelection.collapsed(
+          offset: start + ((tag.length + option.length) + 6));
+    }
     onInputChange.call(controller.text);
   }
 
