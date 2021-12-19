@@ -5,6 +5,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/bbcodehelper.dart';
 import 'package:knocky/screens/imageViewer.dart';
 import 'package:measured_size/measured_size.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class ImageWidget extends StatefulWidget {
   final String url;
@@ -65,7 +66,7 @@ class _ImageWidgetState extends State<ImageWidget> {
         width: loadedImageSize != Size.zero ? loadedImageSize.width : null,
         child: Hero(
           tag: this.widget.url + this.widget.postId.toString(),
-          child: CachedNetworkImage(
+          child: OptimizedCacheImage(
             imageBuilder: (context, imageProvider) {
               return MeasuredSize(
                 onChange: (size) {
