@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/notificationController.dart';
+import 'package:knocky/models/notification.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({Key key}) : super(key: key);
@@ -23,11 +24,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Notifications')),
-      body: Container(
-        child: ListView.builder(itemBuilder: (BuildContext context, int index) {
-          return Container();
-        }),
-      ),
+      body: Obx(() => Container(
+          child: notificationController.notifications != null
+              ? ListView.builder(
+                  itemCount: notificationController.notifications.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    NotificationModel notification =
+                        notificationController.notifications.elementAt(index);
+                    return Container(child: Text(notification.type));
+                  })
+              : Container())),
     );
   }
 }

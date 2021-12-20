@@ -338,7 +338,7 @@ class KnockoutAPI {
   }
 
   Future<List<NotificationModel>> notifications() async {
-    final response = await _request(url: 'notifications', type: 'get');
+    final response = await _request(url: 'v2/notifications', type: 'get');
 
     return response.data
         .map<NotificationModel>((json) => NotificationModel.fromJson(json))
