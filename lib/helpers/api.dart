@@ -5,6 +5,7 @@ import 'package:knocky/models/ad.dart';
 import 'package:knocky/models/alert.dart';
 import 'package:knocky/models/events.dart';
 import 'package:knocky/models/motd.dart';
+import 'package:knocky/models/notification.dart';
 import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/models/subforum.dart';
 import 'package:knocky/models/subforumDetails.dart';
@@ -333,6 +334,14 @@ class KnockoutAPI {
 
     return response.data
         .map<KnockoutMotd>((json) => KnockoutMotd.fromJson(json))
+        .toList();
+  }
+
+  Future<List<NotificationModel>> notifications() async {
+    final response = await _request(url: 'notifications', type: 'get');
+
+    return response.data
+        .map<NotificationModel>((json) => NotificationModel.fromJson(json))
         .toList();
   }
 }

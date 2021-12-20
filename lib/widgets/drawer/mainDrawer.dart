@@ -9,6 +9,7 @@ import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/screens/event.dart';
 import 'package:knocky/screens/login.dart';
+import 'package:knocky/screens/notifications.dart';
 import 'package:knocky/screens/profile.dart';
 import 'package:knocky/screens/settings.dart';
 import 'package:knocky/screens/significantThreads.dart';
@@ -112,9 +113,9 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
       ),
       DrawerListTile(
         iconData: FontAwesomeIcons.commentDots,
-        title: 'Mentions',
+        title: 'Notifications',
         onTap: () => {
-          onListTileTap(context, () => {}),
+          onListTileTap(context, () => {Get.to(NotificationScreen())}),
         },
       ),
       DrawerListTile(
