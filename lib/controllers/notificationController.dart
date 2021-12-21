@@ -9,6 +9,7 @@ class NotificationController extends GetxController {
   fetch() async {
     isFetching.value = true;
     notifications.value = await KnockoutAPI().notifications();
+    print(notifications.toJson());
     isFetching.value = false;
   }
 }
