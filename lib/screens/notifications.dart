@@ -35,9 +35,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         notificationController.notifications.elementAt(index);
 
                     if (notification.type == 'POST_REPLY')
-                      return NotificationPostReplyListItem(notification);
-                    return Container(
-                        child: Text('Message notification' + index.toString()));
+                      return NotificationPostReplyListItem(notification, index);
+                    return Card(
+                        child: Container(
+                            child: Text(
+                                'Message notification' + index.toString())));
                   })
               : Container())),
     );

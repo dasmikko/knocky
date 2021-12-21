@@ -5,8 +5,9 @@ import 'package:knocky/widgets/shared/avatar.dart';
 
 class NotificationPostReplyListItem extends StatelessWidget {
   final NotificationModel notification;
+  final int index;
 
-  const NotificationPostReplyListItem(this.notification, {Key key})
+  const NotificationPostReplyListItem(this.notification, this.index, {Key key})
       : super(key: key);
 
   @override
@@ -15,7 +16,7 @@ class NotificationPostReplyListItem extends StatelessWidget {
       child: Container(
           child: Column(
         children: [
-          notification.data.user.avatarUrl == null
+          notification.data.user.avatarUrl == 'none.webp'
               ? CachedNetworkImage(
                   imageUrl: 'https://img.icons8.com/color/96/000000/chat.png')
               : Avatar(
