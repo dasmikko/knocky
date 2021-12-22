@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/notificationController.dart';
 import 'package:knocky/models/notification.dart';
-import 'package:knocky/widgets/notifications/notificationPostReplyListItem.dart';
+import 'package:knocky/widgets/notifications/notificationListItem.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({Key key}) : super(key: key);
@@ -33,13 +33,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     print(notificationController.notifications.length);
                     NotificationModel notification =
                         notificationController.notifications.elementAt(index);
-
-                    if (notification.type == 'POST_REPLY')
-                      return NotificationPostReplyListItem(notification, index);
-                    return Card(
-                        child: Container(
-                            child: Text(
-                                'Message notification' + index.toString())));
+                    return NotificationListItem(notification, index);
                   })
               : Container())),
     );

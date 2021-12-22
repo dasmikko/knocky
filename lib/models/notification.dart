@@ -1,8 +1,5 @@
-import 'package:knocky/models/subforum.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/models/thread.dart';
-import 'package:knocky/models/userProfileRatings.dart';
-import 'package:knocky/widgets/profile/ratings.dart';
 
 class NotificationModel {
   DateTime createdAt;
@@ -10,10 +7,17 @@ class NotificationModel {
   bool read;
   String type;
   int userId;
-  dynamic data;
+  NotificationPostReplyDataModel replyData;
+  NotificationMessageDataModel messageData;
 
   NotificationModel(
-      {this.createdAt, this.id, this.read, this.type, this.userId, this.data});
+      {this.createdAt,
+      this.id,
+      this.read,
+      this.type,
+      this.userId,
+      this.replyData,
+      this.messageData});
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) =>
       NotificationModel(
@@ -21,8 +25,12 @@ class NotificationModel {
           id: json['id'] as int,
           read: json['read'] as bool,
           type: json['type'] as String,
-          data: json['type'] == 'POST_REPLY'
+          replyData: json['type'] == 'POST_REPLY'
               ? NotificationPostReplyDataModel.fromJson(
+                  json['data'] as Map<String, dynamic>)
+              : null,
+          messageData: json['type'] == 'MESSAGE'
+              ? NotificationMessageDataModel.fromJson(
                   json['data'] as Map<String, dynamic>)
               : null,
           userId: json['userId'] as int);
@@ -32,7 +40,8 @@ class NotificationModel {
         'id': id,
         'read': read,
         'type': type,
-        'data': data.toJson(),
+        'replyData': replyData.toJson(),
+        'messageData': messageData.toJson(),
         'userId': userId
       };
 }
@@ -47,7 +56,7 @@ class NotificationPostReplyDataModel {
   int id;
   int page;
   List<ThreadPostRatings> ratings;
-  NotificationDataThread thread;
+  SubforumThread thread;
   int threadPostNumber;
   ThreadPostUser user;
 
@@ -78,7 +87,7 @@ class NotificationPostReplyDataModel {
                 ? null
                 : ThreadPostRatings.fromJson(e as Map<String, dynamic>))
             ?.toList(),
-        thread: NotificationDataThread.fromJson(json['thread']),
+        thread: SubforumThread.fromJson(json['thread']),
         threadPostNumber: json['threadPostNumber'] as int,
         updatedAt: DateTime.parse(json['updatedAt'] as String),
         user: ThreadPostUser.fromJson(json['user']),
@@ -99,95 +108,90 @@ class NotificationPostReplyDataModel {
       };
 }
 
-class NotificationDataThread {
-  final String backgroundUrl;
-  final int firstUnreadId;
-  final DateTime createdAt;
-  final int iconId;
+class NotificationMessageDataModel {
   final int id;
-  final bool locked;
-  final bool pinned;
-  final int postCount;
-  final int readThreadUnreadPosts;
-  final int unreadPostCount;
-  final String title;
-  final int unreadType;
-  final SubforumThreadUser user;
-  final SubforumLastPost lastPost;
-  final bool hasRead;
-  final bool subscribed;
-  final List<Map<int, String>> tags;
+  final List<NotificationMessageDataMessageModel> messages;
+  final DateTime createdAt;
+  final List<ThreadPostUser> users;
 
-  NotificationDataThread(
-      {this.backgroundUrl,
-      this.createdAt,
-      this.firstUnreadId,
-      this.iconId,
-      this.id,
-      this.locked,
-      this.pinned,
-      this.postCount,
-      this.readThreadUnreadPosts,
-      this.unreadPostCount,
-      this.title,
-      this.unreadType,
-      this.user,
-      this.lastPost,
-      this.hasRead,
-      this.subscribed,
-      this.tags});
+  NotificationMessageDataModel({
+    this.createdAt,
+    this.id,
+    this.users,
+    this.messages,
+  });
 
-  factory NotificationDataThread.fromJson(Map<String, dynamic> json) {
-    return NotificationDataThread(
-      backgroundUrl:
-          json['backgroundUrl'] == null ? '' : json['backgroundUrl'] as String,
+  factory NotificationMessageDataModel.fromJson(Map<String, dynamic> json) {
+    return NotificationMessageDataModel(
+      messages: (json['messages'] as List)
+          ?.map((e) => e == null
+              ? null
+              : NotificationMessageDataMessageModel.fromJson(
+                  e as Map<String, dynamic>))
+          ?.toList(),
       createdAt: json['createdAt'] == null
           ? null
           : DateTime.parse(json['createdAt'] as String),
-      firstUnreadId: json['firstUnreadId'] as int,
-      iconId: json['iconId'] as int,
       id: json['id'] as int,
-      locked: json['locked'] as bool,
-      pinned: json['pinned'] as bool,
-      postCount: json['postCount'] as int,
-      readThreadUnreadPosts: json['readThreadUnreadPosts'] as int ?? 0,
-      unreadPostCount: json['unreadPostCount'] as int ?? 0,
-      title: json['title'] as String,
-      unreadType: json['unreadType'] as int,
-      user: json['user'] == null
-          ? null
-          : SubforumThreadUser.fromJson(json['user'] as Map<String, dynamic>),
-      lastPost: json['lastPost'] == null
-          ? null
-          : SubforumLastPost.fromJson(json['lastPost'] as Map<String, dynamic>),
-      hasRead: json['hasRead'] as bool,
-      subscribed: json['subscribed'] as bool,
-      tags: (json['tags'] as List)
-          ?.map((e) => (e as Map<String, dynamic>)?.map(
-                (k, e) => MapEntry(int.parse(k), e as String),
-              ))
+      users: (json['users'] as List)
+          ?.map((e) => e == null
+              ? null
+              : ThreadPostUser.fromJson(e as Map<String, dynamic>))
           ?.toList(),
     );
   }
   Map<String, dynamic> toJson() => {
-        'backgroundUrl': backgroundUrl,
-        'firstUnreadId': firstUnreadId,
         'createdAt': createdAt?.toIso8601String(),
-        'iconId': iconId,
+        'messages': messages,
         'id': id,
-        'locked': locked,
-        'pinned': pinned,
-        'postCount': postCount,
-        'readThreadUnreadPosts': readThreadUnreadPosts,
-        'unreadPostCount': unreadPostCount,
-        'title': title,
-        'unreadType': unreadType,
+        'user': users,
+      };
+}
+
+class NotificationMessageDataMessageModel {
+  final int id;
+  final String content;
+  final int conversationId;
+  final DateTime createdAt;
+  final DateTime readAt;
+  final DateTime updatedAt;
+  final ThreadPostUser user;
+
+  NotificationMessageDataMessageModel({
+    this.content,
+    this.conversationId,
+    this.createdAt,
+    this.id,
+    this.readAt,
+    this.updatedAt,
+    this.user,
+  });
+
+  factory NotificationMessageDataMessageModel.fromJson(
+      Map<String, dynamic> json) {
+    return NotificationMessageDataMessageModel(
+      content: json['content'] as String,
+      conversationId: json['conversationId'] as int,
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      readAt: json['readAt'] == null
+          ? null
+          : DateTime.parse(json['readAt'] as String),
+      updatedAt: json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
+      id: json['id'] as int,
+      user: ThreadPostUser.fromJson(json['user']),
+    );
+  }
+  Map<String, dynamic> toJson() => {
+        'createdAt': createdAt?.toIso8601String(),
+        'readAt': readAt?.toIso8601String(),
+        'updatedAt': updatedAt?.toIso8601String(),
+        'content': content,
+        'conversationId': conversationId,
+        'id': id,
         'user': user,
-        'lastPost': lastPost,
-        'hasRead': hasRead,
-        'subscribed': subscribed,
-        'tags': tags
-            ?.map((e) => e?.map((k, e) => MapEntry(k.toString(), e)))
-            ?.toList(),
       };
 }
