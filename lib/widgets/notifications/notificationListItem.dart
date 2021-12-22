@@ -40,7 +40,7 @@ class NotificationListItem extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            height: 80,
+            height: 50,
             child: notification.replyData.user.avatarUrl == 'none.webp'
                 ? CachedNetworkImage(
                     imageUrl: 'https://img.icons8.com/color/96/000000/chat.png')
@@ -96,7 +96,7 @@ class NotificationListItem extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            height: 80,
+            height: 50,
             child: notification.messageData.users.first.avatarUrl == 'none.webp'
                 ? CachedNetworkImage(
                     imageUrl: 'https://img.icons8.com/color/96/000000/chat.png')
