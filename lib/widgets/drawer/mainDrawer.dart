@@ -9,6 +9,7 @@ import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/screens/event.dart';
 import 'package:knocky/screens/login.dart';
+import 'package:knocky/screens/notifications.dart';
 import 'package:knocky/screens/profile.dart';
 import 'package:knocky/screens/settings.dart';
 import 'package:knocky/screens/significantThreads.dart';
@@ -111,6 +112,13 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
         ),
       ),
       DrawerListTile(
+        iconData: FontAwesomeIcons.commentDots,
+        title: 'Notifications',
+        onTap: () => {
+          onListTileTap(context, () => {Get.to(NotificationScreen())}),
+        },
+      ),
+      DrawerListTile(
         iconData: FontAwesomeIcons.cog,
         title: 'Settings',
         onTap: () => {
@@ -202,16 +210,13 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
           iconData: FontAwesomeIcons.discord,
           title: 'Discord',
           onTap: () => {}),
-      DrawerListTile(
-          iconData: FontAwesomeIcons.solidComment,
-          title: 'Mentions',
-          onTap: () => {}),
     ];
   }
 
   Widget guestDrawerHeader() {
     return DrawerHeader(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('Not logged in'),
         ],
