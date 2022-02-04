@@ -74,6 +74,14 @@ class _ImageWidgetState extends State<ImageWidget> {
                     sizeMap['height'] = size.height;
                     sizeMap['width'] = size.width;
                     box.writeIfNull(this.widget.url, sizeMap);
+                  } else {
+                    if (loadedImageSize.height < size.height ||
+                        loadedImageSize.width < size.width) {
+                      var sizeMap = Map();
+                      sizeMap['height'] = size.height;
+                      sizeMap['width'] = size.width;
+                      box.writeIfNull(this.widget.url, sizeMap);
+                    }
                   }
                 },
                 child: Image(
