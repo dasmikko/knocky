@@ -10,6 +10,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:knocky/themes/DarkTheme.dart';
 //import 'package:knocky/themes/DefaultTheme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:layout/layout.dart';
 
 void main() async {
   final AuthController authController = Get.put(AuthController());
@@ -50,12 +51,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'Flutter Demo',
-      theme: darkTheme(),
-      darkTheme: darkTheme(),
-      themeMode: ThemeService().theme,
-      home: ForumScreen(),
+    return Layout(
+      child: GetMaterialApp(
+        title: 'Flutter Demo',
+        theme: darkTheme(),
+        darkTheme: darkTheme(),
+        themeMode: ThemeService().theme,
+        home: ForumScreen(),
+      ),
     );
   }
 }
