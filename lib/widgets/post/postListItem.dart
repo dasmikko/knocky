@@ -9,11 +9,17 @@ import 'package:knocky/widgets/post/userInfo.dart';
 import 'package:knocky/widgets/shared/editPost.dart';
 
 class PostListItem extends StatefulWidget {
+  const PostListItem({
+    this.key,
+    @required this.post,
+    this.readThreadLastSeen,
+    this.onPostUpdate,
+  }) : super(key: key);
+
+  final Key key;
   final ThreadPost post;
   final DateTime readThreadLastSeen;
   final Function onPostUpdate;
-  PostListItem(
-      {@required this.post, this.readThreadLastSeen, this.onPostUpdate});
 
   @override
   State<PostListItem> createState() => _PostListItemState();

@@ -61,43 +61,31 @@ class _ImageWidgetState extends State<ImageWidget> {
           transition: Transition.fadeIn,
         );
       },
-      child: Container(
-        height: loadedImageSize != Size.zero ? loadedImageSize.height : null,
-        width: loadedImageSize != Size.zero ? loadedImageSize.width : null,
-        child: Hero(
-          tag: this.widget.url + this.widget.postId.toString(),
-          child: OptimizedCacheImage(
-            imageBuilder: (context, imageProvider) {
-              return MeasuredSize(
-                onChange: (size) {
-                  if (!hasCachedSize) {
-                    var sizeMap = Map();
-                    sizeMap['height'] = size.height;
-                    sizeMap['width'] = size.width;
-                    box.writeIfNull(this.widget.url, sizeMap);
-                  } else {
-                    if (loadedImageSize.height < size.height ||
-                        loadedImageSize.width < size.width) {
-                      var sizeMap = Map();
-                      sizeMap['height'] = size.height;
-                      sizeMap['width'] = size.width;
-                      box.writeIfNull(this.widget.url, sizeMap);
-                    }
-                  }
-                },
-                child: Image(
-                  image: imageProvider,
-                ),
-              );
-            },
-            placeholder: (context, url) => Container(
-              height: hasCachedSize ? loadedImageSize.height : 100,
-              width: hasCachedSize ? loadedImageSize.width : 100,
-              padding: EdgeInsets.all(20),
-              child: CircularProgressIndicator(),
+      child: Hero(
+        tag: this.widget.url + this.widget.postId.toString(),
+        child: CachedNetworkImage(
+          imageBuilder: (context, imageProvider) {
+            return ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height - 72,
+              ),
+              child: Image(
+                image: imageProvider,
+              ),
+            );
+          },
+          placeholder: (context, url) => ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height - 72,
+              maxHeight: MediaQuery.of(context).size.height - 72,
             ),
-            imageUrl: this.widget.url,
+            child: Container(
+                child: CircularProgressIndicator(),
+                alignment: Alignment.center,
+                height: 50,
+                width: 50),
           ),
+          imageUrl: this.widget.url,
         ),
       ),
     );

@@ -13,17 +13,21 @@ class VideoEmbed extends StatefulWidget {
 class _VideoEmbedState extends State<VideoEmbed> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: BetterPlayer.network(
-      this.widget.url,
-      betterPlayerConfiguration: BetterPlayerConfiguration(
-        controlsConfiguration: BetterPlayerControlsConfiguration(
-          enableSkips: false,
-        ),
-        autoDetectFullscreenDeviceOrientation: true,
-        fit: BoxFit.contain,
-        aspectRatio: 16 / 9,
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height - 124,
       ),
-    ));
+      child: BetterPlayer.network(
+        this.widget.url,
+        betterPlayerConfiguration: BetterPlayerConfiguration(
+          controlsConfiguration: BetterPlayerControlsConfiguration(
+            enableSkips: false,
+          ),
+          autoDetectFullscreenDeviceOrientation: true,
+          fit: BoxFit.contain,
+          aspectRatio: 16 / 9,
+        ),
+      ),
+    );
   }
 }

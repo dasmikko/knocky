@@ -419,6 +419,7 @@ class _ThreadScreenState extends State<ThreadScreen>
       threadController.data.value.posts.forEach((post) {
         widgets.add(
           PostListItem(
+            key: ValueKey(post.id),
             post: post,
             readThreadLastSeen: threadController.data.value.readThreadLastSeen,
             onPostUpdate: () => threadController.fetch(),
