@@ -1,6 +1,6 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/home/mjensen/fvm/versions/2.8.0"
+export "FLUTTER_ROOT=/home/mjensen/fvm/versions/2.10.0"
 export "FLUTTER_APPLICATION_PATH=/home/mjensen/repos/knocky"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_TARGET=lib/main.dart"
