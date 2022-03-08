@@ -25,13 +25,15 @@ class BBcodeRendererNew extends StatelessWidget {
 
   InlineSpan _imageNodeHandler(bbob.Element node) {
     return WidgetSpan(
-        child: Container(
-            margin: EdgeInsets.only(bottom: 8),
-            child: ImageWidget(
-              postId: postDetails?.id,
-              url: node.textContent,
-              bbcode: this.bbcode,
-            )));
+      child: Container(
+        margin: EdgeInsets.only(bottom: 8),
+        child: ImageWidget(
+          postId: postDetails?.id,
+          url: node.textContent,
+          bbcode: this.bbcode,
+        ),
+      ),
+    );
   }
 
   InlineSpan _videoNodeHandler(bbob.Element node) {
@@ -372,6 +374,11 @@ class BBcodeRendererNew extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String bbcodeCleaned = this.bbcode.replaceAll('[img thumbnail]', '[img]');
+    // Force images into new lines if there isn't any space between them
+    bbcodeCleaned = bbcodeCleaned.replaceAll('[/img][img]', '[/img]\n[img]');
+    bbcodeCleaned = bbcodeCleaned.replaceAll('[/img] [img]', '[/img]\n[img]');
+
+    // Fix url tags that has smart tagged onto them
     bbcodeCleaned = bbcodeCleaned.replaceAll('[url smart]', '[url smart=true]');
 
     List<bbob.Node> nodes = new BBCodeParser().parse(bbcodeCleaned);

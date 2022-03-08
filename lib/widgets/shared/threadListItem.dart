@@ -46,6 +46,9 @@ class ThreadListItem extends StatelessWidget {
 
   @protected
   BoxDecoration getBackground(BuildContext context) {
+    if (threadDetails.backgroundUrl == null ||
+        threadDetails.backgroundUrl == ' ') return null;
+
     return Containers.getBackgroundDecoration(
         context, threadDetails.backgroundUrl);
   }

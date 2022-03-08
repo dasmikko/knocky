@@ -59,7 +59,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
                     _isZooming = zoomState;
                   });
                 },
-                child: OptimizedCacheImage(imageUrl: this.widget.urls[index]),
+                child: CachedNetworkImage(imageUrl: this.widget.urls[index]),
               ),
             ),
           );

@@ -54,8 +54,10 @@ class _TwitterCardState extends State<TwitterCard>
   Widget build(BuildContext context) {
     if (_isLoading) return CircularProgressIndicator();
     if (_failed) return Text('failed to load tweet');
-    return CachedSizeWidget(
-      id: this.widget.tweetUrl,
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxWidth: 600,
+      ),
       child: EmbeddedTweetView.fromTweet(
         Tweet.fromJson(_twitterJson),
         backgroundColor: Get.isDarkMode ? Colors.grey[800] : Colors.white,
