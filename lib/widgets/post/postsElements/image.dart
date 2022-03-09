@@ -63,29 +63,32 @@ class _ImageWidgetState extends State<ImageWidget> {
       },
       child: Hero(
         tag: this.widget.url + this.widget.postId.toString(),
-        child: CachedNetworkImage(
-          imageBuilder: (context, imageProvider) {
-            return ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height - 72,
-              ),
-              child: Image(
-                image: imageProvider,
-              ),
-            );
-          },
-          placeholder: (context, url) => ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height - 72,
-              maxHeight: MediaQuery.of(context).size.height - 72,
+        child: Container(
+          width: 300,
+          height: 300,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10.0),
+            child: CachedNetworkImage(
+              key: ValueKey(this.widget.url),
+              imageBuilder: (context, imageProvider) {
+                return Container(
+                  color: Colors.grey[900],
+                  child: Image(
+                    key: ValueKey(this.widget.url),
+                    fit: BoxFit.cover,
+                    image: imageProvider,
+                  ),
+                );
+              },
+              placeholder: (context, url) => Container(
+                  color: Colors.grey[800],
+                  child: CircularProgressIndicator(),
+                  alignment: Alignment.center,
+                  height: 50,
+                  width: 50),
+              imageUrl: this.widget.url,
             ),
-            child: Container(
-                child: CircularProgressIndicator(),
-                alignment: Alignment.center,
-                height: 50,
-                width: 50),
           ),
-          imageUrl: this.widget.url,
         ),
       ),
     );

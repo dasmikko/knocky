@@ -7,10 +7,11 @@ import 'package:tweet_ui/models/api/tweet.dart';
 import 'package:tweet_ui/tweet_ui.dart';
 
 class TwitterCard extends StatefulWidget {
+  final Key key;
   final String tweetUrl;
   final Function onTapImage;
 
-  TwitterCard({this.tweetUrl, this.onTapImage});
+  TwitterCard({this.key, this.tweetUrl, this.onTapImage}) : super(key: key);
 
   @override
   _TwitterCardState createState() => _TwitterCardState();
