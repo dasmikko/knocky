@@ -65,6 +65,9 @@ class _ImageWidgetState extends State<ImageWidget> {
             child: ExtendedImage.network(
               this.widget.url,
               key: ValueKey(this.widget.url),
+              cache: true,
+              compressionRatio: 0.2,
+              cacheHeight: 300,
               fit: BoxFit.cover,
               clearMemoryCacheWhenDispose: true,
             ),

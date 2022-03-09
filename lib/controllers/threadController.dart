@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/paginatedController.dart';
@@ -20,6 +21,7 @@ class ThreadController extends PaginatedController<Thread> {
   Future fetchData() async {
     Thread newData = await KnockoutAPI().getThread(id, page: page);
     data.value = null; // Force clean up?
+    clearMemoryImageCache();
     data.value = newData;
 
     hideFAB.value = false;

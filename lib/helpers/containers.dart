@@ -12,7 +12,7 @@ class Containers {
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
               Colors.black.withOpacity(0.25), BlendMode.dstATop),
-          image: ExtendedNetworkImageProvider(imageUrl, cache: false),
+          image: ExtendedNetworkImageProvider(imageUrl, cache: true),
         ));
   }
 }

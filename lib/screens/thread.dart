@@ -453,6 +453,7 @@ class _ThreadScreenState extends State<ThreadScreen>
     return Container(
       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
       child: ScrollablePositionedList.builder(
+        addAutomaticKeepAlives: false,
         itemScrollController: threadController.itemScrollController,
         itemPositionsListener: itemPositionListener,
         itemCount:

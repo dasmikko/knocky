@@ -278,6 +278,7 @@ class BBcodeRendererNew extends StatelessWidget {
           case 'b':
           case 'i':
           case 'u':
+          case 'code':
           case 'url':
           case 'url smart':
           case 'spoiler':

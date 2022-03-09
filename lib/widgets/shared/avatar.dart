@@ -19,6 +19,8 @@ class Avatar extends StatelessWidget {
     return ExtendedImage.network(
       "${KnockoutAPI.CDN_URL}/$avatarUrl",
       clearMemoryCacheWhenDispose: true,
+      cache: true,
+      cacheWidth: 40,
     );
   }
 }
