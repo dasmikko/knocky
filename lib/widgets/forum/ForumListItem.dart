@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/models/subforum.dart';
@@ -131,8 +132,8 @@ class ForumListItem extends StatelessWidget {
             ),
           ),
           Container(
-            child: CachedNetworkImage(
-              imageUrl: !subforum.icon.contains('static')
+            child: ExtendedImage.network(
+              !subforum.icon.contains('static')
                   ? subforum.icon
                   : 'https://knockout.chat' + subforum.icon,
               width: 40.0,

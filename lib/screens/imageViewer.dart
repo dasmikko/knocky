@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:knocky/widgets/CustomZoomWidget.dart';
@@ -59,7 +60,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
                     _isZooming = zoomState;
                   });
                 },
-                child: CachedNetworkImage(imageUrl: this.widget.urls[index]),
+                child: ExtendedImage.network(this.widget.urls[index]),
               ),
             ),
           );

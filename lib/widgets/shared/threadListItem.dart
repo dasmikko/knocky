@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:knocky/helpers/containers.dart';
@@ -37,9 +38,9 @@ class ThreadListItem extends StatelessWidget {
     return Container(
         padding: EdgeInsets.all(8),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          CachedNetworkImage(
+          ExtendedImage.network(
+            getIconOrDefault(threadDetails.iconId).url,
             width: 32,
-            imageUrl: getIconOrDefault(threadDetails.iconId).url,
           )
         ]));
   }

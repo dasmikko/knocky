@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -126,6 +127,10 @@ class _ThreadScreenState extends State<ThreadScreen>
   @override
   void dispose() {
     subscription.cancel();
+
+    clearMemoryImageCache();
+
+    threadController.data.value = null; // Clear data!
 
     // Clear new text as we have leaved the thread
     threadController.currentNewPostText.value = '';

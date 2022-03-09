@@ -1,19 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/bbcodehelper.dart';
 import 'package:knocky/screens/imageViewer.dart';
-import 'package:measured_size/measured_size.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class ImageWidget extends StatefulWidget {
   final String url;
   final int postId;
-  final GlobalKey<ScaffoldState> scaffoldKey;
   final String bbcode;
 
-  ImageWidget({this.url, this.scaffoldKey, this.bbcode, this.postId});
+  ImageWidget({this.url, this.bbcode, this.postId});
 
   @override
   _ImageWidgetState createState() => _ImageWidgetState();
@@ -35,20 +33,16 @@ class _ImageWidgetState extends State<ImageWidget> {
   }
 
   @override
+  void dispose() {
+    print('image dispose');
+    //CachedNetworkImage.evictFromCache(this.widget.url);
+    clearMemoryImageCache(this.widget.url);
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final box = GetStorage('sizeCache');
-    Size loadedImageSize = Size.zero;
-    final bool hasCachedSize = box.hasData(this.widget.url);
-
-    // Check if we have cached the image size
-    if (hasCachedSize) {
-      Map cachedSize = box.read(this.widget.url);
-      loadedImageSize = Size(
-        cachedSize['width'],
-        cachedSize['height'],
-      );
-    }
-
     return GestureDetector(
       onTap: () {
         Get.to(
@@ -68,24 +62,11 @@ class _ImageWidgetState extends State<ImageWidget> {
           height: 300,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
-            child: CachedNetworkImage(
+            child: ExtendedImage.network(
+              this.widget.url,
               key: ValueKey(this.widget.url),
-              imageBuilder: (context, imageProvider) {
-                return Container(
-                  child: Image(
-                    key: ValueKey(this.widget.url),
-                    fit: BoxFit.cover,
-                    image: imageProvider,
-                  ),
-                );
-              },
-              placeholder: (context, url) => Container(
-                  color: Colors.grey[800],
-                  child: CircularProgressIndicator(),
-                  alignment: Alignment.center,
-                  height: 50,
-                  width: 50),
-              imageUrl: this.widget.url,
+              fit: BoxFit.cover,
+              clearMemoryCacheWhenDispose: true,
             ),
           ),
         ),

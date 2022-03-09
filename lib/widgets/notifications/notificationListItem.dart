@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/models/notification.dart';
 import 'package:knocky/widgets/shared/avatar.dart';
@@ -42,8 +43,8 @@ class NotificationListItem extends StatelessWidget {
           Container(
             height: 50,
             child: notification.replyData.user.avatarUrl == 'none.webp'
-                ? CachedNetworkImage(
-                    imageUrl: 'https://img.icons8.com/color/96/000000/chat.png')
+                ? ExtendedImage.network(
+                    'https://img.icons8.com/color/96/000000/chat.png')
                 : Avatar(
                     avatarUrl: notification.replyData.user.avatarUrl,
                     isBanned: notification.replyData.user.isBanned),
@@ -98,8 +99,8 @@ class NotificationListItem extends StatelessWidget {
           Container(
             height: 50,
             child: notification.messageData.users.first.avatarUrl == 'none.webp'
-                ? CachedNetworkImage(
-                    imageUrl: 'https://img.icons8.com/color/96/000000/chat.png')
+                ? ExtendedImage.network(
+                    'https://img.icons8.com/color/96/000000/chat.png')
                 : Avatar(
                     avatarUrl: notification.messageData.users.first.avatarUrl,
                     isBanned: notification.messageData.users.first.isBanned),

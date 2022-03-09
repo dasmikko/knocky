@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/icons.dart';
 import 'package:knocky/models/thread.dart';
@@ -33,10 +34,11 @@ class _ViewUsersOfRatingsContentState extends State<ViewUsersOfRatingsContent> {
                   children: <Widget>[
                     Container(
                       margin: EdgeInsets.only(right: 18),
-                      child: CachedNetworkImage(
-                          height: 32,
-                          width: 32,
-                          imageUrl: ratingIconMap[o.rating].url),
+                      child: ExtendedImage.network(
+                        ratingIconMap[o.rating].url,
+                        height: 32,
+                        width: 32,
+                      ),
                     ),
                     Text(
                       ratingIconMap[o.rating].name + ' x ${o.users.length}',

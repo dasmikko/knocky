@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/api.dart';
 
@@ -15,6 +16,9 @@ class Avatar extends StatelessWidget {
     } else if (avatarUrl == 'none.webp' || avatarUrl.isEmpty) {
       return Container(width: 40);
     }
-    return CachedNetworkImage(imageUrl: "${KnockoutAPI.CDN_URL}/$avatarUrl");
+    return ExtendedImage.network(
+      "${KnockoutAPI.CDN_URL}/$avatarUrl",
+      clearMemoryCacheWhenDispose: true,
+    );
   }
 }

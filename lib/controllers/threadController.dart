@@ -11,14 +11,16 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 class ThreadController extends PaginatedController<Thread> {
   final AuthController authController = Get.put(AuthController());
   final SyncController syncController = Get.put(SyncController());
-  final ItemScrollController itemScrollController = new ItemScrollController();
+  ItemScrollController itemScrollController = new ItemScrollController();
   final currentNewPostText = ''.obs;
   final replyToAdd = ''.obs;
   final hideFAB = false.obs;
 
   @override
   Future fetchData() async {
-    data.value = await KnockoutAPI().getThread(id, page: page);
+    Thread newData = await KnockoutAPI().getThread(id, page: page);
+    data.value = null; // Force clean up?
+    data.value = newData;
 
     hideFAB.value = false;
 

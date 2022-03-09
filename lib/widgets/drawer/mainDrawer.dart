@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -62,14 +63,14 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
         image: authController.isAuthenticated.value
             ? DecorationImage(
                 fit: BoxFit.cover,
-                image: CachedNetworkImageProvider(
+                image: ExtendedNetworkImageProvider(
                     "${KnockoutAPI.CDN_URL}/${authController.background.value}"),
               )
             : null,
         color: Colors.redAccent,
       ),
       currentAccountPicture: CircleAvatar(
-        backgroundImage: CachedNetworkImageProvider(
+        backgroundImage: ExtendedNetworkImageProvider(
             "${KnockoutAPI.CDN_URL}/${authController.avatar.value}"),
       ),
     );
@@ -225,7 +226,7 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
         image: authController.isAuthenticated.value
             ? DecorationImage(
                 fit: BoxFit.cover,
-                image: CachedNetworkImageProvider(
+                image: ExtendedNetworkImageProvider(
                     "${KnockoutAPI.CDN_URL}/${authController.background.value}"),
               )
             : null,
@@ -278,26 +279,10 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
             ),
             // TODO: Add on tap for the ad
             mainDrawerController.adImageUrl.value != ''
-                ? CachedNetworkImage(
+                ? ExtendedImage.network(
+                    mainDrawerController.adImageUrl.value,
                     height: 80,
-                    placeholderFadeInDuration: Duration(milliseconds: 200),
-                    placeholder: (context, url) => Container(
-                      height: 80,
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(right: 14),
-                            child: CircularProgressIndicator(),
-                          ),
-                          Text('Loading ad...')
-                        ],
-                      ),
-                    ),
                     fit: BoxFit.fitWidth,
-                    imageUrl: mainDrawerController.adImageUrl.value,
                   )
                 : Container(
                     height: 80,

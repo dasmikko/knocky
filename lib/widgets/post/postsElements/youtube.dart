@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_brace_in_string_interps
 
 import 'dart:convert';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -100,10 +101,8 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
               child: Stack(
                 alignment: Alignment(0, 0),
                 children: <Widget>[
-                  CachedNetworkImage(
-                    imageUrl: thumbnailUrl,
-                    placeholder: (BuildContext context, String url) =>
-                        CircularProgressIndicator(),
+                  ExtendedImage.network(
+                    thumbnailUrl,
                   ),
                   if (_title != null)
                     Positioned.fill(

@@ -57,6 +57,7 @@ dependencies:
   package_info_plus: 1.4.0
   optimized_cached_image: 3.0.0
   layout: 1.0.2
+  extended_image: 4.0.0
 
 dependency_overrides:
   visibility_detector: 0.2.2

@@ -1,5 +1,6 @@
 import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
 class VocarooEmbed extends StatelessWidget {
@@ -25,9 +26,8 @@ class VocarooEmbed extends StatelessWidget {
                 children: [
                   Container(
                     margin: EdgeInsets.only(bottom: 12),
-                    child: CachedNetworkImage(
-                      imageUrl:
-                          "https://cdn.vocaroo.com/images/mascot-robot-100px.png",
+                    child: ExtendedImage.network(
+                      "https://cdn.vocaroo.com/images/mascot-robot-100px.png",
                     ),
                   ),
                   Text(

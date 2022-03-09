@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -74,7 +75,7 @@ class _EmbedWidgetState extends State<EmbedWidget> {
       margin: EdgeInsets.only(right: 10),
       decoration: BoxDecoration(
         image: DecorationImage(
-            image: CachedNetworkImageProvider(url),
+            image: ExtendedNetworkImageProvider(url),
             fit: BoxFit.cover,
             alignment: Alignment.topCenter),
       ),

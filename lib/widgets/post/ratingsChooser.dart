@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
@@ -40,8 +41,7 @@ class RatingsChooser extends StatelessWidget {
   }
 
   static Widget ratingIcon(RatingItem ratingItem, {double size = 16}) {
-    return CachedNetworkImage(
-        imageUrl: ratingItem.url, width: size, height: size);
+    return ExtendedImage.network(ratingItem.url, width: size, height: size);
   }
 
   static Widget ratingButton(RatingItem ratingItem, int postId,
@@ -59,7 +59,7 @@ class RatingsChooser extends StatelessWidget {
                     postId, ratingItem.id, onRatingClicked, onRatingDone)
               }
             : {},
-        icon: CachedNetworkImage(imageUrl: ratingItem.url),
+        icon: ExtendedImage.network(ratingItem.url),
       ),
     );
   }
