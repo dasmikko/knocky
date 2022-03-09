@@ -72,7 +72,6 @@ class _ImageWidgetState extends State<ImageWidget> {
               key: ValueKey(this.widget.url),
               imageBuilder: (context, imageProvider) {
                 return Container(
-                  color: Colors.grey[900],
                   child: Image(
                     key: ValueKey(this.widget.url),
                     fit: BoxFit.cover,

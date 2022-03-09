@@ -13,10 +13,8 @@ class VideoEmbed extends StatefulWidget {
 class _VideoEmbedState extends State<VideoEmbed> {
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height - 124,
-      ),
+    return Container(
+      margin: EdgeInsets.only(bottom: 16),
       child: BetterPlayer.network(
         this.widget.url,
         betterPlayerConfiguration: BetterPlayerConfiguration(
