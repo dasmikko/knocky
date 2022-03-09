@@ -1,4 +1,5 @@
 import 'package:after_layout/after_layout.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/helpers/twitterApi.dart';
@@ -26,6 +27,11 @@ class _TwitterCardState extends State<TwitterCard>
   @override
   void afterFirstLayout(BuildContext context) {
     fetchTwitterJson();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   void fetchTwitterJson() async {
