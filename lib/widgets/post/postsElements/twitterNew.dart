@@ -1,9 +1,10 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:knocky/helpers/twitterApi.dart';
 import 'package:knocky/widgets/CachedSizeWidget.dart';
+import 'package:tweet_ui/models/api/entieties/tweet_entities.dart';
 import 'package:tweet_ui/models/api/tweet.dart';
 import 'package:tweet_ui/tweet_ui.dart';
 
@@ -22,12 +23,13 @@ class _TwitterCardState extends State<TwitterCardNew>
     with AfterLayoutMixin<TwitterCardNew> {
   bool _isLoading = true;
   bool _failed = false;
-  Map _twitterJson;
-  Tweet _tweet;
+  Map _twitterJson = null;
+  Tweet _tweet = null;
 
   @override
   void afterFirstLayout(BuildContext context) {
-    fetchTwitterJson();
+    print(_tweet);
+    if (_tweet == null) fetchTwitterJson();
   }
 
   @override
@@ -39,6 +41,7 @@ class _TwitterCardState extends State<TwitterCardNew>
     Uri url = Uri.parse(this.widget.tweetUrl);
     int tweetId = int.parse(url.pathSegments.last);
     Map<String, dynamic> twitterJson = await TwitterHelper().getTweet(tweetId);
+    print(twitterJson);
     Tweet tweet = Tweet.fromJson(twitterJson);
 
     if (twitterJson['errors'] != null) {
@@ -61,6 +64,12 @@ class _TwitterCardState extends State<TwitterCardNew>
     }
   }
 
+  Widget twitterMedia(TweetEntities entityList) {
+    return Container(
+      child: Text('show media here!'),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) return CircularProgressIndicator();
@@ -70,10 +79,37 @@ class _TwitterCardState extends State<TwitterCardNew>
         maxWidth: 600,
       ),
       child: Container(
+        padding: EdgeInsets.all(8),
         color: Colors.grey[800],
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(_tweet.text),
+            Container(
+              margin: EdgeInsets.only(bottom: 6),
+              child: Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(right: 6),
+                    child: ExtendedImage.network(
+                      _tweet.user.profileImageUrlHttps,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(_tweet.user.name),
+                      Text("@" + _tweet.user.screenName)
+                    ],
+                  )
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 6),
+              child: Text(_tweet.text),
+            ),
+            twitterMedia(_tweet.entities),
           ],
         ),
       ),
