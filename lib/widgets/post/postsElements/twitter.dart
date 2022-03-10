@@ -62,28 +62,60 @@ class _TwitterCardState extends State<TwitterCard>
   @override
   Widget build(BuildContext context) {
     final box = GetStorage('sizeCache');
+    Size loadedWidgetSize = Size.zero;
+    final bool hasCachedSize = box.hasData(this.widget.tweetUrl);
 
-    return CachedSizeWidget(
-      box: box,
-      builder: (BuildContext context, Size cachedSize) {
-        if (_isLoading)
-          return Container(
-            height: cachedSize != Size.zero ? cachedSize.height : null,
-            width: 300,
-            child: CircularProgressIndicator(),
-          );
-        if (_failed) return Text('failed to load tweet');
-        return ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: 600,
-          ),
-          child: EmbeddedTweetView.fromTweet(
-            Tweet.fromJson(_twitterJson),
-            backgroundColor: Get.isDarkMode ? Colors.grey[800] : Colors.white,
-            darkMode: Get.isDarkMode,
-          ),
-        );
+    // Check if we have cached the image size
+    if (hasCachedSize) {
+      Map cachedSize = box.read(this.widget.tweetUrl);
+      print('Found cached size: ' + cachedSize.toString());
+      loadedWidgetSize = Size(
+        cachedSize['width'],
+        cachedSize['height'],
+      );
+    } else {
+      print('Found no cached size');
+    }
+
+    if (_isLoading)
+      return Container(
+        height: loadedWidgetSize != Size.zero ? loadedWidgetSize.height : null,
+        width: 300,
+        child: CircularProgressIndicator(),
+      );
+    if (_failed) return Text('failed to load tweet');
+    return MeasuredSize(
+      onChange: (size) {
+        if (!hasCachedSize) {
+          var sizeMap = Map();
+          sizeMap['height'] = size.height;
+          sizeMap['width'] = size.width;
+          box.writeIfNull(this.widget.tweetUrl, sizeMap);
+        } else {
+          print('mesured size updated ' + size.toString());
+          print(this.widget.tweetUrl + ' using cached size');
+          if (loadedWidgetSize.height < size.height ||
+              loadedWidgetSize.width < size.width) {
+            print('Cache is smaller, update it');
+            var sizeMap = Map();
+            sizeMap['height'] = size.height;
+            sizeMap['width'] = size.width;
+            box.writeIfNull(this.widget.tweetUrl, sizeMap);
+          } else {
+            print('Cache is up to date');
+          }
+        }
       },
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: 600,
+        ),
+        child: EmbeddedTweetView.fromTweet(
+          Tweet.fromJson(_twitterJson),
+          backgroundColor: Get.isDarkMode ? Colors.grey[800] : Colors.white,
+          darkMode: Get.isDarkMode,
+        ),
+      ),
     );
   }
 }
