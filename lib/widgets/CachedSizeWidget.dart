@@ -22,15 +22,18 @@ class _CachedSizeWidgetState extends State<CachedSizeWidget> {
     // Check if we have cached the image size
     if (hasCachedSize) {
       Map cachedSize = box.read(this.widget.id);
+      print('Found cached size: ' + cachedSize.toString());
       loadedWidgetSize = Size(
         cachedSize['width'],
         cachedSize['height'],
       );
+    } else {
+      print('Found no cached size');
     }
 
     return Container(
-      height: loadedWidgetSize != Size.zero ? loadedWidgetSize.height : null,
-      width: loadedWidgetSize != Size.zero ? loadedWidgetSize.width : null,
+      //height: loadedWidgetSize != Size.zero ? loadedWidgetSize.height : null,
+      //width: loadedWidgetSize != Size.zero ? loadedWidgetSize.width : null,
       child: MeasuredSize(
         onChange: (size) {
           if (!hasCachedSize) {
@@ -39,7 +42,7 @@ class _CachedSizeWidgetState extends State<CachedSizeWidget> {
             sizeMap['width'] = size.width;
             box.writeIfNull(this.widget.id, sizeMap);
           } else {
-            print('size updated');
+            print('mesured size updated ' + size.toString());
             print(this.widget.id + ' using cached size');
             if (loadedWidgetSize.height < size.height ||
                 loadedWidgetSize.width < size.width) {

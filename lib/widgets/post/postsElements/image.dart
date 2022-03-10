@@ -1,10 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/bbcodehelper.dart';
 import 'package:knocky/screens/imageViewer.dart';
+import 'package:knocky/widgets/CachedSizeWidget.dart';
 
 class ImageWidget extends StatefulWidget {
   final String url;
@@ -26,6 +26,7 @@ class _ImageWidgetState extends State<ImageWidget> {
 
   //final _imageWidgetKey = GlobalKey();
   bool imageIsLoaded = false;
+  Size imageSize = Size.zero;
 
   @override
   void initState() {
@@ -58,19 +59,22 @@ class _ImageWidgetState extends State<ImageWidget> {
       child: Hero(
         tag: this.widget.url + this.widget.postId.toString(),
         child: Container(
-          width: 300,
-          height: 300,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: ExtendedImage.network(
-              this.widget.url,
-              key: ValueKey(this.widget.url),
-              cache: true,
-              compressionRatio: 0.2,
-              cacheHeight: 300,
-              fit: BoxFit.cover,
-              clearMemoryCacheWhenDispose: true,
-            ),
+          height: imageSize != Size.zero ? imageSize.height : null,
+          child: ExtendedImage.network(
+            this.widget.url,
+            key: ValueKey(this.widget.url),
+            cache: true,
+            shape: BoxShape.rectangle,
+            fit: BoxFit.cover,
+            borderRadius: BorderRadius.circular(10),
+            height: 400,
+            compressionRatio: 0.2,
+            clearMemoryCacheWhenDispose: true,
+            afterPaintImage: (canvas, rect, image, paint) {
+              setState(() {
+                imageSize = Size(rect.width, rect.height);
+              });
+            },
           ),
         ),
       ),
