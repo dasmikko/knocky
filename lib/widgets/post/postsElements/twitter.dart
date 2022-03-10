@@ -2,8 +2,10 @@ import 'package:after_layout/after_layout.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/twitterApi.dart';
 import 'package:knocky/widgets/CachedSizeWidget.dart';
+import 'package:measured_size/measured_size.dart';
 import 'package:tweet_ui/models/api/tweet.dart';
 import 'package:tweet_ui/tweet_ui.dart';
 
@@ -59,17 +61,29 @@ class _TwitterCardState extends State<TwitterCard>
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) return CircularProgressIndicator();
-    if (_failed) return Text('failed to load tweet');
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: 600,
-      ),
-      child: EmbeddedTweetView.fromTweet(
-        Tweet.fromJson(_twitterJson),
-        backgroundColor: Get.isDarkMode ? Colors.grey[800] : Colors.white,
-        darkMode: Get.isDarkMode,
-      ),
+    final box = GetStorage('sizeCache');
+
+    return CachedSizeWidget(
+      box: box,
+      builder: (BuildContext context, Size cachedSize) {
+        if (_isLoading)
+          return Container(
+            height: cachedSize != Size.zero ? cachedSize.height : null,
+            width: 300,
+            child: CircularProgressIndicator(),
+          );
+        if (_failed) return Text('failed to load tweet');
+        return ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 600,
+          ),
+          child: EmbeddedTweetView.fromTweet(
+            Tweet.fromJson(_twitterJson),
+            backgroundColor: Get.isDarkMode ? Colors.grey[800] : Colors.white,
+            darkMode: Get.isDarkMode,
+          ),
+        );
+      },
     );
   }
 }

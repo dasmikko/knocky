@@ -55,7 +55,7 @@ class BBcodeRendererNew extends StatelessWidget {
     return WidgetSpan(
         child: Container(
       margin: EdgeInsets.only(bottom: 8),
-      child: TwitterCardNew(
+      child: TwitterCard(
         key: ValueKey(node.textContent),
         tweetUrl: node.textContent,
         onTapImage: (List<String> allPhotos, int photoIndex, String hashcode) {

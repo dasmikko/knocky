@@ -9,6 +9,7 @@ import 'package:knocky/controllers/threadController.dart';
 import 'package:knocky/dialogs/confirmDialog.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
+import 'package:knocky/helpers/scrollPhysics.dart';
 import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
@@ -453,6 +454,9 @@ class _ThreadScreenState extends State<ThreadScreen>
     return Container(
       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
       child: ScrollablePositionedList.builder(
+        addSemanticIndexes: true,
+        semanticChildCount: widgets.length,
+        minCacheExtent: 800,
         addAutomaticKeepAlives: false,
         itemScrollController: threadController.itemScrollController,
         itemPositionsListener: itemPositionListener,

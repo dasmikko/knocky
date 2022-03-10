@@ -3,10 +3,11 @@ import 'package:get_storage/get_storage.dart';
 import 'package:measured_size/measured_size.dart';
 
 class CachedSizeWidget extends StatefulWidget {
-  final String id;
-  final Widget child;
+  final String cacheId;
+  final Function(BuildContext context, Size cachedSize) builder;
+  final GetStorage box;
 
-  CachedSizeWidget({this.child, this.id});
+  CachedSizeWidget({this.builder, this.cacheId, this.box});
 
   @override
   _CachedSizeWidgetState createState() => _CachedSizeWidgetState();
@@ -15,49 +16,41 @@ class CachedSizeWidget extends StatefulWidget {
 class _CachedSizeWidgetState extends State<CachedSizeWidget> {
   @override
   Widget build(BuildContext context) {
-    final box = GetStorage('sizeCache');
     Size loadedWidgetSize = Size.zero;
-    final bool hasCachedSize = box.hasData(this.widget.id);
+    final bool hasCachedSize = this.widget.box.hasData(this.widget.cacheId);
 
     // Check if we have cached the image size
     if (hasCachedSize) {
-      Map cachedSize = box.read(this.widget.id);
-      print('Found cached size: ' + cachedSize.toString());
+      Map cachedSize = this.widget.box.read(this.widget.cacheId);
+      //print('Found cached size: ' + cachedSize.toString());
       loadedWidgetSize = Size(
         cachedSize['width'],
         cachedSize['height'],
       );
     } else {
-      print('Found no cached size');
+      //print('Found no cached size');
     }
 
-    return Container(
-      //height: loadedWidgetSize != Size.zero ? loadedWidgetSize.height : null,
-      //width: loadedWidgetSize != Size.zero ? loadedWidgetSize.width : null,
-      child: MeasuredSize(
-        onChange: (size) {
-          if (!hasCachedSize) {
+    return MeasuredSize(
+      onChange: (size) {
+        if (!hasCachedSize) {
+          var sizeMap = Map();
+          sizeMap['height'] = size.height;
+          sizeMap['width'] = size.width;
+          this.widget.box.write(this.widget.cacheId, sizeMap);
+        } else {
+          if (loadedWidgetSize.height < size.height ||
+              loadedWidgetSize.width < size.width) {
             var sizeMap = Map();
             sizeMap['height'] = size.height;
             sizeMap['width'] = size.width;
-            box.writeIfNull(this.widget.id, sizeMap);
+            this.widget.box.write(this.widget.cacheId, sizeMap);
           } else {
-            print('mesured size updated ' + size.toString());
-            print(this.widget.id + ' using cached size');
-            if (loadedWidgetSize.height < size.height ||
-                loadedWidgetSize.width < size.width) {
-              print('Cache is smaller, update it');
-              var sizeMap = Map();
-              sizeMap['height'] = size.height;
-              sizeMap['width'] = size.width;
-              box.writeIfNull(this.widget.id, sizeMap);
-            } else {
-              print('Cache is up to date');
-            }
+            //print('Cache is up to date');
           }
-        },
-        child: this.widget.child,
-      ),
+        }
+      },
+      child: this.widget.builder(context, loadedWidgetSize),
     );
   }
 }
