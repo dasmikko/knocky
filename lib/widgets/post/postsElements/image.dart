@@ -5,6 +5,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/bbcodehelper.dart';
 import 'package:knocky/screens/imageViewer.dart';
 import 'package:knocky/widgets/CachedSizeWidget.dart';
+import 'package:measured_size/measured_size.dart';
 
 class ImageWidget extends StatefulWidget {
   final String url;
@@ -36,7 +37,6 @@ class _ImageWidgetState extends State<ImageWidget> {
   @override
   void dispose() {
     print('image dispose');
-    //CachedNetworkImage.evictFromCache(this.widget.url);
     clearMemoryImageCache(this.widget.url);
 
     super.dispose();
@@ -44,6 +44,22 @@ class _ImageWidgetState extends State<ImageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final box = GetStorage('sizeCache');
+    Size loadedWidgetSize = Size.zero;
+    final bool hasCachedSize = box.hasData(this.widget.url);
+
+    // Check if we have cached the image size
+    if (hasCachedSize) {
+      Map cachedSize = box.read(this.widget.url);
+      //print('Found cached size: ' + cachedSize.toString());
+      loadedWidgetSize = Size(
+        cachedSize['width'],
+        cachedSize['height'],
+      );
+    } else {
+      //print('Found no cached size');
+    }
+
     return GestureDetector(
       onTap: () {
         Get.to(
@@ -58,8 +74,8 @@ class _ImageWidgetState extends State<ImageWidget> {
       },
       child: Hero(
         tag: this.widget.url + this.widget.postId.toString(),
-        child: Container(
-          height: imageSize != Size.zero ? imageSize.height : null,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 400),
           child: ExtendedImage.network(
             this.widget.url,
             key: ValueKey(this.widget.url),
@@ -67,13 +83,50 @@ class _ImageWidgetState extends State<ImageWidget> {
             shape: BoxShape.rectangle,
             fit: BoxFit.cover,
             borderRadius: BorderRadius.circular(10),
-            height: 400,
             compressionRatio: 0.2,
             clearMemoryCacheWhenDispose: true,
-            afterPaintImage: (canvas, rect, image, paint) {
-              setState(() {
-                imageSize = Size(rect.width, rect.height);
-              });
+            loadStateChanged: (ExtendedImageState state) {
+              switch (state.extendedImageLoadState) {
+                case LoadState.loading:
+                  return Container(
+                    height: loadedWidgetSize != Size.zero
+                        ? loadedWidgetSize.height
+                        : null,
+                    width: 300,
+                    child: CircularProgressIndicator(),
+                  );
+                  break;
+                case LoadState.completed:
+                  return MeasuredSize(
+                    onChange: (size) {
+                      if (!hasCachedSize) {
+                        var sizeMap = Map();
+                        sizeMap['height'] = size.height;
+                        sizeMap['width'] = size.width;
+                        box.writeIfNull(this.widget.url, sizeMap);
+                      } else {
+                        print('mesured size updated ' + size.toString());
+                        print(this.widget.url + ' using cached size');
+                        if (loadedWidgetSize.height < size.height ||
+                            loadedWidgetSize.width < size.width) {
+                          print('Cache is smaller, update it');
+                          var sizeMap = Map();
+                          sizeMap['height'] = size.height;
+                          sizeMap['width'] = size.width;
+                          box.writeIfNull(this.widget.url, sizeMap);
+                        } else {
+                          print('Cache is up to date');
+                        }
+                      }
+                    },
+                    child: ExtendedRawImage(
+                      image: state.extendedImageInfo?.image,
+                    ),
+                  );
+                  break;
+                default:
+                  return null;
+              }
             },
           ),
         ),
