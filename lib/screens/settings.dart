@@ -50,12 +50,12 @@ class SettingsScreen extends StatelessWidget {
               ),
             ),
             ListTile(
-              title: Text('Reset image size cache'),
+              title: Text('Reset widget size cache'),
               onTap: () {
                 final box = GetStorage('sizeCache');
                 box.erase();
 
-                KnockySnackbar.success('Image size cache cleared');
+                KnockySnackbar.success('Widget size cache cleared');
               },
             ),
             ListTile(

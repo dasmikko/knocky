@@ -112,13 +112,13 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
           ),
         ),
       ),
-      DrawerListTile(
+      /*DrawerListTile(
         iconData: FontAwesomeIcons.commentDots,
         title: 'Notifications',
         onTap: () => {
           onListTileTap(context, () => {Get.to(NotificationScreen())}),
         },
-      ),
+      ),*/
       DrawerListTile(
         iconData: FontAwesomeIcons.cog,
         title: 'Settings',

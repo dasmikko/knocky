@@ -9,7 +9,6 @@ import 'package:knocky/screens/imageViewer.dart';
 import 'package:knocky/widgets/post/postsElements/Embed.dart';
 import 'package:knocky/widgets/post/postsElements/image.dart';
 import 'package:knocky/widgets/post/postsElements/twitter.dart';
-import 'package:knocky/widgets/post/postsElements/twitterNew.dart';
 import 'package:knocky/widgets/post/postsElements/video.dart';
 import 'package:knocky/widgets/post/postsElements/vocaroo.dart';
 import 'package:knocky/widgets/post/postsElements/youtube.dart';
@@ -53,21 +52,22 @@ class BBcodeRendererNew extends StatelessWidget {
 
   InlineSpan _twitterNodeHandler(bbob.Element node) {
     return WidgetSpan(
-        child: Container(
-      margin: EdgeInsets.only(bottom: 8),
-      child: TwitterCard(
-        key: ValueKey(node.textContent),
-        tweetUrl: node.textContent,
-        onTapImage: (List<String> allPhotos, int photoIndex, String hashcode) {
-          Get.to(
-            () => ImageViewerScreen(
-              url: allPhotos[photoIndex],
-              urls: allPhotos,
-            ),
-          );
-        },
+      child: Container(
+        margin: EdgeInsets.only(bottom: 8),
+        child: TwitterCard(
+          tweetUrl: node.textContent,
+          onTapImage:
+              (List<String> allPhotos, int photoIndex, String hashcode) {
+            Get.to(
+              () => ImageViewerScreen(
+                url: allPhotos[photoIndex],
+                urls: allPhotos,
+              ),
+            );
+          },
+        ),
       ),
-    ));
+    );
   }
 
   InlineSpan _vocarooNodeHandler(bbob.Element node) {

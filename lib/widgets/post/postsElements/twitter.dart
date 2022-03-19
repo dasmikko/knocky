@@ -6,7 +6,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/twitterApi.dart';
 import 'package:knocky/widgets/CachedSizeWidget.dart';
 import 'package:measured_size/measured_size.dart';
-import 'package:tweet_ui/models/api/tweet.dart';
 import 'package:tweet_ui/tweet_ui.dart';
 
 class TwitterCard extends StatefulWidget {
@@ -81,7 +80,9 @@ class _TwitterCardState extends State<TwitterCard>
       return Container(
         height: loadedWidgetSize != Size.zero ? loadedWidgetSize.height : null,
         width: 300,
-        child: CircularProgressIndicator(),
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
       );
     if (_failed) return Text('failed to load tweet');
     return MeasuredSize(
@@ -110,8 +111,8 @@ class _TwitterCardState extends State<TwitterCard>
         constraints: BoxConstraints(
           maxWidth: 600,
         ),
-        child: EmbeddedTweetView.fromTweet(
-          Tweet.fromJson(_twitterJson),
+        child: EmbeddedTweetView.fromTweetV1(
+          TweetV1Response.fromJson(_twitterJson),
           backgroundColor: Get.isDarkMode ? Colors.grey[800] : Colors.white,
           darkMode: Get.isDarkMode,
         ),

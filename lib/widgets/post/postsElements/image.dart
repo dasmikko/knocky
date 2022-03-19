@@ -93,7 +93,9 @@ class _ImageWidgetState extends State<ImageWidget> {
                         ? loadedWidgetSize.height
                         : null,
                     width: 300,
-                    child: CircularProgressIndicator(),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   );
                   break;
                 case LoadState.completed:
