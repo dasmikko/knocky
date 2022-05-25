@@ -103,7 +103,8 @@ class SubforumThread {
           ? null
           : SubforumLastPost.fromJson(json['lastPost'] as Map<String, dynamic>),
       hasRead: json['hasRead'] as bool,
-      subscribed: json['subscribed'] as bool,
+      subscribed:
+          json['subscribed'] == null ? false : json['subscribed'] as bool,
       tags: (json['tags'] as List)
           ?.map((e) => (e as Map<String, dynamic>)?.map(
                 (k, e) => MapEntry(int.parse(k), e as String),

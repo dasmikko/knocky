@@ -30,7 +30,7 @@ class SubforumListItem extends ThreadListItem {
       ...threadTags(context),
       if (threadDetails.readThreadUnreadPosts > 0 &&
           threadDetails.hasRead &&
-          !threadDetails.subscribed)
+          (threadDetails.subscribed != null || !threadDetails.subscribed))
         unreadPostsButton(context, threadDetails.readThreadUnreadPosts),
       if (threadDetails.unreadPostCount > 0 &&
           !threadDetails.hasRead &&
