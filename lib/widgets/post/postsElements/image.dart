@@ -5,7 +5,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/bbcodehelper.dart';
 import 'package:knocky/screens/imageViewer.dart';
 import 'package:knocky/widgets/CachedSizeWidget.dart';
-import 'package:measured_size/measured_size.dart';
+import 'package:measure_size/measure_size.dart';
 
 class ImageWidget extends StatefulWidget {
   final String url;
@@ -99,7 +99,7 @@ class _ImageWidgetState extends State<ImageWidget> {
                   );
                   break;
                 case LoadState.completed:
-                  return MeasuredSize(
+                  return MeasureSize(
                     onChange: (size) {
                       if (!hasCachedSize) {
                         var sizeMap = Map();

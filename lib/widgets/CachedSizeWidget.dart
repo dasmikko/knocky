@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:measured_size/measured_size.dart';
+import 'package:measure_size/measure_size.dart';
 
 class CachedSizeWidget extends StatefulWidget {
   final String cacheId;
@@ -31,7 +31,7 @@ class _CachedSizeWidgetState extends State<CachedSizeWidget> {
       //print('Found no cached size');
     }
 
-    return MeasuredSize(
+    return MeasureSize(
       onChange: (size) {
         if (!hasCachedSize) {
           var sizeMap = Map();

@@ -28,7 +28,7 @@ class _LoginWebviewState extends State<LoginWebviewScreen>
     this.browser = new MyInAppBrowser(
         context: this.context,
         onBrowserExit: (bool loginStatus) {
-          Get.back(result: loginStatus);
+          Get.back(result: loginStatus, closeOverlays: true);
         });
 
     this.browser.openUrlRequest(
@@ -100,22 +100,22 @@ class MyInAppBrowser extends InAppBrowser {
 
   @override
   Future onBrowserCreated() async {
-    print("\n\nBrowser Created!\n\n");
+    //print("\n\nBrowser Created!\n\n");
   }
 
   @override
   Future onLoadStart(Uri url) async {
-    print("\n\nStarted $url\n\n");
+    //print("\n\nStarted $url\n\n");
   }
 
   @override
   Future onLoadStop(Uri url) async {
-    print("\n\nStopped $url\n\n");
+    //print("\n\nStopped $url\n\n");
   }
 
   @override
   void onLoadError(Uri url, int code, String message) {
-    print("Can't load $url.. Error: $message");
+    //print("Can't load $url.. Error: $message");
   }
 
   @override
@@ -139,11 +139,6 @@ class MyInAppBrowser extends InAppBrowser {
     }
 
     //SharedPreferences prefs = await SharedPreferences.getInstance();
-    print('Test override');
-    print(url.toString());
-    print(settingsController.apiEnv.value == 'knockout'
-        ? KnockoutAPI.KNOCKOUT_URL + "auth/finish"
-        : KnockoutAPI.QA_URL + "auth/finish");
 
     if (url.toString().contains(settingsController.apiEnv.value == 'knockout'
         ? KnockoutAPI.KNOCKOUT_URL + "auth/finish"
@@ -157,13 +152,9 @@ class MyInAppBrowser extends InAppBrowser {
           ? KnockoutAPI.KNOCKOUT_URL
           : KnockoutAPI.QA_URL;
 
-      print('CookieUrl: ' + cookieUrl);
-
       var cookieManager = new CookieManager();
       var cookies = await cookieManager.getCookies(url: Uri.parse(cookieUrl));
       String cookieString = '';
-
-      print('Cookies' + cookies.toString());
 
       // Get needed JWTToken
       cookies.forEach((element) {

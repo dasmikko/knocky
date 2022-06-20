@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/twitterApi.dart';
 import 'package:knocky/widgets/CachedSizeWidget.dart';
-import 'package:measured_size/measured_size.dart';
+import 'package:measure_size/measure_size.dart';
 import 'package:tweet_ui/tweet_ui.dart';
 
 class TwitterCard extends StatefulWidget {
@@ -85,7 +85,7 @@ class _TwitterCardState extends State<TwitterCard>
         ),
       );
     if (_failed) return Text('failed to load tweet');
-    return MeasuredSize(
+    return MeasureSize(
       onChange: (size) {
         if (!hasCachedSize) {
           var sizeMap = Map();

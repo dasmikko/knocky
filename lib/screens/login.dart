@@ -22,7 +22,10 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
 
-    if (loginResult == true) {
+    final AuthController authController = Get.put(AuthController());
+    print('isAuthed: ' + authController.isAuthenticated.toString());
+
+    if (authController.isAuthenticated == true) {
       Get.offAll(ForumScreen());
       KnockySnackbar.success('Login was successfull!', icon: Icon(Icons.check));
     } else {
