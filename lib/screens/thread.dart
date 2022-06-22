@@ -9,7 +9,6 @@ import 'package:knocky/controllers/threadController.dart';
 import 'package:knocky/dialogs/confirmDialog.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
-import 'package:knocky/helpers/scrollPhysics.dart';
 import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
@@ -18,7 +17,7 @@ import 'package:knocky/widgets/post/postListItem.dart';
 import 'package:knocky/widgets/shared/newPost.dart';
 import 'package:knocky/widgets/shared/pageSelector.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class ThreadScreen extends StatefulWidget {
   final int id;
@@ -240,10 +239,11 @@ class _ThreadScreenState extends State<ThreadScreen>
                     case 4:
                       String url =
                           'https://knockout.chat/thread/${_.id}/${_.page}';
-                      if (await canLaunch(url)) {
-                        await launch(url);
-                      } else {
-                        throw 'Could not launch url';
+                      try {
+                        await launchUrlString(url,
+                            mode: LaunchMode.externalNonBrowserApplication);
+                      } catch (e) {
+                        throw 'Could not launch $url';
                       }
                       break;
                     case 5:
@@ -254,7 +254,7 @@ class _ThreadScreenState extends State<ThreadScreen>
                 itemBuilder: (context) => [
                   overFlowItem(
                       FaIcon(
-                        FontAwesomeIcons.syncAlt,
+                        FontAwesomeIcons.rotate,
                         size: 15,
                       ),
                       'Reload thread',

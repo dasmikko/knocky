@@ -8,7 +8,7 @@ import 'package:knocky/widgets/shared/avatar.dart';
 import 'package:knocky/widgets/shared/background.dart';
 import 'package:knocky/widgets/shared/usergroup.dart';
 import 'package:knocky/widgets/shared/username.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class ProfileHeader extends StatefulWidget {
   final UserProfileRatings ratings;
@@ -135,8 +135,11 @@ class _ProfileHeaderState extends State<ProfileHeader>
     return [
       GestureDetector(
         onTap: () async {
-          if (await canLaunch(textLabel)) {
-            launch(textLabel);
+          try {
+            await launchUrlString(textLabel,
+                mode: LaunchMode.externalNonBrowserApplication);
+          } catch (e) {
+            throw 'Could not launch $textLabel';
           }
         },
         child: Container(

@@ -3,11 +3,9 @@
 import 'dart:convert';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'dart:io' show Platform;
+import 'package:url_launcher/url_launcher_string.dart';
 
 class YoutubeVideoEmbed extends StatefulWidget {
   final String url;
@@ -55,13 +53,10 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
   }
 
   void playYouTubeVideo(String url) async {
-    if (await canLaunch(url)) {
-      if (Platform.isIOS) {
-        await launch(url, forceSafariVC: false);
-      } else {
-        await launch(url, forceWebView: false);
-      }
-    } else {
+    try {
+      await launchUrlString(url,
+          mode: LaunchMode.externalNonBrowserApplication);
+    } catch (e) {
       throw 'Could not launch $url';
     }
   }

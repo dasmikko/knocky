@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,13 +9,12 @@ import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/screens/event.dart';
 import 'package:knocky/screens/login.dart';
-import 'package:knocky/screens/notifications.dart';
 import 'package:knocky/screens/profile.dart';
 import 'package:knocky/screens/settings.dart';
 import 'package:knocky/screens/significantThreads.dart';
 import 'package:knocky/screens/subscriptions.dart';
 import 'package:knocky/widgets/drawer/drawerNotificationsListTile.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'drawerListTile.dart';
 
@@ -81,7 +79,7 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
 
     return [
       DrawerListTile(
-        iconData: FontAwesomeIcons.thList,
+        iconData: FontAwesomeIcons.tableList,
         title: 'Forum',
         onTap: () => {},
       ),
@@ -120,7 +118,7 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
         },
       ),*/
       DrawerListTile(
-        iconData: FontAwesomeIcons.cog,
+        iconData: FontAwesomeIcons.gear,
         title: 'Settings',
         onTap: () => {
           onListTileTap(context, () => navigateTo(SettingsScreen())),
@@ -128,7 +126,7 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
       ),
       Obx(() => !authController.isAuthenticated.value
           ? DrawerListTile(
-              iconData: FontAwesomeIcons.signInAlt,
+              iconData: FontAwesomeIcons.rightToBracket,
               title: 'Log in',
               onTap: () => {
                 navigateTo(LoginScreen()),
@@ -145,10 +143,11 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
           title: 'Discord',
           onTap: () async {
             String url = 'https://discord.com/invite/wjWpapC';
-            if (await canLaunch(url)) {
-              await launch(url);
-            } else {
-              throw 'Could not launch url';
+            try {
+              await launchUrlString(url,
+                  mode: LaunchMode.externalNonBrowserApplication);
+            } catch (e) {
+              throw 'Could not launch $url';
             }
           }),
       /*DrawerListTile(

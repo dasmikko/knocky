@@ -8,8 +8,8 @@ import 'package:knocky/helpers/snackbar.dart';
 import 'package:mime/mime.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share/share.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class ImageViewerBottomSheet extends StatelessWidget {
   final int currentPage;
@@ -33,13 +33,10 @@ class ImageViewerBottomSheet extends StatelessWidget {
   }
 
   void openURL(context) async {
-    if (await canLaunch(url)) {
-      if (Platform.isIOS) {
-        await launch(url, forceSafariVC: false);
-      } else {
-        await launch(url, forceWebView: false);
-      }
-    } else {
+    try {
+      await launchUrlString(url,
+          mode: LaunchMode.externalNonBrowserApplication);
+    } catch (e) {
       throw 'Could not launch $url';
     }
     Navigator.pop(context);

@@ -4,10 +4,9 @@ import 'dart:convert';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart' as http;
 import 'package:knocky/widgets/InkWellOnWidget.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 //import 'package:intent/intent.dart' as intent;
 //import 'package:intent/action.dart' as action;
 
@@ -91,9 +90,10 @@ class _EmbedWidgetState extends State<EmbedWidget> {
         clipBehavior: Clip.antiAlias,
         child: InkWellOverWidget(
           onTap: () async {
-            if (await canLaunch(this.widget.url)) {
-              await launch(this.widget.url);
-            } else {
+            try {
+              await launchUrlString(this.widget.url,
+                  mode: LaunchMode.externalNonBrowserApplication);
+            } catch (e) {
               throw 'Could not launch $this.widget.url';
             }
           },

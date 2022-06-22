@@ -1,10 +1,8 @@
 import 'package:after_layout/after_layout.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/twitterApi.dart';
-import 'package:knocky/widgets/CachedSizeWidget.dart';
 import 'package:measure_size/measure_size.dart';
 import 'package:tweet_ui/tweet_ui.dart';
 
@@ -72,8 +70,6 @@ class _TwitterCardState extends State<TwitterCard>
         cachedSize['width'],
         cachedSize['height'],
       );
-    } else {
-      print('Found no cached size');
     }
 
     if (_isLoading)
@@ -93,11 +89,8 @@ class _TwitterCardState extends State<TwitterCard>
           sizeMap['width'] = size.width;
           box.writeIfNull(this.widget.tweetUrl, sizeMap);
         } else {
-          print('mesured size updated ' + size.toString());
-          print(this.widget.tweetUrl + ' using cached size');
           if (loadedWidgetSize.height < size.height ||
               loadedWidgetSize.width < size.width) {
-            print('Cache is smaller, update it');
             var sizeMap = Map();
             sizeMap['height'] = size.height;
             sizeMap['width'] = size.width;

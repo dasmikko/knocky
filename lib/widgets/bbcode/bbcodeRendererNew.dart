@@ -12,7 +12,7 @@ import 'package:knocky/widgets/post/postsElements/twitter.dart';
 import 'package:knocky/widgets/post/postsElements/video.dart';
 import 'package:knocky/widgets/post/postsElements/vocaroo.dart';
 import 'package:knocky/widgets/post/postsElements/youtube.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class BBcodeRendererNew extends StatelessWidget {
   final String bbcode;
@@ -137,9 +137,10 @@ class BBcodeRendererNew extends StatelessWidget {
           style: TextStyle(color: Colors.blue),
           recognizer: TapGestureRecognizer()
             ..onTap = () async {
-              if (await canLaunch(url)) {
-                await launch(url);
-              } else {
+              try {
+                await launchUrlString(url,
+                    mode: LaunchMode.externalNonBrowserApplication);
+              } catch (e) {
                 throw 'Could not launch $url';
               }
             },

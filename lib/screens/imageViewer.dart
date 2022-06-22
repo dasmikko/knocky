@@ -1,9 +1,7 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:knocky/widgets/CustomZoomWidget.dart';
 import 'package:knocky/widgets/imageViewerBottomsheet.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 //import 'package:knocky_edge/helpers/Download.dart';
 
 class ImageViewerScreen extends StatefulWidget {

@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/bbcodehelper.dart';
 import 'package:knocky/screens/imageViewer.dart';
-import 'package:knocky/widgets/CachedSizeWidget.dart';
 import 'package:measure_size/measure_size.dart';
 
 class ImageWidget extends StatefulWidget {

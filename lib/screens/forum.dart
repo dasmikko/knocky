@@ -79,7 +79,7 @@ class _ForumScreenState extends State<ForumScreen>
                       forumController.fetchMotd();
                     },
                     icon: FaIcon(
-                      FontAwesomeIcons.times,
+                      FontAwesomeIcons.xmark,
                       size: 18,
                     ),
                   ),

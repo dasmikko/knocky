@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class QRDialog extends StatefulWidget {
   @override
@@ -43,10 +43,14 @@ class _QRDialogState extends State<QRDialog> {
       actions: [
         TextButton(
           onPressed: () async {
-            if (await canLaunch(
-                'https://github.com/dasmikko/knocky-qr-extension')) {
-              await launch('https://github.com/dasmikko/knocky-qr-extension');
+            try {
+              await launchUrlString(
+                  'https://github.com/dasmikko/knocky-qr-extension',
+                  mode: LaunchMode.externalNonBrowserApplication);
+            } catch (e) {
+              throw 'Could not launch https://github.com/dasmikko/knocky-qr-extension';
             }
+
             Get.back(result: false);
           },
           child: Text('Go to extension'),

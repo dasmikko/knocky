@@ -16,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   void initiateLogin(String provider) async {
-    var loginResult = await Get.to(
+    await Get.to(
       () => LoginWebviewScreen(
         loginUrl: 'https://api.knockout.chat/auth/' + provider + '/login',
       ),

@@ -2,7 +2,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/icons.dart';
 import 'package:knocky/models/thread.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import 'package:knocky/helpers/colors.dart';
 
