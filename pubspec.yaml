@@ -23,42 +23,42 @@ environment:
 dependencies:
   bbob_dart: 0.1.1
   get: 4.6.5
-  dio: 4.0.4
-  cached_network_image: 3.2.1
-  timeago: 3.2.2
+  dio: 4.0.6
+  cached_network_image: 3.2.2
+  timeago: 3.3.0
   intl: 0.17.0
   get_storage: 2.0.3
-  font_awesome_flutter: 10.1.0
+  font_awesome_flutter: 10.2.1
   numberpicker: 2.1.1
   time_formatter: 1.0.0+5
   flutter:
     sdk: flutter
   cupertino_icons: 1.0.5
-  scrollable_positioned_list: 0.3.2
-  url_launcher: 6.1.3
-  flutter_inappwebview: 5.4.3+7
+  scrollable_positioned_list: 0.3.5
+  url_launcher: 6.1.6
+  flutter_inappwebview: 5.7.1
   after_layout: 1.2.0
-  measure_size: 3.0.1
+  measure_size: 4.0.0
   gallery_saver: 2.3.2
   share: 2.0.4
-  permission_handler: 10.0.0
+  permission_handler: 10.2.0
   matrix4_transform: 2.0.1
-  duration: 3.0.11
-  tweet_ui: 4.0.2
+  duration: 3.0.12
+  tweet_ui: 4.0.4
   better_player: 0.0.83
-  video_player: 2.4.5
-  video_player_platform_interface: 5.1.3
+  video_player: 2.4.7
+  video_player_platform_interface: 5.1.4
   flutter_dotenv: 5.0.2
-  popover: 0.2.6+3
+  popover: 0.2.7
   flutter_barcode_scanner: 2.0.0
   sticky_headers: 0.3.0+2
   event_bus: 2.0.0
-  package_info_plus: 1.4.0
+  package_info_plus: 3.0.1
   optimized_cached_image: 3.0.1
-  image_picker: 0.8.5+3
+  image_picker: ^0.8.6
   layout: 
     git: https://github.com/chirag729/layout.git
-  extended_image: 6.2.1
+  extended_image: 6.3.1
 
 dependency_overrides:
   #visibility_detector: 0.2.2

@@ -39,7 +39,7 @@ class _LoginWebviewState extends State<LoginWebviewScreen>
                 useShouldOverrideUrlLoading: true,
                 javaScriptEnabled: true,
                 userAgent:
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
+                    "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Mobile Safari/537.36",
               ),
               ios: IOSInAppWebViewOptions(
                 isPagingEnabled: true,
@@ -152,7 +152,7 @@ class MyInAppBrowser extends InAppBrowser {
           ? KnockoutAPI.KNOCKOUT_URL
           : KnockoutAPI.QA_URL;
 
-      var cookieManager = new CookieManager();
+      var cookieManager = CookieManager.instance();
       var cookies = await cookieManager.getCookies(url: Uri.parse(cookieUrl));
       String cookieString = '';
 
