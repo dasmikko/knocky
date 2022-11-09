@@ -1,7 +1,8 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:knocky/helpers/containers.dart';
-import 'package:knocky/helpers/icons.dart';
+import 'package:knocky/helpers/IconsJson.dart' as JsonIcons;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
@@ -34,14 +35,35 @@ class ThreadListItem extends StatelessWidget {
 
   @protected
   Widget getIcon(BuildContext context) {
-    return Container(
+    String imageUrl = JsonIcons.getIconOrDefault(threadDetails.iconId).url;
+
+    if (imageUrl.endsWith('.svg')) {
+      return Container(
         padding: EdgeInsets.all(8),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          ExtendedImage.network(
-            getIconOrDefault(threadDetails.iconId).url,
-            width: 32,
-          )
-        ]));
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.network(
+              JsonIcons.getIconOrDefault(threadDetails.iconId).url,
+              width: 32,
+            )
+          ],
+        ),
+      );
+    } else {
+      return Container(
+        padding: EdgeInsets.all(8),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ExtendedImage.network(
+              JsonIcons.getIconOrDefault(threadDetails.iconId).url,
+              width: 32,
+            )
+          ],
+        ),
+      );
+    }
   }
 
   @protected

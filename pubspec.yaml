@@ -55,7 +55,8 @@ dependencies:
   event_bus: 2.0.0
   package_info_plus: 3.0.1
   optimized_cached_image: 3.0.1
-  image_picker: ^0.8.6
+  image_picker: 0.8.6
+  flutter_svg: 1.1.6
   layout: 
     git: https://github.com/chirag729/layout.git
   extended_image: 6.3.1
@@ -83,6 +84,7 @@ flutter:
   assets:
   - assets/.env
   - assets/logo.png
+  - assets/icons.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:
