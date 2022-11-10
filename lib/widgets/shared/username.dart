@@ -58,6 +58,18 @@ class Username extends StatelessWidget {
                       ),
                     ),
                   )
+                : Container(),
+            pronouns != null
+                ? Container(
+                    margin: EdgeInsets.only(top: 4),
+                    child: Text(
+                      pronouns,
+                      style: TextStyle(
+                        fontSize: titleFontSize,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
                 : Container()
           ],
         ));
