@@ -50,6 +50,8 @@ class UserInfo extends StatelessWidget {
                     Avatar(avatarUrl: user.avatarUrl, isBanned: user.isBanned)),
             Username(
               username: user.username,
+              title: user.title,
+              pronouns: user.pronouns,
               usergroup: user.usergroup,
               bold: true,
               onClick: () => Get.to(ProfileScreen(id: user.id)),
