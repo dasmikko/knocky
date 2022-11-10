@@ -11,7 +11,7 @@ import 'package:knocky/widgets/post/rateButton.dart';
 import 'package:knocky/widgets/post/ratingsChooser.dart';
 
 class Ratings extends StatefulWidget {
-  final List<ThreadPostRatings> ratings;
+  final List<ThreadPostRating> ratings;
   final int postId;
   final Function onRated;
   final bool canRate;
@@ -124,7 +124,7 @@ class _RatingsState extends State<Ratings> {
         });
   }
 
-  Widget ratingColumn(ThreadPostRatings rating) {
+  Widget ratingColumn(ThreadPostRating rating) {
     var ratingItem = ratingIconMap[rating.rating];
     bool userChose = rating.users.contains(authController.username?.value);
     return Stack(children: [

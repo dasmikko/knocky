@@ -88,7 +88,7 @@ class Toolbar extends StatelessWidget {
             ),
             onPressed: () async {
               String contentToInsert =
-                  '[quote mentionsUser="${post.user.id}" postId="${post.id}" threadPage="${post.page}" threadId="${post.threadId}" username="${post.user.username}"]${post.content}[/quote]';
+                  '[quote mentionsUser="${post.user.id}" postId="${post.id}" threadPage="${post.page}" threadId="${post.thread}" username="${post.user.username}"]${post.content}[/quote]';
 
               threadController.replyToAdd.value = contentToInsert;
               threadController.itemScrollController.jumpTo(index: 999);

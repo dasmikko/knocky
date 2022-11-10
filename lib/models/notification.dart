@@ -55,10 +55,10 @@ class NotificationPostReplyDataModel {
   DateTime updatedAt;
   int id;
   int page;
-  List<ThreadPostRatings> ratings;
+  List<ThreadPostRating> ratings;
   SubforumThread thread;
   int threadPostNumber;
-  ThreadPostUser user;
+  ThreadUser user;
 
   NotificationPostReplyDataModel(
       {this.createdAt,
@@ -85,12 +85,12 @@ class NotificationPostReplyDataModel {
         ratings: (json['ratings'] as List)
             ?.map((e) => e == null
                 ? null
-                : ThreadPostRatings.fromJson(e as Map<String, dynamic>))
+                : ThreadPostRating.fromJson(e as Map<String, dynamic>))
             ?.toList(),
         thread: SubforumThread.fromJson(json['thread']),
         threadPostNumber: json['threadPostNumber'] as int,
         updatedAt: DateTime.parse(json['updatedAt'] as String),
-        user: ThreadPostUser.fromJson(json['user']),
+        user: ThreadUser.fromJson(json['user']),
       );
 
   Map<String, dynamic> toJson() => {
@@ -112,7 +112,7 @@ class NotificationMessageDataModel {
   final int id;
   final List<NotificationMessageDataMessageModel> messages;
   final DateTime createdAt;
-  final List<ThreadPostUser> users;
+  final List<ThreadUser> users;
 
   NotificationMessageDataModel({
     this.createdAt,
@@ -134,9 +134,8 @@ class NotificationMessageDataModel {
           : DateTime.parse(json['createdAt'] as String),
       id: json['id'] as int,
       users: (json['users'] as List)
-          ?.map((e) => e == null
-              ? null
-              : ThreadPostUser.fromJson(e as Map<String, dynamic>))
+          ?.map((e) =>
+              e == null ? null : ThreadUser.fromJson(e as Map<String, dynamic>))
           ?.toList(),
     );
   }
@@ -155,7 +154,7 @@ class NotificationMessageDataMessageModel {
   final DateTime createdAt;
   final DateTime readAt;
   final DateTime updatedAt;
-  final ThreadPostUser user;
+  final ThreadUser user;
 
   NotificationMessageDataMessageModel({
     this.content,
@@ -182,7 +181,7 @@ class NotificationMessageDataMessageModel {
           ? null
           : DateTime.parse(json['updatedAt'] as String),
       id: json['id'] as int,
-      user: ThreadPostUser.fromJson(json['user']),
+      user: ThreadUser.fromJson(json['user']),
     );
   }
   Map<String, dynamic> toJson() => {

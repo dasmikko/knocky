@@ -16,19 +16,34 @@ class ProfilePostToolbar extends Toolbar {
 
   Widget threadTitle() {
     return Flexible(
-        child: Row(children: [
-      Text(" in "),
-      Flexible(
-          child: TextButton(
+      child: Row(
+        children: [
+          Text(" in "),
+          Flexible(
+            child: TextButton(
               style: ButtonStyle(
-                  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                      EdgeInsets.zero)),
-              onPressed: () => Get.to(ThreadScreen(
-                  id: post.threadId, page: post.page, linkedPostId: post.id)),
-              child: Text(post.thread?.title,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.white),
-                  overflow: TextOverflow.ellipsis)))
-    ]));
+                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                    EdgeInsets.zero),
+              ),
+              onPressed: () => Get.to(
+                ThreadScreen(
+                  id: post.thread,
+                  page: post.page,
+                  linkedPostId: post.id,
+                ),
+              ),
+              child: Text(
+                'Thread',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

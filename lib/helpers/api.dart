@@ -115,8 +115,9 @@ class KnockoutAPI {
   }
 
   Future<Thread> getThread(int id, {int page: 1}) async {
-    final response =
-        await _request(url: 'thread/' + id.toString() + '/' + page.toString());
+    final response = await _request(
+      url: 'v2/threads/' + id.toString() + '/' + page.toString(),
+    );
     return Thread.fromJson(response.data);
   }
 

@@ -42,7 +42,7 @@ class ThreadAlert {
       iconId: json['icon_id'] as int,
       backgroundUrl: json['threadBackgroundUrl'] as String,
       locked: json['threadLocked'] as bool,
-      user: ThreadUser.threadAlertUser(json),
+      user: ThreadUser.fromJson(json),
     );
   }
 

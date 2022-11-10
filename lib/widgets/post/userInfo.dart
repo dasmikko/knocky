@@ -8,7 +8,7 @@ import 'package:knocky/widgets/shared/background.dart';
 import 'package:knocky/widgets/shared/username.dart';
 
 class UserInfo extends StatelessWidget {
-  final ThreadPostUser user;
+  final ThreadUser user;
   final bool isNewPost;
 
   UserInfo({@required this.user, this.isNewPost});
