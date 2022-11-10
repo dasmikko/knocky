@@ -46,8 +46,6 @@ dependencies:
   duration: 3.0.12
   tweet_ui: 4.0.4
   better_player: 0.0.83
-  video_player: 2.4.7
-  video_player_platform_interface: 5.1.4
   flutter_dotenv: 5.0.2
   popover: 0.2.7
   flutter_barcode_scanner: 2.0.0
