@@ -2,9 +2,9 @@ import 'package:get/get.dart';
 import 'package:knocky/controllers/paginatedController.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
-import 'package:knocky/models/subforumDetails.dart';
+import 'package:knocky/models/subforumv2.dart';
 
-class SubforumController extends PaginatedController<SubforumDetails> {
+class SubforumController extends PaginatedController<Subforum> {
   final isFetching = false.obs;
 
   @override

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
-import 'package:knocky/models/subforumDetails.dart';
+import 'package:knocky/models/subforumv2.dart' as Subforumv2;
 import 'package:knocky/widgets/jumpToPageDialog.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widgets/shared/threadListItem.dart';
 
 class SubforumListItem extends ThreadListItem {
-  final SubforumThread threadDetails;
+  final Subforumv2.Thread threadDetails;
   SubforumListItem({this.threadDetails});
 
   @override
@@ -28,14 +28,8 @@ class SubforumListItem extends ThreadListItem {
   List getTagWidgets(BuildContext context) {
     return [
       ...threadTags(context),
-      if (threadDetails.readThreadUnreadPosts > 0 &&
-          threadDetails.hasRead &&
-          (threadDetails.subscribed != null || !threadDetails.subscribed))
+      if (threadDetails.readThreadUnreadPosts > 0 && threadDetails.hasRead)
         unreadPostsButton(context, threadDetails.readThreadUnreadPosts),
-      if (threadDetails.unreadPostCount > 0 &&
-          !threadDetails.hasRead &&
-          threadDetails.subscribed)
-        unreadPostsButton(context, threadDetails.unreadPostCount)
     ];
   }
 

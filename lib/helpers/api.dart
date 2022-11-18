@@ -9,6 +9,7 @@ import 'package:knocky/models/motd.dart';
 import 'package:knocky/models/notification.dart';
 import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/models/subforumDetails.dart';
+import 'package:knocky/models/subforumv2.dart' as SubforumV2;
 import 'package:knocky/models/syncData.dart';
 import 'package:knocky/models/thread.dart' as ThreadModel;
 import 'package:knocky/models/threadAlert.dart';
@@ -98,19 +99,21 @@ class KnockoutAPI {
     } on DioError catch (e) {
       throw e;
     } catch (error) {
-      print(error);
+      throw error;
     }
   }
 
-  Future<SubforumDetails> getSubforumDetails(int id, {int page = 1}) async {
+  Future<SubforumV2.Subforum> getSubforumDetails(int id, {int page = 1}) async {
     try {
       final response = await _request(
           url: 'subforum/' + id.toString() + '/' + page.toString());
-
-      return SubforumDetails.fromJson(response.data);
+      return SubforumV2.subforumFromJson(response.data);
     } on DioError catch (e) {
       print(e);
       return null;
+    } catch (error) {
+      print(error);
+      throw error;
     }
   }
 
