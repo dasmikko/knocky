@@ -2,8 +2,8 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/snackbar.dart';
+import 'package:knocky/models/forum.dart';
 import 'package:knocky/models/motd.dart';
-import 'package:knocky/models/subforum.dart';
 
 class ForumController extends GetxController {
   final isFetching = false.obs;
@@ -21,9 +21,11 @@ class ForumController extends GetxController {
   void fetchSubforums() async {
     isFetching.value = true;
     try {
-      subforums.value = await KnockoutAPI().getSubforums();
+      Forum forum = await KnockoutAPI().getSubforums();
+      subforums.value = forum.list;
       isFetching.value = false;
     } catch (e) {
+      print(e);
       isFetching.value = false;
       KnockySnackbar.error("Failed loading subforums");
     }

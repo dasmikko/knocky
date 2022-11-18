@@ -1,7 +1,7 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/colors.dart';
-import 'package:knocky/models/subforum.dart';
+import 'package:knocky/models/forum.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ForumListItem extends StatelessWidget {
@@ -188,11 +188,10 @@ class ForumListItem extends StatelessWidget {
                                                       ' '
                                                   : ' ',
                                           style: TextStyle(
-                                              color: AppColors(context)
-                                                  .userGroupToColor(subforum
-                                                      .lastPost
-                                                      .user
-                                                      .usergroup)),
+                                            color: AppColors(context)
+                                                .userRoleToColor(subforum
+                                                    .lastPost.user.role.code),
+                                          ),
                                         ),
                                         TextSpan(
                                             text: timeago

@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/counterController.dart';
-import 'package:knocky/helpers/api.dart';
-import 'package:knocky/models/subforum.dart';
 
 class SandboxScreen extends StatelessWidget {
   final CounterController controller = Get.put(CounterController());
 
   void apiTest() async {
     print('Calling api');
-    List<Subforum> list = await KnockoutAPI().getSubforums();
-    print(list.toString());
   }
 
   @override

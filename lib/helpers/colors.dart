@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:knocky/models/forum.dart';
+import 'package:knocky/models/userRole.dart';
 import 'package:knocky/models/usergroup.dart';
 
 class AppColors {
@@ -67,6 +69,28 @@ class AppColors {
         return HexColor('c448ff');
       case Usergroup.staff:
         return HexColor('ff6cb4');
+      default:
+        return HexColor('3facff');
+    }
+  }
+
+  Color userRoleToColor(Code userRoleCode, {bool banned = false}) {
+    if (banned) {
+      return bannedColor();
+    }
+
+    switch (userRoleCode) {
+      case Code.LIMITED_USER:
+        return HexColor('3facff');
+      case Code.GOLD_USER:
+      case Code.PAID_GOLD_USER:
+        return HexColor('fcbe20');
+      case Code.MODERATOR:
+      case Code.MODERATOR_IN_TRAINING:
+      case Code.SUPER_MODERATOR:
+        return HexColor('08f760');
+      case Code.ADMIN:
+        return HexColor('c448ff');
       default:
         return HexColor('3facff');
     }

@@ -4,13 +4,13 @@ import 'package:knocky/controllers/settingsController.dart';
 import 'package:knocky/models/ad.dart';
 import 'package:knocky/models/alert.dart';
 import 'package:knocky/models/events.dart';
+import 'package:knocky/models/forum.dart';
 import 'package:knocky/models/motd.dart';
 import 'package:knocky/models/notification.dart';
 import 'package:knocky/models/significantThreads.dart';
-import 'package:knocky/models/subforum.dart';
 import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/models/syncData.dart';
-import 'package:knocky/models/thread.dart';
+import 'package:knocky/models/thread.dart' as ThreadModel;
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/models/readThreads.dart';
 import 'package:dio/dio.dart';
@@ -91,14 +91,14 @@ class KnockoutAPI {
     }
   }
 
-  Future<List<Subforum>> getSubforums() async {
+  Future<Forum> getSubforums() async {
     try {
       final response2 = await _request(url: 'subforum');
-      return response2.data['list']
-          .map<Subforum>((json) => Subforum.fromJson(json))
-          .toList();
+      return Forum.fromJson(response2.data);
     } on DioError catch (e) {
       throw e;
+    } catch (error) {
+      print(error);
     }
   }
 
@@ -114,11 +114,11 @@ class KnockoutAPI {
     }
   }
 
-  Future<Thread> getThread(int id, {int page: 1}) async {
+  Future<ThreadModel.Thread> getThread(int id, {int page: 1}) async {
     final response = await _request(
       url: 'v2/threads/' + id.toString() + '/' + page.toString(),
     );
-    return Thread.fromJson(response.data);
+    return ThreadModel.Thread.fromJson(response.data);
   }
 
   Future<dynamic> authCheck() async {
@@ -198,10 +198,10 @@ class KnockoutAPI {
     return wasRejected;
   }
 
-  Future<ThreadPost> getPost(int postId) async {
+  Future<ThreadModel.ThreadPost> getPost(int postId) async {
     final response = await _request(type: 'get', url: 'post/$postId');
     print(response);
-    return ThreadPost.fromJson(response.data);
+    return ThreadModel.ThreadPost.fromJson(response.data);
   }
 
   Future<void> newPost(dynamic content, int threadId) async {
