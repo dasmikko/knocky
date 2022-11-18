@@ -104,17 +104,9 @@ class KnockoutAPI {
   }
 
   Future<SubforumV2.Subforum> getSubforumDetails(int id, {int page = 1}) async {
-    try {
-      final response = await _request(
-          url: 'subforum/' + id.toString() + '/' + page.toString());
-      return SubforumV2.subforumFromJson(response.data);
-    } on DioError catch (e) {
-      print(e);
-      return null;
-    } catch (error) {
-      print(error);
-      throw error;
-    }
+    final response = await _request(
+        url: 'subforum/' + id.toString() + '/' + page.toString());
+    return SubforumV2.subforumFromJson(response.data);
   }
 
   Future<ThreadModel.Thread> getThread(int id, {int page: 1}) async {

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/subforumController.dart';
+import 'package:knocky/models/forum.dart' as Forum;
 import 'package:knocky/models/subforumv2.dart';
 import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widgets/shared/pageSelector.dart';
 import 'package:knocky/widgets/subforum/subforumListItem.dart';
 
 class SubforumScreen extends StatefulWidget {
-  final Subforum subforum;
+  final Forum.Subforum subforum;
 
   SubforumScreen({@required this.subforum});
 
