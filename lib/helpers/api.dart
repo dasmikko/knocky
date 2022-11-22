@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:get/get.dart' as Getx;
 import 'package:knocky/controllers/settingsController.dart';
@@ -106,7 +107,7 @@ class KnockoutAPI {
   Future<SubforumV2.Subforum> getSubforumDetails(int id, {int page = 1}) async {
     final response = await _request(
         url: 'subforum/' + id.toString() + '/' + page.toString());
-    return SubforumV2.subforumFromJson(response.data);
+    return SubforumV2.subforumFromJson(json.encode(response.data));
   }
 
   Future<ThreadModel.Thread> getThread(int id, {int page: 1}) async {
