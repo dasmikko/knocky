@@ -6,24 +6,24 @@ import 'package:knocky/dialogs/confirmDialog.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
 import 'package:knocky/helpers/snackbar.dart';
-import 'package:knocky/models/threadAlert.dart';
+import 'package:knocky/models/v2/syncData.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widgets/jumpToPageDialog.dart';
 import 'package:knocky/widgets/shared/threadListItem.dart';
 
 class SubscriptionListItem extends ThreadListItem {
-  final ThreadAlert threadAlert;
+  final Subscription subscription;
   final SubscriptionController subscriptionController =
       Get.put(SubscriptionController());
 
-  SubscriptionListItem({@required this.threadAlert})
-      : super(threadDetails: threadAlert);
+  SubscriptionListItem({@required this.subscription})
+      : super(threadDetails: subscription);
 
   @override
   List getTagWidgets(BuildContext context) {
     return [
-      if (threadAlert.unreadPostCount > 0)
-        unreadPostsButton(context, threadAlert.unreadPostCount)
+      if (subscription.unreadPosts > 0)
+        unreadPostsButton(context, subscription.unreadPosts)
     ];
   }
 

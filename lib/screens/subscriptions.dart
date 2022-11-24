@@ -61,16 +61,19 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
 
   Widget subscriptions() {
     return Container(
-        padding: EdgeInsets.fromLTRB(0, 48, 0, 4),
-        child: ScrollablePositionedList.builder(
-            // ignore: invalid_use_of_protected_member
-            itemCount:
-                subscriptionController.subscriptions.value.alerts.length ?? 0,
-            itemBuilder: (BuildContext context, int index) {
-              var threadAlert = subscriptionController
-                  .subscriptions.value.alerts
-                  .elementAt(index);
-              return SubscriptionListItem(threadAlert: threadAlert);
-            }));
+      padding: EdgeInsets.fromLTRB(0, 48, 0, 4),
+      child: ScrollablePositionedList.builder(
+        // ignore: invalid_use_of_protected_member
+        itemCount:
+            subscriptionController.subscriptions.value.subscriptions.length ??
+                0,
+        itemBuilder: (BuildContext context, int index) {
+          var subscription = subscriptionController
+              .subscriptions.value.subscriptions
+              .elementAt(index);
+          return SubscriptionListItem(subscription: subscription);
+        },
+      ),
+    );
   }
 }

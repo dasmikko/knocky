@@ -24,6 +24,7 @@ import 'package:knocky/models/userProfilePosts.dart';
 import 'package:knocky/models/userProfileRatings.dart';
 import 'package:knocky/models/userProfileThreads.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:knocky/models/v2/syncData.dart';
 
 class KnockoutAPI {
   static const KNOCKOUT_URL = "https://api.knockout.chat/";
@@ -127,10 +128,10 @@ class KnockoutAPI {
     }
   }
 
-  Future<ThreadAlertPage> getAlertsPaginated({int page: 1}) async {
+  Future<SyncData> getAlertsPaginated({int page: 1}) async {
     try {
       final response = await _request(url: 'alerts/$page', type: 'get');
-      return ThreadAlertPage.fromJson(response.data);
+      return SyncData.fromJson(response.data);
     } on DioError catch (e) {
       print(e);
       throw e;
