@@ -16,7 +16,6 @@ import 'package:knocky/models/thread.dart' as ThreadModel;
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/models/readThreads.dart';
 import 'package:dio/dio.dart';
-import 'package:knocky/models/threadAlertPage.dart';
 import 'package:knocky/models/userBans.dart';
 import 'package:knocky/models/userProfile.dart';
 import 'package:knocky/models/userProfileDetails.dart';
@@ -24,7 +23,7 @@ import 'package:knocky/models/userProfilePosts.dart';
 import 'package:knocky/models/userProfileRatings.dart';
 import 'package:knocky/models/userProfileThreads.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:knocky/models/v2/syncData.dart';
+import 'package:knocky/models/v2/alerts.dart' as AlertsV2;
 
 class KnockoutAPI {
   static const KNOCKOUT_URL = "https://api.knockout.chat/";
@@ -128,10 +127,10 @@ class KnockoutAPI {
     }
   }
 
-  Future<SyncData> getAlertsPaginated({int page: 1}) async {
+  Future<AlertsV2.Alerts> getAlertsPaginated({int page: 1}) async {
     try {
-      final response = await _request(url: 'alerts/$page', type: 'get');
-      return SyncData.fromJson(response.data);
+      final response = await _request(url: 'v2/alerts/$page', type: 'get');
+      return AlertsV2.Alerts.fromJson(response.data);
     } on DioError catch (e) {
       print(e);
       throw e;
@@ -197,13 +196,10 @@ class KnockoutAPI {
 
   Future<ThreadModel.ThreadPost> getPost(int postId) async {
     final response = await _request(type: 'get', url: 'post/$postId');
-    print(response);
     return ThreadModel.ThreadPost.fromJson(response.data);
   }
 
   Future<void> newPost(dynamic content, int threadId) async {
-    print(content);
-    print(threadId);
     try {
       await _request(type: 'post', url: 'post', data: {
         'displayCountryInfo': false,

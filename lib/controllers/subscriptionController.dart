@@ -2,11 +2,11 @@ import 'package:get/get.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
 import 'package:knocky/models/threadAlertPage.dart';
-import 'package:knocky/models/v2/syncData.dart';
+import 'package:knocky/models/v2/alerts.dart';
 
 class SubscriptionController extends GetxController {
   final isFetching = false.obs;
-  final subscriptions = SyncData().obs;
+  final subscriptions = Alerts().obs;
   final _page = 1.obs;
 
   @override
@@ -16,7 +16,7 @@ class SubscriptionController extends GetxController {
   }
 
   initState() {
-    subscriptions.value = new SyncData(subscriptions: []);
+    subscriptions.value = new Alerts(alerts: [], totalAlerts: 0);
     _page.value = 1;
     fetch();
   }
@@ -29,9 +29,9 @@ class SubscriptionController extends GetxController {
 
   get page => _page.value;
 
-  get pageCount => ((subscriptions.value?.subscriptions?.length ?? 0) /
-          PostsPerPage.POSTS_PER_PAGE)
-      .ceil();
+  get pageCount =>
+      ((subscriptions.value?.totalAlerts ?? 0) / PostsPerPage.POSTS_PER_PAGE)
+          .ceil();
 
   nextPage() => _page.value++;
 

@@ -36,6 +36,11 @@ class SyncData {
   List<int> subscriptionIds;
   UserRole role;
 
+  factory SyncData.fromRawJson(String str) =>
+      SyncData.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
   factory SyncData.fromJson(Map<String, dynamic> json) => SyncData(
         id: json["id"],
         username: json["username"],

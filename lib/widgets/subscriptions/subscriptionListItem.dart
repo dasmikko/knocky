@@ -6,24 +6,25 @@ import 'package:knocky/dialogs/confirmDialog.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
 import 'package:knocky/helpers/snackbar.dart';
-import 'package:knocky/models/v2/syncData.dart';
+import 'package:knocky/models/v2/alerts.dart';
+import 'package:knocky/models/v2/thread.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widgets/jumpToPageDialog.dart';
 import 'package:knocky/widgets/shared/threadListItem.dart';
 
 class SubscriptionListItem extends ThreadListItem {
-  final Subscription subscription;
+  final SubforumThread threadDetails;
   final SubscriptionController subscriptionController =
       Get.put(SubscriptionController());
 
-  SubscriptionListItem({@required this.subscription})
-      : super(threadDetails: subscription);
+  SubscriptionListItem({@required this.threadDetails})
+      : super(threadDetails: threadDetails);
 
   @override
   List getTagWidgets(BuildContext context) {
     return [
-      if (subscription.unreadPosts > 0)
-        unreadPostsButton(context, subscription.unreadPosts)
+      if (threadDetails.unreadPostCount > 0)
+        unreadPostsButton(context, threadDetails.unreadPostCount)
     ];
   }
 
