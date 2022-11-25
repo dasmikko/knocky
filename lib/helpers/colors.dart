@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:knocky/models/forum.dart';
 import 'package:knocky/models/v2/userRole.dart';
 import 'package:knocky/models/usergroup.dart';
 

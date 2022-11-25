@@ -14,18 +14,16 @@ import 'package:knocky/widgets/shared/threadListItem.dart';
 
 class SubscriptionListItem extends ThreadListItem {
   final SubforumThread threadDetails;
+  final int unreadPosts;
   final SubscriptionController subscriptionController =
       Get.put(SubscriptionController());
 
-  SubscriptionListItem({@required this.threadDetails})
+  SubscriptionListItem({@required this.threadDetails, this.unreadPosts})
       : super(threadDetails: threadDetails);
 
   @override
   List getTagWidgets(BuildContext context) {
-    return [
-      if (threadDetails.unreadPostCount > 0)
-        unreadPostsButton(context, threadDetails.unreadPostCount)
-    ];
+    return [if (unreadPosts > 0) unreadPostsButton(context, unreadPosts)];
   }
 
   @override

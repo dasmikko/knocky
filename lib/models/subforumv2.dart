@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:knocky/models/v2/userRole.dart';
+
 Subforum subforumFromJson(String str) => Subforum.fromJson(json.decode(str));
 
 String subforumToJson(Subforum data) => json.encode(data.toJson());
@@ -322,7 +324,7 @@ class User {
   });
 
   int id;
-  Role role;
+  UserRole role;
   String username;
   int usergroup;
   String avatarUrl;
@@ -339,7 +341,7 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"] == null ? null : json["id"],
-        role: json["role"] == null ? null : Role.fromJson(json["role"]),
+        role: json["role"] == null ? null : UserRole.fromJson(json["role"]),
         username: json["username"] == null ? null : json["username"],
         usergroup: json["usergroup"] == null ? null : json["usergroup"],
         avatarUrl: json["avatarUrl"] == null ? null : json["avatarUrl"],

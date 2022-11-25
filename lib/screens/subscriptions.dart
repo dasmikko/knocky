@@ -67,10 +67,12 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
         itemCount:
             subscriptionController.subscriptions.value.alerts.length ?? 0,
         itemBuilder: (BuildContext context, int index) {
-          var threadDetail = subscriptionController.subscriptions.value.alerts
-              .elementAt(index)
-              .thread;
-          return SubscriptionListItem(threadDetails: threadDetail);
+          var alert = subscriptionController.subscriptions.value.alerts
+              .elementAt(index);
+          return SubscriptionListItem(
+            threadDetails: alert.thread,
+            unreadPosts: alert.unreadPosts,
+          );
         },
       ),
     );
