@@ -9,7 +9,6 @@ import 'package:knocky/models/forum.dart';
 import 'package:knocky/models/motd.dart';
 import 'package:knocky/models/notification.dart';
 import 'package:knocky/models/significantThreads.dart';
-import 'package:knocky/models/subforumDetails.dart';
 import 'package:knocky/models/subforumv2.dart' as SubforumV2;
 import 'package:knocky/models/syncData.dart';
 import 'package:knocky/models/thread.dart' as ThreadModel;
@@ -24,6 +23,7 @@ import 'package:knocky/models/userProfileRatings.dart';
 import 'package:knocky/models/userProfileThreads.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/models/v2/alerts.dart' as AlertsV2;
+import 'package:knocky/models/v2/thread.dart';
 
 class KnockoutAPI {
   static const KNOCKOUT_URL = "https://api.knockout.chat/";
@@ -228,13 +228,13 @@ class KnockoutAPI {
     }
   }
 
-  Future<List<SignificantThread>> getSignificantThreads(
+  Future<List<SubforumThread>> getSignificantThreads(
       SignificantThreads threadsToFetch) async {
     final endpoint = "v2/threads/${threadsToFetch.name.toLowerCase()}";
     final response = await _request(type: 'get', url: endpoint);
     print(response);
     return response.data
-        .map<SignificantThread>((json) => SignificantThread.fromJson(json))
+        .map<SubforumThread>((json) => SubforumThread.fromJson(json))
         .toList();
   }
 

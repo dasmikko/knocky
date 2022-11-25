@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/significantThreads.dart';
-import 'package:knocky/models/subforumDetails.dart';
+import 'package:knocky/models/v2/thread.dart';
 
 class SignificantThreadsController extends GetxController {
   final isFetching = false.obs;
-  final threads = <SignificantThread>[].obs;
+  final threads = <SubforumThread>[].obs;
   SignificantThreads _threadsToFetch = SignificantThreads.Popular;
 
   void fetch() async {
