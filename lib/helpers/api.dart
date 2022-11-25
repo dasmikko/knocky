@@ -23,6 +23,7 @@ import 'package:knocky/models/userProfileRatings.dart';
 import 'package:knocky/models/userProfileThreads.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/models/v2/alerts.dart' as AlertsV2;
+import 'package:knocky/models/v2/syncData.dart';
 import 'package:knocky/models/v2/thread.dart';
 
 class KnockoutAPI {

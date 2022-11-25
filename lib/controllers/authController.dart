@@ -2,7 +2,8 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/snackbar.dart';
-import 'package:knocky/models/syncData.dart';
+import 'package:knocky/models/v2/syncData.dart';
+import 'package:knocky/models/v2/userRole.dart';
 
 class AuthController extends GetxController {
   var isAuthenticated = false.obs;
@@ -11,7 +12,7 @@ class AuthController extends GetxController {
   var username = ''.obs;
   var avatar = ''.obs;
   var background = ''.obs;
-  var usergroup = 0.obs;
+  var role = UserRole().obs;
 
   getStoredAuthInfo() {
     GetStorage prefs = GetStorage();
@@ -23,17 +24,17 @@ class AuthController extends GetxController {
       this.username.value = prefs.read('username');
       this.avatar.value = prefs.read('avatar');
       this.background.value = prefs.read('background');
-      this.usergroup.value = prefs.read('usergroup');
+      this.role.value = prefs.read('role');
     }
   }
 
   login(int userId, String username, String avatar, String background,
-      int usergroup, String jwt) {
+      UserRole role, String jwt) {
     this.userId.value = userId;
     this.username.value = username;
     this.avatar.value = avatar;
     this.background.value = background;
-    this.usergroup.value = usergroup;
+    this.role.value = role;
     this.isAuthenticated.value = true;
     this.jwt.value = jwt;
 
@@ -43,7 +44,7 @@ class AuthController extends GetxController {
     prefs.write('username', username);
     prefs.write('avatar', avatar);
     prefs.write('background', background);
-    prefs.write('usergroup', usergroup);
+    prefs.write('role', role);
     prefs.write('cookieString', jwt);
   }
 
@@ -54,20 +55,20 @@ class AuthController extends GetxController {
     await prefs.write('cookieString', 'knockoutJwt=' + jwt);
     this.jwt.value = 'knockoutJwt=' + jwt;
 
-    SyncDataModel syncData = await KnockoutAPI().getSyncData();
+    SyncData syncData = await KnockoutAPI().getSyncData();
 
     print(syncData.username);
     prefs.write('userId', syncData.id);
     prefs.write('username', syncData.username);
     prefs.write('avatar', syncData.avatarUrl);
     prefs.write('background', syncData.backgroundUrl);
-    prefs.write('usergroup', syncData.usergroup.index);
+    prefs.write('role', syncData.role);
 
     this.userId.value = syncData.id;
     this.username.value = syncData.username;
     this.avatar.value = syncData.avatarUrl;
     this.background.value = syncData.backgroundUrl;
-    this.usergroup.value = syncData.usergroup.index;
+    this.role.value = syncData.role;
   }
 
   logout() {
@@ -76,7 +77,7 @@ class AuthController extends GetxController {
     this.username.value = '';
     this.avatar.value = '';
     this.background.value = '';
-    this.usergroup.value = 0;
+    this.role.value = UserRole();
     this.jwt.value = '';
 
     GetStorage prefs = GetStorage();
@@ -85,7 +86,7 @@ class AuthController extends GetxController {
     prefs.write('username', '');
     prefs.write('avatar', '');
     prefs.write('background', '');
-    prefs.write('usergroup', 0);
+    prefs.write('role', UserRole());
     prefs.write('cookieString', '');
 
     KnockySnackbar.success('You are now logged out');
