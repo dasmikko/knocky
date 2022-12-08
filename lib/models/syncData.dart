@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:knocky/models/threadAlert.dart';
 import 'package:knocky/models/usergroup.dart';
+import 'package:knocky/models/v2/userRole.dart';
 
 class SyncDataModel {
   final String avatarUrl;
@@ -9,6 +10,7 @@ class SyncDataModel {
   final bool isBanned;
   final List<SyncDataMentionModel> mentions;
   final Usergroup usergroup;
+  final UserRole role;
   final String username;
   final List<ThreadAlert> subscriptions;
 
@@ -20,26 +22,31 @@ class SyncDataModel {
       this.username,
       this.isBanned,
       this.mentions,
-      this.subscriptions});
+      this.subscriptions,
+      this.role});
 
   factory SyncDataModel.fromJson(Map<String, dynamic> json) {
     return SyncDataModel(
-        avatarUrl: json['avatarUrl'] as String,
-        backgroundUrl: json['backgroundUrl'] as String,
-        id: json['id'] as int,
-        usergroup: Usergroup.values[json['usergroup'] as int],
-        username: json['username'] as String,
-        isBanned: json['isBanned'] as bool,
-        mentions: (json['mentions'] as List)
-            ?.map((e) => e == null
-                ? null
-                : SyncDataMentionModel.fromJson(e as Map<String, dynamic>))
-            ?.toList(),
-        subscriptions: (json['subscriptions'] as List)
-            ?.map((e) => e == null
-                ? null
-                : ThreadAlert.fromJson(e as Map<String, dynamic>))
-            ?.toList());
+      avatarUrl: json['avatarUrl'] as String,
+      backgroundUrl: json['backgroundUrl'] as String,
+      id: json['id'] as int,
+      role: json['role'] == null ? null : UserRole.fromJson(json['role']),
+      usergroup: json['usergroup'] == null
+          ? null
+          : Usergroup.values[json['usergroup'] as int],
+      username: json['username'] as String,
+      isBanned: json['isBanned'] as bool,
+      mentions: (json['mentions'] as List)
+          ?.map((e) => e == null
+              ? null
+              : SyncDataMentionModel.fromJson(e as Map<String, dynamic>))
+          ?.toList(),
+      subscriptions: (json['subscriptions'] as List)
+          ?.map((e) => e == null
+              ? null
+              : ThreadAlert.fromJson(e as Map<String, dynamic>))
+          ?.toList(),
+    );
   }
   Map<String, dynamic> toJson() => {
         'avatarUrl': avatarUrl,
