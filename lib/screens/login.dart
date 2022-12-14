@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/controllers/authController.dart';
+import 'package:knocky/dialogs/inputDialog.dart';
 import 'package:knocky/dialogs/qrDialog.dart';
 import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/screens/forum.dart';
@@ -71,6 +72,24 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Login with'),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              var dialogResult = await Get.dialog(InputDialog(
+                title: 'Enter JWT token',
+              ));
+
+              if (dialogResult != false) {
+                AuthController authController = Get.put(AuthController());
+                authController.loginWithJWTOnly(dialogResult);
+                Get.offAll(ForumScreen());
+                KnockySnackbar.success('Login was successfull!',
+                    icon: Icon(Icons.check));
+              }
+            },
+            child: Text('JWT'),
+          )
+        ],
       ),
       body: Container(
         padding: EdgeInsets.only(left: 20, right: 20),

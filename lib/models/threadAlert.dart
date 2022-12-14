@@ -1,3 +1,4 @@
+import 'package:knocky/models/forum.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/models/usergroup.dart';
 
@@ -8,7 +9,7 @@ class ThreadAlert {
   final int id;
   final String title;
   final int unreadPostCount;
-  final ThreadAlertLastPost lastPost;
+  final ThreadLastPost lastPost;
   final int iconId;
   final String backgroundUrl;
   final bool locked;
@@ -36,8 +37,7 @@ class ThreadAlert {
       unreadPostCount: json['unreadPosts'] as int,
       lastPost: json['lastPost'] == null
           ? null
-          : ThreadAlertLastPost.fromJson(
-              json['lastPost'] as Map<String, dynamic>),
+          : ThreadLastPost.fromJson(json['lastPost'] as Map<String, dynamic>),
       postCount: json['threadPostCount'] as int,
       iconId: json['icon_id'] as int,
       backgroundUrl: json['threadBackgroundUrl'] as String,

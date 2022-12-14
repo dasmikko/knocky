@@ -17,6 +17,8 @@ void main() async {
   final SettingsController settingsController = Get.put(SettingsController());
   await GetStorage.init();
 
+  //authController.logout();
+
   // Init dotenv
   await dotenv.load(fileName: 'assets/.env');
 

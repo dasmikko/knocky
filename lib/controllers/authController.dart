@@ -61,7 +61,10 @@ class AuthController extends GetxController {
     prefs.write('username', syncData.username);
     prefs.write('avatar', syncData.avatarUrl);
     prefs.write('background', syncData.backgroundUrl);
-    prefs.write('usergroup', syncData.usergroup.index);
+
+    if (syncData.usergroup != null) {
+      prefs.write('usergroup', syncData.usergroup.index);
+    }
 
     this.userId.value = syncData.id;
     this.username.value = syncData.username;
