@@ -331,15 +331,26 @@ Map<String, RatingItem> ratingIconMap = {
       url: "${_ratingsUrl}citation.png",
       allowedSubforums: [5]),
   'yeet': new RatingItem(
-      id: 'yeet',
-      name: 'Yeet',
-      url: "${_ratingsUrl}yeet.png",
-      allowedUsergroups: [
-        Usergroup.moderator,
-        Usergroup.admin,
-        Usergroup.staff,
-        Usergroup.moderatorInTraining
-      ])
+    id: 'yeet',
+    name: 'Yeet',
+    url: "${_ratingsUrl}yeet.png",
+    allowedUsergroups: [
+      Usergroup.moderator,
+      Usergroup.admin,
+      Usergroup.staff,
+      Usergroup.moderatorInTraining
+    ],
+  ),
+  'rude': new RatingItem(
+    id: 'rude',
+    name: 'Rude',
+    url: "${_ratingsUrl}rude.png",
+  ),
+  'confusing': new RatingItem(
+    id: 'confusing',
+    name: 'Confusing',
+    url: "${_ratingsUrl}confusing.png",
+  ),
 };
 
 class RatingItem {

@@ -8,6 +8,8 @@ import 'package:knocky/helpers/api.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'dart:io' show Platform;
 
+import 'package:knocky/models/v2/userRole.dart';
+
 class LoginWebviewScreen extends StatefulWidget {
   final String loginUrl;
 
@@ -171,6 +173,7 @@ class MyInAppBrowser extends InAppBrowser {
           valueMap['avatar_url'],
           valueMap['background_url'],
           valueMap['usergroup'],
+          UserRole.fromJson(valueMap['role']),
           cookieString);
 
       this.loginWasSuccessfull = true;
