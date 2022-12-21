@@ -25,9 +25,7 @@ class RatingsChooser extends StatelessWidget {
   }
 
   Widget ratingsList() {
-    var ratings = ratingsMapForContext(
-            Usergroup.values[authController.usergroup?.value], 1)
-        .entries;
+    var ratings = ratingsMapForContext(authController.role?.value, 1).entries;
     return ListView.builder(
         padding: EdgeInsets.only(left: 8, right: 8),
         scrollDirection: Axis.horizontal,

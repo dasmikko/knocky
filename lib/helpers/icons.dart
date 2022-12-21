@@ -1,4 +1,5 @@
 import 'package:knocky/models/usergroup.dart';
+import 'package:knocky/models/v2/userRole.dart';
 
 /// This is really ugly, and should be a seperate API call.
 ///
@@ -234,14 +235,9 @@ class IconListItem {
   IconListItem({this.id, this.url});
 }
 
-Map<String, RatingItem> ratingsMapForContext(Usergroup group, int subforum) {
+Map<String, RatingItem> ratingsMapForContext(UserRole userRole, int subforum) {
   var relevantEntries = ratingIconMap.entries
-      .where((element) =>
-          element.value.allowedUsergroups == null ||
-          element.value.allowedUsergroups.contains(group))
-      .where((element) =>
-          element.value.allowedSubforums == null ||
-          element.value.allowedSubforums.contains(subforum));
+      .where((element) => element.value.allowedUsergroups == null);
   var map = new Map<String, RatingItem>();
   map.addEntries(relevantEntries);
   return map;
