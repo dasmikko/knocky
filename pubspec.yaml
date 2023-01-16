@@ -55,6 +55,7 @@ dependencies:
   optimized_cached_image: 3.0.1
   image_picker: 0.8.6
   flutter_svg: 1.1.6
+  uni_links: 0.5.1
   layout: 
     git: https://github.com/chirag729/layout.git
   extended_image: 6.3.1

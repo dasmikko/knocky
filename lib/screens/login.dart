@@ -19,7 +19,9 @@ class _LoginScreenState extends State<LoginScreen> {
   void initiateLogin(String provider) async {
     await Get.to(
       () => LoginWebviewScreen(
-        loginUrl: 'https://api.knockout.chat/auth/' + provider + '/login',
+        loginUrl: 'https://api.knockout.chat/auth/' +
+            provider +
+            '/login?redirect=https://knockyauth.rekna.xyz/handleAuth',
       ),
     );
 
