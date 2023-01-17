@@ -21,7 +21,7 @@ class AuthController extends GetxController {
     if (prefs.read('isAuthenticated') != null &&
         prefs.read('isAuthenticated')) {
       this.isAuthenticated.value = true;
-      this.jwt.value = prefs.read('cookieString');
+      this.jwt.value = prefs.read('jwt');
       this.userId.value = prefs.read('userId');
       this.username.value = prefs.read('username');
       this.avatar.value = prefs.read('avatar');
@@ -47,7 +47,7 @@ class AuthController extends GetxController {
     prefs.write('username', username);
     prefs.write('avatar', avatar);
     prefs.write('background', background);
-    prefs.write('cookieString', jwt);
+    prefs.write('jwt', jwt);
 
     prefs.write('role', role);
 
@@ -61,8 +61,8 @@ class AuthController extends GetxController {
     GetStorage prefs = GetStorage();
     this.isAuthenticated.value = true;
     await prefs.write('isAuthenticated', this.isAuthenticated.value);
-    await prefs.write('cookieString', 'knockoutJwt=' + jwtToken);
-    this.jwt.value = 'knockoutJwt=' + jwtToken;
+    await prefs.write('jwt', jwtToken);
+    this.jwt.value = jwtToken;
 
     try {
       SyncDataModel syncData = await KnockoutAPI().getSyncData();
@@ -108,6 +108,7 @@ class AuthController extends GetxController {
     prefs.write('background', '');
     prefs.write('usergroup', 0);
     prefs.write('cookieString', '');
+    prefs.write('jwt', '');
     prefs.write('role', '');
 
     KnockySnackbar.success('You are now logged out');

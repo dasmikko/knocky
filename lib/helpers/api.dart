@@ -27,7 +27,7 @@ import 'package:knocky/models/v2/syncData.dart';
 import 'package:knocky/models/v2/thread.dart';
 
 class KnockoutAPI {
-  static const KNOCKOUT_URL = "https://api.knockout.chat/";
+  static const KNOCKOUT_URL = "https://knockyauth.rekna.xyz/";
   static const QA_URL = "https://forums.stylepunch.club:3000/";
   static const CDN_URL = "https://cdn.knockout.chat/image";
 
@@ -58,7 +58,7 @@ class KnockoutAPI {
     GetStorage prefs = GetStorage();
 
     Map<String, dynamic> mHeaders = {
-      'Cookie': prefs.read('cookieString'),
+      'knockoutJwt': prefs.read('jwt'),
       'Access-Control-Request-Headers': 'content-format-version,content-type',
       'content-format-version': '1',
     };

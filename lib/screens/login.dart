@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -25,34 +26,8 @@ class _LoginScreenState extends State<LoginScreen> {
   void initiateLogin(String provider) async {
     initUniLinks();
 
-    try {
-      await launchUrlString(
-        'https://api.knockout.chat/auth/' +
-            provider +
-            '/login?redirect=https://knockyauth.rekna.xyz/handleAuth',
-        mode: LaunchMode.externalNonBrowserApplication,
-      );
-    } catch (e) {
-      throw 'Could not launch login url';
-    }
-
-    /*await Get.to(
-      () => LoginWebviewScreen(
-        loginUrl: 'https://api.knockout.chat/auth/' +
-            provider +
-            '/login?redirect=https://knockyauth.rekna.xyz/handleAuth',
-      ),
-    );
-
-    final AuthController authController = Get.put(AuthController());
-    print('isAuthed: ' + authController.isAuthenticated.toString());
-
-    if (authController.isAuthenticated == true) {
-      Get.offAll(ForumScreen());
-      KnockySnackbar.success('Login was successfull!', icon: Icon(Icons.check));
-    } else {
-      KnockySnackbar.error('Login was canceled', icon: Icon(Icons.warning));
-    }*/
+    await launch(
+        'https://api.knockout.chat/auth/$provider/login?redirect=https://knockyauth.rekna.xyz/handleAuth');
   }
 
   @override
