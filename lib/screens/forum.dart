@@ -30,7 +30,7 @@ class _ForumScreenState extends State<ForumScreen>
   @override
   void afterFirstLayout(BuildContext context) {
     forumController.fetchSubforums();
-    forumController.fetchMotd();
+    //forumController.fetchMotd();
   }
 
   Widget motd() {

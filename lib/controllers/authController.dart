@@ -56,32 +56,38 @@ class AuthController extends GetxController {
     }
   }
 
-  loginWithJWTOnly(jwt) async {
+  loginWithJWTOnly(jwtToken) async {
+    print(jwtToken);
     GetStorage prefs = GetStorage();
     this.isAuthenticated.value = true;
-    prefs.write('isAuthenticated', this.isAuthenticated.value);
-    await prefs.write('cookieString', 'knockoutJwt=' + jwt);
-    this.jwt.value = 'knockoutJwt=' + jwt;
+    await prefs.write('isAuthenticated', this.isAuthenticated.value);
+    await prefs.write('cookieString', 'knockoutJwt=' + jwtToken);
+    this.jwt.value = 'knockoutJwt=' + jwtToken;
 
-    SyncDataModel syncData = await KnockoutAPI().getSyncData();
+    try {
+      SyncDataModel syncData = await KnockoutAPI().getSyncData();
 
-    print(syncData.username);
-    prefs.write('userId', syncData.id);
-    prefs.write('username', syncData.username);
-    prefs.write('avatar', syncData.avatarUrl);
-    prefs.write('background', syncData.backgroundUrl);
-    prefs.write('role', syncData.role.toJson());
+      print(syncData);
+      prefs.write('userId', syncData.id);
+      prefs.write('username', syncData.username);
+      prefs.write('avatar', syncData.avatarUrl);
+      prefs.write('background', syncData.backgroundUrl);
+      prefs.write('role', syncData.role.toJson());
 
-    if (syncData.usergroup != null) {
-      prefs.write('usergroup', syncData.usergroup.index);
+      if (syncData.usergroup != null) {
+        prefs.write('usergroup', syncData.usergroup.index);
+      }
+
+      this.userId.value = syncData.id;
+      this.username.value = syncData.username;
+      this.avatar.value = syncData.avatarUrl;
+      this.background.value = syncData.backgroundUrl;
+      this.usergroup.value = syncData.usergroup.index;
+      this.role.value = syncData.role;
+    } catch (err) {
+      print(err);
+      logout();
     }
-
-    this.userId.value = syncData.id;
-    this.username.value = syncData.username;
-    this.avatar.value = syncData.avatarUrl;
-    this.background.value = syncData.backgroundUrl;
-    this.usergroup.value = syncData.usergroup.index;
-    this.role.value = syncData.role;
   }
 
   logout() {

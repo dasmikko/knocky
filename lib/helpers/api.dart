@@ -60,7 +60,7 @@ class KnockoutAPI {
     Map<String, dynamic> mHeaders = {
       'Cookie': prefs.read('cookieString'),
       'Access-Control-Request-Headers': 'content-format-version,content-type',
-      'content-format-version': '1'
+      'content-format-version': '1',
     };
 
     if (headers != null) mHeaders.addAll(headers);

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -9,15 +11,32 @@ import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/screens/forum.dart';
 import 'package:knocky/screens/loginWebview.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:uni_links/uni_links.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
+StreamSubscription _sub;
+
 class _LoginScreenState extends State<LoginScreen> {
   void initiateLogin(String provider) async {
-    await Get.to(
+    initUniLinks();
+
+    try {
+      await launchUrlString(
+        'https://api.knockout.chat/auth/' +
+            provider +
+            '/login?redirect=https://knockyauth.rekna.xyz/handleAuth',
+        mode: LaunchMode.externalNonBrowserApplication,
+      );
+    } catch (e) {
+      throw 'Could not launch login url';
+    }
+
+    /*await Get.to(
       () => LoginWebviewScreen(
         loginUrl: 'https://api.knockout.chat/auth/' +
             provider +
@@ -33,7 +52,36 @@ class _LoginScreenState extends State<LoginScreen> {
       KnockySnackbar.success('Login was successfull!', icon: Icon(Icons.check));
     } else {
       KnockySnackbar.error('Login was canceled', icon: Icon(Icons.warning));
-    }
+    }*/
+  }
+
+  @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
+  }
+
+  Future<void> initUniLinks() async {
+    // ... check initialLink
+
+    // Attach a listener to the stream
+    _sub = linkStream.listen((String link) async {
+      print(link);
+
+      if (link != null) {
+        String knockoutJWT = link.replaceAll('knocky://finishAuth/', '');
+
+        AuthController authController = Get.put(AuthController());
+        await authController.loginWithJWTOnly(knockoutJWT);
+        Get.offAll(ForumScreen());
+        KnockySnackbar.success('Login was successfull!',
+            icon: Icon(Icons.check));
+      }
+      // Parse the link and warn the user, if it is not correct
+    }, onError: (err) {
+      print('Unilinks error: ' + err);
+      // Handle exception by warning the user their action did not succeed
+    });
   }
 
   void scanQRCode() async {
