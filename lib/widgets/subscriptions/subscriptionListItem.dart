@@ -6,7 +6,6 @@ import 'package:knocky/dialogs/confirmDialog.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
 import 'package:knocky/helpers/snackbar.dart';
-import 'package:knocky/models/v2/alerts.dart';
 import 'package:knocky/models/v2/thread.dart';
 import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widgets/jumpToPageDialog.dart';
@@ -75,7 +74,7 @@ class SubscriptionListItem extends ThreadListItem {
                 KnockySnackbar.success("Unsubscribed thread");
               }),
           ListTile(
-            leading: FaIcon(FontAwesomeIcons.redo),
+            leading: FaIcon(FontAwesomeIcons.arrowRotateRight),
             title: Text('Go to page'),
             onTap: () {
               Get.back();

@@ -1455,8 +1455,8 @@ Icon getIconOrDefault(iconId) {
 }
 
 const _baseurl = "https://knockout.chat/";
-const _cdnUrl = "https://cdn.knockout.chat/";
-const _ratingsUrl = "${_cdnUrl}assets/ratings/rating-";
+//const _cdnUrl = "https://cdn.knockout.chat/";
+//const _ratingsUrl = "${_cdnUrl}assets/ratings/rating-";
 
 class Icon {
   Icon({

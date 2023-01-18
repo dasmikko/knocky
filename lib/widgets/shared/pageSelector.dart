@@ -102,7 +102,7 @@ class PageSelector extends StatelessWidget {
           ),
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.zero,
-            primary: Theme.of(context).primaryColor,
+            backgroundColor: Theme.of(context).primaryColor,
           ),
           onPressed: disabled ? null : onClick),
     );

@@ -161,7 +161,7 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
     if (authController.isAuthenticated.value) return [];
     return [
       DrawerListTile(
-        iconData: FontAwesomeIcons.thList,
+        iconData: FontAwesomeIcons.tableList,
         title: 'Forum',
         onTap: () => {},
       ),
@@ -186,7 +186,7 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
         ),
       ),
       DrawerListTile(
-        iconData: FontAwesomeIcons.cog,
+        iconData: FontAwesomeIcons.gear,
         title: 'Settings',
         onTap: () => {
           onListTileTap(context, () => navigateTo(SettingsScreen())),
@@ -194,7 +194,7 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
       ),
       Obx(() => !authController.isAuthenticated.value
           ? DrawerListTile(
-              iconData: FontAwesomeIcons.signInAlt,
+              iconData: FontAwesomeIcons.rightToBracket,
               title: 'Log in',
               onTap: () => {
                 navigateTo(LoginScreen()),
@@ -261,7 +261,7 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
                           ProfileScreen(id: authController.userId.value))),
                   DrawerListTile(
                       tileColor: Colors.grey[900],
-                      iconData: FontAwesomeIcons.signOutAlt,
+                      iconData: FontAwesomeIcons.rightFromBracket,
                       title: 'Log Out',
                       onTap: () {
                         mainDrawerController.isUserListOpen.value = false;

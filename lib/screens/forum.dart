@@ -10,7 +10,7 @@ import 'package:knocky/widgets/KnockoutLoadingIndicator.dart';
 import 'package:knocky/widgets/drawer/mainDrawer.dart';
 import 'package:knocky/widgets/forum/ForumListItem.dart';
 import 'package:knocky/models/forum.dart';
-import 'package:knocky/models/subforumv2.dart' as Subforumv2;
+//import 'package:knocky/models/subforumv2.dart' as Subforumv2;
 import 'package:layout/layout.dart';
 
 class ForumScreen extends StatefulWidget {
@@ -62,7 +62,7 @@ class _ForumScreenState extends State<ForumScreen>
                       Get.to(ThreadScreen(id: threadId));
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.blue[700],
+                      backgroundColor: Colors.blue[700],
                       side: BorderSide(color: Colors.white),
                       elevation: 0,
                     ),

@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/icons.dart';
-import 'package:knocky/models/usergroup.dart';
 
 class RatingsChooser extends StatelessWidget {
   final int postId;

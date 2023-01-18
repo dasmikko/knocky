@@ -101,7 +101,7 @@ class ThreadListItem extends StatelessWidget {
           child: Container(
             margin: EdgeInsets.only(right: 4),
             child: Icon(
-              FontAwesomeIcons.solidStickyNote,
+              FontAwesomeIcons.solidNoteSticky,
               size: 14,
               color: HexColor('b4e42d'),
             ),

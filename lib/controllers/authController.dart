@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/snackbar.dart';
-import 'package:knocky/models/forum.dart';
 import 'package:knocky/models/syncData.dart';
 import 'package:knocky/models/v2/userRole.dart';
 

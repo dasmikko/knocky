@@ -10,10 +10,8 @@ import 'package:knocky/dialogs/inputDialog.dart';
 import 'package:knocky/dialogs/qrDialog.dart';
 import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/screens/forum.dart';
-import 'package:knocky/screens/loginWebview.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:uni_links/uni_links.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -158,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.all(10),
-                  primary: Colors.blue,
+                  backgroundColor: Colors.blue,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -188,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.all(10),
-                  primary: Colors.grey[600],
+                  backgroundColor: Colors.grey[600],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -218,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.all(10),
-                  primary: Colors.grey[800],
+                  backgroundColor: Colors.grey[800],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -248,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.all(10),
-                  primary: Colors.indigo[800],
+                  backgroundColor: Colors.indigo[800],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),

@@ -111,7 +111,8 @@ class _NewPostState extends State<NewPost> {
         style: ButtonStyle(
             foregroundColor:
                 MaterialStateColor.resolveWith((states) => Colors.white)),
-        icon: Icon(previewing ? FontAwesomeIcons.edit : FontAwesomeIcons.eye,
+        icon: Icon(
+            previewing ? FontAwesomeIcons.penToSquare : FontAwesomeIcons.eye,
             size: 16),
         label: Text(previewing ? 'Edit' : 'Preview'),
         onPressed: () => setState(

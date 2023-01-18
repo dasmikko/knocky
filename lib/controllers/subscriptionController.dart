@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
-import 'package:knocky/models/threadAlertPage.dart';
 import 'package:knocky/models/v2/alerts.dart';
 
 class SubscriptionController extends GetxController {
