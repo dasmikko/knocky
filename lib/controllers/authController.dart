@@ -56,7 +56,6 @@ class AuthController extends GetxController {
   }
 
   loginWithJWTOnly(jwtToken) async {
-    print(jwtToken);
     GetStorage prefs = GetStorage();
     this.isAuthenticated.value = true;
     await prefs.write('isAuthenticated', this.isAuthenticated.value);
@@ -66,7 +65,7 @@ class AuthController extends GetxController {
     try {
       SyncDataModel syncData = await KnockoutAPI().getSyncData();
 
-      print(syncData);
+      print(syncData.toJson());
       prefs.write('userId', syncData.id);
       prefs.write('username', syncData.username);
       prefs.write('avatar', syncData.avatarUrl);
@@ -74,14 +73,14 @@ class AuthController extends GetxController {
       prefs.write('role', syncData.role.toJson());
 
       if (syncData.usergroup != null) {
-        prefs.write('usergroup', syncData.usergroup.index);
+        prefs.write('usergroup', syncData.usergroup);
+        this.usergroup.value = syncData.usergroup.index;
       }
 
       this.userId.value = syncData.id;
       this.username.value = syncData.username;
       this.avatar.value = syncData.avatarUrl;
       this.background.value = syncData.backgroundUrl;
-      this.usergroup.value = syncData.usergroup.index;
       this.role.value = syncData.role;
     } catch (err) {
       print(err);

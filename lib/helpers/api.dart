@@ -57,7 +57,7 @@ class KnockoutAPI {
     GetStorage prefs = GetStorage();
 
     Map<String, dynamic> mHeaders = {
-      'knockoutJwt': prefs.read('jwt'),
+      'knockoutjwt': await prefs.read('jwt'),
       'Access-Control-Request-Headers': 'content-format-version,content-type',
       'content-format-version': '1',
     };
