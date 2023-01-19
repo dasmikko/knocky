@@ -1,28 +1,31 @@
+// To parse this JSON data, do
+//
+//     final userProfileRatings = userProfileRatingsFromJson(jsonString);
+
 import 'dart:convert';
 
-import 'package:json_annotation/json_annotation.dart';
-
-@JsonSerializable()
-class UserProfileRatings {
-  final List<UserProfileRating> ratings;
-
-  UserProfileRatings({this.ratings});
-
-  factory UserProfileRatings.fromJson(String json) => fromJson(json);
-}
-
-UserProfileRatings fromJson(String json) {
-  List<dynamic> ratingListMap = jsonDecode(json);
-  var ratings = ratingListMap
-      .map((mapEntries) => new UserProfileRating(
-          name: mapEntries['name'], count: mapEntries['count']))
-      .toList();
-  return new UserProfileRatings(ratings: ratings);
-}
-
-@JsonSerializable()
 class UserProfileRating {
-  final int count;
-  final String name;
-  UserProfileRating({this.count, this.name});
+  UserProfileRating({
+    this.name,
+    this.count,
+  });
+
+  String name;
+  int count;
+
+  factory UserProfileRating.fromRawJson(String str) =>
+      UserProfileRating.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory UserProfileRating.fromJson(Map<String, dynamic> json) =>
+      UserProfileRating(
+        name: json["name"],
+        count: json["count"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "name": name,
+        "count": count,
+      };
 }

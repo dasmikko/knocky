@@ -4,13 +4,13 @@ import 'package:knocky/models/userProfileRatings.dart';
 import 'package:knocky/widgets/post/ratingsChooser.dart';
 
 class ProfileRatings extends StatelessWidget {
-  final UserProfileRatings ratings;
+  final List<UserProfileRating> ratings;
 
   ProfileRatings({@required this.ratings});
 
   @override
   Widget build(BuildContext context) {
-    ratings.ratings.sort((a, b) => b.count.compareTo(a.count));
+    ratings.sort((a, b) => b.count.compareTo(a.count));
     return Container(
         height: double.infinity,
         margin: EdgeInsets.only(bottom: 8),
@@ -19,7 +19,7 @@ class ProfileRatings extends StatelessWidget {
             height: 24,
             child: ListView(
                 scrollDirection: Axis.horizontal,
-                children: [for (var i in ratings.ratings) rating(i)])));
+                children: [for (var i in ratings) rating(i)])));
   }
 
   Widget rating(UserProfileRating rating) {

@@ -64,8 +64,6 @@ class AuthController extends GetxController {
 
     try {
       SyncDataModel syncData = await KnockoutAPI().getSyncData();
-
-      print(syncData.toJson());
       prefs.write('userId', syncData.id);
       prefs.write('username', syncData.username);
       prefs.write('avatar', syncData.avatarUrl);

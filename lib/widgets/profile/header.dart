@@ -11,7 +11,7 @@ import 'package:knocky/widgets/shared/username.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class ProfileHeader extends StatefulWidget {
-  final UserProfileRatings ratings;
+  final List<UserProfileRating> ratings;
   final UserProfile profile;
   final UserProfileDetails details;
 
@@ -82,7 +82,6 @@ class _ProfileHeaderState extends State<ProfileHeader>
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Username(
                   username: widget.profile.username,
-                  usergroup: widget.profile.usergroup,
                   bold: true,
                   banned: widget.profile?.banned,
                   fontSize: 26),
@@ -93,9 +92,7 @@ class _ProfileHeaderState extends State<ProfileHeader>
   List<Widget> regularSubtitle() {
     return [
       UsergroupLabel(
-          usergroup: widget.profile.usergroup,
-          banned: widget.profile?.banned,
-          joinDate: widget.profile.joinDate),
+          banned: widget.profile?.banned, joinDate: widget.profile.joinDate),
       Container(
           margin: EdgeInsets.only(top: 4),
           child: Text(widget.details?.bio ?? '',

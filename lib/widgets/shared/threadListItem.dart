@@ -9,7 +9,6 @@ import 'package:knocky/helpers/postsPerPage.dart';
 import 'package:knocky/widgets/InkWellOnWidget.dart';
 import 'dart:ui' as ui;
 import 'package:timeago/timeago.dart' as timeago;
-
 import 'package:knocky/screens/thread.dart';
 
 class ThreadListItem extends StatelessWidget {
@@ -18,7 +17,6 @@ class ThreadListItem extends StatelessWidget {
 
   @protected
   void onTapItem(BuildContext context) {
-    print(threadDetails.id);
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -188,52 +186,58 @@ class ThreadListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
-      child: IntrinsicHeight(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            InkWell(
-                onTap: () => onTapItem(context),
-                onLongPress: () => onLongPressItem(context),
-                child: getIcon(context)),
-            Flexible(
-              child: Container(
-                decoration: getBackground(context),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () => onTapItem(context),
-                    onLongPress: () => onLongPressItem(context),
-                    child: Container(
-                      padding: EdgeInsets.all(8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(bottom: 4),
-                            child: RichText(
-                              text: TextSpan(children: <InlineSpan>[
-                                ...getDetailIcons(context),
-                                TextSpan(
-                                  text: threadDetails.title,
-                                  style: TextStyle(fontSize: 15),
-                                ),
-                              ]),
+    return Opacity(
+      opacity:
+          threadDetails.read == true && threadDetails.readThreadUnreadPosts == 0
+              ? 0.5
+              : 1,
+      child: Card(
+        margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
+        child: IntrinsicHeight(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              InkWell(
+                  onTap: () => onTapItem(context),
+                  onLongPress: () => onLongPressItem(context),
+                  child: getIcon(context)),
+              Flexible(
+                child: Container(
+                  decoration: getBackground(context),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => onTapItem(context),
+                      onLongPress: () => onLongPressItem(context),
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(bottom: 4),
+                              child: RichText(
+                                text: TextSpan(children: <InlineSpan>[
+                                  ...getDetailIcons(context),
+                                  TextSpan(
+                                    text: threadDetails.title,
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                ]),
+                              ),
                             ),
-                          ),
-                          ...getTagWidgets(context),
-                          getSubtitle(context)
-                        ],
+                            ...getTagWidgets(context),
+                            getSubtitle(context)
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

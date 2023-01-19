@@ -1,31 +1,32 @@
-import 'package:knocky/models/usergroup.dart';
+import 'package:knocky/models/v2/userRole.dart';
 
 class UserProfile {
   final int id;
   final String avatarUrl;
   final String backgroundUrl;
   final bool banned;
-  final Usergroup usergroup;
   final String username;
   final int posts;
   final int threads;
+  final UserRole role;
   final DateTime joinDate;
 
-  UserProfile(
-      {this.id,
-      this.usergroup,
-      this.avatarUrl,
-      this.backgroundUrl,
-      this.banned,
-      this.posts,
-      this.threads,
-      this.username,
-      this.joinDate});
+  UserProfile({
+    this.id,
+    this.role,
+    this.avatarUrl,
+    this.backgroundUrl,
+    this.banned,
+    this.posts,
+    this.threads,
+    this.username,
+    this.joinDate,
+  });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
         id: json['id'] as int,
-        usergroup: Usergroup.values[json['usergroup'] as int],
+        role: json['role'] == null ? null : UserRole.fromJson(json['role']),
         avatarUrl: json['avatarUrl'] as String,
         backgroundUrl: json['backgroundUrl'] as String,
         banned: json['banned'] as bool,
@@ -41,7 +42,7 @@ class UserProfile {
         'avatarUrl': avatarUrl,
         'backgroundUrl': backgroundUrl,
         'banned': banned,
-        'usergroup': usergroup,
+        'role': role,
         'username': username,
         'posts': posts,
         'threads': threads,

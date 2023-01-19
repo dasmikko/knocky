@@ -20,7 +20,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final ProfileController profileController = Get.put(ProfileController());
   UserProfile get profile => profileController.profile.value;
-  UserProfileRatings get ratings => profileController.ratings.value;
+  List<UserProfileRating> get ratings => profileController.ratings.value;
   UserProfileDetails get details => profileController.details.value;
 
   @override

@@ -170,8 +170,8 @@ class KnockoutAPI {
   }
 
   Future<void> deleteThreadAlert(int threadid) async {
-    final response = await _request(
-        url: 'alert', type: 'delete', data: {'threadId': threadid});
+    final response =
+        await _request(url: '/v2/alerts/$threadid', type: 'delete');
 
     if (response.statusCode == 200) {}
   }
@@ -252,7 +252,6 @@ class KnockoutAPI {
       url: 'user/' + userId.toString(),
       type: 'get',
     );
-
     return UserProfile.fromJson(response.data);
   }
 
@@ -274,13 +273,15 @@ class KnockoutAPI {
     return UserProfileDetails.fromJson(response.data);
   }
 
-  Future<UserProfileRatings> getUserProfileTopRatings(int userId) async {
+  Future<List<UserProfileRating>> getUserProfileTopRatings(int userId) async {
     final response = await _request(
       url: 'user/' + userId.toString() + '/topRatings',
       type: 'get',
     );
 
-    return UserProfileRatings.fromJson(response.data);
+    return response.data
+        .map<UserProfileRating>((json) => UserProfileRating.fromJson(json))
+        .toList();
   }
 
   Future<UserProfilePosts> getUserPosts(int userId, {int page = 1}) async {

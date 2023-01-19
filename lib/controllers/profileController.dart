@@ -8,7 +8,7 @@ class ProfileController extends GetxController {
   final isFetching = false.obs;
   final profile = UserProfile().obs;
   final details = UserProfileDetails().obs;
-  final ratings = UserProfileRatings().obs;
+  final ratings = [].obs;
   int id;
 
   @override
