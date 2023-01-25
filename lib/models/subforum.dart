@@ -159,25 +159,21 @@ class SubForumLastPostThread {
 
 class SubforumLastPostUser {
   final bool isBanned;
-  final Usergroup usergroup;
   final String username;
 
   SubforumLastPostUser({
     this.isBanned,
-    this.usergroup,
     this.username,
   });
 
   factory SubforumLastPostUser.fromJson(Map<String, dynamic> json) {
     return SubforumLastPostUser(
       isBanned: json['isBanned'] as bool,
-      usergroup: Usergroup.values[json['usergroup'] as int],
       username: json['username'] as String,
     );
   }
   Map<String, dynamic> toJson() => {
         'isBanned': isBanned,
-        'usergroup': usergroup,
         'username': username,
       };
 }

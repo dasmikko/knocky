@@ -26,8 +26,9 @@ class _ProfileBodyState extends State<ProfileBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Expanded(
-            child: new DefaultTabController(
+    return Obx(
+      () => Expanded(
+        child: new DefaultTabController(
           length: hasBans() ? 3 : 2,
           child: Scaffold(
             body: TabBarView(children: [...tabContents()]),
@@ -44,7 +45,9 @@ class _ProfileBodyState extends State<ProfileBody> {
               ),
             ),
           ),
-        )));
+        ),
+      ),
+    );
   }
 
   bool hasBans() {

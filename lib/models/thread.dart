@@ -26,6 +26,7 @@ class Thread {
     this.backgroundUrl,
     this.backgroundType,
     this.user,
+    this.userId,
     this.postCount,
     this.recentPostCount,
     this.unreadPostCount,
@@ -61,6 +62,7 @@ class Thread {
   dynamic backgroundUrl;
   dynamic backgroundType;
   ThreadUser user;
+  int userId;
   int postCount;
   int recentPostCount;
   int unreadPostCount;
@@ -101,7 +103,11 @@ class Thread {
             : ThreadPost.fromJson(json["lastPost"]),
         backgroundUrl: json["backgroundUrl"],
         backgroundType: json["backgroundType"],
-        user: json["user"] == null ? null : ThreadUser.fromJson(json["user"]),
+        user: json["user"] == null || json['user'] is int
+            ? null
+            : ThreadUser.fromJson(json["user"]),
+        userId:
+            json["user"] != null && json['user'] is int ? json["user"] : null,
         postCount: json["postCount"] == null ? null : json["postCount"],
         recentPostCount:
             json["recentPostCount"] == null ? null : json["recentPostCount"],
@@ -159,6 +165,7 @@ class Thread {
         "backgroundUrl": backgroundUrl,
         "backgroundType": backgroundType,
         "user": user == null ? null : user,
+        "userId": user == null ? null : userId,
         "postCount": postCount == null ? null : postCount,
         "recentPostCount": recentPostCount == null ? null : recentPostCount,
         "unreadPostCount": unreadPostCount == null ? null : unreadPostCount,
@@ -195,11 +202,13 @@ class ThreadPost {
   ThreadPost({
     this.id,
     this.thread,
+    this.threadObj,
     this.page,
     this.content,
     this.createdAt,
     this.updatedAt,
     this.user,
+    this.userId,
     this.ratings,
     this.bans,
     this.threadPostNumber,
@@ -210,11 +219,13 @@ class ThreadPost {
 
   int id;
   int thread;
+  Thread threadObj;
   int page;
   String content;
   DateTime createdAt;
   DateTime updatedAt;
   ThreadUser user;
+  int userId;
   List<ThreadPostRating> ratings;
   List<dynamic> bans;
   int threadPostNumber;
@@ -224,7 +235,12 @@ class ThreadPost {
 
   factory ThreadPost.fromJson(Map<String, dynamic> json) => ThreadPost(
         id: json["id"] == null ? null : json["id"],
-        thread: json["thread"] == null ? null : json["thread"],
+        thread: json["thread"] != null && json['thread'] is int
+            ? json["thread"]
+            : null,
+        threadObj: json["thread"] == null || json['thread'] is int
+            ? null
+            : Thread.fromJson(json['thread']),
         page: json["page"] == null ? null : json["page"],
         content: json["content"] == null ? null : json["content"],
         createdAt: json["createdAt"] == null
@@ -233,7 +249,11 @@ class ThreadPost {
         updatedAt: json["updatedAt"] == null
             ? null
             : DateTime.parse(json["updatedAt"]),
-        user: json["user"] == null ? null : ThreadUser.fromJson(json["user"]),
+        user: json["user"] == null || json['user'] is int
+            ? null
+            : ThreadUser.fromJson(json["user"]),
+        userId:
+            json["user"] != null && json['user'] is int ? json["user"] : null,
         ratings: json["ratings"] == null
             ? null
             : List<ThreadPostRating>.from(
@@ -251,11 +271,13 @@ class ThreadPost {
   Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
         "thread": thread == null ? null : thread,
+        "threadObj": thread == null ? null : threadObj.toJson(),
         "page": page == null ? null : page,
         "content": content == null ? null : content,
         "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
         "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
         "user": user == null ? null : user.toJson(),
+        "userId": user == null ? null : user,
         "ratings": ratings == null
             ? null
             : List<dynamic>.from(ratings.map((x) => x.toJson())),

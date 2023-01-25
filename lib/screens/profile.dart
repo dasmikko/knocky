@@ -31,7 +31,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Scaffold(
+    return Obx(
+      () => Scaffold(
         appBar: AppBar(
           actions: [
             IconButton(
@@ -41,16 +42,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
         body: Container(
-            child: KnockoutLoadingIndicator(
-                show: profileController.isFetching.value,
-                child: !profileController.isFetching.value
-                    ? Column(children: [
-                        ProfileHeader(
-                            profile: profile,
-                            ratings: ratings,
-                            details: details),
-                        ProfileBody(profile: profile)
-                      ])
-                    : Container()))));
+          child: KnockoutLoadingIndicator(
+            show: profileController.isFetching.value,
+            child: !profileController.isFetching.value
+                ? Column(children: [
+                    ProfileHeader(
+                        profile: profile, ratings: ratings, details: details),
+                    ProfileBody(profile: profile)
+                  ])
+                : Container(),
+          ),
+        ),
+      ),
+    );
   }
 }

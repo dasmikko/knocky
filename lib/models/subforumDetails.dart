@@ -142,12 +142,14 @@ class SignificantThread {
   final int id;
   final bool locked;
   final bool pinned;
+  final bool read;
   final int postCount;
   final int readThreadUnreadPosts;
   final int unreadPostCount;
   final String title;
   final int unreadType;
   final SubforumThreadUser user;
+  final int userId;
   final SubforumLastPost lastPost;
   final int subforumId;
   final String backgroundUrl;
@@ -160,12 +162,14 @@ class SignificantThread {
       this.id,
       this.locked,
       this.pinned,
+      this.read,
       this.postCount,
       this.readThreadUnreadPosts,
       this.unreadPostCount,
       this.title,
       this.unreadType,
       this.user,
+      this.userId,
       this.lastPost,
       this.backgroundUrl,
       this.viewers,
@@ -181,15 +185,17 @@ class SignificantThread {
       id: json['id'] as int,
       locked: json['locked'] as bool,
       pinned: json['pinned'] as bool,
+      read: json['read'] as bool,
       postCount: json['postCount'] as int,
       readThreadUnreadPosts: json['readThreadUnreadPosts'] as int ?? 0,
       unreadPostCount: json['unreadPostCount'] as int ?? 0,
       title: json['title'] as String,
       unreadType: json['unreadType'] as int,
       subforumId: json['subforumId'] as int,
-      user: json['user'] == null
+      user: json["user"] == null || json['user'] is int
           ? null
           : SubforumThreadUser.fromJson(json['user'] as Map<String, dynamic>),
+      userId: json["user"] != null && json['user'] is int ? json["user"] : null,
       lastPost: json['lastPost'] == null
           ? null
           : SubforumLastPost.fromJson(json['lastPost'] as Map<String, dynamic>),
@@ -211,7 +217,8 @@ class SignificantThread {
         'unreadPostCount': unreadPostCount,
         'title': title,
         'unreadType': unreadType,
-        'user': user,
+        'user': user.toJson(),
+        'userId': userId,
         'lastPost': lastPost,
         'backgroundUrl': backgroundUrl,
         'viewers': viewers,
