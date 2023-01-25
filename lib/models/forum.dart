@@ -209,7 +209,7 @@ class Thread {
   bool read;
   bool hasRead;
   bool hasSeenNoNewPosts;
-  dynamic subforum;
+  Subforum subforum;
   List<dynamic> tags;
 
   factory Thread.fromJson(Map<String, dynamic> json) => Thread(
@@ -248,7 +248,9 @@ class Thread {
         hasSeenNoNewPosts: json["hasSeenNoNewPosts"] == null
             ? null
             : json["hasSeenNoNewPosts"],
-        subforum: json["subforum"],
+        subforum: json["subforum"] == null
+            ? null
+            : Subforum.fromJson(json["subforum"]),
         tags: json["tags"] == null
             ? null
             : List<dynamic>.from(json["tags"].map((x) => x)),
@@ -278,7 +280,7 @@ class Thread {
         "hasRead": hasRead == null ? null : hasRead,
         "hasSeenNoNewPosts":
             hasSeenNoNewPosts == null ? null : hasSeenNoNewPosts,
-        "subforum": subforum,
+        "subforum": subforum.toJson(),
         "tags": tags == null ? null : List<dynamic>.from(tags.map((x) => x)),
       };
 }
