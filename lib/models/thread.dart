@@ -158,7 +158,7 @@ class Thread {
         "lastPost": lastPost == null ? null : lastPost.toJson(),
         "backgroundUrl": backgroundUrl,
         "backgroundType": backgroundType,
-        "user": user == null ? null : user.toJson(),
+        "user": user == null ? null : user,
         "postCount": postCount == null ? null : postCount,
         "recentPostCount": recentPostCount == null ? null : recentPostCount,
         "unreadPostCount": unreadPostCount == null ? null : unreadPostCount,
@@ -542,4 +542,186 @@ class EnumValues<T> {
     }
     return reverseMap;
   }
+}
+
+class ThreadUserProfile {
+  ThreadUserProfile({
+    this.id,
+    this.title,
+    this.iconId,
+    this.subforumId,
+    this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
+    this.deleted,
+    this.locked,
+    this.pinned,
+    this.lastPost,
+    this.backgroundUrl,
+    this.backgroundType,
+    this.user,
+    this.postCount,
+    this.recentPostCount,
+    this.unreadPostCount,
+    this.readThreadUnreadPosts,
+    this.read,
+    this.hasRead,
+    this.hasSeenNoNewPosts,
+    this.subforum,
+    this.tags,
+    this.viewers,
+    this.totalPosts,
+    this.currentPage,
+    this.threadBackgroundUrl,
+    this.threadBackgroundType,
+    this.posts,
+    this.readThreadLastSeen,
+    this.subscribed,
+    this.subscriptionLastSeen,
+    this.subscriptionLastPostNumber,
+  });
+
+  int id;
+  String title;
+  int iconId;
+  int subforumId;
+  DateTime createdAt;
+  DateTime updatedAt;
+  dynamic deletedAt;
+  bool deleted;
+  bool locked;
+  bool pinned;
+  ThreadPost lastPost;
+  dynamic backgroundUrl;
+  dynamic backgroundType;
+  int user;
+  int postCount;
+  int recentPostCount;
+  int unreadPostCount;
+  int readThreadUnreadPosts;
+  bool read;
+  bool hasRead;
+  bool hasSeenNoNewPosts;
+  ThreadSubforum subforum;
+  List<dynamic> tags;
+  ThreadViewers viewers;
+  int totalPosts;
+  int currentPage;
+  dynamic threadBackgroundUrl;
+  dynamic threadBackgroundType;
+  List<ThreadPost> posts;
+  DateTime readThreadLastSeen;
+  bool subscribed;
+  DateTime subscriptionLastSeen;
+  int subscriptionLastPostNumber;
+
+  factory ThreadUserProfile.fromJson(Map<String, dynamic> json) =>
+      ThreadUserProfile(
+        id: json["id"] == null ? null : json["id"],
+        title: json["title"] == null ? null : json["title"],
+        iconId: json["iconId"] == null ? null : json["iconId"],
+        subforumId: json["subforumId"] == null ? null : json["subforumId"],
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
+        deletedAt: json["deletedAt"],
+        deleted: json["deleted"] == null ? null : json["deleted"],
+        locked: json["locked"] == null ? null : json["locked"],
+        pinned: json["pinned"] == null ? null : json["pinned"],
+        lastPost: json["lastPost"] == null
+            ? null
+            : ThreadPost.fromJson(json["lastPost"]),
+        backgroundUrl: json["backgroundUrl"],
+        backgroundType: json["backgroundType"],
+        user: json["user"] == null ? null : json["user"],
+        postCount: json["postCount"] == null ? null : json["postCount"],
+        recentPostCount:
+            json["recentPostCount"] == null ? null : json["recentPostCount"],
+        unreadPostCount:
+            json["unreadPostCount"] == null ? null : json["unreadPostCount"],
+        readThreadUnreadPosts: json["readThreadUnreadPosts"] == null
+            ? null
+            : json["readThreadUnreadPosts"],
+        read: json["read"] == null ? null : json["read"],
+        hasRead: json["hasRead"] == null ? null : json["hasRead"],
+        hasSeenNoNewPosts: json["hasSeenNoNewPosts"] == null
+            ? null
+            : json["hasSeenNoNewPosts"],
+        subforum: json["subforum"] == null
+            ? null
+            : ThreadSubforum.fromJson(json["subforum"]),
+        tags: json["tags"] == null
+            ? null
+            : List<dynamic>.from(json["tags"].map((x) => x)),
+        viewers: json["viewers"] == null
+            ? null
+            : ThreadViewers.fromJson(json["viewers"]),
+        totalPosts: json["totalPosts"] == null ? null : json["totalPosts"],
+        currentPage: json["currentPage"] == null ? null : json["currentPage"],
+        threadBackgroundUrl: json["threadBackgroundUrl"],
+        threadBackgroundType: json["threadBackgroundType"],
+        posts: json["posts"] == null
+            ? null
+            : List<ThreadPost>.from(
+                json["posts"].map((x) => ThreadPost.fromJson(x))),
+        readThreadLastSeen: json["readThreadLastSeen"] == null
+            ? null
+            : DateTime.parse(json["readThreadLastSeen"]),
+        subscribed: json["subscribed"] == null ? null : json["subscribed"],
+        subscriptionLastSeen: json["subscriptionLastSeen"] == null
+            ? null
+            : DateTime.parse(json["subscriptionLastSeen"]),
+        subscriptionLastPostNumber: json["subscriptionLastPostNumber"] == null
+            ? null
+            : json["subscriptionLastPostNumber"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id == null ? null : id,
+        "title": title == null ? null : title,
+        "iconId": iconId == null ? null : iconId,
+        "subforumId": subforumId == null ? null : subforumId,
+        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+        "deletedAt": deletedAt,
+        "deleted": deleted == null ? null : deleted,
+        "locked": locked == null ? null : locked,
+        "pinned": pinned == null ? null : pinned,
+        "lastPost": lastPost == null ? null : lastPost.toJson(),
+        "backgroundUrl": backgroundUrl,
+        "backgroundType": backgroundType,
+        "user": user == null ? null : user,
+        "postCount": postCount == null ? null : postCount,
+        "recentPostCount": recentPostCount == null ? null : recentPostCount,
+        "unreadPostCount": unreadPostCount == null ? null : unreadPostCount,
+        "readThreadUnreadPosts":
+            readThreadUnreadPosts == null ? null : readThreadUnreadPosts,
+        "read": read == null ? null : read,
+        "hasRead": hasRead == null ? null : hasRead,
+        "hasSeenNoNewPosts":
+            hasSeenNoNewPosts == null ? null : hasSeenNoNewPosts,
+        "subforum": subforum == null ? null : subforum.toJson(),
+        "tags": tags == null ? null : List<dynamic>.from(tags.map((x) => x)),
+        "viewers": viewers == null ? null : viewers.toJson(),
+        "totalPosts": totalPosts == null ? null : totalPosts,
+        "currentPage": currentPage == null ? null : currentPage,
+        "threadBackgroundUrl": threadBackgroundUrl,
+        "threadBackgroundType": threadBackgroundType,
+        "posts": posts == null
+            ? null
+            : List<dynamic>.from(posts.map((x) => x.toJson())),
+        "readThreadLastSeen": readThreadLastSeen == null
+            ? null
+            : readThreadLastSeen.toIso8601String(),
+        "subscribed": subscribed == null ? null : subscribed,
+        "subscriptionLastSeen": subscriptionLastSeen == null
+            ? null
+            : subscriptionLastSeen.toIso8601String(),
+        "subscriptionLastPostNumber": subscriptionLastPostNumber == null
+            ? null
+            : subscriptionLastPostNumber,
+      };
 }

@@ -43,7 +43,7 @@ class ProfileThreadPost {
   });
 
   int id;
-  Thread thread;
+  ThreadUserProfile thread;
   int page;
   String content;
   DateTime createdAt;
@@ -59,7 +59,9 @@ class ProfileThreadPost {
   factory ProfileThreadPost.fromJson(Map<String, dynamic> json) =>
       ProfileThreadPost(
         id: json["id"] == null ? null : json["id"],
-        thread: json["thread"] == null ? null : Thread.fromJson(json["thread"]),
+        thread: json["thread"] == null
+            ? null
+            : ThreadUserProfile.fromJson(json["thread"]),
         page: json["page"] == null ? null : json["page"],
         content: json["content"] == null ? null : json["content"],
         createdAt: json["createdAt"] == null
