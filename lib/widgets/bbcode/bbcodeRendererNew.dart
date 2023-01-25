@@ -304,6 +304,7 @@ class BBcodeRendererNew extends StatelessWidget {
             break;
           case 'img':
           case 'img thumbnail':
+            print(node);
             spans.add(_imageNodeHandler(node));
             break;
           case 'blockquote':
@@ -377,7 +378,17 @@ class BBcodeRendererNew extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String bbcodeCleaned = this.bbcode.replaceAll('[img thumbnail]', '[img]');
+    String bbcodeCleaned = this.bbcode.trim();
+
+    // Handle the different attributes for images TODO: Make a more clean solution
+    bbcodeCleaned =
+        bbcodeCleaned.replaceAll('[img thumbnail]', '[img thumbnail=true]');
+    bbcodeCleaned = bbcodeCleaned.replaceAll('[img link]', '[img link=true]');
+    bbcodeCleaned = bbcodeCleaned.replaceAll(
+        '[img link thumbnail]', '[img link=true thumbnail=true]');
+    bbcodeCleaned = bbcodeCleaned.replaceAll(
+        '[img thumbnail link]', '[img thumbnail=true link=true]');
+
     // Force images into new lines if there isn't any space between them
     bbcodeCleaned = bbcodeCleaned.replaceAll('[/img][img]', '[/img]\n[img]');
     bbcodeCleaned = bbcodeCleaned.replaceAll('[/img] [img]', '[/img]\n[img]');
