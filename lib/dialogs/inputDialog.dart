@@ -18,6 +18,7 @@ class _InputDialogState extends State<InputDialog> {
   @override
   void initState() {
     super.initState();
+    _controller.text = widget.content;
   }
 
   @override

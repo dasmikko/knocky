@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/controllers/forumController.dart';
 import 'package:knocky/controllers/settingsController.dart';
+import 'package:knocky/dialogs/inputDialog.dart';
 import 'package:knocky/helpers/snackbar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -40,6 +41,11 @@ class SettingsScreen extends StatelessWidget {
                 },
               ),
             ),
+
+            /**
+             * Cache
+             */
+            Divider(),
             ListTile(
               dense: true,
               title: Text(
@@ -74,6 +80,7 @@ class SettingsScreen extends StatelessWidget {
              * API
              */
 
+            Divider(),
             ListTile(
               dense: true,
               title: Text(
@@ -83,10 +90,57 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
             ),
+            ListTile(
+              title: Text('Change API URL'),
+              subtitle: Row(
+                children: [
+                  Text(
+                    'Current: ',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  Obx(
+                    () => Text(
+                      settingsController.apiEndpoint.value,
+                      style: TextStyle(
+                          color: Colors.grey, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+              onTap: () async {
+                var dialogResult = await Get.dialog(InputDialog(
+                  title: 'Enter API URL token',
+                  content: settingsController.apiEndpoint.value,
+                ));
+
+                if (dialogResult != false) {
+                  settingsController.apiEndpoint.value = dialogResult;
+                  GetStorage prefs = GetStorage();
+                  prefs.write('apiEndpoint', dialogResult);
+
+                  KnockySnackbar.success('API URL was saved!',
+                      icon: Icon(Icons.check));
+                }
+              },
+            ),
+            ListTile(
+              title: Text('Reset API URL to default'),
+              onTap: () async {
+                settingsController.apiEndpoint.value =
+                    settingsController.defaultAPIURL;
+
+                GetStorage prefs = GetStorage();
+                prefs.write('apiEndpoint', settingsController.defaultAPIURL);
+
+                KnockySnackbar.success('API URL was reset to default!',
+                    icon: Icon(Icons.check));
+              },
+            ),
 
             /**
              * Other
              */
+            Divider(),
             ListTile(
               dense: true,
               title: Text(

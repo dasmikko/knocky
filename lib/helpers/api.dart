@@ -26,7 +26,7 @@ import 'package:knocky/models/v2/alerts.dart' as AlertsV2;
 import 'package:knocky/models/v2/thread.dart';
 
 class KnockoutAPI {
-  static const KNOCKOUT_URL = "https://knockyauth.rekna.xyz/";
+  static const DEFAULT_API_URL = "https://knockyauth.rekna.xyz/";
   static const QA_URL = "https://forums.stylepunch.club:3000/";
   static const CDN_URL = "https://cdn.knockout.chat/image";
 
@@ -63,7 +63,9 @@ class KnockoutAPI {
     };
 
     if (headers != null) mHeaders.addAll(headers);
-    String mBaseurl = prefs.read('env') == 'knockout' ? KNOCKOUT_URL : QA_URL;
+    String mBaseurl = prefs.read('env') == 'knockout'
+        ? settingsController.apiEndpoint.value
+        : QA_URL;
 
     //String mBaseurl = 'https://api.knockout.chat/';
     Dio dio = new Dio();

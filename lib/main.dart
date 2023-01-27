@@ -34,6 +34,10 @@ void main() async {
     settingsController.showNSFWThreads.value = prefs.read('showNSFW');
   }
 
+  if (prefs.hasData('apiEndpoint')) {
+    settingsController.apiEndpoint.value = prefs.read('apiEndpoint');
+  }
+
   authController.getStoredAuthInfo();
 
   try {

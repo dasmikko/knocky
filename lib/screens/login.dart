@@ -6,9 +6,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/controllers/authController.dart';
+import 'package:knocky/controllers/settingsController.dart';
 import 'package:knocky/dialogs/inputDialog.dart';
 import 'package:knocky/dialogs/qrDialog.dart';
-import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/screens/forum.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -25,8 +25,10 @@ class _LoginScreenState extends State<LoginScreen> {
   void initiateLogin(String provider) async {
     initUniLinks();
 
+    final SettingsController settingsController = Get.put(SettingsController());
+
     await launch(
-        'https://api.knockout.chat/auth/$provider/login?redirect=${KnockoutAPI.KNOCKOUT_URL}handleAuth');
+        'https://api.knockout.chat/auth/$provider/login?redirect=${settingsController.apiEndpoint.value}handleAuth');
   }
 
   @override
