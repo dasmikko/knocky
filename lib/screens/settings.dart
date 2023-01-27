@@ -71,6 +71,20 @@ class SettingsScreen extends StatelessWidget {
             ),
 
             /**
+             * API
+             */
+
+            ListTile(
+              dense: true,
+              title: Text(
+                'API',
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+
+            /**
              * Other
              */
             ListTile(

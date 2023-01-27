@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+//import 'package:intl/intl.dart';
 import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/models/usergroup.dart';
 
@@ -7,7 +7,7 @@ class UsergroupLabel extends StatelessWidget {
   final Usergroup usergroup;
   final bool banned;
   final DateTime joinDate;
-  final DateFormat joinFormat = new DateFormat('MMMM yyyy');
+  //final DateFormat joinFormat = new DateFormat('MMMM yyyy');
 
   UsergroupLabel({@required this.usergroup, this.banned, this.joinDate});
 
@@ -29,7 +29,7 @@ class UsergroupLabel extends StatelessWidget {
   }
 
   Widget joinDateLabel() {
-    return Text(" - joined ${joinFormat.format(joinDate)}");
+    //return Text(" - joined ${joinFormat.format(joinDate)}");
   }
 
   @override
