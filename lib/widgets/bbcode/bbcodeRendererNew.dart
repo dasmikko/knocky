@@ -261,7 +261,7 @@ class BBcodeRendererNew extends StatelessWidget {
           case 'h1':
             spans.add(
               TextSpan(
-                text: node.textContent + '\n\n',
+                text: node.textContent + '\n',
                 style: TextStyle(
                   fontSize: 23,
                   fontWeight: FontWeight.bold,
@@ -272,7 +272,7 @@ class BBcodeRendererNew extends StatelessWidget {
           case 'h2':
             spans.add(
               TextSpan(
-                text: node.textContent + '\n\n',
+                text: node.textContent + '\n',
                 style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
               ),
             );
