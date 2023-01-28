@@ -41,7 +41,7 @@ class _ViewUsersOfRatingsContentState extends State<ViewUsersOfRatingsContent> {
                       ),
                     ),
                     Text(
-                      ratingIconMap[o.rating].name + ' x ${o.users.length}',
+                      ratingIconMap[o.rating].name + ' x${o.users.length}',
                     ),
                   ],
                 ),
@@ -55,14 +55,13 @@ class _ViewUsersOfRatingsContentState extends State<ViewUsersOfRatingsContent> {
                   children: o.users
                       .map(
                         (user) => Container(
-                          padding:
-                              EdgeInsets.only(bottom: 12, left: 12, right: 12),
+                          padding: EdgeInsets.only(left: 12, right: 12),
                           child: Username(
                             username: user.username,
                             role: user.role,
                             banned: false,
                             bold: false,
-                            fontSize: 16,
+                            fontSize: 14,
                           ),
                         ),
                       )
