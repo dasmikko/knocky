@@ -1,6 +1,7 @@
 //import 'package:knocky/models/slateDocument.dart';
 import 'dart:convert';
 import 'package:knocky/models/usergroup.dart';
+import 'package:knocky/models/v2/userRole.dart';
 
 // To parse this JSON data, do
 //
@@ -347,7 +348,7 @@ class ThreadUser {
   });
 
   int id;
-  ThreadUserRole role;
+  UserRole role;
   String username;
   Usergroup usergroup;
   String avatarUrl;
@@ -364,8 +365,7 @@ class ThreadUser {
 
   factory ThreadUser.fromJson(Map<String, dynamic> json) => ThreadUser(
         id: json["id"] == null ? null : json["id"],
-        role:
-            json["role"] == null ? null : ThreadUserRole.fromJson(json["role"]),
+        role: json["role"] == null ? null : UserRole.fromJson(json["role"]),
         username: json["username"] == null ? null : json["username"],
         usergroup: json["usergroup"] == null
             ? null

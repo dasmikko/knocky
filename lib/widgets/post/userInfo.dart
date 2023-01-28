@@ -52,7 +52,7 @@ class UserInfo extends StatelessWidget {
               username: user.username,
               title: user.title,
               pronouns: user.pronouns,
-              usergroup: user.usergroup,
+              role: user.role,
               bold: true,
               onClick: () => Get.to(ProfileScreen(id: user.id)),
             ),

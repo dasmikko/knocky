@@ -10,7 +10,6 @@ class UserBans {
 }
 
 UserBans fromJson(List<dynamic> json) {
-  print(json);
   var bans = json
       .map((mapEntries) => new UserBan(
             id: mapEntries['id'],

@@ -89,7 +89,7 @@ class AppColors {
       case RoleCode.SUPER_MODERATOR:
         return HexColor('08f760');
       case RoleCode.ADMIN:
-        return HexColor('c448ff');
+        return HexColor('fcbe20');
       default:
         return HexColor('3facff');
     }

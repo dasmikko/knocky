@@ -67,4 +67,5 @@ final codeValues = EnumValues({
   "super-moderator": RoleCode.SUPER_MODERATOR,
   "paid-gold-user": RoleCode.PAID_GOLD_USER,
   "gold-user": RoleCode.GOLD_USER,
+  "admin": RoleCode.ADMIN,
 });

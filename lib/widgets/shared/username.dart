@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/colors.dart';
-import 'package:knocky/models/usergroup.dart';
+import 'package:knocky/models/v2/userRole.dart';
 
 class Username extends StatelessWidget {
   final String username;
   final String title;
   final String pronouns;
-  final Usergroup usergroup;
   final bool bold;
   final Function onClick;
   final double fontSize;
   final double titleFontSize;
   final bool banned;
+  final UserRole role;
 
   Username({
     @required this.username,
     @required this.title,
     @required this.pronouns,
-    @required this.usergroup,
+    @required this.role,
     this.bold,
     this.onClick,
     this.banned = false,
@@ -40,8 +40,8 @@ class Username extends StatelessWidget {
               username,
               style: TextStyle(
                 fontSize: fontSize,
-                color: AppColors(context).userGroupToColor(
-                  usergroup,
+                color: AppColors(context).userRoleToColor(
+                  role.code,
                   banned: banned,
                 ),
                 fontWeight: bold ? FontWeight.bold : FontWeight.normal,

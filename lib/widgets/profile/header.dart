@@ -6,7 +6,7 @@ import 'package:knocky/models/userProfileRatings.dart';
 import 'package:knocky/widgets/profile/ratings.dart';
 import 'package:knocky/widgets/shared/avatar.dart';
 import 'package:knocky/widgets/shared/background.dart';
-import 'package:knocky/widgets/shared/usergroup.dart';
+import 'package:knocky/widgets/shared/userrRoleLabel.dart';
 import 'package:knocky/widgets/shared/username.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -41,8 +41,9 @@ class _ProfileHeaderState extends State<ProfileHeader>
 
   Widget content() {
     return Container(
-        margin: EdgeInsets.fromLTRB(16, 16, 16, 4),
-        child: Column(children: [
+      margin: EdgeInsets.fromLTRB(16, 16, 16, 4),
+      child: Column(
+        children: [
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Avatar(
                 avatarUrl: widget.profile?.avatarUrl,
@@ -50,7 +51,9 @@ class _ProfileHeaderState extends State<ProfileHeader>
             headerLabels(context),
           ]),
           Container(height: 40, child: ProfileRatings(ratings: widget.ratings)),
-        ]));
+        ],
+      ),
+    );
   }
 
   Widget controls() {
@@ -75,30 +78,47 @@ class _ProfileHeaderState extends State<ProfileHeader>
 
   Widget headerLabels(BuildContext context) {
     return Expanded(
-        child: Container(
-            height: 148,
-            margin: EdgeInsets.fromLTRB(8, 0, 0, 8),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Username(
-                  username: widget.profile.username,
-                  bold: true,
-                  banned: widget.profile?.banned,
-                  fontSize: 26),
-              ...(showingLinks ? linksSubtitle() : regularSubtitle()),
-            ])));
+      child: Container(
+        height: 148,
+        margin: EdgeInsets.fromLTRB(8, 0, 0, 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Username(
+                title: widget.profile.title,
+                pronouns: widget.profile.pronouns,
+                username: widget.profile.username,
+                bold: true,
+                role: widget.profile.role,
+                banned: widget.profile?.banned,
+                fontSize: 26),
+            ...(showingLinks ? linksSubtitle() : regularSubtitle()),
+          ],
+        ),
+      ),
+    );
   }
 
   List<Widget> regularSubtitle() {
+    print(widget.profile.toJson());
     return [
-      UsergroupLabel(
-          banned: widget.profile?.banned, joinDate: widget.profile.joinDate),
       Container(
-          margin: EdgeInsets.only(top: 4),
-          child: Text(widget.details?.bio ?? '',
-              style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  color: Color.fromRGBO(255, 255, 255, 0.6))))
+        margin: EdgeInsets.only(
+          top: 4,
+        ),
+        child: UserRoleLabel(
+            role: widget.profile?.role, banned: widget.profile?.banned),
+      ),
+      Container(
+        margin: EdgeInsets.only(top: 4),
+        child: Text(
+          widget.details?.bio ?? '',
+          style: TextStyle(
+            fontStyle: FontStyle.italic,
+            color: Color.fromRGBO(255, 255, 255, 0.6),
+          ),
+        ),
+      )
     ];
   }
 
@@ -160,14 +180,17 @@ class _ProfileHeaderState extends State<ProfileHeader>
 
   Widget gradientOverlay() {
     return Container(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-            height: 64,
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Colors.transparent, Color.fromRGBO(0, 0, 0, 0.75)],
-            ))));
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        height: 64,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.transparent, Color.fromRGBO(0, 0, 0, 0.75)],
+          ),
+        ),
+      ),
+    );
   }
 }
