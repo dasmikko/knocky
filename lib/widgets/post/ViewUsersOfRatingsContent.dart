@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:knocky/helpers/icons.dart';
 import 'package:knocky/models/thread.dart';
+import 'package:knocky/widgets/shared/username.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import 'package:knocky/helpers/colors.dart';
 
@@ -56,7 +57,13 @@ class _ViewUsersOfRatingsContentState extends State<ViewUsersOfRatingsContent> {
                         (user) => Container(
                           padding:
                               EdgeInsets.only(bottom: 12, left: 12, right: 12),
-                          child: Text(user.username),
+                          child: Username(
+                            username: user.username,
+                            role: user.role,
+                            banned: false,
+                            bold: false,
+                            fontSize: 16,
+                          ),
                         ),
                       )
                       .toList(),
