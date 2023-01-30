@@ -56,6 +56,7 @@ class _ViewUsersOfRatingsContentState extends State<ViewUsersOfRatingsContent> {
                       .map(
                         (user) => Container(
                           padding: EdgeInsets.only(left: 12, right: 12),
+                          // ignore: missing_required_param
                           child: Username(
                             username: user.username,
                             role: user.role,

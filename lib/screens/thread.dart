@@ -24,7 +24,7 @@ class ThreadScreen extends StatefulWidget {
   final int page;
   final int linkedPostId;
 
-  ThreadScreen({@required this.id, this.page: 1, this.linkedPostId});
+  ThreadScreen({@required this.id, this.page = 1, this.linkedPostId});
 
   @override
   _ThreadScreenState createState() => _ThreadScreenState();
@@ -331,7 +331,7 @@ class _ThreadScreenState extends State<ThreadScreen>
                   child: FloatingActionButton(
                     child: FaIcon(
                       FontAwesomeIcons.chevronDown,
-                      color: Theme.of(context).textTheme.bodyText1.color,
+                      color: Theme.of(context).textTheme.bodyLarge.color,
                     ),
                     onPressed: () {
                       threadController.itemScrollController.scrollTo(

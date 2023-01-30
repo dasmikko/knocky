@@ -8,7 +8,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
   SlateNode _lastElement;
   List<SlateLeafMark> _leafMarks = [];
 
-  SlateNode parse(String text, {type: 'paragraph'}) {
+  SlateNode parse(String text, {type = 'paragraph'}) {
     paragraph.type = type;
 
     var ast = bbob.parse(text);

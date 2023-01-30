@@ -10,7 +10,7 @@ class PaginatedListView extends StatefulWidget {
   final int id;
   final int page;
 
-  PaginatedListView({@required this.id, this.page: 1});
+  PaginatedListView({@required this.id, this.page = 1});
 
   @override
   PaginatedListViewState createState() => PaginatedListViewState();

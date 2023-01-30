@@ -7,7 +7,7 @@ import 'package:knocky/widgets/profile/post.dart';
 import 'package:knocky/widgets/shared/paginatedListView.dart';
 
 class ProfilePosts extends PaginatedListView {
-  ProfilePosts({@required id, page: 1}) : super(id: id, page: page);
+  ProfilePosts({@required id, page = 1}) : super(id: id, page: page);
 
   @override
   _ProfilePostsState createState() => _ProfilePostsState();

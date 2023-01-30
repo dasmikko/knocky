@@ -89,7 +89,7 @@ class BBcodeRendererNew extends StatelessWidget {
     TextStyle textStyle;
 
     if (currentTextStyle == null) {
-      textStyle = Theme.of(parentContext).textTheme.bodyText1.copyWith(
+      textStyle = Theme.of(parentContext).textTheme.bodyLarge.copyWith(
           fontFamily: node.tag == 'code' ? 'RobotoMono' : 'Roboto',
           decoration:
               node.tag == 'u' ? TextDecoration.underline : TextDecoration.none,

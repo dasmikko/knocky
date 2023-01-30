@@ -71,10 +71,10 @@ class _ImageWidgetState extends State<ImageWidget> {
           transition: Transition.fadeIn,
         );
       },
-      child: Hero(
-        tag: this.widget.url + this.widget.postId.toString(),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: 400),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: 400),
+        child: Hero(
+          tag: this.widget.url + this.widget.postId.toString(),
           child: ExtendedImage.network(
             this.widget.url,
             key: ValueKey(this.widget.url),

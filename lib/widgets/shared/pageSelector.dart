@@ -14,7 +14,7 @@ class PageSelector extends StatelessWidget {
       {@required this.onNext,
       @required this.onPage,
       @required this.pageCount,
-      this.currentPage: 1});
+      this.currentPage = 1});
 
   static PageSelector pageSelector(ItemScrollController itemScrollController,
       PaginatedController dataController) {
