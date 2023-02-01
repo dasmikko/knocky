@@ -44,6 +44,8 @@ dependencies:
   matrix4_transform: 2.0.1
   duration: 3.0.12
   tweet_ui: 4.0.4
+  chewie: 1.4.0
+  video_player: 2.5.1
   better_player: 0.0.83
   flutter_dotenv: 5.0.2
   popover: 0.2.8
