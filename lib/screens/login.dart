@@ -1,17 +1,13 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/settingsController.dart';
 import 'package:knocky/dialogs/inputDialog.dart';
-import 'package:knocky/dialogs/qrDialog.dart';
 import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/screens/forum.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:uni_links/uni_links.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -58,39 +54,6 @@ class _LoginScreenState extends State<LoginScreen> {
       print('Unilinks error: ' + err);
       // Handle exception by warning the user their action did not succeed
     });
-  }
-
-  void scanQRCode() async {
-    GetStorage prefs = GetStorage();
-
-    bool qrDialogRemember = await prefs.read('qrDialogRemember') != null
-        ? await prefs.read('qrDialogRemember')
-        : false;
-
-    if (!qrDialogRemember) {
-      var dialogResult = await Get.dialog(QRDialog());
-
-      if (!dialogResult) return;
-    }
-
-    AuthController authController = Get.put(AuthController());
-
-    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-        "#ff6666", "Cancel", false, ScanMode.DEFAULT);
-
-    if (barcodeScanRes != null) {
-      SnackbarController snackbarController = KnockySnackbar.normal(
-          'Logging in', 'Got QR code, logging in with it...',
-          isDismissible: false, showProgressIndicator: true);
-
-      // login and fetch user info
-      await authController.loginWithJWTOnly(barcodeScanRes);
-      snackbarController.close();
-      Get.offAll(ForumScreen());
-      KnockySnackbar.success('Login was successfull!', icon: Icon(Icons.check));
-    } else {
-      KnockySnackbar.error('Login was canceled', icon: Icon(Icons.warning));
-    }
   }
 
   @override
@@ -238,36 +201,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     Text(
                       'Steam',
-                      style: TextStyle(fontSize: 18),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(bottom: 10),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.all(10),
-                  backgroundColor: Colors.indigo[800],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed: scanQRCode,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(right: 10),
-                      child: Icon(
-                        FontAwesomeIcons.camera,
-                        color: Colors.white,
-                        size: 24.0,
-                      ),
-                    ),
-                    Text(
-                      'Scan QR Code',
                       style: TextStyle(fontSize: 18),
                     )
                   ],

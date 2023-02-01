@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/userProfile.dart';
 import 'package:knocky/models/userProfileDetails.dart';
-import 'package:knocky/models/userProfileRatings.dart';
 
 class ProfileController extends GetxController {
   final isFetching = false.obs;

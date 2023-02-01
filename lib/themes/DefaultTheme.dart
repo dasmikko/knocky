@@ -5,7 +5,7 @@ ThemeData defaultTheme() {
     brightness: Brightness.light,
     primarySwatch: Colors.red,
     textTheme: TextTheme(
-      bodyText1: TextStyle(color: Colors.black),
+      bodyLarge: TextStyle(color: Colors.black),
     ),
     scaffoldBackgroundColor: Colors.grey[400],
     cardTheme: CardTheme(

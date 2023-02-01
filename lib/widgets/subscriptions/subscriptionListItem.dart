@@ -45,7 +45,7 @@ class SubscriptionListItem extends ThreadListItem {
 
   Widget longPressBottomSheetContent() {
     return Container(
-      color: Get.theme.bottomAppBarColor,
+      color: Get.theme.bottomAppBarTheme.color,
       child: Wrap(
         children: <Widget>[
           ListTile(

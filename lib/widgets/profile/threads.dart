@@ -7,7 +7,7 @@ import 'package:knocky/widgets/profile/thread.dart';
 import 'package:knocky/widgets/shared/paginatedListView.dart';
 
 class ProfileThreads extends PaginatedListView {
-  ProfileThreads({@required id, page: 1}) : super(id: id, page: page);
+  ProfileThreads({@required id, page = 1}) : super(id: id, page: page);
 
   @override
   _ProfileThreadsState createState() => _ProfileThreadsState();

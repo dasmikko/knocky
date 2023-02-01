@@ -11,7 +11,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 class SignificantThreadsScreen extends StatefulWidget {
   final SignificantThreads threadsToShow;
 
-  SignificantThreadsScreen({this.threadsToShow: SignificantThreads.Popular});
+  SignificantThreadsScreen({this.threadsToShow = SignificantThreads.Popular});
 
   @override
   _SignificantThreadsScreenState createState() =>

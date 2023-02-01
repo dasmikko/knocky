@@ -10,8 +10,8 @@ class KnockySnackbar {
     String title,
     String content, {
     Widget icon,
-    bool isDismissible: true,
-    bool showProgressIndicator: false,
+    bool isDismissible = true,
+    bool showProgressIndicator = false,
   }) {
     return Get.snackbar(
       title,
@@ -30,8 +30,8 @@ class KnockySnackbar {
     String content, {
     String title = 'Success',
     Widget icon,
-    bool isDismissible: true,
-    bool showProgressIndicator: false,
+    bool isDismissible = true,
+    bool showProgressIndicator = false,
   }) {
     return Get.snackbar(
       title,
@@ -52,8 +52,8 @@ class KnockySnackbar {
     String content, {
     String title = 'Error',
     Widget icon,
-    bool isDismissible: true,
-    bool showProgressIndicator: false,
+    bool isDismissible = true,
+    bool showProgressIndicator = false,
   }) {
     return Get.snackbar(
       title,

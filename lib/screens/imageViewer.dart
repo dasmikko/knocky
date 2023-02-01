@@ -50,14 +50,14 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
         itemCount: this.widget.urls.length,
         itemBuilder: (BuildContext context, int index) {
           return Container(
-            child: Hero(
-              tag: this.widget.urls[index] + this.widget.postId.toString(),
-              child: CustomZoomWidget(
-                onZoomStateChange: (bool zoomState) {
-                  setState(() {
-                    _isZooming = zoomState;
-                  });
-                },
+            child: CustomZoomWidget(
+              onZoomStateChange: (bool zoomState) {
+                setState(() {
+                  _isZooming = zoomState;
+                });
+              },
+              child: Hero(
+                tag: this.widget.urls[index] + this.widget.postId.toString(),
                 child: ExtendedImage.network(this.widget.urls[index]),
               ),
             ),

@@ -112,7 +112,7 @@ class KnockoutAPI {
     return SubforumV2.subforumFromJson(json.encode(response.data));
   }
 
-  Future<ThreadModel.Thread> getThread(int id, {int page: 1}) async {
+  Future<ThreadModel.Thread> getThread(int id, {int page = 1}) async {
     final response = await _request(
       url: 'v2/threads/' + id.toString() + '/' + page.toString(),
     );
@@ -129,7 +129,7 @@ class KnockoutAPI {
     }
   }
 
-  Future<AlertsV2.Alerts> getAlertsPaginated({int page: 1}) async {
+  Future<AlertsV2.Alerts> getAlertsPaginated({int page = 1}) async {
     try {
       final response = await _request(url: 'v2/alerts/$page', type: 'get');
       return AlertsV2.Alerts.fromJson(response.data);

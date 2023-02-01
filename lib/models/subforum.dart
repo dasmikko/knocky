@@ -1,5 +1,4 @@
 import 'package:knocky/models/subforumDetails.dart';
-import 'package:knocky/models/usergroup.dart';
 
 class Subforum {
   final int id;
