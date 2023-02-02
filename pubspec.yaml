@@ -57,6 +57,10 @@ dependencies:
   flutter_svg: 1.1.6
   uni_links: 0.5.1
   flutter_custom_tabs: 1.0.4
+  github: 9.8.0
+  flutter_markdown: 0.6.13+1
+  path_provider: 2.0.12
+  app_installer: 1.1.0
   layout: 
     git: https://github.com/chirag729/layout.git
   extended_image: 6.3.4

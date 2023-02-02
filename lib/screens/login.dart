@@ -19,10 +19,11 @@ StreamSubscription _sub;
 
 class _LoginScreenState extends State<LoginScreen> {
   void initiateLogin(String provider) async {
+    final SettingsController settingsController = Get.put(SettingsController());
+    // Start listening to auth finish url
     initUniLinks();
 
-    final SettingsController settingsController = Get.put(SettingsController());
-
+    // Launch login url
     await launch(
         'https://api.knockout.chat/auth/$provider/login?redirect=${settingsController.apiEndpoint.value}handleAuth');
   }
@@ -72,8 +73,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 AuthController authController = Get.put(AuthController());
                 authController.loginWithJWTOnly(dialogResult);
                 Get.offAll(ForumScreen());
-                KnockySnackbar.success('Login was successfull!',
-                    icon: Icon(Icons.check));
+                KnockySnackbar.success(
+                  'Login was successfull!',
+                  icon: Icon(Icons.check),
+                );
               }
             },
             child: Text('JWT'),

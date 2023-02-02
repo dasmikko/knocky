@@ -1,11 +1,19 @@
+import 'package:app_installer/app_installer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:dio/dio.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/controllers/forumController.dart';
 import 'package:knocky/controllers/settingsController.dart';
+import 'package:knocky/dialogs/downloadUpdateDialog.dart';
 import 'package:knocky/dialogs/inputDialog.dart';
+import 'package:knocky/dialogs/updateAvailableDialog.dart';
 import 'package:knocky/helpers/snackbar.dart';
+import 'package:knocky/helpers/version.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:github/github.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key key}) : super(key: key);
@@ -134,6 +142,70 @@ class SettingsScreen extends StatelessWidget {
 
                 KnockySnackbar.success('API URL was reset to default!',
                     icon: Icon(Icons.check));
+              },
+            ),
+
+            /**
+             * Update
+             */
+            Divider(),
+            ListTile(
+              dense: true,
+              title: Text(
+                'Update',
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text('Check for updates'),
+              onTap: () async {
+                SnackbarController loadingSnackbar = KnockySnackbar.normal(
+                    'Update', 'Checking for updates',
+                    isDismissible: false, showProgressIndicator: true);
+
+                PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+                // Get the latest release from Github
+                var github = GitHub();
+                Release latestRelease = await github.repositories
+                    .getLatestRelease(RepositorySlug('dasmikko', 'knocky'));
+                loadingSnackbar.close();
+
+                // Check if latest release is newer
+                // TODO: Use package info!
+                if (VersionHelper.isNewerVersion(
+                    '2.2.5', latestRelease.tagName)) {
+                  var dialogResult = await Get.dialog(UpdateAvailableDialog(
+                    content: latestRelease.body,
+                    version: latestRelease.tagName,
+                  ));
+
+                  if (dialogResult) {
+                    List<ReleaseAsset> filteredAssets = latestRelease.assets
+                        .where((element) => !element.name.contains('arm'))
+                        .toList();
+
+                    ReleaseAsset asset = filteredAssets.first;
+                    print('assets url ${asset.browserDownloadUrl}');
+
+                    var downloadFilePath =
+                        await Get.dialog(DownloadUpdateDialog(
+                      url: asset.browserDownloadUrl,
+                      fileName: asset.name,
+                    ));
+
+                    if (downloadFilePath != false) {
+                      AppInstaller.installApk(downloadFilePath);
+                    }
+                  }
+                } else {
+                  KnockySnackbar.success(
+                    'No updates available!',
+                    title: 'Update',
+                  );
+                }
               },
             ),
 
