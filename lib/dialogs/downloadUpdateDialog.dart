@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:knocky/helpers/snackbar.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DownloadUpdateDialog extends StatefulWidget {
@@ -50,6 +51,7 @@ class _DownloadUpdateDialogState extends State<DownloadUpdateDialog> {
       if (CancelToken.isCancel(e)) {
         print('user canceled');
       }
+      KnockySnackbar.error('Error while downloading update...');
       Get.back(result: false);
     }
   }
