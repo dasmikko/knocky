@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/settingsController.dart';
@@ -9,6 +8,7 @@ import 'package:knocky/helpers/twitterApi.dart';
 import 'package:knocky/screens/forum.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/themes/DarkTheme.dart';
+import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:layout/layout.dart';
 
@@ -23,7 +23,7 @@ void main() async {
       color: Colors.red,
       location: BannerLocation.bottomStart,
       variables: {
-        "allowUpdater": false,
+        "allowUpdater": true,
       }
   );
 

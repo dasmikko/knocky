@@ -67,7 +67,6 @@ class KnockoutAPI {
         ? settingsController.apiEndpoint.value
         : QA_URL;
 
-    //String mBaseurl = 'https://api.knockout.chat/';
     Dio dio = new Dio();
     dio.options.baseUrl = mBaseurl;
     dio.options.contentType = ContentType.json.toString();
