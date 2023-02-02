@@ -6,11 +6,11 @@ import 'package:knocky/widgets/post/ratingsChooser.dart';
 class ProfileRatings extends StatelessWidget {
   final List<UserProfileRating> ratings;
 
-  ProfileRatings({@required this.ratings});
+  ProfileRatings({required this.ratings});
 
   @override
   Widget build(BuildContext context) {
-    ratings.sort((a, b) => b.count.compareTo(a.count));
+    ratings.sort((a, b) => b.count!.compareTo(a.count!));
     return Container(
         height: double.infinity,
         margin: EdgeInsets.only(bottom: 8),

@@ -229,13 +229,13 @@ IconListItem getIconOrDefault(iconId) {
 }
 
 class IconListItem {
-  final int id;
-  final String url;
+  final int? id;
+  final String? url;
 
   IconListItem({this.id, this.url});
 }
 
-Map<String, RatingItem> ratingsMapForContext(UserRole userRole, int subforum) {
+Map<String, RatingItem> ratingsMapForContext(UserRole? userRole, int subforum) {
   var relevantEntries = ratingIconMap.entries
       .where((element) => element.value.allowedUsergroups == null);
   var map = new Map<String, RatingItem>();
@@ -350,11 +350,11 @@ Map<String, RatingItem> ratingIconMap = {
 };
 
 class RatingItem {
-  final String id;
-  final String name;
-  final String url;
-  final List<int> allowedSubforums;
-  final List<Usergroup> allowedUsergroups;
+  final String? id;
+  final String? name;
+  final String? url;
+  final List<int>? allowedSubforums;
+  final List<Usergroup>? allowedUsergroups;
 
   RatingItem(
       {this.id,

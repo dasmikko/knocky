@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 class JumpToPageDialog extends StatefulWidget {
-  final int minValue;
-  final int maxValue;
-  final int value;
+  final int? minValue;
+  final int? maxValue;
+  final int? value;
 
   JumpToPageDialog({this.maxValue, this.minValue, this.value});
 
@@ -14,7 +14,7 @@ class JumpToPageDialog extends StatefulWidget {
 }
 
 class _JumpToPageDialogState extends State<JumpToPageDialog> {
-  int currentValue;
+  int? currentValue;
 
   @override
   void initState() {
@@ -35,9 +35,9 @@ class _JumpToPageDialogState extends State<JumpToPageDialog> {
         ),
       ],
       content: NumberPicker(
-        maxValue: this.widget.maxValue,
-        minValue: this.widget.minValue,
-        value: this.currentValue,
+        maxValue: this.widget.maxValue!,
+        minValue: this.widget.minValue!,
+        value: this.currentValue!,
         onChanged: (int value) {
           setState(() {
             currentValue = value;

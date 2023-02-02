@@ -15,7 +15,7 @@ class Forum {
     this.list,
   });
 
-  List<Subforum> list;
+  List<Subforum>? list;
 
   factory Forum.fromJson(Map<String, dynamic> json) => Forum(
         list: json["list"] == null
@@ -27,7 +27,7 @@ class Forum {
   Map<String, dynamic> toJson() => {
         "list": list == null
             ? null
-            : List<dynamic>.from(list.map((x) => x.toJson())),
+            : List<dynamic>.from(list!.map((x) => x.toJson())),
       };
 }
 
@@ -44,15 +44,15 @@ class Subforum {
     this.lastPost,
   });
 
-  int id;
-  String name;
-  int iconId;
-  String description;
-  String icon;
-  int totalThreads;
-  int totalPosts;
-  int lastPostId;
-  ListLastPost lastPost;
+  int? id;
+  String? name;
+  int? iconId;
+  String? description;
+  String? icon;
+  int? totalThreads;
+  int? totalPosts;
+  int? lastPostId;
+  ListLastPost? lastPost;
 
   factory Subforum.fromJson(Map<String, dynamic> json) => Subforum(
         id: json["id"] == null ? null : json["id"],
@@ -78,7 +78,7 @@ class Subforum {
         "totalThreads": totalThreads == null ? null : totalThreads,
         "totalPosts": totalPosts == null ? null : totalPosts,
         "lastPostId": lastPostId == null ? null : lastPostId,
-        "lastPost": lastPost == null ? null : lastPost.toJson(),
+        "lastPost": lastPost == null ? null : lastPost!.toJson(),
       };
 }
 
@@ -99,19 +99,19 @@ class ListLastPost {
     this.appName,
   });
 
-  int id;
-  Thread thread;
-  int page;
+  int? id;
+  Thread? thread;
+  int? page;
   dynamic content;
-  DateTime createdAt;
-  DateTime updatedAt;
-  User user;
-  List<dynamic> ratings;
-  List<dynamic> bans;
-  int threadPostNumber;
-  String countryName;
-  String countryCode;
-  AppName appName;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  User? user;
+  List<dynamic>? ratings;
+  List<dynamic>? bans;
+  int? threadPostNumber;
+  String? countryName;
+  String? countryCode;
+  AppName? appName;
 
   factory ListLastPost.fromJson(Map<String, dynamic> json) => ListLastPost(
         id: json["id"] == null ? null : json["id"],
@@ -141,19 +141,19 @@ class ListLastPost {
 
   Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
-        "thread": thread == null ? null : thread.toJson(),
+        "thread": thread == null ? null : thread!.toJson(),
         "page": page == null ? null : page,
         "content": content,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
-        "user": user == null ? null : user.toJson(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
+        "user": user == null ? null : user!.toJson(),
         "ratings":
-            ratings == null ? null : List<dynamic>.from(ratings.map((x) => x)),
-        "bans": bans == null ? null : List<dynamic>.from(bans.map((x) => x)),
+            ratings == null ? null : List<dynamic>.from(ratings!.map((x) => x)),
+        "bans": bans == null ? null : List<dynamic>.from(bans!.map((x) => x)),
         "threadPostNumber": threadPostNumber == null ? null : threadPostNumber,
         "countryName": countryName == null ? null : countryName,
         "countryCode": countryCode == null ? null : countryCode,
-        "appName": appName == null ? null : appNameValues.reverse[appName],
+        "appName": appName == null ? null : appNameValues.reverse![appName],
       };
 }
 
@@ -188,29 +188,29 @@ class Thread {
     this.tags,
   });
 
-  int id;
-  String title;
-  int iconId;
-  int subforumId;
-  DateTime createdAt;
-  DateTime updatedAt;
+  int? id;
+  String? title;
+  int? iconId;
+  int? subforumId;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   dynamic deletedAt;
-  bool deleted;
-  bool locked;
-  bool pinned;
-  ThreadLastPost lastPost;
-  String backgroundUrl;
-  String backgroundType;
-  int user;
-  int postCount;
-  int recentPostCount;
-  int unreadPostCount;
-  int readThreadUnreadPosts;
-  bool read;
-  bool hasRead;
-  bool hasSeenNoNewPosts;
-  Subforum subforum;
-  List<dynamic> tags;
+  bool? deleted;
+  bool? locked;
+  bool? pinned;
+  ThreadLastPost? lastPost;
+  String? backgroundUrl;
+  String? backgroundType;
+  int? user;
+  int? postCount;
+  int? recentPostCount;
+  int? unreadPostCount;
+  int? readThreadUnreadPosts;
+  bool? read;
+  bool? hasRead;
+  bool? hasSeenNoNewPosts;
+  Subforum? subforum;
+  List<dynamic>? tags;
 
   factory Thread.fromJson(Map<String, dynamic> json) => Thread(
         id: json["id"] == null ? null : json["id"],
@@ -261,13 +261,13 @@ class Thread {
         "title": title == null ? null : title,
         "iconId": iconId == null ? null : iconId,
         "subforumId": subforumId == null ? null : subforumId,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
         "deletedAt": deletedAt,
         "deleted": deleted == null ? null : deleted,
         "locked": locked == null ? null : locked,
         "pinned": pinned == null ? null : pinned,
-        "lastPost": lastPost == null ? null : lastPost.toJson(),
+        "lastPost": lastPost == null ? null : lastPost!.toJson(),
         "backgroundUrl": backgroundUrl == null ? null : backgroundUrl,
         "backgroundType": backgroundType == null ? null : backgroundType,
         "user": user == null ? null : user,
@@ -280,8 +280,8 @@ class Thread {
         "hasRead": hasRead == null ? null : hasRead,
         "hasSeenNoNewPosts":
             hasSeenNoNewPosts == null ? null : hasSeenNoNewPosts,
-        "subforum": subforum.toJson(),
-        "tags": tags == null ? null : List<dynamic>.from(tags.map((x) => x)),
+        "subforum": subforum!.toJson(),
+        "tags": tags == null ? null : List<dynamic>.from(tags!.map((x) => x)),
       };
 }
 
@@ -302,19 +302,19 @@ class ThreadLastPost {
     this.appName,
   });
 
-  int id;
-  int thread;
-  int page;
+  int? id;
+  int? thread;
+  int? page;
   dynamic content;
-  DateTime createdAt;
-  DateTime updatedAt;
-  User user;
-  List<dynamic> ratings;
-  List<dynamic> bans;
-  int threadPostNumber;
-  String countryName;
-  String countryCode;
-  AppName appName;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  User? user;
+  List<dynamic>? ratings;
+  List<dynamic>? bans;
+  int? threadPostNumber;
+  String? countryName;
+  String? countryCode;
+  AppName? appName;
 
   factory ThreadLastPost.fromJson(Map<String, dynamic> json) => ThreadLastPost(
         id: json["id"] == null ? null : json["id"],
@@ -347,16 +347,16 @@ class ThreadLastPost {
         "thread": thread == null ? null : thread,
         "page": page == null ? null : page,
         "content": content,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
-        "user": user == null ? null : user.toJson(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
+        "user": user == null ? null : user!.toJson(),
         "ratings":
-            ratings == null ? null : List<dynamic>.from(ratings.map((x) => x)),
-        "bans": bans == null ? null : List<dynamic>.from(bans.map((x) => x)),
+            ratings == null ? null : List<dynamic>.from(ratings!.map((x) => x)),
+        "bans": bans == null ? null : List<dynamic>.from(bans!.map((x) => x)),
         "threadPostNumber": threadPostNumber == null ? null : threadPostNumber,
         "countryName": countryName == null ? null : countryName,
         "countryCode": countryCode == null ? null : countryCode,
-        "appName": appName == null ? null : appNameValues.reverse[appName],
+        "appName": appName == null ? null : appNameValues.reverse![appName],
       };
 }
 
@@ -378,20 +378,20 @@ class User {
     this.useBioForTitle,
   });
 
-  int id;
-  UserRoleV2.UserRole role;
-  String username;
-  String avatarUrl;
-  String backgroundUrl;
-  int posts;
-  int threads;
-  DateTime createdAt;
-  DateTime updatedAt;
-  bool banned;
-  bool isBanned;
-  String title;
-  Pronouns pronouns;
-  int useBioForTitle;
+  int? id;
+  UserRoleV2.UserRole? role;
+  String? username;
+  String? avatarUrl;
+  String? backgroundUrl;
+  int? posts;
+  int? threads;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  bool? banned;
+  bool? isBanned;
+  String? title;
+  Pronouns? pronouns;
+  int? useBioForTitle;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"] == null ? null : json["id"],
@@ -422,18 +422,18 @@ class User {
 
   Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
-        "role": role == null ? null : role.toJson(),
+        "role": role == null ? null : role!.toJson(),
         "username": username == null ? null : username,
         "avatarUrl": avatarUrl == null ? null : avatarUrl,
         "backgroundUrl": backgroundUrl == null ? null : backgroundUrl,
         "posts": posts == null ? null : posts,
         "threads": threads == null ? null : threads,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
         "banned": banned == null ? null : banned,
         "isBanned": isBanned == null ? null : isBanned,
         "title": title == null ? null : title,
-        "pronouns": pronouns == null ? null : pronounsValues.reverse[pronouns],
+        "pronouns": pronouns == null ? null : pronounsValues.reverse![pronouns],
         "useBioForTitle": useBioForTitle == null ? null : useBioForTitle,
       };
 }
@@ -458,12 +458,12 @@ class Role {
     this.updatedAt,
   });
 
-  int id;
-  Code code;
-  String description;
-  List<dynamic> permissionCodes;
-  DateTime createdAt;
-  DateTime updatedAt;
+  int? id;
+  Code? code;
+  String? description;
+  List<dynamic>? permissionCodes;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   factory Role.fromJson(Map<String, dynamic> json) => Role(
         id: json["id"] == null ? null : json["id"],
@@ -482,13 +482,13 @@ class Role {
 
   Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
-        "code": code == null ? null : codeValues.reverse[code],
+        "code": code == null ? null : codeValues.reverse![code],
         "description": description == null ? null : description,
         "permissionCodes": permissionCodes == null
             ? null
-            : List<dynamic>.from(permissionCodes.map((x) => x)),
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+            : List<dynamic>.from(permissionCodes!.map((x) => x)),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
       };
 }
 
@@ -519,11 +519,11 @@ final codeValues = EnumValues({
 
 class EnumValues<T> {
   Map<String, T> map;
-  Map<T, String> reverseMap;
+  Map<T, String>? reverseMap;
 
   EnumValues(this.map);
 
-  Map<T, String> get reverse {
+  Map<T, String>? get reverse {
     if (reverseMap == null) {
       reverseMap = map.map((k, v) => new MapEntry(v, k));
     }

@@ -4,10 +4,10 @@ import 'package:knocky/widgets/profile/ban.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ProfileBans extends StatelessWidget {
-  final UserBans bans;
+  final UserBans? bans;
   final itemScrollController = new ItemScrollController();
 
-  ProfileBans({@required this.bans});
+  ProfileBans({required this.bans});
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +17,9 @@ class ProfileBans extends StatelessWidget {
           itemScrollController: itemScrollController,
           addAutomaticKeepAlives: true,
           minCacheExtent: MediaQuery.of(context).size.height,
-          itemCount: bans.userBans.length,
+          itemCount: bans!.userBans!.length,
           itemBuilder: (BuildContext context, int index) {
-            var userBan = bans.userBans[index];
+            var userBan = bans!.userBans![index];
             return ProfileBan(ban: userBan);
           },
         ));

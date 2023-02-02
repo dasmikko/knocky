@@ -7,10 +7,10 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../KnockoutLoadingIndicator.dart';
 
 class PaginatedListView extends StatefulWidget {
-  final int id;
+  final int? id;
   final int page;
 
-  PaginatedListView({@required this.id, this.page = 1});
+  PaginatedListView({required this.id, this.page = 1});
 
   @override
   PaginatedListViewState createState() => PaginatedListViewState();
@@ -18,7 +18,7 @@ class PaginatedListView extends StatefulWidget {
 
 class PaginatedListViewState<C extends PaginatedController,
     W extends PaginatedListView> extends State<W> {
-  C dataController;
+  late C dataController;
   final itemScrollController = new ItemScrollController();
 
   @override

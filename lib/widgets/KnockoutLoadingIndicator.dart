@@ -9,7 +9,7 @@ class KnockoutLoadingIndicator extends StatefulWidget {
   final bool blurBackground;
 
   KnockoutLoadingIndicator(
-      {@required this.child, this.show = false, this.blurBackground = true});
+      {required this.child, this.show = false, this.blurBackground = true});
 
   @override
   _KnockoutLoadingIndicatorState createState() =>
@@ -18,8 +18,8 @@ class KnockoutLoadingIndicator extends StatefulWidget {
 
 class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
     with SingleTickerProviderStateMixin {
-  AnimationController controller;
-  Animation<double> animation;
+  late AnimationController controller;
+  late Animation<double> animation;
   bool isHidden = false;
   int messageIndex = 0;
 

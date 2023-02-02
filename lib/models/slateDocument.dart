@@ -1,8 +1,8 @@
 part 'slateDocument.g.dart';
 
 class SlateObject {
-  String object;
-  SlateDocument document;
+  String? object;
+  SlateDocument? document;
 
   SlateObject({this.object, this.document});
 
@@ -17,9 +17,9 @@ class SlateObject {
 Map _documentToJson(SlateDocument document) => document.toJson();
 
 class SlateDocument {
-  String object;
-  Map data = Map<String, String>();
-  List<SlateNode> nodes;
+  String? object;
+  Map? data = Map<String, String>();
+  List<SlateNode>? nodes;
 
   SlateDocument({this.object, this.nodes});
 
@@ -29,7 +29,7 @@ class SlateDocument {
 }
 
 class SlateDocumentData {
-  String dummy;
+  String? dummy;
 
   SlateDocumentData({this.dummy});
 
@@ -38,16 +38,16 @@ class SlateDocumentData {
   Map<String, dynamic> toJson() => _$SlateDocumentDataToJson(this);
 }
 
-List<Map> _nodesToJson(List<SlateNode> nodes) =>
+List<Map>? _nodesToJson(List<SlateNode>? nodes) =>
     nodes != null ? nodes.map((node) => node.toJson()).toList() : null;
 
 // Slate Block
 class SlateNode {
-  String object;
-  String type;
-  SlateNodeData data;
-  List<SlateLeaf> leaves;
-  List<SlateNode> nodes;
+  String? object;
+  String? type;
+  SlateNodeData? data;
+  List<SlateLeaf>? leaves;
+  List<SlateNode>? nodes;
 
   SlateNode({this.nodes, this.object, this.type, this.data, this.leaves});
 
@@ -56,16 +56,16 @@ class SlateNode {
   Map<String, dynamic> toJson() => _$SlateNodeToJson(this);
 }
 
-List<Map> _leavesToJson(List<SlateLeaf> leaves) =>
+List<Map>? _leavesToJson(List<SlateLeaf>? leaves) =>
     leaves != null ? leaves.map((leaf) => leaf.toJson()).toList() : null;
-Map _nodeDataToJson(SlateNodeData data) => data != null ? data.toJson() : null;
+Map? _nodeDataToJson(SlateNodeData? data) => data != null ? data.toJson() : null;
 
 class SlateNodeData {
-  String src;
-  NodeDataPostData postData;
-  String href;
-  bool isThumbnail;
-  bool isSmartLink;
+  String? src;
+  NodeDataPostData? postData;
+  String? href;
+  bool? isThumbnail;
+  bool? isSmartLink;
 
   SlateNodeData(
       {this.src, this.postData, this.href, this.isThumbnail, this.isSmartLink});
@@ -75,14 +75,14 @@ class SlateNodeData {
   Map<String, dynamic> toJson() => _$SlateNodeDataToJson(this);
 }
 
-Map _nodeDataPostDataToJson(NodeDataPostData postdata) =>
+Map? _nodeDataPostDataToJson(NodeDataPostData? postdata) =>
     postdata != null ? postdata.toJson() : null;
 
 class NodeDataPostData {
   dynamic threadPage;
-  int threadId;
-  int postId;
-  String username;
+  int? threadId;
+  int? postId;
+  String? username;
 
   NodeDataPostData(
       {this.threadId, this.username, this.postId, this.threadPage});
@@ -92,19 +92,19 @@ class NodeDataPostData {
   Map<String, dynamic> toJson() => _$NodeDataPostDataToJson(this);
 }
 
-int _stringToIntFromJson(dynamic number) {
+int? _stringToIntFromJson(dynamic number) {
   if (number is String) {
     return int.parse(number);
   }
   return number;
 }
 
-int _stringToIntToJson(int number) => number;
+int? _stringToIntToJson(int? number) => number;
 
 class SlateLeaf {
-  String object;
-  String text;
-  List<SlateLeafMark> marks;
+  String? object;
+  String? text;
+  List<SlateLeafMark>? marks;
 
   SlateLeaf({this.object, this.text, this.marks});
 
@@ -113,12 +113,12 @@ class SlateLeaf {
   Map<String, dynamic> toJson() => _$SlateLeafToJson(this);
 }
 
-List<Map> _leafmarksToJson(List<SlateLeafMark> marks) =>
+List<Map> _leafmarksToJson(List<SlateLeafMark>? marks) =>
     marks != null ? marks.map((mark) => mark.toJson()).toList() : [];
 
 class SlateLeafMark {
-  String object;
-  String type;
+  String? object;
+  String? type;
 
   SlateLeafMark({this.object, this.type});
 

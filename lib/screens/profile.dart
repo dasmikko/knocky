@@ -9,9 +9,9 @@ import 'package:knocky/widgets/profile/body.dart';
 import 'package:knocky/widgets/profile/header.dart';
 
 class ProfileScreen extends StatefulWidget {
-  final int id;
+  final int? id;
 
-  ProfileScreen({@required this.id});
+  ProfileScreen({required this.id});
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -19,9 +19,9 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final ProfileController profileController = Get.put(ProfileController());
-  UserProfile get profile => profileController.profile.value;
-  List<UserProfileRating> get ratings => profileController.ratings.value;
-  UserProfileDetails get details => profileController.details.value;
+  UserProfile? get profile => profileController.profile.value;
+  List<UserProfileRating> get ratings => profileController.ratings.value as List<UserProfileRating>;
+  UserProfileDetails? get details => profileController.details.value;
 
   @override
   void initState() {

@@ -7,9 +7,9 @@ import 'package:knocky/widgets/profile/posts.dart';
 import 'package:knocky/widgets/profile/threads.dart';
 
 class ProfileBody extends StatefulWidget {
-  final UserProfile profile;
+  final UserProfile? profile;
 
-  ProfileBody({@required this.profile});
+  ProfileBody({required this.profile});
 
   @override
   _ProfileBodyState createState() => _ProfileBodyState();
@@ -21,7 +21,7 @@ class _ProfileBodyState extends State<ProfileBody> {
   @override
   void initState() {
     super.initState();
-    bansController.initState(widget.profile.id);
+    bansController.initState(widget.profile!.id);
   }
 
   @override
@@ -31,7 +31,7 @@ class _ProfileBodyState extends State<ProfileBody> {
         child: new DefaultTabController(
           length: hasBans() ? 3 : 2,
           child: Scaffold(
-            body: TabBarView(children: [...tabContents()]),
+            body: TabBarView(children: [...tabContents() as Iterable<Widget>]),
             appBar: new AppBar(
               automaticallyImplyLeading: false,
               flexibleSpace: new Column(
@@ -52,14 +52,13 @@ class _ProfileBodyState extends State<ProfileBody> {
 
   bool hasBans() {
     return !bansController.isFetching.value &&
-        bansController.bans.value.userBans != null &&
-        bansController.bans.value.userBans.length > 0;
+        bansController.bans.value!.userBans!.length > 0;
   }
 
   List<dynamic> tabContents() {
     List<dynamic> tabContents = [
-      ProfilePosts(id: widget.profile.id),
-      ProfileThreads(id: widget.profile.id)
+      ProfilePosts(id: widget.profile!.id),
+      ProfileThreads(id: widget.profile!.id)
     ];
     if (hasBans()) {
       tabContents.add(ProfileBans(bans: bansController.bans.value));
@@ -69,12 +68,12 @@ class _ProfileBodyState extends State<ProfileBody> {
 
   List<Tab> tabs() {
     var tabs = [
-      tab('Posts', widget.profile.posts.toString()),
-      tab('Threads', widget.profile.threads.toString()),
+      tab('Posts', widget.profile!.posts.toString()),
+      tab('Threads', widget.profile!.threads.toString()),
     ];
     if (hasBans()) {
       tabs.add(
-          tab('Bans', bansController.bans.value.userBans.length.toString()));
+          tab('Bans', bansController.bans.value!.userBans!.length.toString()));
     }
     return tabs;
   }

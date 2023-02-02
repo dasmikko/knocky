@@ -43,7 +43,7 @@ class _EventScreenState extends State<EventScreen> {
         padding: EdgeInsets.all(4),
         child: ScrollablePositionedList.builder(
             // ignore: invalid_use_of_protected_member
-            itemCount: eventController.events.value?.length ?? 0,
+            itemCount: eventController.events.value.length ?? 0,
             itemBuilder: (BuildContext context, int index) {
               var event = eventController.events.elementAt(index);
               return EventListItem(event: event);

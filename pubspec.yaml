@@ -18,53 +18,53 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 2.2.6+79
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  bbob_dart: 0.1.1
-  get: 4.6.5
-  dio: 4.0.6
-  cached_network_image: 3.2.3
-  timeago: 3.3.0
-  intl: 0.17.0
-  get_storage: 2.0.3
-  font_awesome_flutter: 10.3.0
-  numberpicker: 2.1.1
-  time_formatter: 1.0.0+5
+  bbob_dart: ^0.2.0-dev.1
+  get: ^4.6.5
+  dio: ^4.0.6
+  cached_network_image: ^3.2.3
+  timeago: ^3.3.0
+  intl: ^0.17.0
+  get_storage: ^2.0.3
+  font_awesome_flutter: ^10.3.0
+  numberpicker: ^2.1.1
+  date_time_format: ^2.0.1
   flutter:
     sdk: flutter
-  cupertino_icons: 1.0.5
-  scrollable_positioned_list: 0.3.5
-  url_launcher: 6.1.8
-  after_layout: 1.2.0
-  measure_size: 4.0.0
-  gallery_saver: 2.3.2
-  share: 2.0.4
-  permission_handler: 10.2.0
-  matrix4_transform: 2.0.1
-  duration: 3.0.12
-  tweet_ui: 4.0.4
-  chewie: 1.4.0
-  video_player: 2.5.1
-  better_player: 0.0.83
-  flutter_dotenv: 5.0.2
-  popover: 0.2.8
-  sticky_headers: 0.3.0+2
-  event_bus: 2.0.0
-  package_info_plus: 3.0.2
-  optimized_cached_image: 3.0.1
-  image_picker: 0.8.6+1
-  flutter_svg: 1.1.6
-  uni_links: 0.5.1
-  flutter_custom_tabs: 1.0.4
-  github: 9.8.0
-  flutter_markdown: 0.6.13+1
-  path_provider: 2.0.12
-  app_installer: 1.1.0
-  flutter_flavor: 3.1.1
+  cupertino_icons: ^1.0.5
+  scrollable_positioned_list: ^0.3.5
+  url_launcher: ^6.1.8
+  after_layout: ^1.2.0
+  measure_size: ^4.0.0
+  gallery_saver: ^2.3.2
+  share: ^2.0.4
+  permission_handler: ^10.2.0
+  matrix4_transform: ^2.0.1
+  duration: ^3.0.12
+  tweet_ui: ^4.0.4
+  chewie: ^1.4.0
+  video_player: ^2.5.1
+  better_player: ^0.0.83
+  flutter_dotenv: ^5.0.2
+  popover: ^0.2.8
+  sticky_headers: ^0.3.0+2
+  event_bus: ^2.0.0
+  package_info_plus: ^3.0.2
+  optimized_cached_image: ^3.0.1
+  image_picker: ^0.8.6+1
+  flutter_svg: ^2.0.0
+  uni_links: ^0.5.1
+  flutter_custom_tabs: ^1.0.4
+  github: ^9.8.0
+  flutter_markdown: ^0.6.13+1
+  path_provider: ^2.0.12
+  app_installer: ^1.1.0
+  flutter_flavor: ^3.1.1
   layout: 
     git: https://github.com/chirag729/layout.git
-  extended_image: 6.3.4
+  extended_image: ^7.0.0
 
 dependency_overrides:
   #visibility_detector: 0.2.2

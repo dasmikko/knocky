@@ -25,7 +25,7 @@ const UserRoleCodes = {
 };
 
 extension UserRoleExtension on UserRole {
-  String get name {
+  String? get name {
     switch (this) {
       case UserRole.GUEST:
         return 'guest';

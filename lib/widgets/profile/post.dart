@@ -5,8 +5,8 @@ import 'package:knocky/widgets/post/ratings.dart';
 import 'package:knocky/widgets/profile/toolbar.dart';
 
 class ProfilePostListItem extends PostListItem {
-  final ThreadPost post;
-  ProfilePostListItem({@required this.post}) : super(post: post);
+  final ThreadPost? post;
+  ProfilePostListItem({required this.post}) : super(post: post);
 
   @override
   // ignore: override_on_non_overriding_member
@@ -19,6 +19,6 @@ class ProfilePostListItem extends PostListItem {
   @override
   // ignore: override_on_non_overriding_member
   Widget ratings() {
-    return Ratings(postId: post.id, ratings: post.ratings, canRate: false);
+    return Ratings(postId: post!.id, ratings: post!.ratings, canRate: false);
   }
 }

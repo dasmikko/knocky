@@ -17,19 +17,19 @@ class ForumLastPost {
     this.appName,
   });
 
-  int id;
-  ForumThreadLastPost thread;
-  int page;
+  int? id;
+  ForumThreadLastPost? thread;
+  int? page;
   dynamic content;
-  DateTime createdAt;
-  DateTime updatedAt;
-  User user;
-  List<dynamic> ratings;
-  List<dynamic> bans;
-  int threadPostNumber;
-  String countryName;
-  String countryCode;
-  String appName;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  User? user;
+  List<dynamic>? ratings;
+  List<dynamic>? bans;
+  int? threadPostNumber;
+  String? countryName;
+  String? countryCode;
+  String? appName;
 
   factory ForumLastPost.fromJson(Map<String, dynamic> json) => ForumLastPost(
         id: json["id"] == null ? null : json["id"],
@@ -60,15 +60,15 @@ class ForumLastPost {
 
   Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
-        "thread": thread == null ? null : thread.toJson(),
+        "thread": thread == null ? null : thread!.toJson(),
         "page": page == null ? null : page,
         "content": content,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
-        "user": user == null ? null : user.toJson(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
+        "user": user == null ? null : user!.toJson(),
         "ratings":
-            ratings == null ? null : List<dynamic>.from(ratings.map((x) => x)),
-        "bans": bans == null ? null : List<dynamic>.from(bans.map((x) => x)),
+            ratings == null ? null : List<dynamic>.from(ratings!.map((x) => x)),
+        "bans": bans == null ? null : List<dynamic>.from(bans!.map((x) => x)),
         "threadPostNumber": threadPostNumber == null ? null : threadPostNumber,
         "countryName": countryName == null ? null : countryName,
         "countryCode": countryCode == null ? null : countryCode,
@@ -93,19 +93,19 @@ class ForumThreadLastPost {
     this.appName,
   });
 
-  int id;
-  int thread;
-  int page;
+  int? id;
+  int? thread;
+  int? page;
   dynamic content;
-  DateTime createdAt;
-  DateTime updatedAt;
-  User user;
-  List<dynamic> ratings;
-  List<dynamic> bans;
-  int threadPostNumber;
-  String countryName;
-  String countryCode;
-  String appName;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  User? user;
+  List<dynamic>? ratings;
+  List<dynamic>? bans;
+  int? threadPostNumber;
+  String? countryName;
+  String? countryCode;
+  String? appName;
 
   factory ForumThreadLastPost.fromJson(Map<String, dynamic> json) =>
       ForumThreadLastPost(
@@ -138,12 +138,12 @@ class ForumThreadLastPost {
         "thread": thread == null ? null : thread,
         "page": page == null ? null : page,
         "content": content,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
-        "user": user == null ? null : user.toJson(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
+        "user": user == null ? null : user!.toJson(),
         "ratings":
-            ratings == null ? null : List<dynamic>.from(ratings.map((x) => x)),
-        "bans": bans == null ? null : List<dynamic>.from(bans.map((x) => x)),
+            ratings == null ? null : List<dynamic>.from(ratings!.map((x) => x)),
+        "bans": bans == null ? null : List<dynamic>.from(bans!.map((x) => x)),
         "threadPostNumber": threadPostNumber == null ? null : threadPostNumber,
         "countryName": countryName == null ? null : countryName,
         "countryCode": countryCode == null ? null : countryCode,
@@ -168,19 +168,19 @@ class SubforumThreadLastPost {
     this.appName,
   });
 
-  int id;
-  int thread;
-  int page;
+  int? id;
+  int? thread;
+  int? page;
   dynamic content;
-  DateTime createdAt;
-  DateTime updatedAt;
-  User user;
-  List<dynamic> ratings;
-  List<dynamic> bans;
-  int threadPostNumber;
-  String countryName;
-  String countryCode;
-  String appName;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  User? user;
+  List<dynamic>? ratings;
+  List<dynamic>? bans;
+  int? threadPostNumber;
+  String? countryName;
+  String? countryCode;
+  String? appName;
 
   factory SubforumThreadLastPost.fromJson(Map<String, dynamic> json) =>
       SubforumThreadLastPost(
@@ -213,12 +213,12 @@ class SubforumThreadLastPost {
         "thread": thread == null ? null : thread,
         "page": page == null ? null : page,
         "content": content,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
-        "user": user == null ? null : user.toJson(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
+        "user": user == null ? null : user!.toJson(),
         "ratings":
-            ratings == null ? null : List<dynamic>.from(ratings.map((x) => x)),
-        "bans": bans == null ? null : List<dynamic>.from(bans.map((x) => x)),
+            ratings == null ? null : List<dynamic>.from(ratings!.map((x) => x)),
+        "bans": bans == null ? null : List<dynamic>.from(bans!.map((x) => x)),
         "threadPostNumber": threadPostNumber == null ? null : threadPostNumber,
         "countryName": countryName == null ? null : countryName,
         "countryCode": countryCode == null ? null : countryCode,

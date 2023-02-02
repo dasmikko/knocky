@@ -7,11 +7,11 @@ import 'package:knocky/widgets/shared/threadListItem.dart';
 class LatestThreadListItem extends ThreadListItem {
   final SubforumThread thread;
 
-  LatestThreadListItem({@required this.thread}) : super(threadDetails: thread);
+  LatestThreadListItem({required this.thread}) : super(threadDetails: thread);
 
   @override
   Widget getSubtitle(BuildContext context) {
-    return Text(Format.humanReadableTimeSince(thread.createdAt),
+    return Text(Format.humanReadableTimeSince(thread.createdAt!),
         style: TextStyle(color: Colors.white60));
   }
 }

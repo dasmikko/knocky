@@ -15,7 +15,7 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-StreamSubscription _sub;
+late StreamSubscription _sub;
 
 class _LoginScreenState extends State<LoginScreen> {
   void initiateLogin(String provider) async {
@@ -38,18 +38,16 @@ class _LoginScreenState extends State<LoginScreen> {
     // ... check initialLink
 
     // Attach a listener to the stream
-    _sub = linkStream.listen((String link) async {
+    _sub = linkStream.listen((String? link) async {
       print(link);
 
-      if (link != null) {
-        String knockoutJWT = link.replaceAll('knocky://finishAuth/', '');
+      String knockoutJWT = link!.replaceAll('knocky://finishAuth/', '');
 
-        AuthController authController = Get.put(AuthController());
-        await authController.loginWithJWTOnly(knockoutJWT);
-        Get.offAll(ForumScreen());
-        KnockySnackbar.success('Login was successfull!',
-            icon: Icon(Icons.check));
-      }
+      AuthController authController = Get.put(AuthController());
+      await authController.loginWithJWTOnly(knockoutJWT);
+      Get.offAll(ForumScreen());
+      KnockySnackbar.success('Login was successfull!',
+          icon: Icon(Icons.check));
       // Parse the link and warn the user, if it is not correct
     }, onError: (err) {
       print('Unilinks error: ' + err);

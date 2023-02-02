@@ -12,11 +12,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class ImageViewerBottomSheet extends StatelessWidget {
-  final int currentPage;
-  final int totalPages;
-  final String url;
-  final String embedType;
-  final GlobalKey<ScaffoldState> scaffoldKey;
+  final int? currentPage;
+  final int? totalPages;
+  final String? url;
+  final String? embedType;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
 
   ImageViewerBottomSheet(
       {this.totalPages,
@@ -34,7 +34,7 @@ class ImageViewerBottomSheet extends StatelessWidget {
 
   void openURL(context) async {
     try {
-      await launchUrlString(url,
+      await launchUrlString(url!,
           mode: LaunchMode.externalNonBrowserApplication);
     } catch (e) {
       throw 'Could not launch $url';
@@ -43,7 +43,7 @@ class ImageViewerBottomSheet extends StatelessWidget {
   }
 
   void shareURL(context) async {
-    Uri uri = Uri.parse(url);
+    Uri uri = Uri.parse(url!);
 
     bool isDirectSharable = embedType == 'img' || embedType == 'video';
 
@@ -55,17 +55,17 @@ class ImageViewerBottomSheet extends StatelessWidget {
       // Download the element
       Ddio.Dio dio = new Ddio.Dio();
       //Ddio.Response response =
-      await dio.download(url, fileUrl, deleteOnError: true);
+      await dio.download(url!, fileUrl, deleteOnError: true);
 
       print(lookupMimeType(fileUrl));
       // Share the temp file
-      await Share.shareFiles([fileUrl], mimeTypes: [lookupMimeType(fileUrl)]);
+      await Share.shareFiles([fileUrl], mimeTypes: [lookupMimeType(fileUrl)!]);
 
       // Delete the temp file
       final file = File(fileUrl);
       file.delete();
     } else {
-      Share.share(url);
+      Share.share(url!);
     }
     Navigator.pop(context);
   }
@@ -79,12 +79,12 @@ class ImageViewerBottomSheet extends StatelessWidget {
 
     print(statuses[Permission.storage]);
 
-    if (statuses[Permission.storage].isDenied) return;
+    if (statuses[Permission.storage]!.isDenied) return;
 
     // Download the element
-    GallerySaver.saveImage(url.split('?').first, albumName: 'Knocky').then(
-      (bool success) async {
-        if (success) {
+    GallerySaver.saveImage(url!.split('?').first, albumName: 'Knocky').then(
+      (bool? success) async {
+        if (success!) {
           Get.back();
           KnockySnackbar.success('Image was saved to gallery');
         } else {
@@ -97,7 +97,7 @@ class ImageViewerBottomSheet extends StatelessWidget {
 
   void showBottomSheet(BuildContext scaffoldcontext) {
     showModalBottomSheet(
-      backgroundColor: Colors.grey[900].withOpacity(0.5),
+      backgroundColor: Colors.grey[900]!.withOpacity(0.5),
       context: scaffoldcontext,
       builder: (BuildContext context) {
         return Container(
@@ -107,7 +107,7 @@ class ImageViewerBottomSheet extends StatelessWidget {
                 children: [
                   Container(
                     padding: EdgeInsets.all(16),
-                    child: Text(url),
+                    child: Text(url!),
                   ),
                 ],
               ),
@@ -160,7 +160,7 @@ class ImageViewerBottomSheet extends StatelessWidget {
                 child: currentPage == null
                     ? Text('')
                     : (Text(
-                        (currentPage + 1).toString() +
+                        (currentPage! + 1).toString() +
                             ' of ' +
                             totalPages.toString(),
                       )),

@@ -4,13 +4,13 @@ import 'package:get/get.dart';
 class PaginatedController<T> extends GetxController {
   final isFetching = false.obs;
   final _page = 1.obs;
-  final data = Rx<T>(null);
-  int id;
+  final data = Rx<T?>(null);
+  int? id;
 
   @override
   onInit() {
     super.onInit();
-    ever(_page, (_) => fetch());
+    ever(_page, (dynamic _) => fetch());
   }
 
   @protected
@@ -22,7 +22,7 @@ class PaginatedController<T> extends GetxController {
 
   int get dataInPageCount => 0;
 
-  initState(int id, int page) {
+  initState(int? id, int page) {
     data.value = null;
     this.id = id;
     _page.value = page;

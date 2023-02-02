@@ -29,30 +29,30 @@ class ForumThread {
     this.viewers,
   });
 
-  int id;
-  String title;
-  int iconId;
-  int subforumId;
-  DateTime createdAt;
-  DateTime updatedAt;
-  DateTime deletedAt;
-  bool deleted;
-  bool locked;
-  bool pinned;
-  ForumThreadLastPost lastPost;
-  String backgroundUrl;
-  String backgroundType;
-  int user;
-  int postCount;
-  int recentPostCount;
-  int unreadPostCount;
-  int readThreadUnreadPosts;
-  bool read;
-  bool hasRead;
-  bool hasSeenNoNewPosts;
+  int? id;
+  String? title;
+  int? iconId;
+  int? subforumId;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  DateTime? deletedAt;
+  bool? deleted;
+  bool? locked;
+  bool? pinned;
+  ForumThreadLastPost? lastPost;
+  String? backgroundUrl;
+  String? backgroundType;
+  int? user;
+  int? postCount;
+  int? recentPostCount;
+  int? unreadPostCount;
+  int? readThreadUnreadPosts;
+  bool? read;
+  bool? hasRead;
+  bool? hasSeenNoNewPosts;
   dynamic subforum;
-  List<dynamic> tags;
-  Viewers viewers;
+  List<dynamic>? tags;
+  Viewers? viewers;
 
   factory ForumThread.fromJson(Map<String, dynamic> json) => ForumThread(
         id: json["id"] == null ? null : json["id"],
@@ -105,13 +105,13 @@ class ForumThread {
         "title": title == null ? null : title,
         "iconId": iconId == null ? null : iconId,
         "subforumId": subforumId == null ? null : subforumId,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
-        "deletedAt": deletedAt == null ? null : deletedAt.toIso8601String(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
+        "deletedAt": deletedAt == null ? null : deletedAt!.toIso8601String(),
         "deleted": deleted == null ? null : deleted,
         "locked": locked == null ? null : locked,
         "pinned": pinned == null ? null : pinned,
-        "lastPost": lastPost == null ? null : lastPost.toJson(),
+        "lastPost": lastPost == null ? null : lastPost!.toJson(),
         "backgroundUrl": backgroundUrl == null ? null : backgroundUrl,
         "backgroundType": backgroundType == null ? null : backgroundType,
         "user": user == null ? null : user,
@@ -125,8 +125,8 @@ class ForumThread {
         "hasSeenNoNewPosts":
             hasSeenNoNewPosts == null ? null : hasSeenNoNewPosts,
         "subforum": subforum,
-        "tags": tags == null ? null : List<dynamic>.from(tags.map((x) => x)),
-        "viewers": viewers == null ? null : viewers.toJson(),
+        "tags": tags == null ? null : List<dynamic>.from(tags!.map((x) => x)),
+        "viewers": viewers == null ? null : viewers!.toJson(),
       };
 }
 
@@ -160,32 +160,32 @@ class SubforumThread {
     this.viewers,
   });
 
-  int id;
-  String title;
-  int iconId;
-  int subforumId;
-  DateTime createdAt;
-  DateTime updatedAt;
+  int? id;
+  String? title;
+  int? iconId;
+  int? subforumId;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   dynamic deletedAt;
-  bool deleted;
-  bool locked;
-  bool pinned;
-  SubforumThreadLastPost lastPost;
-  String backgroundUrl;
-  String backgroundType;
-  User user;
-  int postCount;
-  int recentPostCount;
-  int unreadPostCount;
-  int readThreadUnreadPosts;
-  bool read;
-  bool hasRead;
-  bool hasSeenNoNewPosts;
-  int firstUnreadId;
-  FirstPostTopRating firstPostTopRating;
+  bool? deleted;
+  bool? locked;
+  bool? pinned;
+  SubforumThreadLastPost? lastPost;
+  String? backgroundUrl;
+  String? backgroundType;
+  User? user;
+  int? postCount;
+  int? recentPostCount;
+  int? unreadPostCount;
+  int? readThreadUnreadPosts;
+  bool? read;
+  bool? hasRead;
+  bool? hasSeenNoNewPosts;
+  int? firstUnreadId;
+  FirstPostTopRating? firstPostTopRating;
   dynamic subforum;
-  List<Map<String, String>> tags;
-  Viewers viewers;
+  List<Map<String, String>>? tags;
+  Viewers? viewers;
 
   factory SubforumThread.fromJson(Map<String, dynamic> json) => SubforumThread(
         id: json["id"] == null ? null : json["id"],
@@ -242,16 +242,16 @@ class SubforumThread {
         "title": title == null ? null : title,
         "iconId": iconId == null ? null : iconId,
         "subforumId": subforumId == null ? null : subforumId,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
         "deletedAt": deletedAt,
         "deleted": deleted == null ? null : deleted,
         "locked": locked == null ? null : locked,
         "pinned": pinned == null ? null : pinned,
-        "lastPost": lastPost == null ? null : lastPost.toJson(),
+        "lastPost": lastPost == null ? null : lastPost!.toJson(),
         "backgroundUrl": backgroundUrl == null ? null : backgroundUrl,
         "backgroundType": backgroundType == null ? null : backgroundType,
-        "user": user == null ? null : user.toJson(),
+        "user": user == null ? null : user!.toJson(),
         "postCount": postCount == null ? null : postCount,
         "recentPostCount": recentPostCount == null ? null : recentPostCount,
         "unreadPostCount": unreadPostCount == null ? null : unreadPostCount,
@@ -263,13 +263,13 @@ class SubforumThread {
             hasSeenNoNewPosts == null ? null : hasSeenNoNewPosts,
         "firstUnreadId": firstUnreadId == null ? null : firstUnreadId,
         "firstPostTopRating":
-            firstPostTopRating == null ? null : firstPostTopRating.toJson(),
+            firstPostTopRating == null ? null : firstPostTopRating!.toJson(),
         "subforum": subforum,
         "tags": tags == null
             ? null
-            : List<dynamic>.from(tags.map((x) =>
+            : List<dynamic>.from(tags!.map((x) =>
                 Map.from(x).map((k, v) => MapEntry<String, dynamic>(k, v)))),
-        "viewers": viewers == null ? null : viewers.toJson(),
+        "viewers": viewers == null ? null : viewers!.toJson(),
       };
 }
 
@@ -279,8 +279,8 @@ class Viewers {
     this.guestCount,
   });
 
-  int memberCount;
-  int guestCount;
+  int? memberCount;
+  int? guestCount;
 
   factory Viewers.fromJson(Map<String, dynamic> json) => Viewers(
         memberCount: json["memberCount"] == null ? null : json["memberCount"],
@@ -302,11 +302,11 @@ class FirstPostTopRating {
     this.count,
   });
 
-  int id;
-  String rating;
-  int ratingId;
-  List<dynamic> users;
-  int count;
+  int? id;
+  String? rating;
+  int? ratingId;
+  List<dynamic>? users;
+  int? count;
 
   factory FirstPostTopRating.fromJson(Map<String, dynamic> json) =>
       FirstPostTopRating(
@@ -323,7 +323,7 @@ class FirstPostTopRating {
         "id": id == null ? null : id,
         "rating": rating == null ? null : rating,
         "ratingId": ratingId == null ? null : ratingId,
-        "users": users == null ? null : List<dynamic>.from(users.map((x) => x)),
+        "users": users == null ? null : List<dynamic>.from(users!.map((x) => x)),
         "count": count == null ? null : count,
       };
 }

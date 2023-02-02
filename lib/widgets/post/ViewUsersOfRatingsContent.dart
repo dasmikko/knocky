@@ -7,8 +7,8 @@ import 'package:sticky_headers/sticky_headers.dart';
 import 'package:knocky/helpers/colors.dart';
 
 class ViewUsersOfRatingsContent extends StatefulWidget {
-  final List<ThreadPostRating> ratings;
-  final BuildContext buildContext;
+  final List<ThreadPostRating>? ratings;
+  final BuildContext? buildContext;
 
   ViewUsersOfRatingsContent({this.buildContext, this.ratings});
 
@@ -23,7 +23,7 @@ class _ViewUsersOfRatingsContentState extends State<ViewUsersOfRatingsContent> {
     return ListView(
       children: this
           .widget
-          .ratings
+          .ratings!
           .map(
             (o) => StickyHeader(
               header: Container(
@@ -35,13 +35,13 @@ class _ViewUsersOfRatingsContentState extends State<ViewUsersOfRatingsContent> {
                     Container(
                       margin: EdgeInsets.only(right: 18),
                       child: ExtendedImage.network(
-                        ratingIconMap[o.rating].url,
+                        ratingIconMap[o.rating]!.url!,
                         height: 32,
                         width: 32,
                       ),
                     ),
                     Text(
-                      ratingIconMap[o.rating].name + ' x${o.users.length}',
+                      ratingIconMap[o.rating]!.name! + ' x${o.users!.length}',
                     ),
                   ],
                 ),
@@ -52,7 +52,7 @@ class _ViewUsersOfRatingsContentState extends State<ViewUsersOfRatingsContent> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
-                  children: o.users
+                  children: o.users!
                       .map(
                         (user) => Container(
                           padding: EdgeInsets.only(left: 12, right: 12),

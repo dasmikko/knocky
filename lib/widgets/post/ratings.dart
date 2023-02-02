@@ -11,13 +11,13 @@ import 'package:knocky/widgets/post/rateButton.dart';
 import 'package:knocky/widgets/post/ratingsChooser.dart';
 
 class Ratings extends StatefulWidget {
-  final List<ThreadPostRating> ratings;
-  final int postId;
-  final Function onRated;
+  final List<ThreadPostRating>? ratings;
+  final int? postId;
+  final Function? onRated;
   final bool canRate;
 
   Ratings(
-      {@required this.postId, this.ratings, this.onRated, this.canRate = true});
+      {required this.postId, this.ratings, this.onRated, this.canRate = true});
 
   @override
   _RatingsState createState() => _RatingsState();
@@ -26,7 +26,7 @@ class Ratings extends StatefulWidget {
 class _RatingsState extends State<Ratings> {
   final RatingsController ratingsController = Get.put(RatingsController());
   final AuthController authController = Get.put(AuthController());
-  SnackbarController snackbarController;
+  late SnackbarController snackbarController;
   bool showChooser = false;
 
   Duration animatonDuration = Duration(milliseconds: 150);
@@ -72,7 +72,7 @@ class _RatingsState extends State<Ratings> {
       margin: EdgeInsets.only(top: 4),
       child: Row(
         children: [
-          widget.ratings.length > 0
+          widget.ratings!.length > 0
               ? IconButton(
                   onPressed: () {
                     showModalBottomSheet(
@@ -108,7 +108,7 @@ class _RatingsState extends State<Ratings> {
   }
 
   onRatingDone() async {
-    widget.onRated.call();
+    widget.onRated!.call();
     snackbarController.close();
     KnockySnackbar.success('Post was rated');
   }
@@ -116,17 +116,17 @@ class _RatingsState extends State<Ratings> {
   Widget ratingsList() {
     return ListView.separated(
         scrollDirection: Axis.horizontal,
-        itemCount: widget.ratings.length,
+        itemCount: widget.ratings!.length,
         separatorBuilder: (context, index) => Container(width: 4),
         itemBuilder: (context, index) {
-          var rating = widget.ratings.elementAt(index);
+          var rating = widget.ratings!.elementAt(index);
           return ratingColumn(rating);
         });
   }
 
   Widget ratingColumn(ThreadPostRating rating) {
-    var ratingItem = ratingIconMap[rating.rating];
-    bool userChose = rating.users.contains(authController.username?.value);
+    var ratingItem = ratingIconMap[rating.rating]!;
+    bool userChose = rating.users!.contains(authController.username.value);
     return Stack(children: [
       if (userChose)
         Container(

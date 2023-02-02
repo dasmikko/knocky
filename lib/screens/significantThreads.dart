@@ -56,7 +56,7 @@ class _SignificantThreadsScreenState extends State<SignificantThreadsScreen> {
         padding: EdgeInsets.all(4),
         child: ScrollablePositionedList.builder(
           // ignore: invalid_use_of_protected_member
-          itemCount: controller.threads.value?.length ?? 0,
+          itemCount: controller.threads.value.length ?? 0,
           itemBuilder: (BuildContext context, int index) {
             var thread = controller.threads.elementAt(index);
             switch (controller.threadsToFetch) {

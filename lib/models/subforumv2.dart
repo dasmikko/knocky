@@ -19,11 +19,11 @@ class Subforum {
     this.threads,
   });
 
-  int id;
-  String name;
-  int totalThreads;
-  int currentPage;
-  List<Thread> threads;
+  int? id;
+  String? name;
+  int? totalThreads;
+  int? currentPage;
+  List<Thread>? threads;
 
   factory Subforum.fromJson(Map<String, dynamic> json) => Subforum(
         id: json["id"] == null ? null : json["id"],
@@ -43,7 +43,7 @@ class Subforum {
         "currentPage": currentPage == null ? null : currentPage,
         "threads": threads == null
             ? null
-            : List<dynamic>.from(threads.map((x) => x.toJson())),
+            : List<dynamic>.from(threads!.map((x) => x.toJson())),
       };
 }
 
@@ -77,32 +77,32 @@ class Thread {
     this.viewers,
   });
 
-  int id;
-  String title;
-  int iconId;
-  int subforumId;
-  DateTime createdAt;
-  DateTime updatedAt;
+  int? id;
+  String? title;
+  int? iconId;
+  int? subforumId;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   dynamic deletedAt;
-  bool deleted;
-  bool locked;
-  bool pinned;
-  LastPost lastPost;
-  String backgroundUrl;
-  String backgroundType;
-  User user;
-  int postCount;
-  int recentPostCount;
-  int unreadPostCount;
-  int readThreadUnreadPosts;
-  bool read;
-  bool hasRead;
-  bool hasSeenNoNewPosts;
-  int firstUnreadId;
-  FirstPostTopRating firstPostTopRating;
+  bool? deleted;
+  bool? locked;
+  bool? pinned;
+  LastPost? lastPost;
+  String? backgroundUrl;
+  String? backgroundType;
+  User? user;
+  int? postCount;
+  int? recentPostCount;
+  int? unreadPostCount;
+  int? readThreadUnreadPosts;
+  bool? read;
+  bool? hasRead;
+  bool? hasSeenNoNewPosts;
+  int? firstUnreadId;
+  FirstPostTopRating? firstPostTopRating;
   dynamic subforum;
-  List<Map<String, String>> tags;
-  Viewers viewers;
+  List<Map<String, String>>? tags;
+  Viewers? viewers;
 
   factory Thread.fromJson(Map<String, dynamic> json) => Thread(
         id: json["id"] == null ? null : json["id"],
@@ -159,16 +159,16 @@ class Thread {
         "title": title == null ? null : title,
         "iconId": iconId == null ? null : iconId,
         "subforumId": subforumId == null ? null : subforumId,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
         "deletedAt": deletedAt,
         "deleted": deleted == null ? null : deleted,
         "locked": locked == null ? null : locked,
         "pinned": pinned == null ? null : pinned,
-        "lastPost": lastPost == null ? null : lastPost.toJson(),
+        "lastPost": lastPost == null ? null : lastPost!.toJson(),
         "backgroundUrl": backgroundUrl == null ? null : backgroundUrl,
         "backgroundType": backgroundType == null ? null : backgroundType,
-        "user": user == null ? null : user.toJson(),
+        "user": user == null ? null : user!.toJson(),
         "postCount": postCount == null ? null : postCount,
         "recentPostCount": recentPostCount == null ? null : recentPostCount,
         "unreadPostCount": unreadPostCount == null ? null : unreadPostCount,
@@ -180,13 +180,13 @@ class Thread {
             hasSeenNoNewPosts == null ? null : hasSeenNoNewPosts,
         "firstUnreadId": firstUnreadId == null ? null : firstUnreadId,
         "firstPostTopRating":
-            firstPostTopRating == null ? null : firstPostTopRating.toJson(),
+            firstPostTopRating == null ? null : firstPostTopRating!.toJson(),
         "subforum": subforum,
         "tags": tags == null
             ? null
-            : List<dynamic>.from(tags.map((x) =>
+            : List<dynamic>.from(tags!.map((x) =>
                 Map.from(x).map((k, v) => MapEntry<String, dynamic>(k, v)))),
-        "viewers": viewers == null ? null : viewers.toJson(),
+        "viewers": viewers == null ? null : viewers!.toJson(),
       };
 }
 
@@ -199,11 +199,11 @@ class FirstPostTopRating {
     this.count,
   });
 
-  int id;
-  String rating;
-  int ratingId;
-  List<dynamic> users;
-  int count;
+  int? id;
+  String? rating;
+  int? ratingId;
+  List<dynamic>? users;
+  int? count;
 
   factory FirstPostTopRating.fromJson(Map<String, dynamic> json) =>
       FirstPostTopRating(
@@ -220,7 +220,7 @@ class FirstPostTopRating {
         "id": id == null ? null : id,
         "rating": rating == null ? null : rating,
         "ratingId": ratingId == null ? null : ratingId,
-        "users": users == null ? null : List<dynamic>.from(users.map((x) => x)),
+        "users": users == null ? null : List<dynamic>.from(users!.map((x) => x)),
         "count": count == null ? null : count,
       };
 }
@@ -242,19 +242,19 @@ class LastPost {
     this.appName,
   });
 
-  int id;
-  int thread;
-  int page;
+  int? id;
+  int? thread;
+  int? page;
   dynamic content;
-  DateTime createdAt;
-  DateTime updatedAt;
-  User user;
-  List<dynamic> ratings;
-  List<dynamic> bans;
-  int threadPostNumber;
-  String countryName;
-  String countryCode;
-  AppName appName;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  User? user;
+  List<dynamic>? ratings;
+  List<dynamic>? bans;
+  int? threadPostNumber;
+  String? countryName;
+  String? countryCode;
+  AppName? appName;
 
   factory LastPost.fromJson(Map<String, dynamic> json) => LastPost(
         id: json["id"] == null ? null : json["id"],
@@ -287,16 +287,16 @@ class LastPost {
         "thread": thread == null ? null : thread,
         "page": page == null ? null : page,
         "content": content,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
-        "user": user == null ? null : user.toJson(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
+        "user": user == null ? null : user!.toJson(),
         "ratings":
-            ratings == null ? null : List<dynamic>.from(ratings.map((x) => x)),
-        "bans": bans == null ? null : List<dynamic>.from(bans.map((x) => x)),
+            ratings == null ? null : List<dynamic>.from(ratings!.map((x) => x)),
+        "bans": bans == null ? null : List<dynamic>.from(bans!.map((x) => x)),
         "threadPostNumber": threadPostNumber == null ? null : threadPostNumber,
         "countryName": countryName == null ? null : countryName,
         "countryCode": countryCode == null ? null : countryCode,
-        "appName": appName == null ? null : appNameValues.reverse[appName],
+        "appName": appName == null ? null : appNameValues.reverse![appName],
       };
 }
 
@@ -323,21 +323,21 @@ class User {
     this.useBioForTitle,
   });
 
-  int id;
-  UserRole role;
-  String username;
-  int usergroup;
-  String avatarUrl;
-  String backgroundUrl;
-  int posts;
-  int threads;
-  DateTime createdAt;
-  DateTime updatedAt;
-  bool banned;
-  bool isBanned;
-  String title;
-  String pronouns;
-  int useBioForTitle;
+  int? id;
+  UserRole? role;
+  String? username;
+  int? usergroup;
+  String? avatarUrl;
+  String? backgroundUrl;
+  int? posts;
+  int? threads;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  bool? banned;
+  bool? isBanned;
+  String? title;
+  String? pronouns;
+  int? useBioForTitle;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"] == null ? null : json["id"],
@@ -365,15 +365,15 @@ class User {
 
   Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
-        "role": role == null ? null : role.toJson(),
+        "role": role == null ? null : role!.toJson(),
         "username": username == null ? null : username,
         "usergroup": usergroup == null ? null : usergroup,
         "avatarUrl": avatarUrl == null ? null : avatarUrl,
         "backgroundUrl": backgroundUrl == null ? null : backgroundUrl,
         "posts": posts == null ? null : posts,
         "threads": threads == null ? null : threads,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
         "banned": banned == null ? null : banned,
         "isBanned": isBanned == null ? null : isBanned,
         "title": title == null ? null : title,
@@ -392,12 +392,12 @@ class Role {
     this.updatedAt,
   });
 
-  int id;
-  Code code;
-  String description;
-  List<dynamic> permissionCodes;
-  DateTime createdAt;
-  DateTime updatedAt;
+  int? id;
+  Code? code;
+  String? description;
+  List<dynamic>? permissionCodes;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   factory Role.fromJson(Map<String, dynamic> json) => Role(
         id: json["id"] == null ? null : json["id"],
@@ -416,13 +416,13 @@ class Role {
 
   Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
-        "code": code == null ? null : codeValues.reverse[code],
+        "code": code == null ? null : codeValues.reverse![code],
         "description": description == null ? null : description,
         "permissionCodes": permissionCodes == null
             ? null
-            : List<dynamic>.from(permissionCodes.map((x) => x)),
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+            : List<dynamic>.from(permissionCodes!.map((x) => x)),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
       };
 }
 
@@ -450,8 +450,8 @@ class Viewers {
     this.guestCount,
   });
 
-  int memberCount;
-  int guestCount;
+  int? memberCount;
+  int? guestCount;
 
   factory Viewers.fromJson(Map<String, dynamic> json) => Viewers(
         memberCount: json["memberCount"] == null ? null : json["memberCount"],
@@ -466,11 +466,11 @@ class Viewers {
 
 class EnumValues<T> {
   Map<String, T> map;
-  Map<T, String> reverseMap;
+  Map<T, String>? reverseMap;
 
   EnumValues(this.map);
 
-  Map<T, String> get reverse {
+  Map<T, String>? get reverse {
     if (reverseMap == null) {
       reverseMap = map.map((k, v) => new MapEntry(v, k));
     }

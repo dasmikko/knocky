@@ -11,11 +11,11 @@ class ProfilePostController extends PaginatedController<UserProfilePosts> {
 
   @override
   get pageCount =>
-      ((data.value?.totalPosts ?? 0) / PostsPerPage.POSTS_PER_PAGE).ceil();
+      ((data.value!.totalPosts ?? 0) / PostsPerPage.POSTS_PER_PAGE).ceil();
 
   @override
-  int get dataInPageCount => data.value?.posts?.length ?? 0;
+  int get dataInPageCount => data.value!.posts!.length ?? 0;
 
   @override
-  dynamic dataAtIndex(int index) => data.value?.posts[index];
+  dynamic dataAtIndex(int index) => data.value!.posts![index];
 }

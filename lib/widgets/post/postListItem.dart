@@ -11,15 +11,15 @@ import 'package:knocky/widgets/shared/editPost.dart';
 class PostListItem extends StatefulWidget {
   const PostListItem({
     this.key,
-    @required this.post,
+    required this.post,
     this.readThreadLastSeen,
     this.onPostUpdate,
   }) : super(key: key);
 
-  final Key key;
-  final ThreadPost post;
-  final DateTime readThreadLastSeen;
-  final Function onPostUpdate;
+  final Key? key;
+  final ThreadPost? post;
+  final DateTime? readThreadLastSeen;
+  final Function? onPostUpdate;
 
   @override
   State<PostListItem> createState() => _PostListItemState();
@@ -44,14 +44,13 @@ class _PostListItemState extends State<PostListItem> {
   @protected
   List<Widget> contents(BuildContext context) {
     bool isNewPost = false;
-    if (widget.readThreadLastSeen != null &&
-        widget.readThreadLastSeen.isBefore(widget.post.createdAt)) {
+    if (widget.readThreadLastSeen!.isBefore(widget.post!.createdAt!)) {
       isNewPost = true;
     }
 
     return [
       UserInfo(
-        user: widget.post.user,
+        user: widget.post!.user,
         isNewPost: isNewPost,
       ),
       Toolbar(
@@ -77,21 +76,21 @@ class _PostListItemState extends State<PostListItem> {
 
     if (editPost) {
       innerBody = EditPost(
-        postId: widget.post.id,
-        content: widget.post.content,
+        postId: widget.post!.id,
+        content: widget.post!.content,
         onSubmit: () {
           setState(() {
             editPost = false;
           });
-          widget.onPostUpdate.call();
+          widget.onPostUpdate!.call();
         },
       );
     } else if (showBBCode) {
-      innerBody = SelectableText(widget.post.content);
+      innerBody = SelectableText(widget.post!.content!);
     } else {
       innerBody = BBcodeRendererNew(
         parentContext: context,
-        bbcode: widget.post.content,
+        bbcode: widget.post!.content,
         postDetails: widget.post,
       );
     }
@@ -109,10 +108,10 @@ class _PostListItemState extends State<PostListItem> {
   @protected
   Widget ratings() {
     return Ratings(
-        postId: widget.post.id, ratings: widget.post.ratings, onRated: onRated);
+        postId: widget.post!.id, ratings: widget.post!.ratings, onRated: onRated);
   }
 
   onRated() {
-    widget.onPostUpdate.call();
+    widget.onPostUpdate!.call();
   }
 }

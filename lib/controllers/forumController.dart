@@ -7,8 +7,8 @@ import 'package:knocky/models/motd.dart';
 
 class ForumController extends GetxController {
   final isFetching = false.obs;
-  final subforums = <Subforum>[].obs;
-  final motd = <KnockoutMotd>[].obs;
+  final RxList<Subforum> subforums = <Subforum>[].obs;
+  final RxList<KnockoutMotd> motd = <KnockoutMotd>[].obs;
   final hiddenMotds = [].obs;
 
   void initHiddenMotds() {
@@ -22,7 +22,7 @@ class ForumController extends GetxController {
     isFetching.value = true;
     try {
       Forum forum = await KnockoutAPI().getSubforums();
-      subforums.value = forum.list;
+      subforums.value = forum.list!;
       isFetching.value = false;
     } catch (e) {
       print(e);
@@ -34,7 +34,7 @@ class ForumController extends GetxController {
   bool motdIsHidden(motdId) => hiddenMotds.contains(motdId);
 
   void fetchMotd() async {
-    motd.value = await KnockoutAPI().motd();
+    motd.value = (await KnockoutAPI().motd())!;
     initHiddenMotds();
   }
 }

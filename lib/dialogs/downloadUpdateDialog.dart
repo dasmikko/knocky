@@ -1,14 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:knocky/helpers/snackbar.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DownloadUpdateDialog extends StatefulWidget {
   final String title;
-  final String url;
-  final String fileName;
+  final String? url;
+  final String? fileName;
 
   const DownloadUpdateDialog(
       {this.title = 'Downloading update...', this.url = '', this.fileName = ''})
@@ -31,11 +30,11 @@ class _DownloadUpdateDialogState extends State<DownloadUpdateDialog> {
   void startDownload() async {
     var tempDir = await getTemporaryDirectory();
 
-    String fullPath = tempDir.path + "/" + this.widget.fileName;
+    String fullPath = tempDir.path + "/" + this.widget.fileName!;
     Dio dio = new Dio();
     try {
       await dio.download(
-        this.widget.url,
+        this.widget.url!,
         fullPath,
         cancelToken: cancelToken,
         onReceiveProgress: (fetchedBytes, totalBytes) {

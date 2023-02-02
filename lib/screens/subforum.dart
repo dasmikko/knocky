@@ -9,7 +9,7 @@ import 'package:knocky/widgets/subforum/subforumListItem.dart';
 class SubforumScreen extends StatefulWidget {
   final Forum.Subforum subforum;
 
-  SubforumScreen({@required this.subforum});
+  SubforumScreen({required this.subforum});
 
   @override
   _SubforumScreenState createState() => _SubforumScreenState();
@@ -50,15 +50,13 @@ class _SubforumScreenState extends State<SubforumScreen> {
       ),
     );
 
-    if (subforumController.data.value.threads != null) {
-      subforumController.data.value.threads.forEach((thread) {
-        widgets.add(
-          SubforumListItem(
-            threadDetails: thread,
-          ),
-        );
-      });
-    }
+    subforumController.data.value!.threads!.forEach((thread) {
+      widgets.add(
+        SubforumListItem(
+          threadDetails: thread,
+        ),
+      );
+    });
 
     widgets.add(
       Container(
@@ -85,7 +83,7 @@ class _SubforumScreenState extends State<SubforumScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(this.widget.subforum.name),
+        title: Text(this.widget.subforum.name!),
         bottom: PreferredSize(
           preferredSize: Size(double.infinity, 0.0),
           child: Obx(

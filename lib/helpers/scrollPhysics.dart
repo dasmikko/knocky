@@ -2,31 +2,31 @@ import 'package:flutter/material.dart';
 
 class AllwaysScrollableFixedPositionScrollPhysics extends ScrollPhysics {
   /// Creates scroll physics that always lets the user scroll.
-  const AllwaysScrollableFixedPositionScrollPhysics({ScrollPhysics parent})
+  const AllwaysScrollableFixedPositionScrollPhysics({ScrollPhysics? parent})
       : super(parent: parent);
 
   @override
-  AllwaysScrollableFixedPositionScrollPhysics applyTo(ScrollPhysics ancestor) {
+  AllwaysScrollableFixedPositionScrollPhysics applyTo(ScrollPhysics? ancestor) {
     return AllwaysScrollableFixedPositionScrollPhysics(
         parent: buildParent(ancestor));
   }
 
   @override
   double adjustPositionForNewDimensions({
-    ScrollMetrics oldPosition,
-    ScrollMetrics newPosition,
-    bool isScrolling,
-    double velocity,
+    ScrollMetrics? oldPosition,
+    required ScrollMetrics newPosition,
+    bool? isScrolling,
+    double? velocity,
   }) {
     if (newPosition.extentBefore == 0) {
       return super.adjustPositionForNewDimensions(
-        oldPosition: oldPosition,
+        oldPosition: oldPosition!,
         newPosition: newPosition,
-        isScrolling: isScrolling,
-        velocity: velocity,
+        isScrolling: isScrolling!,
+        velocity: velocity!,
       );
     }
-    return newPosition.maxScrollExtent - oldPosition.extentAfter;
+    return newPosition.maxScrollExtent - oldPosition!.extentAfter;
   }
 
   @override

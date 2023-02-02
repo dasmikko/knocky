@@ -3,12 +3,12 @@ import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/notification.dart';
 
 class NotificationController extends GetxController {
-  var notifications = <NotificationModel>[].obs;
+  RxList<NotificationModel> notifications = <NotificationModel>[].obs;
   var isFetching = false.obs;
 
   fetch() async {
     isFetching.value = true;
-    notifications.value = await KnockoutAPI().notifications();
+    notifications.value = (await KnockoutAPI().notifications())!;
     isFetching.value = false;
   }
 }

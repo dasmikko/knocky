@@ -25,16 +25,16 @@ class SyncData {
     this.role,
   });
 
-  int id;
-  String username;
-  bool isBanned;
-  String avatarUrl;
-  String backgroundUrl;
-  DateTime createdAt;
-  List<dynamic> mentions;
-  List<Subscription> subscriptions;
-  List<int> subscriptionIds;
-  UserRole role;
+  int? id;
+  String? username;
+  bool? isBanned;
+  String? avatarUrl;
+  String? backgroundUrl;
+  DateTime? createdAt;
+  List<dynamic>? mentions;
+  List<Subscription>? subscriptions;
+  List<int>? subscriptionIds;
+  UserRole? role;
 
   factory SyncData.fromRawJson(String str) =>
       SyncData.fromJson(json.decode(str));
@@ -61,12 +61,12 @@ class SyncData {
         "isBanned": isBanned,
         "avatarUrl": avatarUrl,
         "backgroundUrl": backgroundUrl,
-        "createdAt": createdAt.toIso8601String(),
-        "mentions": List<dynamic>.from(mentions.map((x) => x)),
+        "createdAt": createdAt!.toIso8601String(),
+        "mentions": List<dynamic>.from(mentions!.map((x) => x)),
         "subscriptions":
-            List<dynamic>.from(subscriptions.map((x) => x.toJson())),
-        "subscriptionIds": List<dynamic>.from(subscriptionIds.map((x) => x)),
-        "role": role.toJson(),
+            List<dynamic>.from(subscriptions!.map((x) => x.toJson())),
+        "subscriptionIds": List<dynamic>.from(subscriptionIds!.map((x) => x)),
+        "role": role!.toJson(),
       };
 }
 
@@ -93,25 +93,25 @@ class Subscription {
     this.lastPost,
   });
 
-  int id;
-  int unreadPosts;
-  int firstUnreadId;
-  int threadId;
-  int iconId;
-  int threadIcon;
-  String threadTitle;
-  int threadUser;
-  bool threadLocked;
-  DateTime threadCreatedAt;
-  DateTime threadUpdatedAt;
-  bool threadDeletedAt;
-  String threadBackgroundUrl;
-  String threadBackgroundType;
-  String threadUsername;
-  String threadUserAvatarUrl;
-  RoleCode threadUserRoleCode;
-  int threadPostCount;
-  ForumThreadLastPost lastPost;
+  int? id;
+  int? unreadPosts;
+  int? firstUnreadId;
+  int? threadId;
+  int? iconId;
+  int? threadIcon;
+  String? threadTitle;
+  int? threadUser;
+  bool? threadLocked;
+  DateTime? threadCreatedAt;
+  DateTime? threadUpdatedAt;
+  bool? threadDeletedAt;
+  String? threadBackgroundUrl;
+  String? threadBackgroundType;
+  String? threadUsername;
+  String? threadUserAvatarUrl;
+  RoleCode? threadUserRoleCode;
+  int? threadPostCount;
+  ForumThreadLastPost? lastPost;
 
   factory Subscription.fromJson(Map<String, dynamic> json) => Subscription(
         id: json["id"],
@@ -149,8 +149,8 @@ class Subscription {
         "threadTitle": threadTitle,
         "threadUser": threadUser,
         "threadLocked": threadLocked,
-        "threadCreatedAt": threadCreatedAt.toIso8601String(),
-        "threadUpdatedAt": threadUpdatedAt.toIso8601String(),
+        "threadCreatedAt": threadCreatedAt!.toIso8601String(),
+        "threadUpdatedAt": threadUpdatedAt!.toIso8601String(),
         "threadDeletedAt": threadDeletedAt,
         "threadBackgroundUrl":
             threadBackgroundUrl == null ? null : threadBackgroundUrl,
@@ -159,9 +159,9 @@ class Subscription {
         "threadUsername": threadUsername,
         "threadUserAvatarUrl": threadUserAvatarUrl,
         "threadUserRoleCode":
-            threadUserRoleCodeValues.reverse[threadUserRoleCode],
+            threadUserRoleCodeValues.reverse![threadUserRoleCode],
         "threadPostCount": threadPostCount,
-        "lastPost": lastPost.toJson(),
+        "lastPost": lastPost!.toJson(),
       };
 }
 
@@ -179,11 +179,11 @@ final threadUserRoleCodeValues = EnumValues({
 
 class EnumValues<T> {
   Map<String, T> map;
-  Map<T, String> reverseMap;
+  Map<T, String>? reverseMap;
 
   EnumValues(this.map);
 
-  Map<T, String> get reverse {
+  Map<T, String>? get reverse {
     if (reverseMap == null) {
       reverseMap = map.map((k, v) => new MapEntry(v, k));
     }

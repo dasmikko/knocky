@@ -8,14 +8,14 @@ class NotificationListItem extends StatelessWidget {
   final NotificationModel notification;
   final int index;
 
-  const NotificationListItem(this.notification, this.index, {Key key})
+  const NotificationListItem(this.notification, this.index, {Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     if (notification.type == 'POST_REPLY') {
       return Opacity(
-        opacity: notification.read ? 0.5 : 1,
+        opacity: notification.read! ? 0.5 : 1,
         child: Card(
           child: replyContent(),
         ),
@@ -24,7 +24,7 @@ class NotificationListItem extends StatelessWidget {
 
     if (notification.type == 'MESSAGE') {
       return Opacity(
-        opacity: notification.read ? 0.5 : 1,
+        opacity: notification.read! ? 0.5 : 1,
         child: Card(
           child: messageContent(),
         ),
@@ -41,12 +41,12 @@ class NotificationListItem extends StatelessWidget {
         children: [
           Container(
             height: 50,
-            child: notification.replyData.user.avatarUrl == 'none.webp'
+            child: notification.replyData!.user!.avatarUrl == 'none.webp'
                 ? ExtendedImage.network(
                     'https://img.icons8.com/color/96/000000/chat.png')
                 : Avatar(
-                    avatarUrl: notification.replyData.user.avatarUrl,
-                    isBanned: notification.replyData.user.isBanned),
+                    avatarUrl: notification.replyData!.user!.avatarUrl,
+                    isBanned: notification.replyData!.user!.isBanned),
           ),
           Divider(
             indent: 20,
@@ -59,7 +59,7 @@ class NotificationListItem extends StatelessWidget {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: notification.replyData.user.username,
+                        text: notification.replyData!.user!.username,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.blue),
                       ),
@@ -67,17 +67,17 @@ class NotificationListItem extends StatelessWidget {
                         text: " replied to your post in ",
                       ),
                       TextSpan(
-                        text: notification.replyData.thread.title,
+                        text: notification.replyData!.thread!.title,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       )
                     ],
                   ),
                 ),
-                Text(timeago.format(notification.createdAt)),
+                Text(timeago.format(notification.createdAt!)),
               ],
             ),
           ),
-          notification.read
+          notification.read!
               ? Container()
               : Container(
                   margin: EdgeInsets.only(left: 12),
@@ -97,12 +97,12 @@ class NotificationListItem extends StatelessWidget {
         children: [
           Container(
             height: 50,
-            child: notification.messageData.users.first.avatarUrl == 'none.webp'
+            child: notification.messageData!.users!.first.avatarUrl == 'none.webp'
                 ? ExtendedImage.network(
                     'https://img.icons8.com/color/96/000000/chat.png')
                 : Avatar(
-                    avatarUrl: notification.messageData.users.first.avatarUrl,
-                    isBanned: notification.messageData.users.first.isBanned),
+                    avatarUrl: notification.messageData!.users!.first.avatarUrl,
+                    isBanned: notification.messageData!.users!.first.isBanned),
           ),
           Divider(
             indent: 20,
@@ -115,7 +115,7 @@ class NotificationListItem extends StatelessWidget {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: notification.messageData.users.first.username,
+                        text: notification.messageData!.users!.first.username,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.blue),
                       ),
@@ -125,11 +125,11 @@ class NotificationListItem extends StatelessWidget {
                     ],
                   ),
                 ),
-                Text(timeago.format(notification.createdAt)),
+                Text(timeago.format(notification.createdAt!)),
               ],
             ),
           ),
-          notification.read
+          notification.read!
               ? Container()
               : Container(
                   margin: EdgeInsets.only(left: 12),

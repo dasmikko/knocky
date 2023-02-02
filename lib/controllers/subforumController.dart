@@ -16,14 +16,14 @@ class SubforumController extends PaginatedController<Subforum> {
 
   @override
   get pageCount =>
-      ((data.value?.totalThreads ?? 0) / PostsPerPage.SUBFORUM_POSTS_PER_PAGE)
+      ((data.value!.totalThreads ?? 0) / PostsPerPage.SUBFORUM_POSTS_PER_PAGE)
           .ceil();
 
-  get title => data.value?.name;
+  get title => data.value!.name;
 
   @override
-  int get dataInPageCount => data.value?.threads?.length ?? 0;
+  int get dataInPageCount => data.value!.threads!.length ?? 0;
 
   @override
-  dynamic dataAtIndex(int index) => data.value?.threads[index];
+  dynamic dataAtIndex(int index) => data.value!.threads![index];
 }

@@ -7,9 +7,9 @@ import 'package:knocky/screens/imageViewer.dart';
 import 'package:measure_size/measure_size.dart';
 
 class ImageWidget extends StatefulWidget {
-  final String url;
-  final int postId;
-  final String bbcode;
+  final String? url;
+  final int? postId;
+  final String? bbcode;
 
   ImageWidget({this.url, this.bbcode, this.postId});
 
@@ -18,8 +18,8 @@ class ImageWidget extends StatefulWidget {
 }
 
 class _ImageWidgetState extends State<ImageWidget> {
-  List<String> findAllImages() {
-    List<String> urls = BBCodeHelper().getUrls(this.widget.bbcode);
+  List<String?> findAllImages() {
+    List<String> urls = BBCodeHelper().getUrls(this.widget.bbcode!);
     if (urls.length > 0) return urls;
     return [this.widget.url];
   }
@@ -45,11 +45,11 @@ class _ImageWidgetState extends State<ImageWidget> {
   Widget build(BuildContext context) {
     final box = GetStorage('sizeCache');
     Size loadedWidgetSize = Size.zero;
-    final bool hasCachedSize = box.hasData(this.widget.url);
+    final bool hasCachedSize = box.hasData(this.widget.url!);
 
     // Check if we have cached the image size
     if (hasCachedSize) {
-      Map cachedSize = box.read(this.widget.url);
+      Map cachedSize = box.read(this.widget.url!);
       //print('Found cached size: ' + cachedSize.toString());
       loadedWidgetSize = Size(
         cachedSize['width'],
@@ -74,9 +74,9 @@ class _ImageWidgetState extends State<ImageWidget> {
       child: ConstrainedBox(
         constraints: BoxConstraints(maxHeight: 400),
         child: Hero(
-          tag: this.widget.url + this.widget.postId.toString(),
+          tag: this.widget.url! + this.widget.postId.toString(),
           child: ExtendedImage.network(
-            this.widget.url,
+            this.widget.url!,
             key: ValueKey(this.widget.url),
             cache: true,
             shape: BoxShape.rectangle,
@@ -104,17 +104,17 @@ class _ImageWidgetState extends State<ImageWidget> {
                         var sizeMap = Map();
                         sizeMap['height'] = size.height;
                         sizeMap['width'] = size.width;
-                        box.writeIfNull(this.widget.url, sizeMap);
+                        box.writeIfNull(this.widget.url!, sizeMap);
                       } else {
                         print('mesured size updated ' + size.toString());
-                        print(this.widget.url + ' using cached size');
+                        print(this.widget.url! + ' using cached size');
                         if (loadedWidgetSize.height < size.height ||
                             loadedWidgetSize.width < size.width) {
                           print('Cache is smaller, update it');
                           var sizeMap = Map();
                           sizeMap['height'] = size.height;
                           sizeMap['width'] = size.width;
-                          box.writeIfNull(this.widget.url, sizeMap);
+                          box.writeIfNull(this.widget.url!, sizeMap);
                         } else {
                           print('Cache is up to date');
                         }

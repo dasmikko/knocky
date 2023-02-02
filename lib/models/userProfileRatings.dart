@@ -10,8 +10,8 @@ class UserProfileRating {
     this.count,
   });
 
-  String name;
-  int count;
+  String? name;
+  int? count;
 
   factory UserProfileRating.fromRawJson(String str) =>
       UserProfileRating.fromJson(json.decode(str));

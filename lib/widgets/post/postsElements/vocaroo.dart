@@ -3,12 +3,12 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
 class VocarooEmbed extends StatelessWidget {
-  final String url;
-  const VocarooEmbed({Key key, this.url}) : super(key: key);
+  final String? url;
+  const VocarooEmbed({Key? key, this.url}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String id = url.split('/').last;
+    String id = url!.split('/').last;
 
     return Container(
       margin: EdgeInsets.only(bottom: 8),

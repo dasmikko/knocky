@@ -11,7 +11,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 //import 'package:intent/action.dart' as action;
 
 class EmbedWidget extends StatefulWidget {
-  final String url;
+  final String? url;
 
   EmbedWidget({this.url});
 
@@ -20,17 +20,17 @@ class EmbedWidget extends StatefulWidget {
 }
 
 class _EmbedWidgetState extends State<EmbedWidget> {
-  String _title = "Fetching embed...";
-  String _description = "";
-  String _imageUrl;
-  StreamSubscription<http.Response> _dataSub;
+  String? _title = "Fetching embed...";
+  String? _description = "";
+  String? _imageUrl;
+  late StreamSubscription<http.Response> _dataSub;
 
   @override
   void initState() {
     super.initState();
     if (widget.url == null) return null;
     _dataSub = http
-        .get(Uri.parse('https://ograph.knockout.chat/?url=' + widget.url),
+        .get(Uri.parse('https://ograph.knockout.chat/?url=' + widget.url!),
             headers: {'Origin': 'https://knockout.chat'})
         .asStream()
         .listen((response) {
@@ -51,21 +51,21 @@ class _EmbedWidgetState extends State<EmbedWidget> {
                 }
               });
             }
-          });
+          } as FutureOr<_> Function(Map<dynamic, dynamic>?));
         });
   }
 
   @override
   void dispose() {
-    _dataSub?.cancel();
+    _dataSub.cancel();
     super.dispose();
   }
 
-  static Map parseJson(String json) {
+  static Map? parseJson(String json) {
     return jsonDecode(json);
   }
 
-  bool notNull(Object o) => o != null;
+  bool notNull(Object? o) => o != null;
 
   Widget handleImage(String url) {
     return Container(
@@ -91,7 +91,7 @@ class _EmbedWidgetState extends State<EmbedWidget> {
         child: InkWellOverWidget(
           onTap: () async {
             try {
-              await launchUrlString(this.widget.url,
+              await launchUrlString(this.widget.url!,
                   mode: LaunchMode.externalNonBrowserApplication);
             } catch (e) {
               throw 'Could not launch $this.widget.url';
@@ -101,8 +101,8 @@ class _EmbedWidgetState extends State<EmbedWidget> {
             padding: EdgeInsets.all(10),
             color: Colors.grey[800],
             child: Row(
-              children: <Widget>[
-                _imageUrl != null ? handleImage(_imageUrl) : null,
+              children: <Widget?>[
+                _imageUrl != null ? handleImage(_imageUrl!) : null,
                 Flexible(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -111,23 +111,23 @@ class _EmbedWidgetState extends State<EmbedWidget> {
                       Container(
                           margin: EdgeInsets.only(bottom: 15),
                           child: Text(
-                            _title,
+                            _title!,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           )),
                       Container(
                         margin: EdgeInsets.only(bottom: 15),
                         child:
-                            Text(_description, style: TextStyle(fontSize: 12)),
+                            Text(_description!, style: TextStyle(fontSize: 12)),
                       ),
                       Text(
                           this.widget.url != null
-                              ? this.widget.url
+                              ? this.widget.url!
                               : 'wtf no url',
                           style: TextStyle(fontSize: 12, color: Colors.blue)),
                     ],
                   ),
                 ),
-              ].where(notNull).toList(),
+              ].where(notNull).toList() as List<Widget>,
             ),
           ),
         ),

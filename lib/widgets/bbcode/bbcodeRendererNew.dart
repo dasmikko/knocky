@@ -15,10 +15,10 @@ import 'package:knocky/widgets/post/postsElements/youtube.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class BBcodeRendererNew extends StatelessWidget {
-  final String bbcode;
-  final BuildContext parentContext;
-  final GlobalKey scaffoldKey;
-  final ThreadPost postDetails;
+  final String? bbcode;
+  final BuildContext? parentContext;
+  final GlobalKey? scaffoldKey;
+  final ThreadPost? postDetails;
 
   BBcodeRendererNew(
       {this.parentContext, this.bbcode, this.scaffoldKey, this.postDetails});
@@ -28,7 +28,7 @@ class BBcodeRendererNew extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.only(bottom: 8),
         child: ImageWidget(
-          postId: postDetails?.id,
+          postId: postDetails!.id,
           url: node.textContent,
           bbcode: this.bbcode,
         ),
@@ -85,11 +85,11 @@ class BBcodeRendererNew extends StatelessWidget {
   }
 
   InlineSpan _styledTextNodeHandler(bbob.Element node,
-      {TextStyle currentTextStyle}) {
-    TextStyle textStyle;
+      {TextStyle? currentTextStyle}) {
+    TextStyle? textStyle;
 
     if (currentTextStyle == null) {
-      textStyle = Theme.of(parentContext).textTheme.bodyLarge.copyWith(
+      textStyle = Theme.of(parentContext!).textTheme.bodyLarge!.copyWith(
           fontFamily: node.tag == 'code' ? 'RobotoMono' : 'Roboto',
           decoration:
               node.tag == 'u' ? TextDecoration.underline : TextDecoration.none,
@@ -116,7 +116,7 @@ class BBcodeRendererNew extends StatelessWidget {
     }
 
     if (node.tag == 'url' || node.tag == 'url smart') {
-      String url;
+      String? url;
 
       if (node.attributes.containsKey('href')) {
         url = node.attributes['href'];
@@ -138,7 +138,7 @@ class BBcodeRendererNew extends StatelessWidget {
           recognizer: TapGestureRecognizer()
             ..onTap = () async {
               try {
-                await launchUrlString(url,
+                await launchUrlString(url!,
                     mode: LaunchMode.externalNonBrowserApplication);
               } catch (e) {
                 throw 'Could not launch $url';
@@ -155,7 +155,7 @@ class BBcodeRendererNew extends StatelessWidget {
         recognizer: TapGestureRecognizer()
           ..onTap = () async {
             return showDialog<void>(
-              context: parentContext,
+              context: parentContext!,
               barrierDismissible: false, // user must tap button!
               builder: (BuildContext context) {
                 return AlertDialog(
@@ -219,7 +219,7 @@ class BBcodeRendererNew extends StatelessWidget {
                 padding: EdgeInsets.all(10.0),
                 child: Text(
                     node.attributes['username'] != null
-                        ? node.attributes['username']
+                        ? node.attributes['username']!
                         : 'User' + ' posted:',
                     style:
                         TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
@@ -250,7 +250,7 @@ class BBcodeRendererNew extends StatelessWidget {
   }
 
   List<InlineSpan> _handleNodes(List<bbob.Node> nodes,
-      {TextStyle currentTextStyle}) {
+      {TextStyle? currentTextStyle}) {
     List<InlineSpan> spans = [];
 
     nodes.forEach((node) {
@@ -378,7 +378,7 @@ class BBcodeRendererNew extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String bbcodeCleaned = this.bbcode.trim();
+    String bbcodeCleaned = this.bbcode!.trim();
 
     // Handle the different attributes for images TODO: Make a more clean solution
     bbcodeCleaned =
