@@ -38,7 +38,7 @@ class _ThreadScreenState extends State<ThreadScreen>
   final ItemPositionsListener itemPositionListener =
       ItemPositionsListener.create();
 
-  ItemPosition? lastItemPostion;
+  ItemPosition? lastItemPosition;
 
   late var subscription;
 
@@ -60,28 +60,28 @@ class _ThreadScreenState extends State<ThreadScreen>
 
       String scrollDirection = 'none';
 
-      if (lastItemPostion == null) {
-        lastItemPostion = newItemPosition;
+      if (lastItemPosition == null) {
+        lastItemPosition = newItemPosition;
       } else {
-        if (newItemPosition.index != lastItemPostion!.index) {
+        if (newItemPosition.index != lastItemPosition!.index) {
           // If index is going up, user is scrolling down
-          if (newItemPosition.index > lastItemPostion!.index) {
+          if (newItemPosition.index > lastItemPosition!.index) {
             scrollDirection = 'down';
           }
-          if (newItemPosition.index < lastItemPostion!.index) {
+          if (newItemPosition.index < lastItemPosition!.index) {
             scrollDirection = 'up';
           }
         }
 
         // If index are the same, compare scroll positons
-        if (newItemPosition.index == lastItemPostion!.index) {
+        if (newItemPosition.index == lastItemPosition!.index) {
           if (newItemPosition.itemLeadingEdge <
-              lastItemPostion!.itemLeadingEdge) {
+              lastItemPosition!.itemLeadingEdge) {
             scrollDirection = 'down';
           }
 
           if (newItemPosition.itemLeadingEdge >
-              lastItemPostion!.itemLeadingEdge) {
+              lastItemPosition!.itemLeadingEdge) {
             scrollDirection = 'up';
           }
         }
@@ -97,7 +97,7 @@ class _ThreadScreenState extends State<ThreadScreen>
         }
 
         // Update lastItemPosition
-        lastItemPostion = newItemPosition;
+        lastItemPosition = newItemPosition;
       }
     });
 

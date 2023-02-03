@@ -40,7 +40,6 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
     Random random = new Random();
     int randomNumber = random.nextInt(messages.length);
 
-    print("init state" + randomNumber.toString());
     setState(() {
       messageIndex = randomNumber;
     });
