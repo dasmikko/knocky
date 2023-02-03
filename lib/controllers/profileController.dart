@@ -17,8 +17,8 @@ class ProfileController extends GetxController {
 
   initState(int? id) {
     this.id = id;
-    profile.value = null;
-    details.value = null;
+    profile.value = UserProfile();
+    details.value = UserProfileDetails();
     fetch();
   }
 
