@@ -64,9 +64,6 @@ class AuthController extends GetxController {
       prefs.write('background', syncData.backgroundUrl);
       prefs.write('role', syncData.role!.toJson());
 
-      prefs.write('usergroup', syncData.usergroup);
-      this.usergroup.value = syncData.usergroup!.index;
-
       this.userId.value = syncData.id!;
       this.username.value = syncData.username!;
       this.avatar.value = syncData.avatarUrl!;
@@ -84,7 +81,6 @@ class AuthController extends GetxController {
     this.username.value = '';
     this.avatar.value = '';
     this.background.value = '';
-    this.usergroup.value = 0;
     this.jwt.value = '';
     this.role.value = null;
 
@@ -94,7 +90,6 @@ class AuthController extends GetxController {
     prefs.write('username', '');
     prefs.write('avatar', '');
     prefs.write('background', '');
-    prefs.write('usergroup', 0);
     prefs.write('cookieString', '');
     prefs.write('jwt', '');
     prefs.write('role', '');

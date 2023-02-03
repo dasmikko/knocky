@@ -45,9 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
       AuthController authController = Get.put(AuthController());
       await authController.loginWithJWTOnly(knockoutJWT);
-      Get.offAll(ForumScreen());
-      KnockySnackbar.success('Login was successfull!',
-          icon: Icon(Icons.check));
+      Get.offAll(() => ForumScreen());
+      KnockySnackbar.success('Login was successfull!', icon: Icon(Icons.check));
       // Parse the link and warn the user, if it is not correct
     }, onError: (err) {
       print('Unilinks error: ' + err);
@@ -70,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
               if (dialogResult != false) {
                 AuthController authController = Get.put(AuthController());
                 authController.loginWithJWTOnly(dialogResult);
-                Get.offAll(ForumScreen());
+                Get.offAll(() => ForumScreen());
                 KnockySnackbar.success(
                   'Login was successfull!',
                   icon: Icon(Icons.check),
