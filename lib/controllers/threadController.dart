@@ -37,7 +37,7 @@ class ThreadController extends PaginatedController<Thread> {
   get pageCount =>
       ((data.value!.totalPosts ?? 0) / PostsPerPage.POSTS_PER_PAGE).ceil();
 
-  get title => data.value!.title;
+  get title => data.value?.title;
 
   @override
   int get dataInPageCount => data.value!.posts!.length ?? 0;

@@ -38,20 +38,20 @@ class _EmbedWidgetState extends State<EmbedWidget> {
           compute(parseJson, response.body).then((data) {
             if (this.mounted) {
               setState(() {
-                if (data['title'] != null) {
-                  _title = data['title'];
+                if (data?['title'] != null) {
+                  _title = data?['title'];
                 }
 
-                if (data['description'] != null) {
-                  _description = data['description'];
+                if (data?['description'] != null) {
+                  _description = data?['description'];
                 }
 
-                if (data['image'] != null) {
-                  _imageUrl = data['image'];
+                if (data?['image'] != null) {
+                  _imageUrl = data?['image'];
                 }
               });
             }
-          } as FutureOr<_> Function(Map<dynamic, dynamic>?));
+          });
         });
   }
 

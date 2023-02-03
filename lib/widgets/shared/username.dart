@@ -15,8 +15,8 @@ class Username extends StatelessWidget {
 
   Username({
     required this.username,
-    required this.title,
-    required this.pronouns,
+    this.title,
+    this.pronouns,
     required this.role,
     this.bold,
     this.onClick,

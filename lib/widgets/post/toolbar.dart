@@ -56,7 +56,9 @@ class Toolbar extends StatelessWidget {
 
   // TODO: post tags
   // ignore: missing_return
-  Widget tags() {}
+  Widget tags() {
+    return Container();
+  }
 
   // ignore: missing_return
   Widget controls() {

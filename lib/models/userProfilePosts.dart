@@ -11,10 +11,13 @@ class UserProfilePosts {
     return UserProfilePosts(
       currentPage: json['currentPage'] as int?,
       totalPosts: json['totalPosts'] as int?,
-      posts: (json['posts'] as List)
-          .map((e) =>
-              e == null ? null : ThreadPost.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      posts: json['posts'] == null
+          ? null
+          : List<ThreadPost>.from(
+              json['posts'].map(
+                (x) => ThreadPost.fromJson(x),
+              ),
+            ),
     );
   }
   Map<String, dynamic> toJson() => {

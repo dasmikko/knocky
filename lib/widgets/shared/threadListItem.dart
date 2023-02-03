@@ -227,7 +227,7 @@ class ThreadListItem extends StatelessWidget {
                                 ]),
                               ),
                             ),
-                            ...getTagWidgets(context) as Iterable<Widget>,
+                            ...getTagWidgets(context),
                             getSubtitle(context)
                           ],
                         ),

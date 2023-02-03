@@ -24,10 +24,13 @@ Map<String, dynamic> _$SlateObjectToJson(SlateObject instance) =>
 SlateDocument _$SlateDocumentFromJson(Map<String, dynamic> json) {
   return SlateDocument(
     object: json['object'] as String?,
-    nodes: (json['nodes'] as List)
-        .map((e) =>
-            e == null ? null : SlateNode.fromJson(e as Map<String, dynamic>))
-        .toList(),
+    nodes: json['nodes'] == null
+        ? null
+        : List<SlateNode>.from(
+            json['nodes'].map(
+              (x) => SlateNode.fromJson(x),
+            ),
+          ),
   )..data = json['data'] as Map<String, dynamic>?;
 }
 
@@ -59,19 +62,25 @@ Map<String, dynamic> _$SlateDocumentDataToJson(SlateDocumentData instance) {
 
 SlateNode _$SlateNodeFromJson(Map<String, dynamic> json) {
   return SlateNode(
-    nodes: (json['nodes'] as List)
-        .map((e) =>
-            e == null ? null : SlateNode.fromJson(e as Map<String, dynamic>))
-        .toList(),
+    nodes: json['nodes'] == null
+        ? null
+        : List<SlateNode>.from(
+            json['nodes'].map(
+              (x) => SlateNode.fromJson(x),
+            ),
+          ),
     object: json['object'] as String?,
     type: json['type'] as String?,
     data: json['data'] == null
         ? null
         : SlateNodeData.fromJson(json['data'] as Map<String, dynamic>),
-    leaves: (json['leaves'] as List)
-        .map((e) =>
-            e == null ? null : SlateLeaf.fromJson(e as Map<String, dynamic>))
-        .toList(),
+    leaves: json['leaves'] == null
+        ? null
+        : List<SlateLeaf>.from(
+            json['leaves'].map(
+              (x) => SlateLeaf.fromJson(x),
+            ),
+          ),
   );
 }
 
@@ -143,11 +152,13 @@ SlateLeaf _$SlateLeafFromJson(Map<String, dynamic> json) {
   return SlateLeaf(
     object: json['object'] as String?,
     text: json['text'] as String?,
-    marks: (json['marks'] as List)
-        .map((e) => e == null
-            ? null
-            : SlateLeafMark.fromJson(e as Map<String, dynamic>))
-        .toList(),
+    marks: json['marks'] == null
+        ? null
+        : List<SlateLeafMark>.from(
+            json['nodes'].map(
+              (x) => SlateLeafMark.fromJson(x),
+            ),
+          ),
   );
 }
 

@@ -14,7 +14,7 @@ class VideoEmbed extends StatefulWidget {
 
 class _VideoEmbedState extends State<VideoEmbed> {
   late VideoPlayerController videoPlayerController;
-  late ChewieController chewieController;
+  ChewieController? chewieController;
 
   @override
   void initState() {
@@ -25,7 +25,7 @@ class _VideoEmbedState extends State<VideoEmbed> {
   Future<void> initializePlayer() async {
     videoPlayerController = VideoPlayerController.network(widget.url!);
     await videoPlayerController.initialize();
-    chewieController = ChewieController(
+    chewieController = await ChewieController(
         videoPlayerController: videoPlayerController,
         additionalOptions: (context) {
           return <OptionItem>[
@@ -46,10 +46,8 @@ class _VideoEmbedState extends State<VideoEmbed> {
 
   @override
   void dispose() {
-    videoPlayerController.dispose();
-    chewieController.dispose();
-
-    // TODO: implement dispose
+    videoPlayerController?.dispose();
+    chewieController?.dispose();
     super.dispose();
   }
 
@@ -68,9 +66,10 @@ class _VideoEmbedState extends State<VideoEmbed> {
           ),
           child: AspectRatio(
             aspectRatio: 16 / 9,
-            child: chewieController.videoPlayerController.value.isInitialized
+            child: chewieController != null &&
+                    chewieController!.videoPlayerController.value.isInitialized
                 ? Chewie(
-                    controller: chewieController,
+                    controller: chewieController!,
                   )
                 : Text('Loading'),
           ),

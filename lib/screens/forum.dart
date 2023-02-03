@@ -106,7 +106,7 @@ class _ForumScreenState extends State<ForumScreen>
               () => SubforumScreen(subforum: subforum),
             );
           },
-          onTapItemFooter: (int threadId, int page) {
+          onTapItemFooter: (int? threadId, int? page) {
             Get.to(
               () => ThreadScreen(id: threadId, page: page),
             );
@@ -135,7 +135,7 @@ class _ForumScreenState extends State<ForumScreen>
                         () => SubforumScreen(subforum: subforum),
                       );
                     },
-                    onTapItemFooter: (int threadId, int page) {
+                    onTapItemFooter: (int? threadId, int? page) {
                       Get.to(
                         () => ThreadScreen(id: threadId, page: page),
                       );

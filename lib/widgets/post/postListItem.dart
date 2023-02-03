@@ -44,7 +44,8 @@ class _PostListItemState extends State<PostListItem> {
   @protected
   List<Widget> contents(BuildContext context) {
     bool isNewPost = false;
-    if (widget.readThreadLastSeen!.isBefore(widget.post!.createdAt!)) {
+    if (widget.readThreadLastSeen != null &&
+        widget.readThreadLastSeen!.isBefore(widget.post!.createdAt!)) {
       isNewPost = true;
     }
 
@@ -108,7 +109,9 @@ class _PostListItemState extends State<PostListItem> {
   @protected
   Widget ratings() {
     return Ratings(
-        postId: widget.post!.id, ratings: widget.post!.ratings, onRated: onRated);
+        postId: widget.post!.id,
+        ratings: widget.post!.ratings,
+        onRated: onRated);
   }
 
   onRated() {

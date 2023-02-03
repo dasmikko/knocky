@@ -19,13 +19,12 @@ void main() async {
 
   // Setup flavor
   FlavorConfig(
-      name: "NonFDroid",
+      name: "FDroid",
       color: Colors.red,
       location: BannerLocation.bottomStart,
       variables: {
         "allowUpdater": false,
-      }
-  );
+      });
 
   // Init dotenv
   await dotenv.load(fileName: 'assets/.env');

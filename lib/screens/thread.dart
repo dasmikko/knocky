@@ -188,7 +188,7 @@ class _ThreadScreenState extends State<ThreadScreen>
           )) as FutureOr<bool>);
         }
         return true;
-      } as Future<bool> Function()?,
+      },
       child: Scaffold(
         appBar: AppBar(
           title: Obx(
@@ -200,7 +200,7 @@ class _ThreadScreenState extends State<ThreadScreen>
                   curve: Curves.easeOutCirc,
                 );
               },
-              child: Text(threadController.title ?? 'Loading thread...'),
+              child: Text(threadController?.title ?? 'Loading thread...'),
             ),
           ),
           actions: [
@@ -243,47 +243,60 @@ class _ThreadScreenState extends State<ThreadScreen>
                       break;
                   }
                 },
-                itemBuilder: (context) => [
-                  overFlowItem(
-                      FaIcon(
-                        FontAwesomeIcons.rotate,
-                        size: 15,
-                      ),
-                      'Reload thread',
-                      5),
-                  _.data.value!.subscribed!
-                      ? overFlowItem(
-                          FaIcon(
-                            FontAwesomeIcons.solidBellSlash,
-                            size: 15,
-                          ),
-                          'Unsubscribe',
-                          2)
-                      : null,
-                  !_.data.value!.subscribed!
-                      ? overFlowItem(
-                          FaIcon(
-                            FontAwesomeIcons.solidBell,
-                            size: 15,
-                          ),
-                          'Subscribe',
-                          3)
-                      : null,
-                  overFlowItem(
-                      FaIcon(
-                        FontAwesomeIcons.copy,
-                        size: 15,
-                      ),
-                      'Copy link to thread',
-                      1),
-                  overFlowItem(
-                      FaIcon(
-                        FontAwesomeIcons.chrome,
-                        size: 15,
-                      ),
-                      'Open in browser',
-                      4),
-                ],
+                itemBuilder: (context) {
+                  List<PopupMenuItem> items = [];
+
+                  items.addAll([
+                    overFlowItem(
+                        FaIcon(
+                          FontAwesomeIcons.rotate,
+                          size: 15,
+                        ),
+                        'Reload thread',
+                        5),
+                  ]);
+
+                  items.addIf(
+                    _.data.value!.subscribed!,
+                    overFlowItem(
+                        FaIcon(
+                          FontAwesomeIcons.solidBellSlash,
+                          size: 15,
+                        ),
+                        'Unsubscribe',
+                        2),
+                  );
+
+                  items.addIf(
+                    !_.data.value!.subscribed!,
+                    overFlowItem(
+                        FaIcon(
+                          FontAwesomeIcons.solidBell,
+                          size: 15,
+                        ),
+                        'Subscribe',
+                        3),
+                  );
+
+                  items.addAll([
+                    overFlowItem(
+                        FaIcon(
+                          FontAwesomeIcons.copy,
+                          size: 15,
+                        ),
+                        'Copy link to thread',
+                        1),
+                    overFlowItem(
+                        FaIcon(
+                          FontAwesomeIcons.chrome,
+                          size: 15,
+                        ),
+                        'Open in browser',
+                        4),
+                  ]);
+
+                  return items;
+                },
               ),
             )
           ],

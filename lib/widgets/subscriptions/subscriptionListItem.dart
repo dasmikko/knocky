@@ -55,7 +55,7 @@ class SubscriptionListItem extends ThreadListItem {
 
                 bool confirmResult = await (Get.dialog(ConfirmDialog(
                   content: "Do you want to unsubscribe?",
-                )) as FutureOr<bool>);
+                )));
 
                 if (!confirmResult) return;
 

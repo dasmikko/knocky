@@ -11,11 +11,13 @@ class UserProfileThreads {
     return UserProfileThreads(
       currentPage: json['currentPage'] as int?,
       totalThreads: json['totalThreads'] as int?,
-      threads: (json['threads'] as List)
-          .map((e) => e == null
-              ? null
-              : SignificantThread.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      threads: json['threads'] == null
+          ? null
+          : List<SignificantThread>.from(
+              json['threads'].map(
+                (x) => SignificantThread.fromJson(x),
+              ),
+            ),
     );
   }
   Map<String, dynamic> toJson() => {

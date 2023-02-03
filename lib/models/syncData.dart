@@ -36,16 +36,20 @@ class SyncDataModel {
           : Usergroup.values[json['usergroup'] as int],
       username: json['username'] as String?,
       isBanned: json['isBanned'] as bool?,
-      mentions: (json['mentions'] as List)
-          .map((e) => e == null
-              ? null
-              : SyncDataMentionModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      subscriptions: (json['subscriptions'] as List)
-          .map((e) => e == null
-              ? null
-              : ThreadAlert.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      mentions: json['mentions'] == null
+          ? null
+          : List<SyncDataMentionModel>.from(
+              json['mentions'].map(
+                (x) => SyncDataMentionModel.fromJson(x),
+              ),
+            ),
+      subscriptions: json['subscriptions'] == null
+          ? null
+          : List<ThreadAlert>.from(
+              json['subscriptions'].map(
+                (x) => ThreadAlert.fromJson(x),
+              ),
+            ),
     );
   }
   Map<String, dynamic> toJson() => {

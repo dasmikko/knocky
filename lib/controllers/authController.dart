@@ -25,7 +25,6 @@ class AuthController extends GetxController {
       this.username.value = prefs.read('username');
       this.avatar.value = prefs.read('avatar');
       this.background.value = prefs.read('background');
-      this.usergroup.value = prefs.read('usergroup');
       this.role.value = UserRole.fromJson(prefs.read('role'));
     }
   }
@@ -36,7 +35,6 @@ class AuthController extends GetxController {
     this.username.value = username;
     this.avatar.value = avatar;
     this.background.value = background;
-    this.usergroup.value = usergroup;
     this.isAuthenticated.value = true;
     this.jwt.value = jwt;
 
@@ -49,8 +47,6 @@ class AuthController extends GetxController {
     prefs.write('jwt', jwt);
 
     prefs.write('role', role);
-
-    prefs.write('usergroup', usergroup);
   }
 
   loginWithJWTOnly(jwtToken) async {

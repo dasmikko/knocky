@@ -25,11 +25,13 @@ class SubforumDetails {
       iconId: json['iconId'] as int?,
       name: json['name'] as String?,
       totalThreads: json['totalThreads'] as int?,
-      threads: (json['threads'] as List)
-          .map((e) => e == null
-              ? null
-              : SubforumThread.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      threads: json['threads'] == null
+          ? null
+          : List<SubforumThread>.from(
+              json['threads'].map(
+                (x) => SubforumThread.fromJson(x),
+              ),
+            ),
     );
   }
   Map<String, dynamic> toJson() => {

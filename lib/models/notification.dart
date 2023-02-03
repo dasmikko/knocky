@@ -125,20 +125,24 @@ class NotificationMessageDataModel {
 
   factory NotificationMessageDataModel.fromJson(Map<String, dynamic> json) {
     return NotificationMessageDataModel(
-      messages: (json['messages'] as List)
-          .map((e) => e == null
-              ? null
-              : NotificationMessageDataMessageModel.fromJson(
-                  e as Map<String, dynamic>))
-          .toList(),
+      messages: json["messages"] == null
+          ? null
+          : List<NotificationMessageDataMessageModel>.from(
+              json["messages"].map(
+                (x) => NotificationMessageDataMessageModel.fromJson(x),
+              ),
+            ),
       createdAt: json['createdAt'] == null
           ? null
           : DateTime.parse(json['createdAt'] as String),
       id: json['id'] as int?,
-      users: (json['users'] as List)
-          .map((e) =>
-              e == null ? null : ThreadUser.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      users: json["users"] == null
+          ? null
+          : List<ThreadUser>.from(
+              json["users"].map(
+                (x) => ThreadUser.fromJson(x),
+              ),
+            ),
     );
   }
   Map<String, dynamic> toJson() => {
