@@ -11,10 +11,10 @@ class ProfileThreadController extends PaginatedController<UserProfileThreads> {
 
   @override
   int get pageCount =>
-      ((data.value!.totalThreads ?? 0) / PostsPerPage.POSTS_PER_PAGE).ceil();
+      ((data.value?.totalThreads ?? 0) / PostsPerPage.POSTS_PER_PAGE).ceil();
 
   @override
-  int get dataInPageCount => data.value!.threads!.length ?? 0;
+  int get dataInPageCount => data.value?.threads?.length ?? 0;
 
   @override
   dynamic dataAtIndex(int index) => data.value!.threads![index];

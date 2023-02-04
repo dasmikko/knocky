@@ -31,7 +31,7 @@ class _ProfileBodyState extends State<ProfileBody> {
         child: new DefaultTabController(
           length: hasBans() ? 3 : 2,
           child: Scaffold(
-            body: TabBarView(children: [...tabContents() as Iterable<Widget>]),
+            body: TabBarView(children: [...tabContents()]),
             appBar: new AppBar(
               automaticallyImplyLeading: false,
               flexibleSpace: new Column(

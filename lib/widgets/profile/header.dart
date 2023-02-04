@@ -78,22 +78,24 @@ class _ProfileHeaderState extends State<ProfileHeader>
 
   Widget headerLabels(BuildContext context) {
     return Expanded(
-      child: Container(
-        height: 148,
-        margin: EdgeInsets.fromLTRB(8, 0, 0, 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Username(
-                title: widget.profile!.title,
-                pronouns: widget.profile!.pronouns,
-                username: widget.profile!.username,
-                bold: true,
-                role: widget.profile!.role,
-                banned: widget.profile!.banned,
-                fontSize: 26),
-            ...(showingLinks ? linksSubtitle() : regularSubtitle()),
-          ],
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: 148),
+        child: Container(
+          margin: EdgeInsets.fromLTRB(8, 0, 0, 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Username(
+                  title: widget.profile!.title,
+                  pronouns: widget.profile!.pronouns,
+                  username: widget.profile!.username,
+                  bold: true,
+                  role: widget.profile!.role,
+                  banned: widget.profile!.banned,
+                  fontSize: 26),
+              ...(showingLinks ? linksSubtitle() : regularSubtitle()),
+            ],
+          ),
         ),
       ),
     );
