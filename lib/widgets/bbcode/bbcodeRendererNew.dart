@@ -8,6 +8,7 @@ import 'package:knocky/models/thread.dart';
 import 'package:knocky/screens/imageViewer.dart';
 import 'package:knocky/widgets/post/postsElements/Embed.dart';
 import 'package:knocky/widgets/post/postsElements/image.dart';
+import 'package:knocky/widgets/post/postsElements/spoiler.dart';
 import 'package:knocky/widgets/post/postsElements/twitter.dart';
 import 'package:knocky/widgets/post/postsElements/video.dart';
 import 'package:knocky/widgets/post/postsElements/vocaroo.dart';
@@ -149,39 +150,9 @@ class BBcodeRendererNew extends StatelessWidget {
     }
 
     if (node.tag == 'spoiler') {
-      return TextSpan(
-        text: node.textContent,
-        style: textStyle,
-        recognizer: TapGestureRecognizer()
-          ..onTap = () async {
-            return showDialog<void>(
-              context: parentContext!,
-              barrierDismissible: false, // user must tap button!
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text('Spoiler'),
-                  content: SingleChildScrollView(
-                    child: ListBody(
-                      children: <Widget>[
-                        SelectableText.rich(
-                          TextSpan(children: _handleNodes(node.children)),
-                        ),
-                      ],
-                    ),
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      child: Text('Close'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-      );
+      return WidgetSpan(
+          child: SpoilerWidget(
+              node, _handleNodes, this.parentContext!, textStyle!));
     }
 
     if (node is bbob.Text) {
