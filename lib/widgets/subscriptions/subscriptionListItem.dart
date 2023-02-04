@@ -12,17 +12,17 @@ import 'package:knocky/widgets/jumpToPageDialog.dart';
 import 'package:knocky/widgets/shared/threadListItem.dart';
 
 class SubscriptionListItem extends ThreadListItem {
-  final SubforumThread threadDetails;
-  final int unreadPosts;
+  final SubforumThread? threadDetails;
+  final int? unreadPosts;
   final SubscriptionController subscriptionController =
       Get.put(SubscriptionController());
 
-  SubscriptionListItem({@required this.threadDetails, this.unreadPosts})
+  SubscriptionListItem({required this.threadDetails, this.unreadPosts})
       : super(threadDetails: threadDetails);
 
   @override
   List getTagWidgets(BuildContext context) {
-    return [if (unreadPosts > 0) unreadPostsButton(context, unreadPosts)];
+    return [if (unreadPosts! > 0) unreadPostsButton(context, unreadPosts!)];
   }
 
   @override
@@ -31,16 +31,15 @@ class SubscriptionListItem extends ThreadListItem {
   }
 
   void showJumpDialog() async {
-    int page = await Get.dialog(
+    int? page = await Get.dialog(
       JumpToPageDialog(
         minValue: 1,
-        maxValue: PostsPerPage.totalPagesFromPosts(threadDetails.postCount),
+        maxValue: PostsPerPage.totalPagesFromPosts(threadDetails!.postCount!),
         value: 1,
       ),
     );
 
-    if (page != null)
-      Get.to(() => ThreadScreen(id: threadDetails.id, page: page));
+    Get.to(() => ThreadScreen(id: threadDetails!.id, page: page));
   }
 
   Widget longPressBottomSheetContent() {
@@ -54,9 +53,9 @@ class SubscriptionListItem extends ThreadListItem {
               onTap: () async {
                 Get.back();
 
-                bool confirmResult = await Get.dialog(ConfirmDialog(
+                bool confirmResult = await (Get.dialog(ConfirmDialog(
                   content: "Do you want to unsubscribe?",
-                ));
+                )));
 
                 if (!confirmResult) return;
 
@@ -67,7 +66,7 @@ class SubscriptionListItem extends ThreadListItem {
                   showProgressIndicator: true,
                 );
 
-                await KnockoutAPI().deleteThreadAlert(threadDetails.id);
+                await KnockoutAPI().deleteThreadAlert(threadDetails!.id);
                 snackbarController.close();
                 subscriptionController.fetch();
 

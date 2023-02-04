@@ -48,7 +48,7 @@ class _ForumScreenState extends State<ForumScreen>
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Expanded(
-                  child: Text(forumController.motd.first.message),
+                  child: Text(forumController.motd.first.message!),
                 ),
                 SizedBox(
                   width: 18,
@@ -56,7 +56,7 @@ class _ForumScreenState extends State<ForumScreen>
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      String stringUrl = forumController.motd.first.buttonLink;
+                      String stringUrl = forumController.motd.first.buttonLink!;
                       int threadId = int.parse(stringUrl.split('/').last);
 
                       Get.to(ThreadScreen(id: threadId));
@@ -66,7 +66,7 @@ class _ForumScreenState extends State<ForumScreen>
                       side: BorderSide(color: Colors.white),
                       elevation: 0,
                     ),
-                    child: Text(forumController.motd.first.buttonName),
+                    child: Text(forumController.motd.first.buttonName!),
                   ),
                 ),
                 Container(
@@ -106,7 +106,7 @@ class _ForumScreenState extends State<ForumScreen>
               () => SubforumScreen(subforum: subforum),
             );
           },
-          onTapItemFooter: (int threadId, int page) {
+          onTapItemFooter: (int? threadId, int? page) {
             Get.to(
               () => ThreadScreen(id: threadId, page: page),
             );
@@ -135,7 +135,7 @@ class _ForumScreenState extends State<ForumScreen>
                         () => SubforumScreen(subforum: subforum),
                       );
                     },
-                    onTapItemFooter: (int threadId, int page) {
+                    onTapItemFooter: (int? threadId, int? page) {
                       Get.to(
                         () => ThreadScreen(id: threadId, page: page),
                       );

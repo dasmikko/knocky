@@ -6,11 +6,11 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
 class TwitterHelper {
-  final String _consumerKey = dotenv.env['TWITTER_CONSUMER'];
-  final String _consumerSecret = dotenv.env['TWITTER_SECRET'];
+  final String? _consumerKey = dotenv.env['TWITTER_CONSUMER'];
+  final String? _consumerSecret = dotenv.env['TWITTER_SECRET'];
 
   Future<void> getBearerToken() async {
-    var bytes = utf8.encode(_consumerKey + ':' + _consumerSecret);
+    var bytes = utf8.encode(_consumerKey! + ':' + _consumerSecret!);
     var base64Str = base64.encode(bytes);
 
     try {
@@ -31,9 +31,9 @@ class TwitterHelper {
     }
   }
 
-  Future<Map<String, dynamic>> getTweet(int tweetId) async {
+  Future<Map<String, dynamic>?> getTweet(int tweetId) async {
     GetStorage prefs = GetStorage();
-    String bearerToken = prefs.read('twitterBearerToken');
+    String? bearerToken = prefs.read('twitterBearerToken');
 
     try {
       http.Response httpResponse = await http.get(
@@ -44,7 +44,7 @@ class TwitterHelper {
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
           });
 
-      Map<String, dynamic> jsonMap = jsonDecode(httpResponse.body);
+      Map<String, dynamic>? jsonMap = jsonDecode(httpResponse.body);
       return jsonMap;
     } catch (e) {
       print('Error');

@@ -3,19 +3,19 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/threadController.dart';
-import 'package:knocky/helpers/format.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:knocky/models/thread.dart';
 
 class Toolbar extends StatelessWidget {
-  final ThreadPost post;
+  final ThreadPost? post;
   final bool showThreadPostNumber;
-  final Function onToggleBBCode;
-  final Function onToggleEditPost;
+  final Function? onToggleBBCode;
+  final Function? onToggleEditPost;
   final ThreadController threadController = Get.put(ThreadController());
   final AuthController authController = Get.put(AuthController());
 
   Toolbar(
-      {@required this.post,
+      {required this.post,
       this.showThreadPostNumber = true,
       this.onToggleBBCode,
       this.onToggleEditPost});
@@ -42,21 +42,23 @@ class Toolbar extends StatelessWidget {
 
   @protected
   Widget timestamp() {
-    return Text(Format.humanReadableTimeSince(post.createdAt));
+    return Text(timeago.format(post!.createdAt!));
   }
 
   Widget postNumber() {
     return Container(
         margin: EdgeInsets.only(left: 8),
         child: Text(
-          "#${post.threadPostNumber.toString()}",
+          "#${post!.threadPostNumber.toString()}",
           style: TextStyle(color: Colors.white60),
         ));
   }
 
   // TODO: post tags
   // ignore: missing_return
-  Widget tags() {}
+  Widget tags() {
+    return Container();
+  }
 
   // ignore: missing_return
   Widget controls() {
@@ -65,13 +67,13 @@ class Toolbar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           (authController.isAuthenticated.value &&
-                  post.user.id == authController.userId.value)
+                  post!.user!.id == authController.userId.value)
               ? IconButton(
                   iconSize: 12,
                   icon: FaIcon(
                     FontAwesomeIcons.pen,
                   ),
-                  onPressed: () => this.onToggleEditPost.call(),
+                  onPressed: () => this.onToggleEditPost!.call(),
                 )
               : Container(),
           IconButton(
@@ -79,7 +81,7 @@ class Toolbar extends StatelessWidget {
             icon: FaIcon(
               FontAwesomeIcons.code,
             ),
-            onPressed: () => this.onToggleBBCode.call(),
+            onPressed: () => this.onToggleBBCode!.call(),
           ),
           IconButton(
             iconSize: 12,
@@ -88,7 +90,7 @@ class Toolbar extends StatelessWidget {
             ),
             onPressed: () async {
               String contentToInsert =
-                  '[quote mentionsUser="${post.user.id}" postId="${post.id}" threadPage="${post.page}" threadId="${post.thread}" username="${post.user.username}"]${post.content}[/quote]';
+                  '[quote mentionsUser="${post!.user!.id}" postId="${post!.id}" threadPage="${post!.page}" threadId="${post!.thread}" username="${post!.user!.username}"]${post!.content}[/quote]';
 
               threadController.replyToAdd.value = contentToInsert;
               threadController.itemScrollController.jumpTo(index: 999);

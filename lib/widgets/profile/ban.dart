@@ -8,7 +8,7 @@ import 'package:knocky/widgets/post/toolbar.dart';
 class ProfileBan extends StatelessWidget {
   final UserBan ban;
 
-  ProfileBan({@required this.ban});
+  ProfileBan({required this.ban});
 
   @override
   Widget build(BuildContext context) {
@@ -29,12 +29,12 @@ class ProfileBan extends StatelessWidget {
 
   bool isRetracted() {
     // they set the expiration date to 20 years ago if they take the ban back???
-    return ban.expiresAt.year < 2010;
+    return ban.expiresAt!.year < 2010;
   }
 
   Widget expirationTime() {
     var isInPast = true;
-    var time = Format.humanReadableTimeSince(ban.expiresAt);
+    var time = Format.humanReadableTimeSince(ban.expiresAt!);
     var label = isRetracted()
         ? "Retracted"
         : "${isInPast ? 'Expired' : 'Expires in'} $time";
@@ -54,14 +54,14 @@ class ProfileBan extends StatelessWidget {
         width: double.infinity,
         margin: EdgeInsets.only(top: 16),
         child: Text(
-            "${Format.humanReadableTimeSince(ban.createdAt)} in ${ban.thread['title']}",
+            "${Format.humanReadableTimeSince(ban.createdAt!)} in ${ban.thread['title']}",
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             overflow: TextOverflow.ellipsis,
             maxLines: 3));
   }
 
   Widget banTime() {
-    var duration = Format.duration(ban.createdAt, ban.expiresAt);
+    var duration = Format.duration(ban.createdAt!, ban.expiresAt!);
     return Row(children: [
       FaIcon(FontAwesomeIcons.solidClock, size: 16, color: Colors.white),
       Container(margin: EdgeInsets.only(left: 4), child: Text("$duration"))

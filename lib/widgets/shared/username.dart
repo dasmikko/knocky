@@ -3,21 +3,21 @@ import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/models/v2/userRole.dart';
 
 class Username extends StatelessWidget {
-  final String username;
-  final String title;
-  final String pronouns;
-  final bool bold;
-  final Function onClick;
+  final String? username;
+  final String? title;
+  final String? pronouns;
+  final bool? bold;
+  final Function? onClick;
   final double fontSize;
   final double titleFontSize;
-  final bool banned;
-  final UserRole role;
+  final bool? banned;
+  final UserRole? role;
 
   Username({
-    @required this.username,
-    @required this.title,
-    @required this.pronouns,
-    @required this.role,
+    required this.username,
+    this.title,
+    this.pronouns,
+    required this.role,
     this.bold,
     this.onClick,
     this.banned = false,
@@ -31,27 +31,27 @@ class Username extends StatelessWidget {
         style: ButtonStyle(
             padding:
                 MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero)),
-        onPressed: onClick,
+        onPressed: onClick as void Function()?,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              username,
+              username!,
               style: TextStyle(
                 fontSize: fontSize,
                 color: AppColors(context).userRoleToColor(
-                  role.code,
-                  banned: banned,
+                  role!.code,
+                  banned: banned!,
                 ),
-                fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+                fontWeight: bold! ? FontWeight.bold : FontWeight.normal,
               ),
             ),
             title != null
                 ? Container(
                     margin: EdgeInsets.only(top: 4),
                     child: Text(
-                      title,
+                      title!,
                       style: TextStyle(
                         fontSize: titleFontSize,
                         color: Colors.white,
@@ -63,7 +63,7 @@ class Username extends StatelessWidget {
                 ? Container(
                     margin: EdgeInsets.only(top: 4),
                     child: Text(
-                      pronouns,
+                      pronouns!,
                       style: TextStyle(
                         fontSize: titleFontSize,
                         color: Colors.white,

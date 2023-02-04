@@ -6,13 +6,13 @@ import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/icons.dart';
 
 class RatingsChooser extends StatelessWidget {
-  final int postId;
-  final Function onRatingClicked;
-  final Function onRatingDone;
+  final int? postId;
+  final Function? onRatingClicked;
+  final Function? onRatingDone;
   final AuthController authController = Get.put(AuthController());
 
   RatingsChooser(
-      {@required this.postId, this.onRatingClicked, this.onRatingDone});
+      {required this.postId, this.onRatingClicked, this.onRatingDone});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class RatingsChooser extends StatelessWidget {
   }
 
   Widget ratingsList() {
-    var ratings = ratingsMapForContext(authController.role?.value, 1).entries;
+    var ratings = ratingsMapForContext(authController.role.value, 1).entries;
     return ListView.builder(
         padding: EdgeInsets.only(left: 8, right: 8),
         scrollDirection: Axis.horizontal,
@@ -37,11 +37,11 @@ class RatingsChooser extends StatelessWidget {
   }
 
   static Widget ratingIcon(RatingItem ratingItem, {double size = 16}) {
-    return ExtendedImage.network(ratingItem.url, width: size, height: size);
+    return ExtendedImage.network(ratingItem.url!, width: size, height: size);
   }
 
-  static Widget ratingButton(RatingItem ratingItem, int postId,
-      Function onRatingClicked, Function onRatingDone, bool canRate) {
+  static Widget ratingButton(RatingItem ratingItem, int? postId,
+      Function? onRatingClicked, Function? onRatingDone, bool canRate) {
     return Container(
       child: IconButton(
         color: Colors.green,
@@ -50,17 +50,17 @@ class RatingsChooser extends StatelessWidget {
         visualDensity: VisualDensity.compact,
         onPressed: () => canRate
             ? {
-                onRatingClicked(),
+                onRatingClicked!(),
                 onRatingPressed(
-                    postId, ratingItem.id, onRatingClicked, onRatingDone)
+                    postId, ratingItem.id, onRatingClicked, onRatingDone!)
               }
             : {},
-        icon: ExtendedImage.network(ratingItem.url),
+        icon: ExtendedImage.network(ratingItem.url!),
       ),
     );
   }
 
-  static Future<void> onRatingPressed(int postId, String ratingId,
+  static Future<void> onRatingPressed(int? postId, String? ratingId,
       Function onRatingClicked, Function onRatingDone) async {
     onRatingClicked();
     await KnockoutAPI().ratePost(postId, ratingId);

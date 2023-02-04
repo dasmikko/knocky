@@ -5,7 +5,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
   SlateNode paragraph = SlateNode(object: 'block', nodes: []);
   StringBuffer _leafContentBuffer = StringBuffer();
 
-  SlateNode _lastElement;
+  late SlateNode _lastElement;
   List<SlateLeafMark> _leafMarks = [];
 
   SlateNode parse(String text, {type = 'paragraph'}) {
@@ -19,7 +19,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
 
     // if string buffer is not empty, add a leaf
     if (_leafContentBuffer.isNotEmpty ||
-        (_lastElement != null && _lastElement.nodes.length > 0)) {
+        (_lastElement.nodes!.length > 0)) {
       // New leaf is appearing, add old leaf to node
       SlateNode textLeafNode = SlateNode(object: 'text', leaves: [
         SlateLeaf(
@@ -29,7 +29,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
       ]);
 
       // Add node
-      paragraph.nodes.add(textLeafNode);
+      paragraph.nodes!.add(textLeafNode);
       _leafContentBuffer = StringBuffer();
     }
 
@@ -53,7 +53,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
       // Reset leaf marks
       _leafMarks = [];
 
-      paragraph.nodes.add(textNode);
+      paragraph.nodes!.add(textNode);
       _leafContentBuffer = StringBuffer();
     }
 
@@ -75,7 +75,7 @@ class BBCodeHandler implements bbob.NodeVisitor {
     }
 
     if (element.tag == 'url') {
-      paragraph.nodes.add(SlateNode(
+      paragraph.nodes!.add(SlateNode(
           object: 'inline',
           type: 'link',
           data: SlateNodeData(
@@ -109,12 +109,12 @@ class BBCodeHandler implements bbob.NodeVisitor {
     // Reset leaf marks
     _leafMarks = [];
 
-    paragraph.nodes.add(textNode);
+    paragraph.nodes!.add(textNode);
     _leafContentBuffer = StringBuffer();
   }
 
-  String slateParagraphToBBCode(SlateNode node) {
-    String bbcode = _handleNodes(node.nodes).trim();
+  String? slateParagraphToBBCode(SlateNode node) {
+    String? bbcode = _handleNodes(node.nodes!).trim();
     return bbcode;
   }
 
@@ -147,28 +147,26 @@ class BBCodeHandler implements bbob.NodeVisitor {
     List<String> contentItems = [];
 
     nodes.forEach((line) {
-      if (line.leaves != null) {
-        content.write(_leafHandler(line.leaves));
-      }
+      content.write(_leafHandler(line.leaves!));
 
       // Handle inline element
       if (line.object == 'inline') {
         // Handle links
         if (line.type == 'link') {
-          line.nodes.forEach((inlineNode) {
-            inlineNode.leaves.forEach((leaf) {
+          line.nodes!.forEach((inlineNode) {
+            inlineNode.leaves!.forEach((leaf) {
               String linktext = '';
-              if (line.data.isSmartLink != null && line.data.isSmartLink) {
-                linktext = '[url rich=true]' + leaf.text + '[/url]';
+              if (line.data!.isSmartLink!) {
+                linktext = '[url rich=true]' + leaf.text! + '[/url]';
               } else {
-                linktext = '[url]' + leaf.text + '[/url]';
+                linktext = '[url]' + leaf.text! + '[/url]';
               }
               content.write(linktext);
             });
           });
         } else {
-          line.nodes.forEach((inlineNode) {
-            inlineNode.leaves.forEach((leaf) {
+          line.nodes!.forEach((inlineNode) {
+            inlineNode.leaves!.forEach((leaf) {
               content.write(leaf.text);
             });
           });
@@ -190,24 +188,24 @@ class BBCodeHandler implements bbob.NodeVisitor {
   String _leafHandler(List<SlateLeaf> leaves) {
     StringBuffer content = new StringBuffer();
     leaves.forEach((leaf) {
-      bool isBold = leaf.marks.where((mark) => mark.type == 'bold').length > 0;
+      bool isBold = leaf.marks!.where((mark) => mark.type == 'bold').length > 0;
 
       bool isItalic =
-          leaf.marks.where((mark) => mark.type == 'italic').length > 0;
+          leaf.marks!.where((mark) => mark.type == 'italic').length > 0;
 
       bool isUnderlined =
-          leaf.marks.where((mark) => mark.type == 'underlined').length > 0;
+          leaf.marks!.where((mark) => mark.type == 'underlined').length > 0;
 
-      bool isCode = leaf.marks.where((mark) => mark.type == 'code').length > 0;
+      bool isCode = leaf.marks!.where((mark) => mark.type == 'code').length > 0;
 
       bool isSpoiler =
-          leaf.marks.where((mark) => mark.type == 'spoiler').length > 0;
+          leaf.marks!.where((mark) => mark.type == 'spoiler').length > 0;
 
-      if (isBold) content.write('[b]' + leaf.text + '[/b]');
-      if (isItalic) content.write('[i]' + leaf.text + '[/i]');
-      if (isUnderlined) content.write('[u]' + leaf.text + '[/u]');
-      if (isCode) content.write('[code]' + leaf.text + '[/code]');
-      if (isSpoiler) content.write('[spoiler]' + leaf.text + '[/spoiler]');
+      if (isBold) content.write('[b]' + leaf.text! + '[/b]');
+      if (isItalic) content.write('[i]' + leaf.text! + '[/i]');
+      if (isUnderlined) content.write('[u]' + leaf.text! + '[/u]');
+      if (isCode) content.write('[code]' + leaf.text! + '[/code]');
+      if (isSpoiler) content.write('[spoiler]' + leaf.text! + '[/spoiler]');
       if (!isBold && !isItalic && !isUnderlined && !isCode && !isCode)
         content.write(leaf.text);
     });

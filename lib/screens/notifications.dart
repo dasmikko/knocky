@@ -5,7 +5,7 @@ import 'package:knocky/models/notification.dart';
 import 'package:knocky/widgets/notifications/notificationListItem.dart';
 
 class NotificationScreen extends StatefulWidget {
-  const NotificationScreen({Key key}) : super(key: key);
+  const NotificationScreen({Key? key}) : super(key: key);
 
   @override
   State<NotificationScreen> createState() => _NotificationScreenState();

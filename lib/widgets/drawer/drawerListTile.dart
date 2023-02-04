@@ -6,15 +6,15 @@ class DrawerListTile extends StatelessWidget {
   final String title;
   final Function onTap;
   final bool disabled;
-  final Color tileColor;
+  final Color? tileColor;
 
   static const double LEADING_WIDTH = 16;
 
   DrawerListTile({
     this.disabled = false,
-    @required this.iconData,
-    @required this.title,
-    @required this.onTap,
+    required this.iconData,
+    required this.title,
+    required this.onTap,
     this.tileColor,
   });
 
@@ -46,7 +46,7 @@ class DrawerListTile extends StatelessWidget {
           minLeadingWidth: LEADING_WIDTH,
           leading: leadingSection(context),
           title: titleSection(context),
-          onTap: onTap),
+          onTap: onTap as void Function()?),
     );
   }
 }

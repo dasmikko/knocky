@@ -17,5 +17,5 @@ class ProfileThreadController extends PaginatedController<UserProfileThreads> {
   int get dataInPageCount => data.value?.threads?.length ?? 0;
 
   @override
-  dynamic dataAtIndex(int index) => data.value?.threads[index];
+  dynamic dataAtIndex(int index) => data.value!.threads![index];
 }

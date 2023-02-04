@@ -5,13 +5,13 @@ import 'package:knocky/models/v2/alerts.dart';
 
 class SubscriptionController extends GetxController {
   final isFetching = false.obs;
-  final subscriptions = Alerts().obs;
+  final Rx<Alerts> subscriptions = Alerts().obs;
   final _page = 1.obs;
 
   @override
   onInit() {
     super.onInit();
-    ever(_page, (_) => fetch());
+    ever(_page, (dynamic _) => fetch());
   }
 
   initState() {
@@ -29,7 +29,7 @@ class SubscriptionController extends GetxController {
   get page => _page.value;
 
   get pageCount =>
-      ((subscriptions.value?.totalAlerts ?? 0) / PostsPerPage.POSTS_PER_PAGE)
+      ((subscriptions.value.totalAlerts ?? 0) / PostsPerPage.POSTS_PER_PAGE)
           .ceil();
 
   nextPage() => _page.value++;

@@ -5,8 +5,8 @@ import 'package:matrix4_transform/matrix4_transform.dart';
 //import 'package:knocky_edge/helpers/Download.dart';
 
 class CustomZoomWidget extends StatefulWidget {
-  final Widget child;
-  final Function onZoomStateChange;
+  final Widget? child;
+  final Function? onZoomStateChange;
 
   CustomZoomWidget({this.child, this.onZoomStateChange});
 
@@ -17,9 +17,9 @@ class CustomZoomWidget extends StatefulWidget {
 class _CustomZoomWidgetState extends State<CustomZoomWidget>
     with TickerProviderStateMixin {
   bool _isZooming = false;
-  TransformationController transformationController;
-  Animation<Matrix4> _animationZoom;
-  AnimationController _animationController;
+  TransformationController? transformationController;
+  Animation<Matrix4>? _animationZoom;
+  late AnimationController _animationController;
 
   int _tapCount = 0;
 
@@ -35,9 +35,9 @@ class _CustomZoomWidgetState extends State<CustomZoomWidget>
   }
 
   void _onZoomAnimation() {
-    transformationController.value = _animationZoom.value;
+    transformationController!.value = _animationZoom!.value;
     if (!_animationController.isAnimating) {
-      _animationZoom?.removeListener(_onZoomAnimation);
+      _animationZoom!.removeListener(_onZoomAnimation);
       _animationZoom = null;
       _animationController.reset();
     }
@@ -76,33 +76,33 @@ class _CustomZoomWidgetState extends State<CustomZoomWidget>
         _tapCount = 0;
       });
 
-      double currentScale = transformationController.value.getMaxScaleOnAxis();
+      double currentScale = transformationController!.value.getMaxScaleOnAxis();
       Matrix4 endTransform;
 
       if (currentScale == 1.0) {
         setState(() {
           _isZooming = true;
-          this.widget.onZoomStateChange(true);
+          this.widget.onZoomStateChange!(true);
         });
-        endTransform = Matrix4Transform.from(transformationController.value)
+        endTransform = Matrix4Transform.from(transformationController!.value)
             .scale(3, origin: details.globalPosition)
             .matrix4;
       } else {
         setState(() {
           _isZooming = false;
-          this.widget.onZoomStateChange(false);
+          this.widget.onZoomStateChange!(false);
         });
         endTransform = Matrix4.identity();
       }
 
       _animationZoom = Matrix4Tween(
-        begin: transformationController.value,
+        begin: transformationController!.value,
         end: endTransform,
       ).animate(CurvedAnimation(
         parent: _animationController,
         curve: Curves.ease,
       ));
-      _animationZoom.addListener(_onZoomAnimation);
+      _animationZoom!.addListener(_onZoomAnimation);
       _animationController.forward();
     }
   }
@@ -117,16 +117,16 @@ class _CustomZoomWidgetState extends State<CustomZoomWidget>
         maxScale: 3.0,
         onInteractionUpdate: (ScaleUpdateDetails update) {
           double currentScale =
-              transformationController.value.getMaxScaleOnAxis();
+              transformationController!.value.getMaxScaleOnAxis();
           if (currentScale > 1.0 && !_isZooming) {
             setState(() {
               _isZooming = true;
-              this.widget.onZoomStateChange(true);
+              this.widget.onZoomStateChange!(true);
             });
           } else if (currentScale <= 1.0 && _isZooming) {
             setState(() {
               _isZooming = false;
-              this.widget.onZoomStateChange(false);
+              this.widget.onZoomStateChange!(false);
             });
           }
         },

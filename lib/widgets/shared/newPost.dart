@@ -10,8 +10,8 @@ import 'package:knocky/widgets/bbcode/bbcodeRendererNew.dart';
 import 'package:knocky/widgets/shared/postEditorBBCode.dart';
 
 class NewPost extends StatefulWidget {
-  final int threadId;
-  final Function onSubmit;
+  final int? threadId;
+  final Function? onSubmit;
   NewPost({this.threadId, this.onSubmit});
   @override
   _NewPostState createState() => _NewPostState();
@@ -22,7 +22,7 @@ class _NewPostState extends State<NewPost> {
   final ThreadController threadController = Get.put(ThreadController());
   final double height = 300;
   bool previewing = false;
-  StreamSubscription subscription;
+  late StreamSubscription subscription;
 
   @override
   void initState() {
@@ -39,12 +39,10 @@ class _NewPostState extends State<NewPost> {
     textEditingController.text = threadController.currentNewPostText.value;
 
     // Insert reply if there is any when initializing
-    if (threadController.replyToAdd != null) {
-      textEditingController.text =
-          textEditingController.text + threadController.replyToAdd.value;
-      // Reset the replyToAdd variable
-      threadController.replyToAdd.value = '';
-    }
+    textEditingController.text =
+        textEditingController.text + threadController.replyToAdd.value;
+    // Reset the replyToAdd variable
+    threadController.replyToAdd.value = '';
 
     // Listen for changes, in case user modifies the replyToAdd variable, and add it to the post text if so. If the newPost widget is mounted
     subscription = threadController.replyToAdd.listen((String newValue) {
@@ -142,7 +140,7 @@ class _NewPostState extends State<NewPost> {
 
     KnockySnackbar.success('Post was submitted');
     textEditingController.text = '';
-    widget.onSubmit.call();
+    widget.onSubmit!.call();
   }
 
   @override

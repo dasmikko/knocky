@@ -6,7 +6,7 @@ import 'package:popover/popover.dart';
 /// The reason the rate button is it's own stateless widget, is to make the popover package to position itself correctly!
 
 class RateButton extends StatelessWidget {
-  final Widget popOverContent;
+  final Widget? popOverContent;
 
   const RateButton({this.popOverContent});
 
@@ -15,10 +15,10 @@ class RateButton extends StatelessWidget {
     return TextButton(
       onPressed: () {
         showPopover(
-          backgroundColor: Colors.grey[800],
+          backgroundColor: Colors.grey[800]!,
           context: context,
           transitionDuration: const Duration(milliseconds: 150),
-          bodyBuilder: (context) => popOverContent,
+          bodyBuilder: (context) => popOverContent!,
           onPop: () => print('Popover was popped!'),
           direction: PopoverDirection.bottom,
           width: 300,

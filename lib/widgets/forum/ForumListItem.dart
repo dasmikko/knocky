@@ -7,14 +7,14 @@ import 'package:timeago/timeago.dart' as timeago;
 class ForumListItem extends StatelessWidget {
   final Subforum subforum;
   final Function(Subforum subforum) onTapItem;
-  final Function(int threadId, int page) onTapItemFooter;
+  final Function(int? threadId, int? page) onTapItemFooter;
 
   ForumListItem(
-      {@required this.subforum,
-      @required this.onTapItem,
-      @required this.onTapItemFooter});
+      {required this.subforum,
+      required this.onTapItem,
+      required this.onTapItemFooter});
 
-  Color getSubforumBorderColor(int id) {
+  Color getSubforumBorderColor(int? id) {
     switch (id) {
       case 1:
         return Color.fromRGBO(98, 61, 210, 1);
@@ -88,7 +88,7 @@ class ForumListItem extends StatelessWidget {
                     Container(
                       margin: EdgeInsets.only(bottom: 5),
                       child: Text(
-                        subforum.name,
+                        subforum.name!,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -132,9 +132,9 @@ class ForumListItem extends StatelessWidget {
           ),
           Container(
             child: ExtendedImage.network(
-              !subforum.icon.contains('static')
-                  ? subforum.icon
-                  : 'https://knockout.chat' + subforum.icon,
+              !subforum.icon!.contains('static')
+                  ? subforum.icon!
+                  : 'https://knockout.chat' + subforum.icon!,
               width: 40.0,
             ),
           )
@@ -150,12 +150,12 @@ class ForumListItem extends StatelessWidget {
         children: <Widget>[
           Flexible(
             flex: 1,
-            child: subforum.lastPost.thread != null
+            child: subforum.lastPost!.thread != null
                 ? InkWell(
                     onTap: () {
                       this.onTapItemFooter(
-                          subforum.lastPost.thread.lastPost.thread,
-                          subforum.lastPost.thread.lastPost.page);
+                          subforum.lastPost!.thread!.lastPost!.thread,
+                          subforum.lastPost!.thread!.lastPost!.page);
                     },
                     child: Container(
                       padding: EdgeInsets.all(10),
@@ -165,7 +165,7 @@ class ForumListItem extends StatelessWidget {
                           Container(
                             margin: EdgeInsets.only(bottom: 4),
                             child: Text(
-                              subforum.lastPost.thread.title,
+                              subforum.lastPost!.thread!.title!,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(fontSize: 14),
                             ),
@@ -181,22 +181,22 @@ class ForumListItem extends StatelessWidget {
                                         TextSpan(text: 'Last post by '),
                                         TextSpan(
                                           text:
-                                              subforum.lastPost.user.username !=
+                                              subforum.lastPost!.user!.username !=
                                                       null
-                                                  ? subforum.lastPost.user
-                                                          .username +
+                                                  ? subforum.lastPost!.user!
+                                                          .username! +
                                                       ' '
                                                   : ' ',
                                           style: TextStyle(
                                             color: AppColors(context)
                                                 .userRoleToColor(subforum
-                                                    .lastPost.user.role.code),
+                                                    .lastPost!.user!.role!.code),
                                           ),
                                         ),
                                         TextSpan(
                                             text: timeago
                                                 .format(
-                                                    subforum.lastPost.createdAt)
+                                                    subforum.lastPost!.createdAt!)
                                                 .toString())
                                       ],
                                     ),

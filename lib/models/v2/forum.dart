@@ -15,7 +15,7 @@ class Forum {
     this.list,
   });
 
-  List<ListElement> list;
+  List<ListElement>? list;
 
   factory Forum.fromJson(Map<String, dynamic> json) => Forum(
         list: json["list"] == null
@@ -27,7 +27,7 @@ class Forum {
   Map<String, dynamic> toJson() => {
         "list": list == null
             ? null
-            : List<dynamic>.from(list.map((x) => x.toJson())),
+            : List<dynamic>.from(list!.map((x) => x.toJson())),
       };
 }
 
@@ -44,15 +44,15 @@ class ListElement {
     this.lastPost,
   });
 
-  int id;
-  String name;
-  int iconId;
-  String description;
-  String icon;
-  int totalThreads;
-  int totalPosts;
-  int lastPostId;
-  ForumLastPost lastPost;
+  int? id;
+  String? name;
+  int? iconId;
+  String? description;
+  String? icon;
+  int? totalThreads;
+  int? totalPosts;
+  int? lastPostId;
+  ForumLastPost? lastPost;
 
   factory ListElement.fromJson(Map<String, dynamic> json) => ListElement(
         id: json["id"] == null ? null : json["id"],
@@ -78,6 +78,6 @@ class ListElement {
         "totalThreads": totalThreads == null ? null : totalThreads,
         "totalPosts": totalPosts == null ? null : totalPosts,
         "lastPostId": lastPostId == null ? null : lastPostId,
-        "lastPost": lastPost == null ? null : lastPost.toJson(),
+        "lastPost": lastPost == null ? null : lastPost!.toJson(),
       };
 }

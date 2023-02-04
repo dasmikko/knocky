@@ -46,9 +46,9 @@ class KnockoutAPI {
       : "https://forums.stylepunch.club:3000/";
 
   Future<Response> _request(
-      {String url,
+      {String? url,
       String type = 'get',
-      Map<String, dynamic> headers,
+      Map<String, dynamic> headers = const {},
       dynamic data}) async {
     if (url == null) {
       throw ('URL not set!');
@@ -62,7 +62,7 @@ class KnockoutAPI {
       'content-format-version': '1',
     };
 
-    if (headers != null) mHeaders.addAll(headers);
+    mHeaders.addAll(headers);
     String mBaseurl = prefs.read('env') == 'knockout'
         ? settingsController.apiEndpoint.value
         : QA_URL;
@@ -105,13 +105,14 @@ class KnockoutAPI {
     }
   }
 
-  Future<SubforumV2.Subforum> getSubforumDetails(int id, {int page = 1}) async {
+  Future<SubforumV2.Subforum> getSubforumDetails(int? id,
+      {int page = 1}) async {
     final response = await _request(
         url: 'subforum/' + id.toString() + '/' + page.toString());
     return SubforumV2.subforumFromJson(json.encode(response.data));
   }
 
-  Future<ThreadModel.Thread> getThread(int id, {int page = 1}) async {
+  Future<ThreadModel.Thread> getThread(int? id, {int page = 1}) async {
     final response = await _request(
       url: 'v2/threads/' + id.toString() + '/' + page.toString(),
     );
@@ -124,7 +125,7 @@ class KnockoutAPI {
           url: 'user/authCheck', headers: {'content-format-version': 1});
       return response.data;
     } on DioError catch (e) {
-      return e.response.data;
+      return e.response!.data;
     }
   }
 
@@ -138,7 +139,7 @@ class KnockoutAPI {
     }
   }
 
-  Future<List<ThreadAlert>> getAlerts() async {
+  Future<List<ThreadAlert>?> getAlerts() async {
     try {
       final response = await _request(url: 'alerts', type: 'get');
       return response.data
@@ -150,19 +151,19 @@ class KnockoutAPI {
     }
   }
 
-  Future<void> readThreads(DateTime lastseen, int threadId) async {
+  Future<void> readThreads(DateTime lastseen, int? threadId) async {
     ReadThreads jsonToPost =
         new ReadThreads(lastSeen: lastseen, threadId: threadId);
     await _request(type: 'post', url: 'readThreads', data: jsonToPost.toJson());
   }
 
-  Future<void> createAlert(int threadId, int lastPostNumber) async {
+  Future<void> createAlert(int? threadId, int? lastPostNumber) async {
     Alert jsonToPost =
         new Alert(threadId: threadId, lastPostNumber: lastPostNumber);
     await _request(type: 'post', url: 'alert', data: jsonToPost.toJson());
   }
 
-  Future<List<KnockoutEvent>> getEvents() async {
+  Future<List<KnockoutEvent>?> getEvents() async {
     final response = await _request(type: 'get', url: 'events');
 
     return response.data
@@ -170,14 +171,14 @@ class KnockoutAPI {
         .toList();
   }
 
-  Future<void> deleteThreadAlert(int threadid) async {
+  Future<void> deleteThreadAlert(int? threadid) async {
     final response =
         await _request(url: '/v2/alerts/$threadid', type: 'delete');
 
     if (response.statusCode == 200) {}
   }
 
-  Future<void> subscribe(int lastPostNumber, int threadid) async {
+  Future<void> subscribe(int? lastPostNumber, int? threadid) async {
     final response = await _request(
         url: 'alert',
         type: 'post',
@@ -186,11 +187,11 @@ class KnockoutAPI {
     if (response.statusCode == 200) {}
   }
 
-  Future<bool> ratePost(int postId, String rating) async {
+  Future<bool?> ratePost(int? postId, String? rating) async {
     final response = await _request(
         url: 'v2/posts/$postId/ratings', type: 'put', data: {'rating': rating});
 
-    bool wasRejected = response.data['isRejected'];
+    bool? wasRejected = response.data['isRejected'];
 
     return wasRejected;
   }
@@ -200,7 +201,7 @@ class KnockoutAPI {
     return ThreadModel.ThreadPost.fromJson(response.data);
   }
 
-  Future<void> newPost(dynamic content, int threadId) async {
+  Future<void> newPost(dynamic content, int? threadId) async {
     try {
       await _request(type: 'post', url: 'post', data: {
         'displayCountryInfo': false,
@@ -217,7 +218,7 @@ class KnockoutAPI {
     }
   }
 
-  Future<void> updatePost(String content, int postId) async {
+  Future<void> updatePost(String content, int? postId) async {
     try {
       await _request(type: 'put', url: 'v2/posts/$postId', data: {
         'content': content,
@@ -229,7 +230,7 @@ class KnockoutAPI {
     }
   }
 
-  Future<List<SubforumThread>> getSignificantThreads(
+  Future<List<SubforumThread>?> getSignificantThreads(
       SignificantThreads threadsToFetch) async {
     final endpoint = "v2/threads/${threadsToFetch.name.toLowerCase()}";
     final response = await _request(type: 'get', url: endpoint);
@@ -239,16 +240,16 @@ class KnockoutAPI {
         .toList();
   }
 
-  Future<bool> renameThread(int threadId, String newTitle) async {
+  Future<bool?> renameThread(int threadId, String newTitle) async {
     final response = await _request(
         url: 'thread', type: 'put', data: {'id': threadId, 'title': newTitle});
 
-    bool wasRejected = response.data['isRejected'];
+    bool? wasRejected = response.data['isRejected'];
 
     return wasRejected;
   }
 
-  Future<UserProfile> getUserProfile(int userId) async {
+  Future<UserProfile> getUserProfile(int? userId) async {
     final response = await _request(
       url: 'user/' + userId.toString(),
       type: 'get',
@@ -256,7 +257,7 @@ class KnockoutAPI {
     return UserProfile.fromJson(response.data);
   }
 
-  Future<UserBans> getUserBans(int userId) async {
+  Future<UserBans> getUserBans(int? userId) async {
     final response = await _request(
       url: 'user/' + userId.toString() + '/bans',
       type: 'get',
@@ -265,7 +266,7 @@ class KnockoutAPI {
     return UserBans.fromJson(response.data);
   }
 
-  Future<UserProfileDetails> getUserProfileDetails(int userId) async {
+  Future<UserProfileDetails> getUserProfileDetails(int? userId) async {
     final response = await _request(
       url: 'v2/users/' + userId.toString() + '/profile',
       type: 'get',
@@ -274,7 +275,7 @@ class KnockoutAPI {
     return UserProfileDetails.fromJson(response.data);
   }
 
-  Future<List<UserProfileRating>> getUserProfileTopRatings(int userId) async {
+  Future<List<UserProfileRating>?> getUserProfileTopRatings(int? userId) async {
     final response = await _request(
       url: 'user/' + userId.toString() + '/topRatings',
       type: 'get',
@@ -285,7 +286,7 @@ class KnockoutAPI {
         .toList();
   }
 
-  Future<UserProfilePosts> getUserPosts(int userId, {int page = 1}) async {
+  Future<UserProfilePosts> getUserPosts(int? userId, {int page = 1}) async {
     final response = await _request(
       url: 'user/$userId/posts/$page',
       type: 'get',
@@ -294,7 +295,7 @@ class KnockoutAPI {
     return UserProfilePosts.fromJson(response.data);
   }
 
-  Future<UserProfileThreads> getUserThreads(int userId, {int page = 1}) async {
+  Future<UserProfileThreads> getUserThreads(int? userId, {int page = 1}) async {
     final response = await _request(
       url: 'user/$userId/threads/$page',
       type: 'get',
@@ -311,7 +312,7 @@ class KnockoutAPI {
     return SyncDataModel.fromJson(response.data);
   }
 
-  Future<bool> markMentionsAsRead(List<int> postIds) async {
+  Future<bool> markMentionsAsRead(List<int?> postIds) async {
     final response = await _request(
         url: 'mentions', type: 'put', data: {'postIds': postIds});
 
@@ -325,7 +326,7 @@ class KnockoutAPI {
     return KnockoutAd.fromJson(response.data);
   }
 
-  Future<List<KnockoutMotd>> motd() async {
+  Future<List<KnockoutMotd>?> motd() async {
     final response = await _request(url: 'motd', type: 'get');
 
     return response.data
@@ -333,7 +334,7 @@ class KnockoutAPI {
         .toList();
   }
 
-  Future<List<NotificationModel>> notifications() async {
+  Future<List<NotificationModel>?> notifications() async {
     final response = await _request(url: 'v2/notifications', type: 'get');
 
     return response.data

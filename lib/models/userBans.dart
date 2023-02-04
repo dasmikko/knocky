@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
 class UserBans {
-  final List<UserBan> userBans;
+  final List<UserBan>? userBans;
 
   UserBans({this.userBans});
 
@@ -28,12 +28,12 @@ UserBans fromJson(List<dynamic> json) {
 
 @JsonSerializable()
 class UserBan {
-  final int id;
-  final String banReason;
+  final int? id;
+  final String? banReason;
   final dynamic bannedBy;
-  final DateTime createdAt;
-  final DateTime expiresAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? expiresAt;
+  final DateTime? updatedAt;
   final dynamic post;
   final dynamic thread;
   final dynamic user;

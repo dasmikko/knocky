@@ -13,7 +13,7 @@ class AuthController extends GetxController {
   var avatar = ''.obs;
   var background = ''.obs;
   var usergroup = 0.obs;
-  var role = UserRole().obs;
+  Rx<UserRole?> role = UserRole().obs;
 
   getStoredAuthInfo() {
     GetStorage prefs = GetStorage();
@@ -25,7 +25,6 @@ class AuthController extends GetxController {
       this.username.value = prefs.read('username');
       this.avatar.value = prefs.read('avatar');
       this.background.value = prefs.read('background');
-      this.usergroup.value = prefs.read('usergroup');
       this.role.value = UserRole.fromJson(prefs.read('role'));
     }
   }
@@ -36,7 +35,6 @@ class AuthController extends GetxController {
     this.username.value = username;
     this.avatar.value = avatar;
     this.background.value = background;
-    this.usergroup.value = usergroup;
     this.isAuthenticated.value = true;
     this.jwt.value = jwt;
 
@@ -49,10 +47,6 @@ class AuthController extends GetxController {
     prefs.write('jwt', jwt);
 
     prefs.write('role', role);
-
-    if (usergroup != null) {
-      prefs.write('usergroup', usergroup);
-    }
   }
 
   loginWithJWTOnly(jwtToken) async {
@@ -68,17 +62,12 @@ class AuthController extends GetxController {
       prefs.write('username', syncData.username);
       prefs.write('avatar', syncData.avatarUrl);
       prefs.write('background', syncData.backgroundUrl);
-      prefs.write('role', syncData.role.toJson());
+      prefs.write('role', syncData.role!.toJson());
 
-      if (syncData.usergroup != null) {
-        prefs.write('usergroup', syncData.usergroup);
-        this.usergroup.value = syncData.usergroup.index;
-      }
-
-      this.userId.value = syncData.id;
-      this.username.value = syncData.username;
-      this.avatar.value = syncData.avatarUrl;
-      this.background.value = syncData.backgroundUrl;
+      this.userId.value = syncData.id!;
+      this.username.value = syncData.username!;
+      this.avatar.value = syncData.avatarUrl!;
+      this.background.value = syncData.backgroundUrl!;
       this.role.value = syncData.role;
     } catch (err) {
       print(err);
@@ -92,7 +81,6 @@ class AuthController extends GetxController {
     this.username.value = '';
     this.avatar.value = '';
     this.background.value = '';
-    this.usergroup.value = 0;
     this.jwt.value = '';
     this.role.value = null;
 
@@ -102,7 +90,6 @@ class AuthController extends GetxController {
     prefs.write('username', '');
     prefs.write('avatar', '');
     prefs.write('background', '');
-    prefs.write('usergroup', 0);
     prefs.write('cookieString', '');
     prefs.write('jwt', '');
     prefs.write('role', '');

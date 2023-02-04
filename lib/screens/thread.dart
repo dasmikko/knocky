@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/threadController.dart';
 import 'package:knocky/dialogs/confirmDialog.dart';
@@ -20,11 +21,11 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class ThreadScreen extends StatefulWidget {
-  final int id;
-  final int page;
-  final int linkedPostId;
+  final int? id;
+  final int? page;
+  final int? linkedPostId;
 
-  ThreadScreen({@required this.id, this.page = 1, this.linkedPostId});
+  ThreadScreen({required this.id, this.page = 1, this.linkedPostId});
 
   @override
   _ThreadScreenState createState() => _ThreadScreenState();
@@ -37,14 +38,14 @@ class _ThreadScreenState extends State<ThreadScreen>
   final ItemPositionsListener itemPositionListener =
       ItemPositionsListener.create();
 
-  ItemPosition lastItemPostion;
+  ItemPosition? lastItemPosition;
 
-  var subscription;
+  late var subscription;
 
   @override
   void initState() {
     super.initState();
-    threadController.initState(widget.id, widget.page);
+    threadController.initState(widget.id, widget.page!);
 
     itemPositionListener.itemPositions.addListener(() {
       ItemPosition newItemPosition =
@@ -59,28 +60,28 @@ class _ThreadScreenState extends State<ThreadScreen>
 
       String scrollDirection = 'none';
 
-      if (lastItemPostion == null) {
-        lastItemPostion = newItemPosition;
+      if (lastItemPosition == null) {
+        lastItemPosition = newItemPosition;
       } else {
-        if (newItemPosition.index != lastItemPostion.index) {
+        if (newItemPosition.index != lastItemPosition!.index) {
           // If index is going up, user is scrolling down
-          if (newItemPosition.index > lastItemPostion.index) {
+          if (newItemPosition.index > lastItemPosition!.index) {
             scrollDirection = 'down';
           }
-          if (newItemPosition.index < lastItemPostion.index) {
+          if (newItemPosition.index < lastItemPosition!.index) {
             scrollDirection = 'up';
           }
         }
 
         // If index are the same, compare scroll positons
-        if (newItemPosition.index == lastItemPostion.index) {
+        if (newItemPosition.index == lastItemPosition!.index) {
           if (newItemPosition.itemLeadingEdge <
-              lastItemPostion.itemLeadingEdge) {
+              lastItemPosition!.itemLeadingEdge) {
             scrollDirection = 'down';
           }
 
           if (newItemPosition.itemLeadingEdge >
-              lastItemPostion.itemLeadingEdge) {
+              lastItemPosition!.itemLeadingEdge) {
             scrollDirection = 'up';
           }
         }
@@ -96,31 +97,25 @@ class _ThreadScreenState extends State<ThreadScreen>
         }
 
         // Update lastItemPosition
-        lastItemPostion = newItemPosition;
+        lastItemPosition = newItemPosition;
       }
     });
 
     // Listen for when we have fetched the thread data, and scroll to specific post, if requested
-    subscription = threadController.data.listen((Thread thread) async {
-      if (thread != null) {
-        // User request to scroll to specific post
-        if (this.widget.linkedPostId != null) {
-          // The delayed if a huge stupid fucking hack, to make it work while in debug mode.
-          await Future.delayed(Duration(milliseconds: 100));
+    subscription = threadController.data.listen((Thread? thread) async {
+      await Future.delayed(Duration(milliseconds: 100));
 
-          // Find the index of the post to scroll to
-          int postIndex =
-              thread.posts.indexWhere((o) => o.id == this.widget.linkedPostId) +
-                  1;
+      // Find the index of the post to scroll to
+      int postIndex =
+          thread!.posts!.indexWhere((o) => o.id == this.widget.linkedPostId) +
+              1;
 
-          // If we can't find the postIndex, just scroll to the top.
-          threadController.itemScrollController
-              .jumpTo(index: postIndex == -1 ? 0 : postIndex);
+      // If we can't find the postIndex, just scroll to the top.
+      threadController.itemScrollController
+          .jumpTo(index: postIndex == -1 ? 0 : postIndex);
 
-          // Stop listening for more change, as we will never have to scroll to specific post anymore
-          subscription.cancel();
-        }
-      }
+      // Stop listening for more change, as we will never have to scroll to specific post anymore
+      subscription.cancel();
     });
   }
 
@@ -138,22 +133,20 @@ class _ThreadScreenState extends State<ThreadScreen>
   }
 
   void showJumpDialog() async {
-    int page = await Get.dialog(
+    int page = await (Get.dialog(
       JumpToPageDialog(
         minValue: 1,
         maxValue: threadController.pageCount,
         value: threadController.page,
       ),
-    );
+    ) as FutureOr<int>);
 
-    if (page != null) {
-      threadController.itemScrollController.jumpTo(index: 0);
-      threadController.goToPage(page);
-    }
+    threadController.itemScrollController.jumpTo(index: 0);
+    threadController.goToPage(page);
   }
 
   void onTapSubscribe() async {
-    Thread thread = threadController.data.value;
+    Thread thread = threadController.data.value!;
 
     try {
       SnackbarController snackbarController = KnockySnackbar.normal(
@@ -163,7 +156,7 @@ class _ThreadScreenState extends State<ThreadScreen>
         showProgressIndicator: true,
       );
       await KnockoutAPI()
-          .subscribe(thread.posts.last.threadPostNumber, thread.id);
+          .subscribe(thread.posts!.last.threadPostNumber, thread.id);
       snackbarController.close();
       threadController.fetch();
       KnockySnackbar.success("Subscribed thread");
@@ -171,7 +164,7 @@ class _ThreadScreenState extends State<ThreadScreen>
   }
 
   void onTabUnsubscribed() async {
-    Thread thread = threadController.data.value;
+    Thread thread = threadController.data.value!;
     SnackbarController snackbarController = KnockySnackbar.normal(
       "Unsubscribing...",
       "Unsubscribing thread...",
@@ -190,10 +183,10 @@ class _ThreadScreenState extends State<ThreadScreen>
     return WillPopScope(
       onWillPop: () async {
         if (threadController.currentNewPostText.value.isNotEmpty) {
-          return await Get.dialog(ConfirmDialog(
+          return await (Get.dialog(ConfirmDialog(
             content:
                 'You seem to be writing a post, are you sure you want to leave the thread and lose the post content?',
-          ));
+          )) as FutureOr<bool>);
         }
         return true;
       },
@@ -208,7 +201,7 @@ class _ThreadScreenState extends State<ThreadScreen>
                   curve: Curves.easeOutCirc,
                 );
               },
-              child: Text(threadController.title ?? 'Loading thread...'),
+              child: Text(threadController?.title ?? 'Loading thread...'),
             ),
           ),
           actions: [
@@ -220,7 +213,7 @@ class _ThreadScreenState extends State<ThreadScreen>
             GetBuilder<ThreadController>(
               init: ThreadController(), // INIT IT ONLY THE FIRST TIME
               builder: (_) => PopupMenuButton(
-                onSelected: (value) async {
+                onSelected: (dynamic value) async {
                   switch (value) {
                     case 1:
                       Clipboard.setData(
@@ -251,47 +244,60 @@ class _ThreadScreenState extends State<ThreadScreen>
                       break;
                   }
                 },
-                itemBuilder: (context) => [
-                  overFlowItem(
-                      FaIcon(
-                        FontAwesomeIcons.rotate,
-                        size: 15,
-                      ),
-                      'Reload thread',
-                      5),
-                  _.data.value.subscribed
-                      ? overFlowItem(
-                          FaIcon(
-                            FontAwesomeIcons.solidBellSlash,
-                            size: 15,
-                          ),
-                          'Unsubscribe',
-                          2)
-                      : null,
-                  !_.data.value.subscribed
-                      ? overFlowItem(
-                          FaIcon(
-                            FontAwesomeIcons.solidBell,
-                            size: 15,
-                          ),
-                          'Subscribe',
-                          3)
-                      : null,
-                  overFlowItem(
-                      FaIcon(
-                        FontAwesomeIcons.copy,
-                        size: 15,
-                      ),
-                      'Copy link to thread',
-                      1),
-                  overFlowItem(
-                      FaIcon(
-                        FontAwesomeIcons.chrome,
-                        size: 15,
-                      ),
-                      'Open in browser',
-                      4),
-                ],
+                itemBuilder: (context) {
+                  List<PopupMenuItem> items = [];
+
+                  items.addAll([
+                    overFlowItem(
+                        FaIcon(
+                          FontAwesomeIcons.rotate,
+                          size: 15,
+                        ),
+                        'Reload thread',
+                        5),
+                  ]);
+
+                  items.addIf(
+                    _.data.value!.subscribed!,
+                    overFlowItem(
+                        FaIcon(
+                          FontAwesomeIcons.solidBellSlash,
+                          size: 15,
+                        ),
+                        'Unsubscribe',
+                        2),
+                  );
+
+                  items.addIf(
+                    !_.data.value!.subscribed!,
+                    overFlowItem(
+                        FaIcon(
+                          FontAwesomeIcons.solidBell,
+                          size: 15,
+                        ),
+                        'Subscribe',
+                        3),
+                  );
+
+                  items.addAll([
+                    overFlowItem(
+                        FaIcon(
+                          FontAwesomeIcons.copy,
+                          size: 15,
+                        ),
+                        'Copy link to thread',
+                        1),
+                    overFlowItem(
+                        FaIcon(
+                          FontAwesomeIcons.chrome,
+                          size: 15,
+                        ),
+                        'Open in browser',
+                        4),
+                  ]);
+
+                  return items;
+                },
               ),
             )
           ],
@@ -321,9 +327,8 @@ class _ThreadScreenState extends State<ThreadScreen>
         ),
         floatingActionButton: Obx(
           () => authController.isAuthenticated.value &&
-                  (threadController.data.value != null &&
-                      (threadController.data.value.locked != null &&
-                          !threadController.data.value.locked))
+                  threadController.data.value != null &&
+                  !threadController.data.value!.locked!
               ? AnimatedScale(
                   curve: Curves.easeOutCirc,
                   scale: threadController.hideFAB.value ? 0.0 : 1.0,
@@ -331,7 +336,7 @@ class _ThreadScreenState extends State<ThreadScreen>
                   child: FloatingActionButton(
                     child: FaIcon(
                       FontAwesomeIcons.chevronDown,
-                      color: Theme.of(context).textTheme.bodyLarge.color,
+                      color: Theme.of(context).textTheme.bodyLarge!.color,
                     ),
                     onPressed: () {
                       threadController.itemScrollController.scrollTo(
@@ -381,25 +386,25 @@ class _ThreadScreenState extends State<ThreadScreen>
 
   void onSubmit() async {
     threadController.itemScrollController.jumpTo(index: 0);
-    if (threadController.data.value.posts.length ==
+    if (threadController.data.value!.posts!.length ==
         PostsPerPage.POSTS_PER_PAGE) {
       threadController.itemScrollController.jumpTo(index: 0);
       threadController.nextPage();
     } else {
       threadController.fetch();
     }
-    Thread thread = threadController.data.value;
+    Thread thread = threadController.data.value!;
 
     // Subscribe to the thread if not!
-    if (!thread.subscribed) {
+    if (!thread.subscribed!) {
       await KnockoutAPI()
-          .subscribe(thread.posts.last.threadPostNumber, thread.id);
+          .subscribe(thread.posts!.last.threadPostNumber, thread.id);
     }
   }
 
   Widget postEditor() {
     if (!authController.isAuthenticated.value ||
-        threadController.data.value.locked) {
+        threadController.data.value!.locked!) {
       return Container();
     }
     return Container(
@@ -421,18 +426,16 @@ class _ThreadScreenState extends State<ThreadScreen>
       ),
     );
 
-    if (threadController.data.value != null) {
-      threadController.data.value.posts.forEach((post) {
-        widgets.add(
-          PostListItem(
-            key: ValueKey(post.id),
-            post: post,
-            readThreadLastSeen: threadController.data.value.readThreadLastSeen,
-            onPostUpdate: () => threadController.fetch(),
-          ),
-        );
-      });
-    }
+    threadController.data.value!.posts!.forEach((post) {
+      widgets.add(
+        PostListItem(
+          key: ValueKey(post.id),
+          post: post,
+          readThreadLastSeen: threadController.data.value!.readThreadLastSeen,
+          onPostUpdate: () => threadController.fetch(),
+        ),
+      );
+    });
 
     widgets.add(
       postEditor(),

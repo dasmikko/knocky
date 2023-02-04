@@ -3,14 +3,14 @@ import 'package:knocky/helpers/colors.dart';
 import 'package:knocky/models/v2/userRole.dart';
 
 class UserRoleLabel extends StatelessWidget {
-  final UserRole role;
-  final bool banned;
+  final UserRole? role;
+  final bool? banned;
   //final DateFormat joinFormat = new DateFormat('MMMM yyyy');
 
-  UserRoleLabel({@required this.role, this.banned});
+  UserRoleLabel({required this.role, this.banned});
 
   Widget bannedLabel(BuildContext context) {
-    return banned
+    return banned!
         ? Text('Banned ',
             style: TextStyle(
                 color: AppColors(context).bannedColor(),
@@ -19,8 +19,8 @@ class UserRoleLabel extends StatelessWidget {
   }
 
   Widget userRoleLabel(BuildContext context) {
-    print(role.toJson());
-    switch (role.code) {
+    print(role!.toJson());
+    switch (role!.code) {
       case RoleCode.BASIC_USER:
         return Text(
           'Member',

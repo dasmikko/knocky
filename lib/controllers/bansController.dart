@@ -4,17 +4,17 @@ import 'package:knocky/models/userBans.dart';
 
 class BansController extends GetxController {
   final isFetching = false.obs;
-  final bans = UserBans().obs;
-  int id;
+  var bans = UserBans().obs;
+  int? id;
 
   @override
   onInit() {
     super.onInit();
   }
 
-  initState(int id) {
+  initState(int? id) {
     this.id = id;
-    bans.value = null;
+    bans.value = UserBans();
     fetch();
   }
 

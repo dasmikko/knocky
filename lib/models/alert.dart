@@ -1,7 +1,7 @@
 
 class Alert {
-  int threadId;
-  int lastPostNumber;
+  int? threadId;
+  int? lastPostNumber;
 
   Alert({this.threadId, this.lastPostNumber});
 

@@ -5,9 +5,9 @@ import 'package:knocky/screens/thread.dart';
 import 'package:knocky/widgets/post/toolbar.dart';
 
 class ProfilePostToolbar extends Toolbar {
-  final ThreadPost post;
+  final ThreadPost? post;
 
-  ProfilePostToolbar({@required this.post}) : super(post: post);
+  ProfilePostToolbar({required this.post}) : super(post: post);
 
   @override
   List<Widget> contents() {
@@ -27,9 +27,9 @@ class ProfilePostToolbar extends Toolbar {
               ),
               onPressed: () => Get.to(
                 ThreadScreen(
-                  id: post.thread,
-                  page: post.page,
-                  linkedPostId: post.id,
+                  id: post!.thread,
+                  page: post!.page,
+                  linkedPostId: post!.id,
                 ),
               ),
               child: Text(

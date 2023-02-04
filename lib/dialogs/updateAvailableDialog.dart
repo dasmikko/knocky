@@ -4,8 +4,8 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 
 class UpdateAvailableDialog extends StatelessWidget {
   final String title;
-  final String content;
-  final String version;
+  final String? content;
+  final String? version;
 
   const UpdateAvailableDialog({
     this.title = ' is available!',
@@ -16,7 +16,7 @@ class UpdateAvailableDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(this.version + this.title),
+      title: Text(this.version! + this.title),
       content: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: 400, minHeight: 100),
         child: SizedBox(
@@ -27,7 +27,7 @@ class UpdateAvailableDialog extends StatelessWidget {
               color: Colors.black54,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Markdown(data: this.content),
+            child: Markdown(data: this.content!),
           ),
         ),
       ),

@@ -33,7 +33,7 @@ class ThreadListItem extends StatelessWidget {
 
   @protected
   Widget getIcon(BuildContext context) {
-    String imageUrl = JsonIcons.getIconOrDefault(threadDetails.iconId).url;
+    String imageUrl = JsonIcons.getIconOrDefault(threadDetails.iconId).url!;
 
     if (imageUrl.endsWith('.svg')) {
       return Container(
@@ -42,7 +42,7 @@ class ThreadListItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SvgPicture.network(
-              JsonIcons.getIconOrDefault(threadDetails.iconId).url,
+              JsonIcons.getIconOrDefault(threadDetails.iconId).url!,
               width: 32,
             )
           ],
@@ -55,7 +55,7 @@ class ThreadListItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ExtendedImage.network(
-              JsonIcons.getIconOrDefault(threadDetails.iconId).url,
+              JsonIcons.getIconOrDefault(threadDetails.iconId).url!,
               width: 32,
             )
           ],
@@ -65,7 +65,7 @@ class ThreadListItem extends StatelessWidget {
   }
 
   @protected
-  BoxDecoration getBackground(BuildContext context) {
+  BoxDecoration? getBackground(BuildContext context) {
     if (threadDetails.backgroundUrl == null ||
         threadDetails.backgroundUrl == ' ') return null;
 
@@ -110,13 +110,13 @@ class ThreadListItem extends StatelessWidget {
 
   @protected
   void onTapUnreadPostsButton(
-      BuildContext context, int unreadCount, int totalCount) {
+      BuildContext context, int unreadCount, int? totalCount) {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => ThreadScreen(
                 id: threadDetails.id,
-                page: PostsPerPage.unreadPostsPage(unreadCount, totalCount),
+                page: PostsPerPage.unreadPostsPage(unreadCount, totalCount!),
                 linkedPostId: threadDetails.firstUnreadId)));
   }
 

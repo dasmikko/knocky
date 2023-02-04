@@ -17,5 +17,5 @@ class ProfilePostController extends PaginatedController<UserProfilePosts> {
   int get dataInPageCount => data.value?.posts?.length ?? 0;
 
   @override
-  dynamic dataAtIndex(int index) => data.value?.posts[index];
+  dynamic dataAtIndex(int index) => data.value!.posts![index];
 }

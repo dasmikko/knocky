@@ -2,7 +2,6 @@ import 'package:app_installer/app_installer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:get/get.dart';
-import 'package:dio/dio.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/controllers/forumController.dart';
 import 'package:knocky/controllers/settingsController.dart';
@@ -13,11 +12,9 @@ import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/helpers/version.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:github/github.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({Key key}) : super(key: key);
+  const SettingsScreen({Key? key}) : super(key: key);
 
   void checkForUpdates() async {
     SnackbarController loadingSnackbar = KnockySnackbar.normal(
@@ -37,7 +34,7 @@ class SettingsScreen extends StatelessWidget {
     //VersionHelper.isNewerVersion(
     //         packageInfo.version, latestRelease.tagName)
     if (VersionHelper.isNewerVersion(
-        packageInfo.version, latestRelease.tagName)) {
+        packageInfo.version, latestRelease.tagName!)) {
       // Show dialog with update available
       var dialogResult = await Get.dialog(UpdateAvailableDialog(
         content: latestRelease.body,
@@ -47,8 +44,8 @@ class SettingsScreen extends StatelessWidget {
       // Is user presses updsate, start downloading update
       if (dialogResult) {
         // There is per ABI, so only get 'fat' apk that contains all of the ABI and updater
-        ReleaseAsset asset = latestRelease.assets
-            .where((element) => !element.name.contains('arm'))
+        ReleaseAsset asset = latestRelease.assets!
+            .where((element) => !element.name!.contains('arm'))
             .toList()
             .first;
 

@@ -65,9 +65,9 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
       child: ScrollablePositionedList.builder(
         // ignore: invalid_use_of_protected_member
         itemCount:
-            subscriptionController.subscriptions.value.alerts.length ?? 0,
+            subscriptionController.subscriptions.value.alerts!.length ?? 0,
         itemBuilder: (BuildContext context, int index) {
-          var alert = subscriptionController.subscriptions.value.alerts
+          var alert = subscriptionController.subscriptions.value.alerts!
               .elementAt(index);
           return SubscriptionListItem(
             threadDetails: alert.thread,

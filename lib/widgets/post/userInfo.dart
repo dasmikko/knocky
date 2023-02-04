@@ -8,22 +8,22 @@ import 'package:knocky/widgets/shared/background.dart';
 import 'package:knocky/widgets/shared/username.dart';
 
 class UserInfo extends StatelessWidget {
-  final ThreadUser user;
-  final bool isNewPost;
+  final ThreadUser? user;
+  final bool? isNewPost;
 
-  UserInfo({@required this.user, this.isNewPost});
+  UserInfo({required this.user, this.isNewPost});
 
-  Border postHeaderBorder() {
+  Border? postHeaderBorder() {
     AuthController authController = Get.put(AuthController());
     final int ownUserId = authController.userId.value;
 
-    if (ownUserId == user.id) {
+    if (ownUserId == user!.id) {
       return Border(
         left: BorderSide(color: Color.fromRGBO(255, 216, 23, 1), width: 2),
       );
     }
 
-    if (this.isNewPost) {
+    if (this.isNewPost!) {
       return Border(
         left: BorderSide(color: Color.fromRGBO(67, 104, 173, 1), width: 2),
       );
@@ -42,19 +42,19 @@ class UserInfo extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Background(backgroundUrl: user.backgroundUrl),
+          Background(backgroundUrl: user!.backgroundUrl),
           Row(children: [
             Container(
                 padding: EdgeInsets.all(8),
                 child:
-                    Avatar(avatarUrl: user.avatarUrl, isBanned: user.isBanned)),
+                    Avatar(avatarUrl: user!.avatarUrl, isBanned: user!.isBanned)),
             Username(
-              username: user.username,
-              title: user.title,
-              pronouns: user.pronouns,
-              role: user.role,
+              username: user!.username,
+              title: user!.title,
+              pronouns: user!.pronouns,
+              role: user!.role,
               bold: true,
-              onClick: () => Get.to(ProfileScreen(id: user.id)),
+              onClick: () => Get.to(ProfileScreen(id: user!.id)),
             ),
           ])
         ],

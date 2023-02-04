@@ -39,7 +39,7 @@ class BBCodeHelper implements bbob.NodeVisitor {
 
   static void addTagAtSelection(
       TextEditingController controller, String tag, Function onInputChange,
-      {String option}) {
+      {String? option}) {
     print(option);
     var start = controller.selection.start;
     var end = controller.selection.end;
@@ -86,7 +86,7 @@ class BBCodeHelper implements bbob.NodeVisitor {
     if (controller.text.isEmpty) controller.text = controller.text + tagToAdd;
   }
 
-  static void showUploadProgressDialog(BuildContext context, XFile selectedFile,
+  static void showUploadProgressDialog(BuildContext context, XFile? selectedFile,
       TextEditingController textEditingController) async {
     await showDialog<String>(
       barrierDismissible: false,
@@ -108,10 +108,9 @@ class BBCodeHelper implements bbob.NodeVisitor {
 
   static _pickImage(BuildContext context,
       TextEditingController textEditingController, ImageSource source) async {
-    XFile image = await ImagePicker().pickImage(source: source);
+    XFile? image = await ImagePicker().pickImage(source: source);
     Navigator.of(context, rootNavigator: true).pop();
-    if (image != null)
-      showUploadProgressDialog(context, image, textEditingController);
+    showUploadProgressDialog(context, image, textEditingController);
   }
 
   static _imageDialogChoice(String text, IconData icon, Function onPressed) {
@@ -122,7 +121,7 @@ class BBCodeHelper implements bbob.NodeVisitor {
             Container(margin: EdgeInsets.only(left: 10), child: Text(text)),
           ],
         ),
-        onPressed: onPressed);
+        onPressed: onPressed as void Function()?);
   }
 
   static void addImageUrlDialog(

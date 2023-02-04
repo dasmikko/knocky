@@ -12,11 +12,11 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 class ProfileHeader extends StatefulWidget {
   final List<UserProfileRating> ratings;
-  final UserProfile profile;
-  final UserProfileDetails details;
+  final UserProfile? profile;
+  final UserProfileDetails? details;
 
   ProfileHeader(
-      {@required this.profile, @required this.ratings, @required this.details});
+      {required this.profile, required this.ratings, required this.details});
 
   @override
   _ProfileHeaderState createState() => _ProfileHeaderState();
@@ -32,7 +32,7 @@ class _ProfileHeaderState extends State<ProfileHeader>
     return Stack(children: [
       Positioned.fill(
           child: Container(
-              child: Background(backgroundUrl: widget.profile.backgroundUrl))),
+              child: Background(backgroundUrl: widget.profile!.backgroundUrl))),
       Positioned.fill(child: gradientOverlay()),
       content(),
       controls()
@@ -46,8 +46,8 @@ class _ProfileHeaderState extends State<ProfileHeader>
         children: [
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Avatar(
-                avatarUrl: widget.profile?.avatarUrl,
-                isBanned: widget.profile?.banned),
+                avatarUrl: widget.profile!.avatarUrl,
+                isBanned: widget.profile!.banned),
             headerLabels(context),
           ]),
           Container(height: 40, child: ProfileRatings(ratings: widget.ratings)),
@@ -61,7 +61,7 @@ class _ProfileHeaderState extends State<ProfileHeader>
   }
 
   Widget linksButton() {
-    return (widget.details?.social?.entries?.length ?? 0) > 0
+    return (widget.details!.social!.entries.length ?? 0) > 0
         ? IconButton(
             icon: FaIcon(showingLinks
                 ? FontAwesomeIcons.addressCard
@@ -78,41 +78,43 @@ class _ProfileHeaderState extends State<ProfileHeader>
 
   Widget headerLabels(BuildContext context) {
     return Expanded(
-      child: Container(
-        height: 148,
-        margin: EdgeInsets.fromLTRB(8, 0, 0, 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Username(
-                title: widget.profile.title,
-                pronouns: widget.profile.pronouns,
-                username: widget.profile.username,
-                bold: true,
-                role: widget.profile.role,
-                banned: widget.profile?.banned,
-                fontSize: 26),
-            ...(showingLinks ? linksSubtitle() : regularSubtitle()),
-          ],
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: 148),
+        child: Container(
+          margin: EdgeInsets.fromLTRB(8, 0, 0, 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Username(
+                  title: widget.profile!.title,
+                  pronouns: widget.profile!.pronouns,
+                  username: widget.profile!.username,
+                  bold: true,
+                  role: widget.profile!.role,
+                  banned: widget.profile!.banned,
+                  fontSize: 26),
+              ...(showingLinks ? linksSubtitle() : regularSubtitle()),
+            ],
+          ),
         ),
       ),
     );
   }
 
   List<Widget> regularSubtitle() {
-    print(widget.profile.toJson());
+    print(widget.profile!.toJson());
     return [
       Container(
         margin: EdgeInsets.only(
           top: 4,
         ),
         child: UserRoleLabel(
-            role: widget.profile?.role, banned: widget.profile?.banned),
+            role: widget.profile!.role, banned: widget.profile!.banned),
       ),
       Container(
         margin: EdgeInsets.only(top: 4),
         child: Text(
-          widget.details?.bio ?? '',
+          widget.details!.bio ?? '',
           style: TextStyle(
             fontStyle: FontStyle.italic,
             color: Color.fromRGBO(255, 255, 255, 0.6),
@@ -144,11 +146,10 @@ class _ProfileHeaderState extends State<ProfileHeader>
 
   // TODO: add onTap function here
   List<Widget> getLink(String key, Function extractionMethod, IconData icon) {
-    if (widget?.details?.social == null ||
-        !widget.details.social.containsKey(key)) {
+    if (!widget.details!.social!.containsKey(key)) {
       return [];
     }
-    String textLabel = extractionMethod(widget.details.social[key]);
+    String textLabel = extractionMethod(widget.details!.social![key]);
     return [
       GestureDetector(
         onTap: () async {

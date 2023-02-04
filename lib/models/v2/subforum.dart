@@ -19,11 +19,11 @@ class Subforum {
     this.threads,
   });
 
-  int id;
-  String name;
-  int totalThreads;
-  int currentPage;
-  List<SubforumThread> threads;
+  int? id;
+  String? name;
+  int? totalThreads;
+  int? currentPage;
+  List<SubforumThread>? threads;
 
   factory Subforum.fromJson(Map<String, dynamic> json) => Subforum(
         id: json["id"] == null ? null : json["id"],
@@ -34,7 +34,10 @@ class Subforum {
         threads: json["threads"] == null
             ? null
             : List<SubforumThread>.from(
-                json["threads"].map((x) => SubforumThread.fromJson(x))),
+                json["threads"].map(
+                  (x) => SubforumThread.fromJson(x),
+                ),
+              ),
       );
 
   Map<String, dynamic> toJson() => {
@@ -44,6 +47,6 @@ class Subforum {
         "currentPage": currentPage == null ? null : currentPage,
         "threads": threads == null
             ? null
-            : List<dynamic>.from(threads.map((x) => x.toJson())),
+            : List<dynamic>.from(threads!.map((x) => x.toJson())),
       };
 }

@@ -9,14 +9,14 @@ class DrawerNotificationsListTile extends DrawerListTile {
   final String title;
   final Function onTap;
   final bool disabled;
-  final Color tileColor;
-  final RxInt notificationCount;
+  final Color? tileColor;
+  final RxInt? notificationCount;
 
   DrawerNotificationsListTile(
       {this.disabled = false,
-      @required this.iconData,
-      @required this.title,
-      @required this.onTap,
+      required this.iconData,
+      required this.title,
+      required this.onTap,
       this.tileColor,
       this.notificationCount})
       : super(
@@ -27,8 +27,8 @@ class DrawerNotificationsListTile extends DrawerListTile {
             tileColor: tileColor);
 
   notificationIndicator() {
-    return Obx(() => notificationCount.value > 0 && !disabled
-        ? NotificationIndicator(count: notificationCount.value)
+    return Obx(() => notificationCount!.value > 0 && !disabled
+        ? NotificationIndicator(count: notificationCount!.value)
         : Container());
   }
 

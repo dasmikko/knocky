@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class YoutubeVideoEmbed extends StatefulWidget {
-  final String url;
+  final String? url;
 
   YoutubeVideoEmbed({this.url});
 
@@ -17,20 +17,20 @@ class YoutubeVideoEmbed extends StatefulWidget {
 }
 
 class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
-  String maxResThumbnail;
-  String sdResThumbnail;
-  String defaultThumbnail;
-  String res;
-  String _title;
+  String? maxResThumbnail;
+  String? sdResThumbnail;
+  String? defaultThumbnail;
+  String? res;
+  String? _title;
 
   @override
   void initState() {
     super.initState();
 
-    var id = Uri.parse(this.widget.url.trim()).queryParameters['v'];
+    var id = Uri.parse(this.widget.url!.trim()).queryParameters['v'];
 
     if (id == null) {
-      id = this.widget.url.split("/").last.split('?').first;
+      id = this.widget.url!.split("/").last.split('?').first;
     }
 
     maxResThumbnail = "https://img.youtube.com/vi/${id}/0.jpg";
@@ -41,12 +41,12 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
     this.getVideoInfo(this.widget.url);
   }
 
-  void getVideoInfo(String url) async {
+  void getVideoInfo(String? url) async {
     GetConnect().get('https://noembed.com/embed?url=${url}').then((res) {
-      Map jsonData = jsonDecode(res.bodyString);
+      Map? jsonData = jsonDecode(res.bodyString!);
       if (this.mounted) {
         setState(() {
-          _title = jsonData['title'];
+          _title = jsonData!['title'];
         });
       }
     });
@@ -69,7 +69,7 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
 
   @override
   Widget build(BuildContext context) {
-    String thumbnailUrl = "UNKOWN";
+    String? thumbnailUrl = "UNKOWN";
 
     switch (res) {
       case 'max':
@@ -97,14 +97,14 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
                 alignment: Alignment(0, 0),
                 children: <Widget>[
                   ExtendedImage.network(
-                    thumbnailUrl,
+                    thumbnailUrl!,
                   ),
                   if (_title != null)
                     Positioned.fill(
                       top: 10,
                       left: 10,
                       child: Text(
-                        _title,
+                        _title!,
                         style: TextStyle(
                           fontSize: 16,
                           shadows: [
@@ -125,7 +125,7 @@ class _YoutubeEmbedState extends State<YoutubeVideoEmbed> {
                     child: new Material(
                       color: Colors.transparent,
                       child: new InkWell(
-                        onTap: () => playYouTubeVideo(this.widget.url),
+                        onTap: () => playYouTubeVideo(this.widget.url!),
                       ),
                     ),
                   ),

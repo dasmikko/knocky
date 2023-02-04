@@ -18,20 +18,20 @@ class User {
     this.useBioForTitle,
   });
 
-  int id;
-  UserRole role;
-  String username;
-  String avatarUrl;
-  String backgroundUrl;
-  int posts;
-  int threads;
-  DateTime createdAt;
-  DateTime updatedAt;
-  bool banned;
-  bool isBanned;
-  String title;
-  String pronouns;
-  int useBioForTitle;
+  int? id;
+  UserRole? role;
+  String? username;
+  String? avatarUrl;
+  String? backgroundUrl;
+  int? posts;
+  int? threads;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  bool? banned;
+  bool? isBanned;
+  String? title;
+  String? pronouns;
+  int? useBioForTitle;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"] == null ? null : json["id"],
@@ -58,14 +58,14 @@ class User {
 
   Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
-        "role": role == null ? null : role.toJson(),
+        "role": role == null ? null : role!.toJson(),
         "username": username == null ? null : username,
         "avatarUrl": avatarUrl == null ? null : avatarUrl,
         "backgroundUrl": backgroundUrl == null ? null : backgroundUrl,
         "posts": posts == null ? null : posts,
         "threads": threads == null ? null : threads,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
         "banned": banned == null ? null : banned,
         "isBanned": isBanned == null ? null : isBanned,
         "title": title == null ? null : title,

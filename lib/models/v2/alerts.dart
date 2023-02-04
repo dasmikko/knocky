@@ -13,9 +13,9 @@ class Alerts {
     this.ids,
   });
 
-  List<Alert> alerts;
-  int totalAlerts;
-  List<int> ids;
+  List<Alert>? alerts;
+  int? totalAlerts;
+  List<int>? ids;
 
   factory Alerts.fromRawJson(String str) => Alerts.fromJson(json.decode(str));
 
@@ -28,9 +28,9 @@ class Alerts {
       );
 
   Map<String, dynamic> toJson() => {
-        "alerts": List<dynamic>.from(alerts.map((x) => x.toJson())),
+        "alerts": List<dynamic>.from(alerts!.map((x) => x.toJson())),
         "totalAlerts": totalAlerts,
-        "ids": List<dynamic>.from(ids.map((x) => x)),
+        "ids": List<dynamic>.from(ids!.map((x) => x)),
       };
 }
 
@@ -42,10 +42,10 @@ class Alert {
     this.firstUnreadId,
   });
 
-  int id;
-  SubforumThread thread;
-  int unreadPosts;
-  int firstUnreadId;
+  int? id;
+  SubforumThread? thread;
+  int? unreadPosts;
+  int? firstUnreadId;
 
   factory Alert.fromRawJson(String str) => Alert.fromJson(json.decode(str));
 
@@ -60,7 +60,7 @@ class Alert {
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "thread": thread.toJson(),
+        "thread": thread!.toJson(),
         "unreadPosts": unreadPosts,
         "firstUnreadId": firstUnreadId,
       };

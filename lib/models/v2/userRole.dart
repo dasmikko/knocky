@@ -10,12 +10,12 @@ class UserRole {
     this.updatedAt,
   });
 
-  int id;
-  RoleCode code;
-  String description;
-  List<dynamic> permissionCodes;
-  DateTime createdAt;
-  DateTime updatedAt;
+  int? id;
+  RoleCode? code;
+  String? description;
+  List<dynamic>? permissionCodes;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   factory UserRole.fromJson(Map<String, dynamic> json) => UserRole(
         id: json["id"] == null ? null : json["id"],
@@ -34,13 +34,13 @@ class UserRole {
 
   Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
-        "code": code == null ? null : codeValues.reverse[code],
+        "code": code == null ? null : codeValues.reverse![code],
         "description": description == null ? null : description,
         "permissionCodes": permissionCodes == null
             ? null
-            : List<dynamic>.from(permissionCodes.map((x) => x)),
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+            : List<dynamic>.from(permissionCodes!.map((x) => x)),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
       };
 }
 

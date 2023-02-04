@@ -8,9 +8,9 @@ import 'package:knocky/widgets/bbcode/bbcodeRendererNew.dart';
 import 'package:knocky/widgets/shared/postEditorBBCode.dart';
 
 class EditPost extends StatefulWidget {
-  final int postId;
-  final String content;
-  final Function onSubmit;
+  final int? postId;
+  final String? content;
+  final Function? onSubmit;
   EditPost({this.postId, this.onSubmit, this.content});
   @override
   _EditPostState createState() => _EditPostState();
@@ -27,7 +27,7 @@ class _EditPostState extends State<EditPost> {
     super.initState();
     // rebuild the widget when text is changed so we can enable/disable
     // the submit button
-    textEditingController.text = widget.content;
+    textEditingController.text = widget.content!;
   }
 
   @override
@@ -113,7 +113,7 @@ class _EditPostState extends State<EditPost> {
 
     KnockySnackbar.success('Post was updated');
     textEditingController.text = '';
-    widget.onSubmit.call();
+    widget.onSubmit!.call();
   }
 
   @override

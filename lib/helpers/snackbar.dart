@@ -9,7 +9,7 @@ class KnockySnackbar {
   static SnackbarController normal(
     String title,
     String content, {
-    Widget icon,
+    Widget? icon,
     bool isDismissible = true,
     bool showProgressIndicator = false,
   }) {
@@ -29,7 +29,7 @@ class KnockySnackbar {
   static SnackbarController success(
     String content, {
     String title = 'Success',
-    Widget icon,
+    Widget? icon,
     bool isDismissible = true,
     bool showProgressIndicator = false,
   }) {
@@ -51,7 +51,7 @@ class KnockySnackbar {
   static SnackbarController error(
     String content, {
     String title = 'Error',
-    Widget icon,
+    Widget? icon,
     bool isDismissible = true,
     bool showProgressIndicator = false,
   }) {

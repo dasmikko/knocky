@@ -1,9 +1,9 @@
 
 class KnockoutEvent {
-  final String content;
-  final DateTime createdAt;
-  final int executedBy;
-  final int id;
+  final String? content;
+  final DateTime? createdAt;
+  final int? executedBy;
+  final int? id;
 
   KnockoutEvent({
     this.content,
@@ -14,7 +14,7 @@ class KnockoutEvent {
 
   factory KnockoutEvent.fromJson(Map<String, dynamic> json) =>
       KnockoutEvent(
-        content: json['content'] as String,
+        content: json['content'] as String?,
         createdAt: DateTime.parse(json['created_at'] as String),
         id: json['id'],
         executedBy: json['executed_by'],

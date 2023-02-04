@@ -3,12 +3,12 @@ import 'package:knocky/models/v2/userRole.dart';
 import 'package:knocky/models/usergroup.dart';
 
 class AppColors {
-  BuildContext context;
-  Brightness currentBrightness;
+  BuildContext? context;
+  Brightness? currentBrightness;
 
-  AppColors(BuildContext context) {
+  AppColors(BuildContext? context) {
     this.context = context;
-    this.currentBrightness = Theme.of(this.context).brightness;
+    this.currentBrightness = Theme.of(this.context!).brightness;
   }
 
   Color switchColor() {
@@ -73,7 +73,7 @@ class AppColors {
     }
   }
 
-  Color userRoleToColor(RoleCode userRoleCode, {bool banned = false}) {
+  Color userRoleToColor(RoleCode? userRoleCode, {bool banned = false}) {
     if (banned) {
       return bannedColor();
     }

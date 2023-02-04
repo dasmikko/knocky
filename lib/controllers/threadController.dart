@@ -27,39 +27,38 @@ class ThreadController extends PaginatedController<Thread> {
     hideFAB.value = false;
 
     if (authController.isAuthenticated.value) {
-      updateAlerts(data.value);
-      updateReadThread(data.value);
-      handleNotifications(data.value);
+      updateAlerts(data.value!);
+      updateReadThread(data.value!);
+      handleNotifications(data.value!);
     }
   }
 
   @override
   get pageCount =>
-      ((data.value?.totalPosts ?? 0) / PostsPerPage.POSTS_PER_PAGE).ceil();
+      ((data.value!.totalPosts ?? 0) / PostsPerPage.POSTS_PER_PAGE).ceil();
 
   get title => data.value?.title;
 
   @override
-  int get dataInPageCount => data.value?.posts?.length ?? 0;
+  int get dataInPageCount => data.value!.posts!.length ?? 0;
 
   @override
-  dynamic dataAtIndex(int index) => data.value?.posts[index];
+  dynamic dataAtIndex(int index) => data.value!.posts![index];
 
   void updateAlerts(Thread thread) async {
-    int lastPostNumber = thread.posts.last.threadPostNumber;
+    int? lastPostNumber = thread.posts!.last.threadPostNumber;
 
-    if (thread.subscribed) {
-      if (thread.subscriptionLastPostNumber == null ||
-          thread.subscriptionLastPostNumber < lastPostNumber) {
+    if (thread.subscribed!) {
+      if (thread.subscriptionLastPostNumber! < lastPostNumber!) {
         await KnockoutAPI().createAlert(thread.id, lastPostNumber);
       }
     }
   }
 
   void updateReadThread(Thread thread) async {
-    DateTime lastPostDate = thread.posts.last.createdAt;
-    if (thread.readThreadLastSeen == null ||
-        thread.readThreadLastSeen.isBefore(lastPostDate)) {
+    DateTime lastPostDate = thread.posts!.last.createdAt!;
+    if (thread.readThreadLastSeen != null &&
+        thread.readThreadLastSeen!.isBefore(lastPostDate)) {
       await KnockoutAPI().readThreads(lastPostDate, thread.id);
     }
   }
@@ -68,9 +67,9 @@ class ThreadController extends PaginatedController<Thread> {
     // Handle mentions too!
     List<SyncDataMentionModel> mentions = syncController.mentions;
 
-    List<int> mentionsPostIds = mentions.map((o) => o.postId).toList();
-    List<int> threadPostIds = thread.posts.map((o) => o.id).toList();
-    List<int> idsToMarkRead = [];
+    List<int?> mentionsPostIds = mentions.map((o) => o.postId).toList();
+    List<int?> threadPostIds = thread.posts!.map((o) => o.id).toList();
+    List<int?> idsToMarkRead = [];
 
     mentionsPostIds.forEach((postId) {
       if (threadPostIds.contains(postId)) {

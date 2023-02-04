@@ -3,8 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/helpers/bbcodehelper.dart';
 
 class PostEditorBBCode extends StatefulWidget {
-  final Function onInputChange;
-  final TextEditingController textEditingController;
+  final Function? onInputChange;
+  final TextEditingController? textEditingController;
   PostEditorBBCode({this.onInputChange, this.textEditingController});
   @override
   _PostEditorBBCodeState createState() => _PostEditorBBCodeState();
@@ -22,13 +22,13 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
         padding: EdgeInsets.all(4),
         splashRadius: 16,
         icon: Icon(icon, size: 16),
-        onPressed: onPressed,
+        onPressed: onPressed as void Function()?,
         visualDensity: VisualDensity.compact);
   }
 
   Widget toolbar(BuildContext context) {
     var addTag = (tag, {option}) => BBCodeHelper.addTagAtSelection(
-        widget.textEditingController, tag, widget.onInputChange,
+        widget.textEditingController!, tag, widget.onInputChange!,
         option: option);
 
     var buttons = [
@@ -68,7 +68,7 @@ class _PostEditorBBCodeState extends State<PostEditorBBCode> {
       textCapitalization: TextCapitalization.sentences,
       maxLines: null,
       expands: true,
-      onChanged: this.widget.onInputChange,
+      onChanged: this.widget.onInputChange as void Function(String)?,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
       ),

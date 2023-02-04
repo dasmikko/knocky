@@ -1,14 +1,14 @@
 import 'package:knocky/models/subforumDetails.dart';
 
 class Subforum {
-  final int id;
-  final String icon;
-  final String name;
-  final String description;
-  final int totalPosts;
-  final int totalThreads;
-  final int lastPostId;
-  final SubforumOldLastPost lastPost;
+  final int? id;
+  final String? icon;
+  final String? name;
+  final String? description;
+  final int? totalPosts;
+  final int? totalThreads;
+  final int? lastPostId;
+  final SubforumOldLastPost? lastPost;
 
   Subforum({
     this.id,
@@ -22,13 +22,13 @@ class Subforum {
   });
 
   factory Subforum.fromJson(Map<String, dynamic> json) => Subforum(
-        id: json['id'] as int,
-        icon: json['icon'] as String,
-        name: json['name'] as String,
-        description: json['description'] as String,
-        totalPosts: json['totalPosts'] as int,
-        totalThreads: json['totalThreads'] as int,
-        lastPostId: json['lastPost_id'] as int,
+        id: json['id'] as int?,
+        icon: json['icon'] as String?,
+        name: json['name'] as String?,
+        description: json['description'] as String?,
+        totalPosts: json['totalPosts'] as int?,
+        totalThreads: json['totalThreads'] as int?,
+        lastPostId: json['lastPost_id'] as int?,
         lastPost: json['lastPost'] == null
             ? null
             : SubforumOldLastPost.fromJson(
@@ -47,11 +47,11 @@ class Subforum {
 }
 
 class SubforumLastPost {
-  final DateTime createdAt;
-  final int id;
-  final int thread;
-  final SubforumLastPostUser user;
-  final int page;
+  final DateTime? createdAt;
+  final int? id;
+  final int? thread;
+  final SubforumLastPostUser? user;
+  final int? page;
 
   SubforumLastPost({
     this.id,
@@ -63,16 +63,16 @@ class SubforumLastPost {
 
   factory SubforumLastPost.fromJson(Map<String, dynamic> json) =>
       SubforumLastPost(
-        id: json['id'] as int,
+        id: json['id'] as int?,
         createdAt: json['createdAt'] == null
             ? null
             : DateTime.parse(json['createdAt'] as String),
-        thread: json['thread'] as int,
+        thread: json['thread'] as int?,
         user: json['user'] == null
             ? null
             : SubforumLastPostUser.fromJson(
                 json['user'] as Map<String, dynamic>),
-        page: json['page'] as int,
+        page: json['page'] as int?,
       );
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -84,11 +84,11 @@ class SubforumLastPost {
 }
 
 class SubforumOldLastPost {
-  final DateTime createdAt;
-  final int id;
-  final SubforumThreadLastPostThread thread;
-  final SubforumLastPostUser user;
-  final int page;
+  final DateTime? createdAt;
+  final int? id;
+  final SubforumThreadLastPostThread? thread;
+  final SubforumLastPostUser? user;
+  final int? page;
 
   SubforumOldLastPost({
     this.id,
@@ -100,7 +100,7 @@ class SubforumOldLastPost {
 
   factory SubforumOldLastPost.fromJson(Map<String, dynamic> json) {
     return SubforumOldLastPost(
-      id: json['id'] as int,
+      id: json['id'] as int?,
       createdAt: json['createdAt'] == null
           ? null
           : DateTime.parse(json['createdAt'] as String),
@@ -111,11 +111,11 @@ class SubforumOldLastPost {
       user: json['user'] == null
           ? null
           : SubforumLastPostUser.fromJson(json['user'] as Map<String, dynamic>),
-      page: json['page'] as int,
+      page: json['page'] as int?,
     );
   }
   Map<String, dynamic> toJson() => {
-        'createdAt': createdAt?.toIso8601String(),
+        'createdAt': createdAt!.toIso8601String(),
         'id': id,
         'thread': thread,
         'user': user,
@@ -124,11 +124,11 @@ class SubforumOldLastPost {
 }
 
 class SubForumLastPostThread {
-  final int id;
-  final int postCount;
-  final int subforumId;
-  final String title;
-  final int page;
+  final int? id;
+  final int? postCount;
+  final int? subforumId;
+  final String? title;
+  final int? page;
 
   SubForumLastPostThread({
     this.id,
@@ -140,11 +140,11 @@ class SubForumLastPostThread {
 
   factory SubForumLastPostThread.fromJson(Map<String, dynamic> json) {
     return SubForumLastPostThread(
-      id: json['id'] as int,
-      postCount: json['post_count'] as int,
-      subforumId: json['subforum_id'] as int,
-      title: json['title'] as String,
-      page: json['page'] as int,
+      id: json['id'] as int?,
+      postCount: json['post_count'] as int?,
+      subforumId: json['subforum_id'] as int?,
+      title: json['title'] as String?,
+      page: json['page'] as int?,
     );
   }
   Map<String, dynamic> toJson() => {
@@ -157,8 +157,8 @@ class SubForumLastPostThread {
 }
 
 class SubforumLastPostUser {
-  final bool isBanned;
-  final String username;
+  final bool? isBanned;
+  final String? username;
 
   SubforumLastPostUser({
     this.isBanned,
@@ -167,8 +167,8 @@ class SubforumLastPostUser {
 
   factory SubforumLastPostUser.fromJson(Map<String, dynamic> json) {
     return SubforumLastPostUser(
-      isBanned: json['isBanned'] as bool,
-      username: json['username'] as String,
+      isBanned: json['isBanned'] as bool?,
+      username: json['username'] as String?,
     );
   }
   Map<String, dynamic> toJson() => {

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:video_player/video_player.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class VideoEmbed extends StatefulWidget {
-  final String url;
+  final String? url;
 
   VideoEmbed({this.url});
 
@@ -14,8 +13,8 @@ class VideoEmbed extends StatefulWidget {
 }
 
 class _VideoEmbedState extends State<VideoEmbed> {
-  VideoPlayerController videoPlayerController;
-  ChewieController chewieController;
+  late VideoPlayerController videoPlayerController;
+  ChewieController? chewieController;
 
   @override
   void initState() {
@@ -24,16 +23,16 @@ class _VideoEmbedState extends State<VideoEmbed> {
   }
 
   Future<void> initializePlayer() async {
-    videoPlayerController = VideoPlayerController.network(widget.url);
+    videoPlayerController = VideoPlayerController.network(widget.url!);
     await videoPlayerController.initialize();
-    chewieController = ChewieController(
+    chewieController = await ChewieController(
         videoPlayerController: videoPlayerController,
         additionalOptions: (context) {
           return <OptionItem>[
             OptionItem(
                 onTap: () async {
                   try {
-                    await launch(this.widget.url);
+                    await launch(this.widget.url!);
                   } catch (e) {
                     throw 'Could not launch $this.widget.url';
                   }
@@ -47,10 +46,8 @@ class _VideoEmbedState extends State<VideoEmbed> {
 
   @override
   void dispose() {
-    videoPlayerController.dispose();
-    chewieController.dispose();
-
-    // TODO: implement dispose
+    videoPlayerController?.dispose();
+    chewieController?.dispose();
     super.dispose();
   }
 
@@ -70,9 +67,9 @@ class _VideoEmbedState extends State<VideoEmbed> {
           child: AspectRatio(
             aspectRatio: 16 / 9,
             child: chewieController != null &&
-                    chewieController.videoPlayerController.value.isInitialized
+                    chewieController!.videoPlayerController.value.isInitialized
                 ? Chewie(
-                    controller: chewieController,
+                    controller: chewieController!,
                   )
                 : Text('Loading'),
           ),

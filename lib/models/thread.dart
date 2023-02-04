@@ -49,40 +49,40 @@ class Thread {
     this.subscriptionLastPostNumber,
   });
 
-  int id;
-  String title;
-  int iconId;
-  int subforumId;
-  DateTime createdAt;
-  DateTime updatedAt;
+  int? id;
+  String? title;
+  int? iconId;
+  int? subforumId;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   dynamic deletedAt;
-  bool deleted;
-  bool locked;
-  bool pinned;
-  ThreadPost lastPost;
+  bool? deleted;
+  bool? locked;
+  bool? pinned;
+  ThreadPost? lastPost;
   dynamic backgroundUrl;
   dynamic backgroundType;
-  ThreadUser user;
-  int userId;
-  int postCount;
-  int recentPostCount;
-  int unreadPostCount;
-  int readThreadUnreadPosts;
-  bool read;
-  bool hasRead;
-  bool hasSeenNoNewPosts;
-  ThreadSubforum subforum;
-  List<dynamic> tags;
-  ThreadViewers viewers;
-  int totalPosts;
-  int currentPage;
+  ThreadUser? user;
+  int? userId;
+  int? postCount;
+  int? recentPostCount;
+  int? unreadPostCount;
+  int? readThreadUnreadPosts;
+  bool? read;
+  bool? hasRead;
+  bool? hasSeenNoNewPosts;
+  ThreadSubforum? subforum;
+  List<dynamic>? tags;
+  ThreadViewers? viewers;
+  int? totalPosts;
+  int? currentPage;
   dynamic threadBackgroundUrl;
   dynamic threadBackgroundType;
-  List<ThreadPost> posts;
-  DateTime readThreadLastSeen;
-  bool subscribed;
-  DateTime subscriptionLastSeen;
-  int subscriptionLastPostNumber;
+  List<ThreadPost>? posts;
+  DateTime? readThreadLastSeen;
+  bool? subscribed;
+  DateTime? subscriptionLastSeen;
+  int? subscriptionLastPostNumber;
 
   factory Thread.fromJson(Map<String, dynamic> json) => Thread(
         id: json["id"] == null ? null : json["id"],
@@ -156,13 +156,13 @@ class Thread {
         "title": title == null ? null : title,
         "iconId": iconId == null ? null : iconId,
         "subforumId": subforumId == null ? null : subforumId,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
         "deletedAt": deletedAt,
         "deleted": deleted == null ? null : deleted,
         "locked": locked == null ? null : locked,
         "pinned": pinned == null ? null : pinned,
-        "lastPost": lastPost == null ? null : lastPost.toJson(),
+        "lastPost": lastPost == null ? null : lastPost!.toJson(),
         "backgroundUrl": backgroundUrl,
         "backgroundType": backgroundType,
         "user": user == null ? null : user,
@@ -176,23 +176,23 @@ class Thread {
         "hasRead": hasRead == null ? null : hasRead,
         "hasSeenNoNewPosts":
             hasSeenNoNewPosts == null ? null : hasSeenNoNewPosts,
-        "subforum": subforum == null ? null : subforum.toJson(),
-        "tags": tags == null ? null : List<dynamic>.from(tags.map((x) => x)),
-        "viewers": viewers == null ? null : viewers.toJson(),
+        "subforum": subforum == null ? null : subforum!.toJson(),
+        "tags": tags == null ? null : List<dynamic>.from(tags!.map((x) => x)),
+        "viewers": viewers == null ? null : viewers!.toJson(),
         "totalPosts": totalPosts == null ? null : totalPosts,
         "currentPage": currentPage == null ? null : currentPage,
         "threadBackgroundUrl": threadBackgroundUrl,
         "threadBackgroundType": threadBackgroundType,
         "posts": posts == null
             ? null
-            : List<dynamic>.from(posts.map((x) => x.toJson())),
+            : List<dynamic>.from(posts!.map((x) => x.toJson())),
         "readThreadLastSeen": readThreadLastSeen == null
             ? null
-            : readThreadLastSeen.toIso8601String(),
+            : readThreadLastSeen!.toIso8601String(),
         "subscribed": subscribed == null ? null : subscribed,
         "subscriptionLastSeen": subscriptionLastSeen == null
             ? null
-            : subscriptionLastSeen.toIso8601String(),
+            : subscriptionLastSeen!.toIso8601String(),
         "subscriptionLastPostNumber": subscriptionLastPostNumber == null
             ? null
             : subscriptionLastPostNumber,
@@ -218,21 +218,21 @@ class ThreadPost {
     this.appName,
   });
 
-  int id;
-  int thread;
-  Thread threadObj;
-  int page;
-  String content;
-  DateTime createdAt;
-  DateTime updatedAt;
-  ThreadUser user;
-  int userId;
-  List<ThreadPostRating> ratings;
-  List<dynamic> bans;
-  int threadPostNumber;
-  String countryName;
-  String countryCode;
-  String appName;
+  int? id;
+  int? thread;
+  Thread? threadObj;
+  int? page;
+  String? content;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  ThreadUser? user;
+  int? userId;
+  List<ThreadPostRating>? ratings;
+  List<dynamic>? bans;
+  int? threadPostNumber;
+  String? countryName;
+  String? countryCode;
+  String? appName;
 
   factory ThreadPost.fromJson(Map<String, dynamic> json) => ThreadPost(
         id: json["id"] == null ? null : json["id"],
@@ -272,17 +272,17 @@ class ThreadPost {
   Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
         "thread": thread == null ? null : thread,
-        "threadObj": thread == null ? null : threadObj.toJson(),
+        "threadObj": thread == null ? null : threadObj!.toJson(),
         "page": page == null ? null : page,
         "content": content == null ? null : content,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
-        "user": user == null ? null : user.toJson(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
+        "user": user == null ? null : user!.toJson(),
         "userId": user == null ? null : user,
         "ratings": ratings == null
             ? null
-            : List<dynamic>.from(ratings.map((x) => x.toJson())),
-        "bans": bans == null ? null : List<dynamic>.from(bans.map((x) => x)),
+            : List<dynamic>.from(ratings!.map((x) => x.toJson())),
+        "bans": bans == null ? null : List<dynamic>.from(bans!.map((x) => x)),
         "threadPostNumber": threadPostNumber == null ? null : threadPostNumber,
         "countryName": countryName == null ? null : countryName,
         "countryCode": countryCode == null ? null : countryCode,
@@ -299,11 +299,11 @@ class ThreadPostRating {
     this.count,
   });
 
-  int id;
-  String rating;
-  int ratingId;
-  List<ThreadUser> users;
-  int count;
+  int? id;
+  String? rating;
+  int? ratingId;
+  List<ThreadUser>? users;
+  int? count;
 
   factory ThreadPostRating.fromJson(Map<String, dynamic> json) =>
       ThreadPostRating(
@@ -323,7 +323,7 @@ class ThreadPostRating {
         "ratingId": ratingId == null ? null : ratingId,
         "users": users == null
             ? null
-            : List<dynamic>.from(users.map((x) => x.toJson())),
+            : List<dynamic>.from(users!.map((x) => x.toJson())),
         "count": count == null ? null : count,
       };
 }
@@ -347,21 +347,21 @@ class ThreadUser {
     this.useBioForTitle,
   });
 
-  int id;
-  UserRole role;
-  String username;
-  Usergroup usergroup;
-  String avatarUrl;
-  String backgroundUrl;
-  int posts;
-  int threads;
-  DateTime createdAt;
-  DateTime updatedAt;
-  bool banned;
-  bool isBanned;
-  String title;
-  String pronouns;
-  int useBioForTitle;
+  int? id;
+  UserRole? role;
+  String? username;
+  Usergroup? usergroup;
+  String? avatarUrl;
+  String? backgroundUrl;
+  int? posts;
+  int? threads;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  bool? banned;
+  bool? isBanned;
+  String? title;
+  String? pronouns;
+  int? useBioForTitle;
 
   factory ThreadUser.fromJson(Map<String, dynamic> json) => ThreadUser(
         id: json["id"] == null ? null : json["id"],
@@ -391,15 +391,15 @@ class ThreadUser {
 
   Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
-        "role": role == null ? null : role.toJson(),
+        "role": role == null ? null : role!.toJson(),
         "username": username == null ? null : username,
         "usergroup": usergroup == null ? null : usergroup,
         "avatarUrl": avatarUrl == null ? null : avatarUrl,
         "backgroundUrl": backgroundUrl == null ? null : backgroundUrl,
         "posts": posts == null ? null : posts,
         "threads": threads == null ? null : threads,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
         "banned": banned == null ? null : banned,
         "isBanned": isBanned == null ? null : isBanned,
         "title": title == null ? null : title,
@@ -418,12 +418,12 @@ class ThreadUserRole {
     this.updatedAt,
   });
 
-  int id;
-  Code code;
-  String description;
-  List<dynamic> permissionCodes;
-  DateTime createdAt;
-  DateTime updatedAt;
+  int? id;
+  Code? code;
+  String? description;
+  List<dynamic>? permissionCodes;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   factory ThreadUserRole.fromJson(Map<String, dynamic> json) => ThreadUserRole(
         id: json["id"] == null ? null : json["id"],
@@ -442,13 +442,13 @@ class ThreadUserRole {
 
   Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
-        "code": code == null ? null : codeValues.reverse[code],
+        "code": code == null ? null : codeValues.reverse![code],
         "description": description == null ? null : description,
         "permissionCodes": permissionCodes == null
             ? null
-            : List<dynamic>.from(permissionCodes.map((x) => x)),
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+            : List<dynamic>.from(permissionCodes!.map((x) => x)),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
       };
 }
 
@@ -489,14 +489,14 @@ class ThreadSubforum {
     this.totalPosts,
   });
 
-  int id;
-  String name;
-  String description;
-  int iconId;
-  String icon;
-  LastPost lastPost;
-  int totalThreads;
-  int totalPosts;
+  int? id;
+  String? name;
+  String? description;
+  int? iconId;
+  String? icon;
+  LastPost? lastPost;
+  int? totalThreads;
+  int? totalPosts;
 
   factory ThreadSubforum.fromJson(Map<String, dynamic> json) => ThreadSubforum(
         id: json["id"] == null ? null : json["id"],
@@ -518,7 +518,7 @@ class ThreadSubforum {
         "description": description == null ? null : description,
         "iconId": iconId == null ? null : iconId,
         "icon": icon == null ? null : icon,
-        "lastPost": lastPost == null ? null : lastPost.toJson(),
+        "lastPost": lastPost == null ? null : lastPost!.toJson(),
         "totalThreads": totalThreads == null ? null : totalThreads,
         "totalPosts": totalPosts == null ? null : totalPosts,
       };
@@ -527,7 +527,7 @@ class ThreadSubforum {
 class LastPost {
   LastPost();
 
-  factory LastPost.fromJson(Map<String, dynamic> json) => LastPost();
+  factory LastPost.fromJson(Map<String, dynamic>? json) => LastPost();
 
   Map<String, dynamic> toJson() => {};
 }
@@ -538,8 +538,8 @@ class ThreadViewers {
     this.guestCount,
   });
 
-  int memberCount;
-  int guestCount;
+  int? memberCount;
+  int? guestCount;
 
   factory ThreadViewers.fromJson(Map<String, dynamic> json) => ThreadViewers(
         memberCount: json["memberCount"] == null ? null : json["memberCount"],
@@ -554,11 +554,11 @@ class ThreadViewers {
 
 class EnumValues<T> {
   Map<String, T> map;
-  Map<T, String> reverseMap;
+  Map<T, String>? reverseMap;
 
   EnumValues(this.map);
 
-  Map<T, String> get reverse {
+  Map<T, String>? get reverse {
     if (reverseMap == null) {
       reverseMap = map.map((k, v) => new MapEntry(v, k));
     }
@@ -603,39 +603,39 @@ class ThreadUserProfile {
     this.subscriptionLastPostNumber,
   });
 
-  int id;
-  String title;
-  int iconId;
-  int subforumId;
-  DateTime createdAt;
-  DateTime updatedAt;
+  int? id;
+  String? title;
+  int? iconId;
+  int? subforumId;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   dynamic deletedAt;
-  bool deleted;
-  bool locked;
-  bool pinned;
-  ThreadPost lastPost;
+  bool? deleted;
+  bool? locked;
+  bool? pinned;
+  ThreadPost? lastPost;
   dynamic backgroundUrl;
   dynamic backgroundType;
-  int user;
-  int postCount;
-  int recentPostCount;
-  int unreadPostCount;
-  int readThreadUnreadPosts;
-  bool read;
-  bool hasRead;
-  bool hasSeenNoNewPosts;
-  ThreadSubforum subforum;
-  List<dynamic> tags;
-  ThreadViewers viewers;
-  int totalPosts;
-  int currentPage;
+  int? user;
+  int? postCount;
+  int? recentPostCount;
+  int? unreadPostCount;
+  int? readThreadUnreadPosts;
+  bool? read;
+  bool? hasRead;
+  bool? hasSeenNoNewPosts;
+  ThreadSubforum? subforum;
+  List<dynamic>? tags;
+  ThreadViewers? viewers;
+  int? totalPosts;
+  int? currentPage;
   dynamic threadBackgroundUrl;
   dynamic threadBackgroundType;
-  List<ThreadPost> posts;
-  DateTime readThreadLastSeen;
-  bool subscribed;
-  DateTime subscriptionLastSeen;
-  int subscriptionLastPostNumber;
+  List<ThreadPost>? posts;
+  DateTime? readThreadLastSeen;
+  bool? subscribed;
+  DateTime? subscriptionLastSeen;
+  int? subscriptionLastPostNumber;
 
   factory ThreadUserProfile.fromJson(Map<String, dynamic> json) =>
       ThreadUserProfile(
@@ -706,13 +706,13 @@ class ThreadUserProfile {
         "title": title == null ? null : title,
         "iconId": iconId == null ? null : iconId,
         "subforumId": subforumId == null ? null : subforumId,
-        "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
         "deletedAt": deletedAt,
         "deleted": deleted == null ? null : deleted,
         "locked": locked == null ? null : locked,
         "pinned": pinned == null ? null : pinned,
-        "lastPost": lastPost == null ? null : lastPost.toJson(),
+        "lastPost": lastPost == null ? null : lastPost!.toJson(),
         "backgroundUrl": backgroundUrl,
         "backgroundType": backgroundType,
         "user": user == null ? null : user,
@@ -725,23 +725,23 @@ class ThreadUserProfile {
         "hasRead": hasRead == null ? null : hasRead,
         "hasSeenNoNewPosts":
             hasSeenNoNewPosts == null ? null : hasSeenNoNewPosts,
-        "subforum": subforum == null ? null : subforum.toJson(),
-        "tags": tags == null ? null : List<dynamic>.from(tags.map((x) => x)),
-        "viewers": viewers == null ? null : viewers.toJson(),
+        "subforum": subforum == null ? null : subforum!.toJson(),
+        "tags": tags == null ? null : List<dynamic>.from(tags!.map((x) => x)),
+        "viewers": viewers == null ? null : viewers!.toJson(),
         "totalPosts": totalPosts == null ? null : totalPosts,
         "currentPage": currentPage == null ? null : currentPage,
         "threadBackgroundUrl": threadBackgroundUrl,
         "threadBackgroundType": threadBackgroundType,
         "posts": posts == null
             ? null
-            : List<dynamic>.from(posts.map((x) => x.toJson())),
+            : List<dynamic>.from(posts!.map((x) => x.toJson())),
         "readThreadLastSeen": readThreadLastSeen == null
             ? null
-            : readThreadLastSeen.toIso8601String(),
+            : readThreadLastSeen!.toIso8601String(),
         "subscribed": subscribed == null ? null : subscribed,
         "subscriptionLastSeen": subscriptionLastSeen == null
             ? null
-            : subscriptionLastSeen.toIso8601String(),
+            : subscriptionLastSeen!.toIso8601String(),
         "subscriptionLastPostNumber": subscriptionLastPostNumber == null
             ? null
             : subscriptionLastPostNumber,

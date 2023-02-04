@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
 class KnockoutLoadingIndicator extends StatefulWidget {
@@ -9,7 +10,7 @@ class KnockoutLoadingIndicator extends StatefulWidget {
   final bool blurBackground;
 
   KnockoutLoadingIndicator(
-      {@required this.child, this.show = false, this.blurBackground = true});
+      {required this.child, this.show = false, this.blurBackground = true});
 
   @override
   _KnockoutLoadingIndicatorState createState() =>
@@ -18,8 +19,8 @@ class KnockoutLoadingIndicator extends StatefulWidget {
 
 class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
     with SingleTickerProviderStateMixin {
-  AnimationController controller;
-  Animation<double> animation;
+  late AnimationController controller;
+  late Animation<double> animation;
   bool isHidden = false;
   int messageIndex = 0;
 
@@ -37,10 +38,14 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
         vsync: this, duration: const Duration(milliseconds: 250));
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
 
+    // Force animation to the end if show state is true
+    if (widget.show) {
+      controller.value = 1.0;
+    }
+
     Random random = new Random();
     int randomNumber = random.nextInt(messages.length);
 
-    print("init state" + randomNumber.toString());
     setState(() {
       messageIndex = randomNumber;
     });
@@ -88,7 +93,8 @@ class _KnockoutLoadingIndicatorState extends State<KnockoutLoadingIndicator>
         children: [
           Container(
             margin: EdgeInsets.only(bottom: 24),
-            child: Image(width: 100, image: AssetImage('assets/logo.png')),
+            child: Image(
+                width: 100, height: 100, image: AssetImage('assets/logo.png')),
           ),
           Text(
             messages.elementAt(this.messageIndex),

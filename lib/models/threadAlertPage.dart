@@ -1,8 +1,8 @@
 import 'package:knocky/models/threadAlert.dart';
 
 class ThreadAlertPage {
-  final List<ThreadAlert> alerts;
-  final int totalAlerts;
+  final List<ThreadAlert>? alerts;
+  final int? totalAlerts;
 
   ThreadAlertPage({this.alerts, this.totalAlerts});
 
@@ -12,9 +12,9 @@ class ThreadAlertPage {
 
 ThreadAlertPage _$ThreadAlertPageFromJson(Map<String, dynamic> json) {
   var alerts = (json["alerts"] as List)
-          ?.map((threadAlertJson) => ThreadAlert.fromJson(threadAlertJson))
-          ?.toList() ??
+          .map((threadAlertJson) => ThreadAlert.fromJson(threadAlertJson))
+          .toList() ??
       <ThreadAlert>[];
   return ThreadAlertPage(
-      alerts: alerts, totalAlerts: json["totalAlerts"] as int);
+      alerts: alerts, totalAlerts: json["totalAlerts"] as int?);
 }

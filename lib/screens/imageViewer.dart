@@ -5,11 +5,11 @@ import 'package:knocky/widgets/imageViewerBottomsheet.dart';
 //import 'package:knocky_edge/helpers/Download.dart';
 
 class ImageViewerScreen extends StatefulWidget {
-  final String url;
-  final List<String> urls;
-  final int postId;
+  final String? url;
+  final List<String?>? urls;
+  final int? postId;
 
-  ImageViewerScreen({@required this.url, this.urls, this.postId = 0});
+  ImageViewerScreen({required this.url, this.urls, this.postId = 0});
 
   @override
   _ImageViewerScreenState createState() => _ImageViewerScreenState();
@@ -24,7 +24,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
   @override
   void initState() {
     super.initState();
-    _currentPage = this.widget.urls.indexOf(widget.url);
+    _currentPage = this.widget.urls!.indexOf(widget.url);
   }
 
   @override
@@ -33,21 +33,21 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
       backgroundColor: Color.fromARGB(200, 0, 0, 0),
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(this.widget.urls[_currentPage]),
+        title: Text(this.widget.urls![_currentPage]!),
       ),
       body: PageView.builder(
         physics: !_isZooming
             ? AlwaysScrollableScrollPhysics()
             : NeverScrollableScrollPhysics(),
         controller: PageController(
-          initialPage: this.widget.urls.indexOf(widget.url),
+          initialPage: this.widget.urls!.indexOf(widget.url),
         ),
         onPageChanged: (int newIndex) {
           setState(() {
             _currentPage = newIndex;
           });
         },
-        itemCount: this.widget.urls.length,
+        itemCount: this.widget.urls!.length,
         itemBuilder: (BuildContext context, int index) {
           return Container(
             child: CustomZoomWidget(
@@ -57,8 +57,8 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
                 });
               },
               child: Hero(
-                tag: this.widget.urls[index] + this.widget.postId.toString(),
-                child: ExtendedImage.network(this.widget.urls[index]),
+                tag: this.widget.urls![index]! + this.widget.postId.toString(),
+                child: ExtendedImage.network(this.widget.urls![index]!),
               ),
             ),
           );
@@ -66,8 +66,8 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
       ),
       bottomNavigationBar: ImageViewerBottomSheet(
         currentPage: _currentPage,
-        totalPages: this.widget.urls.length,
-        url: this.widget.urls[_currentPage],
+        totalPages: this.widget.urls!.length,
+        url: this.widget.urls![_currentPage],
         embedType: 'img',
         scaffoldKey: _scaffoldKey,
       ),
