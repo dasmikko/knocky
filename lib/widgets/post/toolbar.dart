@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/threadController.dart';
-import 'package:knocky/helpers/format.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:knocky/models/thread.dart';
 
 class Toolbar extends StatelessWidget {
@@ -42,7 +42,7 @@ class Toolbar extends StatelessWidget {
 
   @protected
   Widget timestamp() {
-    return Text(Format.humanReadableTimeSince(post!.createdAt!));
+    return Text(timeago.format(post!.createdAt!));
   }
 
   Widget postNumber() {

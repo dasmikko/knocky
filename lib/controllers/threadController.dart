@@ -57,7 +57,8 @@ class ThreadController extends PaginatedController<Thread> {
 
   void updateReadThread(Thread thread) async {
     DateTime lastPostDate = thread.posts!.last.createdAt!;
-    if (thread.readThreadLastSeen!.isBefore(lastPostDate)) {
+    if (thread.readThreadLastSeen != null &&
+        thread.readThreadLastSeen!.isBefore(lastPostDate)) {
       await KnockoutAPI().readThreads(lastPostDate, thread.id);
     }
   }
