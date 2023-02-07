@@ -35,7 +35,6 @@ class _ImageWidgetState extends State<ImageWidget> {
 
   @override
   void dispose() {
-    print('image dispose');
     clearMemoryImageCache(this.widget.url);
 
     super.dispose();

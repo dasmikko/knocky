@@ -8,14 +8,13 @@ import 'package:knocky/models/thread.dart';
 import 'package:knocky/screens/imageViewer.dart';
 import 'package:knocky/widgets/post/postsElements/Embed.dart';
 import 'package:knocky/widgets/post/postsElements/image.dart';
-import 'package:knocky/widgets/post/postsElements/spoiler.dart';
 import 'package:knocky/widgets/post/postsElements/twitter.dart';
 import 'package:knocky/widgets/post/postsElements/video.dart';
 import 'package:knocky/widgets/post/postsElements/vocaroo.dart';
 import 'package:knocky/widgets/post/postsElements/youtube.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-class BBcodeRendererNew extends StatelessWidget {
+class BBcodeRendererNew extends StatefulWidget {
   final String? bbcode;
   final BuildContext? parentContext;
   final GlobalKey? scaffoldKey;
@@ -24,14 +23,26 @@ class BBcodeRendererNew extends StatelessWidget {
   BBcodeRendererNew(
       {this.parentContext, this.bbcode, this.scaffoldKey, this.postDetails});
 
+  @override
+  State<BBcodeRendererNew> createState() => _BBcodeRendererNewState();
+}
+
+class _BBcodeRendererNewState extends State<BBcodeRendererNew> {
+  bool showSpoiler = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   InlineSpan _imageNodeHandler(bbob.Element node) {
     return WidgetSpan(
       child: Container(
         margin: EdgeInsets.only(bottom: 8),
         child: ImageWidget(
-          postId: postDetails!.id,
+          postId: widget.postDetails!.id,
           url: node.textContent,
-          bbcode: this.bbcode,
+          bbcode: this.widget.bbcode,
         ),
       ),
     );
@@ -52,20 +63,12 @@ class BBcodeRendererNew extends StatelessWidget {
   }
 
   InlineSpan _twitterNodeHandler(bbob.Element node) {
+    print(node.textContent);
     return WidgetSpan(
       child: Container(
         margin: EdgeInsets.only(bottom: 8),
-        child: TwitterCard(
-          tweetUrl: node.textContent,
-          onTapImage:
-              (List<String> allPhotos, int photoIndex, String hashcode) {
-            Get.to(
-              () => ImageViewerScreen(
-                url: allPhotos[photoIndex],
-                urls: allPhotos,
-              ),
-            );
-          },
+        child: EmbedWidget(
+          url: node.textContent,
         ),
       ),
     );
@@ -80,9 +83,10 @@ class BBcodeRendererNew extends StatelessWidget {
 
   InlineSpan _tumblrNodeHandler(bbob.Element node) {
     return WidgetSpan(
-        child: EmbedWidget(
-      url: node.textContent,
-    ));
+      child: EmbedWidget(
+        url: node.textContent,
+      ),
+    );
   }
 
   InlineSpan _styledTextNodeHandler(bbob.Element node,
@@ -90,14 +94,15 @@ class BBcodeRendererNew extends StatelessWidget {
     TextStyle? textStyle;
 
     if (currentTextStyle == null) {
-      textStyle = Theme.of(parentContext!).textTheme.bodyLarge!.copyWith(
+      textStyle = Theme.of(widget.parentContext!).textTheme.bodyLarge!.copyWith(
           fontFamily: node.tag == 'code' ? 'RobotoMono' : 'Roboto',
           decoration:
               node.tag == 'u' ? TextDecoration.underline : TextDecoration.none,
           fontWeight: node.tag == 'b' ? FontWeight.bold : FontWeight.normal,
           fontStyle: node.tag == 'i' ? FontStyle.italic : FontStyle.normal,
           fontSize: 14,
-          backgroundColor: node.tag == 'spoiler' ? Colors.white : null);
+          backgroundColor:
+              node.tag == 'spoiler' && !showSpoiler ? Colors.white : null);
     } else {
       switch (node.tag) {
         case 'code':
@@ -150,9 +155,17 @@ class BBcodeRendererNew extends StatelessWidget {
     }
 
     if (node.tag == 'spoiler') {
-      return WidgetSpan(
-          child: SpoilerWidget(
-              node, _handleNodes, this.parentContext!, textStyle!));
+      return TextSpan(
+        text: node.textContent,
+        style: textStyle,
+        recognizer: TapGestureRecognizer()
+          ..onTap = () async {
+            // TODO: Make it so individual spoilers can be toggled.
+            setState(() {
+              showSpoiler = !showSpoiler;
+            });
+          },
+      );
     }
 
     if (node is bbob.Text) {
@@ -165,7 +178,7 @@ class BBcodeRendererNew extends StatelessWidget {
   }
 
   InlineSpan _userQuoteNodeHandler(bbob.Element node) {
-    AppColors appColors = AppColors(this.parentContext);
+    AppColors appColors = AppColors(this.widget.parentContext);
 
     return WidgetSpan(
       child: Container(
@@ -349,7 +362,7 @@ class BBcodeRendererNew extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String bbcodeCleaned = this.bbcode!.trim();
+    String bbcodeCleaned = this.widget.bbcode!.trim();
 
     // Handle the different attributes for images TODO: Make a more clean solution
     bbcodeCleaned =

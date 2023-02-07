@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/twitterApi.dart';
+import 'package:knocky/widgets/InkWellOnWidget.dart';
 import 'package:measure_size/measure_size.dart';
 import 'package:tweet_ui/tweet_ui.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class TwitterCard extends StatefulWidget {
   final Key? key;
@@ -25,7 +27,6 @@ class _TwitterCardState extends State<TwitterCard>
 
   @override
   void afterFirstLayout(BuildContext context) {
-    fetchTwitterJson();
   }
 
   @override
@@ -33,81 +34,69 @@ class _TwitterCardState extends State<TwitterCard>
     super.dispose();
   }
 
-  void fetchTwitterJson() async {
-    Uri url = Uri.parse(this.widget.tweetUrl!);
-    int tweetId = int.parse(url.pathSegments.last);
-    Map<String, dynamic> twitterJson = (await TwitterHelper().getTweet(tweetId))!;
-
-    if (twitterJson['errors'] != null) {
-      if (this.mounted) {
-        setState(() {
-          _isLoading = false;
-          _failed = true;
-          _twitterJson = twitterJson;
-        });
-      }
-    } else {
-      if (this.mounted) {
-        setState(() {
-          _isLoading = false;
-          _twitterJson = twitterJson;
-        });
-      }
-    }
+  Widget handleImage() {
+    return Container(
+      width: 100,
+      height: 100,
+      margin: EdgeInsets.only(right: 10),
+      decoration: BoxDecoration(
+        image: DecorationImage(
+            image: AssetImage('assets/twitter_logo_blue.png'),
+            fit: BoxFit.cover,
+            alignment: Alignment.topCenter),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final box = GetStorage('sizeCache');
-    Size loadedWidgetSize = Size.zero;
-    final bool hasCachedSize = box.hasData(this.widget.tweetUrl!);
-
-    // Check if we have cached the image size
-    if (hasCachedSize) {
-      Map cachedSize = box.read(this.widget.tweetUrl!);
-      print('Found cached size: ' + cachedSize.toString());
-      loadedWidgetSize = Size(
-        cachedSize['width'],
-        cachedSize['height'],
-      );
-    }
-
-    if (_isLoading)
-      return Container(
-        height: loadedWidgetSize != Size.zero ? loadedWidgetSize.height : null,
-        width: 300,
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    if (_failed) return Text('failed to load tweet');
-    return MeasureSize(
-      onChange: (size) {
-        if (!hasCachedSize) {
-          var sizeMap = Map();
-          sizeMap['height'] = size.height;
-          sizeMap['width'] = size.width;
-          box.writeIfNull(this.widget.tweetUrl!, sizeMap);
-        } else {
-          if (loadedWidgetSize.height < size.height ||
-              loadedWidgetSize.width < size.width) {
-            var sizeMap = Map();
-            sizeMap['height'] = size.height;
-            sizeMap['width'] = size.width;
-            box.writeIfNull(this.widget.tweetUrl!, sizeMap);
-          } else {
-            print('Cache is up to date');
-          }
-        }
-      },
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: 600,
-        ),
-        child: EmbeddedTweetView.fromTweetV1(
-          TweetV1Response.fromJson(_twitterJson as Map<String, dynamic>),
-          backgroundColor: Get.isDarkMode ? Colors.grey[800] : Colors.white,
-          darkMode: Get.isDarkMode,
+    return Container(
+      margin: EdgeInsets.only(bottom: 12.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(5),
+        clipBehavior: Clip.antiAlias,
+        child: InkWellOverWidget(
+          onTap: () async {
+            try {
+              await launchUrlString(this.widget.url!,
+                  mode: LaunchMode.externalNonBrowserApplication);
+            } catch (e) {
+              throw 'Could not launch $this.widget.url';
+            }
+          },
+          child: Container(
+            padding: EdgeInsets.all(10),
+            color: Colors.grey[800],
+            child: Row(
+              children: [
+                handleImage(),
+                Flexible(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                          margin: EdgeInsets.only(bottom: 15),
+                          child: Text(
+                            'Open tweet',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )),
+                      Container(
+                        margin: EdgeInsets.only(bottom: 15),
+                        child:
+                        Text(_description!, style: TextStyle(fontSize: 12)),
+                      ),
+                      Text(
+                          this.widget.url != null
+                              ? this.widget.url!
+                              : 'wtf no url',
+                          style: TextStyle(fontSize: 12, color: Colors.blue)),
+                    ],
+                  ),
+                ),
+              ].where(notNull).toList(),
+            ),
+          ),
         ),
       ),
     );

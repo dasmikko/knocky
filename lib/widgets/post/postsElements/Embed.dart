@@ -101,8 +101,8 @@ class _EmbedWidgetState extends State<EmbedWidget> {
             padding: EdgeInsets.all(10),
             color: Colors.grey[800],
             child: Row(
-              children: <Widget?>[
-                _imageUrl != null ? handleImage(_imageUrl!) : null,
+              children: [
+                _imageUrl != null ? handleImage(_imageUrl!) : Container(),
                 Flexible(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -127,7 +127,7 @@ class _EmbedWidgetState extends State<EmbedWidget> {
                     ],
                   ),
                 ),
-              ].where(notNull).toList() as List<Widget>,
+              ].where(notNull).toList(),
             ),
           ),
         ),
