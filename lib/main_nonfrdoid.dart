@@ -4,12 +4,10 @@ import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/settingsController.dart';
 import 'package:knocky/helpers/themeService.dart';
-import 'package:knocky/helpers/twitterApi.dart';
 import 'package:knocky/screens/forum.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/themes/DarkTheme.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:layout/layout.dart';
 
 void main() async {
@@ -25,9 +23,6 @@ void main() async {
       variables: {
         "allowUpdater": true,
       });
-
-  // Init dotenv
-  await dotenv.load(fileName: 'assets/.env');
 
   GetStorage prefs = GetStorage();
 
@@ -46,12 +41,6 @@ void main() async {
   }
 
   authController.getStoredAuthInfo();
-
-  try {
-    await TwitterHelper().getBearerToken();
-  } catch (e) {
-    print('Fetching bearer token failed');
-  }
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.grey[900],

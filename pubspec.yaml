@@ -43,11 +43,9 @@ dependencies:
   permission_handler: 10.2.0
   matrix4_transform: 2.0.1
   duration: 3.0.12
-  tweet_ui: 4.0.4
   chewie: 1.4.0
+  chewie_audio: ^1.3.0
   video_player: 2.5.1
-  better_player: 0.0.83
-  flutter_dotenv: 5.0.2
   popover: 0.2.8
   sticky_headers: 0.3.0+2
   event_bus: 2.0.0
@@ -87,7 +85,6 @@ flutter:
 
 
   assets:
-  - assets/.env
   - assets/logo.png
   - assets/twitter_logo_blue.png
   - assets/icons.json

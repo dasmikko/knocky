@@ -1,11 +1,6 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:knocky/helpers/twitterApi.dart';
 import 'package:knocky/widgets/InkWellOnWidget.dart';
-import 'package:measure_size/measure_size.dart';
-import 'package:tweet_ui/tweet_ui.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class TwitterCard extends StatefulWidget {
@@ -26,8 +21,7 @@ class _TwitterCardState extends State<TwitterCard>
   late Map _twitterJson;
 
   @override
-  void afterFirstLayout(BuildContext context) {
-  }
+  void afterFirstLayout(BuildContext context) {}
 
   @override
   void dispose() {
@@ -42,8 +36,8 @@ class _TwitterCardState extends State<TwitterCard>
       decoration: BoxDecoration(
         image: DecorationImage(
             image: AssetImage('assets/twitter_logo_blue.png'),
-            fit: BoxFit.cover,
-            alignment: Alignment.topCenter),
+            fit: BoxFit.fitWidth,
+            alignment: Alignment.center),
       ),
     );
   }
@@ -58,7 +52,7 @@ class _TwitterCardState extends State<TwitterCard>
         child: InkWellOverWidget(
           onTap: () async {
             try {
-              await launchUrlString(this.widget.url!,
+              await launchUrlString(this.widget.tweetUrl!,
                   mode: LaunchMode.externalNonBrowserApplication);
             } catch (e) {
               throw 'Could not launch $this.widget.url';
@@ -78,23 +72,23 @@ class _TwitterCardState extends State<TwitterCard>
                       Container(
                           margin: EdgeInsets.only(bottom: 15),
                           child: Text(
-                            'Open tweet',
+                            'Tweet',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           )),
                       Container(
                         margin: EdgeInsets.only(bottom: 15),
-                        child:
-                        Text(_description!, style: TextStyle(fontSize: 12)),
+                        child: Text('Tap to view tweet',
+                            style: TextStyle(fontSize: 12)),
                       ),
                       Text(
-                          this.widget.url != null
-                              ? this.widget.url!
+                          this.widget.tweetUrl != null
+                              ? this.widget.tweetUrl!
                               : 'wtf no url',
                           style: TextStyle(fontSize: 12, color: Colors.blue)),
                     ],
                   ),
                 ),
-              ].where(notNull).toList(),
+              ].toList(),
             ),
           ),
         ),

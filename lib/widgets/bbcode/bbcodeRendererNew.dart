@@ -63,15 +63,10 @@ class _BBcodeRendererNewState extends State<BBcodeRendererNew> {
   }
 
   InlineSpan _twitterNodeHandler(bbob.Element node) {
-    print(node.textContent);
     return WidgetSpan(
-      child: Container(
-        margin: EdgeInsets.only(bottom: 8),
-        child: EmbedWidget(
-          url: node.textContent,
-        ),
-      ),
-    );
+        child: TwitterCard(
+      tweetUrl: node.textContent,
+    ));
   }
 
   InlineSpan _vocarooNodeHandler(bbob.Element node) {
@@ -288,7 +283,6 @@ class _BBcodeRendererNewState extends State<BBcodeRendererNew> {
             break;
           case 'img':
           case 'img thumbnail':
-            print(node);
             spans.add(_imageNodeHandler(node));
             break;
           case 'blockquote':
