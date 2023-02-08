@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:get/get.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/models/events.dart';
@@ -12,13 +13,14 @@ class EventController extends GetxController {
   }
 
   initState(int id, int page) {
-    events.value = [];
+    //events.value = null;
     fetch();
   }
 
   void fetch() async {
     isFetching.value = true;
-    events.value = (await KnockoutAPI().getEvents())!;
+    events.value =
+        await (KnockoutAPI().getEvents() as FutureOr<List<KnockoutEvent>>);
     isFetching.value = false;
   }
 }
