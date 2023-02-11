@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:get/get.dart' as Getx;
+import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/settingsController.dart';
+import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/models/ad.dart';
 import 'package:knocky/models/alert.dart';
 import 'package:knocky/models/events.dart';
@@ -94,11 +96,27 @@ class KnockoutAPI {
     }
   }
 
+  /**
+   * A top handler for Dio errors.
+   *
+   * This should be added to all request calls...
+   */
+  void onDioErrorHandler(DioError error) {
+    if (error.response?.statusCode == 401) {
+      print('Invalid credentials!');
+      AuthController authController = Getx.Get.put(AuthController());
+      authController.logout(noSnackBar: true);
+      KnockySnackbar.error(
+          'Credentials are expired or invalid. Please login again!');
+    }
+  }
+
   Future<Forum> getSubforums() async {
     try {
       final response2 = await _request(url: 'subforum');
       return Forum.fromJson(response2.data);
     } on DioError catch (e) {
+      onDioErrorHandler(e);
       throw e;
     } catch (error) {
       throw error;
@@ -107,16 +125,26 @@ class KnockoutAPI {
 
   Future<SubforumV2.Subforum> getSubforumDetails(int? id,
       {int page = 1}) async {
-    final response = await _request(
-        url: 'subforum/' + id.toString() + '/' + page.toString());
-    return SubforumV2.subforumFromJson(json.encode(response.data));
+    try {
+      final response = await _request(
+          url: 'subforum/' + id.toString() + '/' + page.toString());
+      return SubforumV2.subforumFromJson(json.encode(response.data));
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<ThreadModel.Thread> getThread(int? id, {int page = 1}) async {
-    final response = await _request(
-      url: 'v2/threads/' + id.toString() + '/' + page.toString(),
-    );
-    return ThreadModel.Thread.fromJson(response.data);
+    try {
+      final response = await _request(
+        url: 'v2/threads/' + id.toString() + '/' + page.toString(),
+      );
+      return ThreadModel.Thread.fromJson(response.data);
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<dynamic> authCheck() async {
@@ -134,7 +162,7 @@ class KnockoutAPI {
       final response = await _request(url: 'v2/alerts/$page', type: 'get');
       return AlertsV2.Alerts.fromJson(response.data);
     } on DioError catch (e) {
-      print(e);
+      onDioErrorHandler(e);
       throw e;
     }
   }
@@ -146,59 +174,97 @@ class KnockoutAPI {
           .map<ThreadAlert>((json) => ThreadAlert.fromJson(json))
           .toList();
     } on DioError catch (e) {
-      print(e);
+      onDioErrorHandler(e);
       throw e;
     }
   }
 
   Future<void> readThreads(DateTime lastseen, int? threadId) async {
-    ReadThreads jsonToPost =
-        new ReadThreads(lastSeen: lastseen, threadId: threadId);
-    await _request(type: 'post', url: 'readThreads', data: jsonToPost.toJson());
+    try {
+      ReadThreads jsonToPost =
+          new ReadThreads(lastSeen: lastseen, threadId: threadId);
+      await _request(
+          type: 'post', url: 'readThreads', data: jsonToPost.toJson());
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<void> createAlert(int? threadId, int? lastPostNumber) async {
-    Alert jsonToPost =
-        new Alert(threadId: threadId, lastPostNumber: lastPostNumber);
-    await _request(type: 'post', url: 'alert', data: jsonToPost.toJson());
+    try {
+      Alert jsonToPost =
+          new Alert(threadId: threadId, lastPostNumber: lastPostNumber);
+      await _request(type: 'post', url: 'alert', data: jsonToPost.toJson());
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<List<KnockoutEvent>?> getEvents() async {
-    final response = await _request(type: 'get', url: 'events');
+    try {
+      final response = await _request(type: 'get', url: 'events');
 
-    return response.data
-        .map<KnockoutEvent>((json) => KnockoutEvent.fromJson(json))
-        .toList();
+      return response.data
+          .map<KnockoutEvent>((json) => KnockoutEvent.fromJson(json))
+          .toList();
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<void> deleteThreadAlert(int? threadid) async {
-    final response =
-        await _request(url: '/v2/alerts/$threadid', type: 'delete');
+    try {
+      final response =
+          await _request(url: '/v2/alerts/$threadid', type: 'delete');
 
-    if (response.statusCode == 200) {}
+      if (response.statusCode == 200) {}
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<void> subscribe(int? lastPostNumber, int? threadid) async {
-    final response = await _request(
-        url: 'alert',
-        type: 'post',
-        data: {'lastPostNumber': lastPostNumber, 'threadId': threadid});
+    try {
+      final response = await _request(
+          url: 'alert',
+          type: 'post',
+          data: {'lastPostNumber': lastPostNumber, 'threadId': threadid});
 
-    if (response.statusCode == 200) {}
+      if (response.statusCode == 200) {}
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<bool?> ratePost(int? postId, String? rating) async {
-    final response = await _request(
-        url: 'v2/posts/$postId/ratings', type: 'put', data: {'rating': rating});
+    try {
+      final response = await _request(
+          url: 'v2/posts/$postId/ratings',
+          type: 'put',
+          data: {'rating': rating});
 
-    bool? wasRejected = response.data['isRejected'];
+      bool? wasRejected = response.data['isRejected'];
 
-    return wasRejected;
+      return wasRejected;
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<ThreadModel.ThreadPost> getPost(int postId) async {
-    final response = await _request(type: 'get', url: 'post/$postId');
-    return ThreadModel.ThreadPost.fromJson(response.data);
+    try {
+      final response = await _request(type: 'get', url: 'post/$postId');
+      return ThreadModel.ThreadPost.fromJson(response.data);
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<void> newPost(dynamic content, int? threadId) async {
@@ -213,8 +279,8 @@ class KnockoutAPI {
         'content-format-version': '1'
       });
     } on DioError catch (e) {
-      print(e);
-      print(e.response);
+      onDioErrorHandler(e);
+      throw e;
     }
   }
 
@@ -225,120 +291,187 @@ class KnockoutAPI {
         'appname': 'Knocky',
       });
     } on DioError catch (e) {
-      print(e);
+      onDioErrorHandler(e);
       print(e.response);
     }
   }
 
   Future<List<SubforumThread>?> getSignificantThreads(
       SignificantThreads threadsToFetch) async {
-    final endpoint = "v2/threads/${threadsToFetch.name.toLowerCase()}";
-    final response = await _request(type: 'get', url: endpoint);
-    print(response);
-    return response.data
-        .map<SubforumThread>((json) => SubforumThread.fromJson(json))
-        .toList();
+    try {
+      final endpoint = "v2/threads/${threadsToFetch.name.toLowerCase()}";
+      final response = await _request(type: 'get', url: endpoint);
+      print(response);
+      return response.data
+          .map<SubforumThread>((json) => SubforumThread.fromJson(json))
+          .toList();
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<bool?> renameThread(int threadId, String newTitle) async {
-    final response = await _request(
-        url: 'thread', type: 'put', data: {'id': threadId, 'title': newTitle});
+    try {
+      final response = await _request(
+          url: 'thread',
+          type: 'put',
+          data: {'id': threadId, 'title': newTitle});
 
-    bool? wasRejected = response.data['isRejected'];
+      bool? wasRejected = response.data['isRejected'];
 
-    return wasRejected;
+      return wasRejected;
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<UserProfile> getUserProfile(int? userId) async {
-    final response = await _request(
-      url: 'user/' + userId.toString(),
-      type: 'get',
-    );
-    return UserProfile.fromJson(response.data);
+    try {
+      final response = await _request(
+        url: 'user/' + userId.toString(),
+        type: 'get',
+      );
+      return UserProfile.fromJson(response.data);
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<UserBans> getUserBans(int? userId) async {
-    final response = await _request(
-      url: 'user/' + userId.toString() + '/bans',
-      type: 'get',
-    );
+    try {
+      final response = await _request(
+        url: 'user/' + userId.toString() + '/bans',
+        type: 'get',
+      );
 
-    return UserBans.fromJson(response.data);
+      return UserBans.fromJson(response.data);
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<UserProfileDetails> getUserProfileDetails(int? userId) async {
-    final response = await _request(
-      url: 'v2/users/' + userId.toString() + '/profile',
-      type: 'get',
-    );
+    try {
+      final response = await _request(
+        url: 'v2/users/' + userId.toString() + '/profile',
+        type: 'get',
+      );
 
-    return UserProfileDetails.fromJson(response.data);
+      return UserProfileDetails.fromJson(response.data);
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<List<UserProfileRating>?> getUserProfileTopRatings(int? userId) async {
-    final response = await _request(
-      url: 'user/' + userId.toString() + '/topRatings',
-      type: 'get',
-    );
+    try {
+      final response = await _request(
+        url: 'user/' + userId.toString() + '/topRatings',
+        type: 'get',
+      );
 
-    return response.data
-        .map<UserProfileRating>((json) => UserProfileRating.fromJson(json))
-        .toList();
+      return response.data
+          .map<UserProfileRating>((json) => UserProfileRating.fromJson(json))
+          .toList();
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<UserProfilePosts> getUserPosts(int? userId, {int page = 1}) async {
-    final response = await _request(
-      url: 'user/$userId/posts/$page',
-      type: 'get',
-    );
+    try {
+      final response = await _request(
+        url: 'user/$userId/posts/$page',
+        type: 'get',
+      );
 
-    return UserProfilePosts.fromJson(response.data);
+      return UserProfilePosts.fromJson(response.data);
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<UserProfileThreads> getUserThreads(int? userId, {int page = 1}) async {
-    final response = await _request(
-      url: 'user/$userId/threads/$page',
-      type: 'get',
-    );
+    try {
+      final response = await _request(
+        url: 'user/$userId/threads/$page',
+        type: 'get',
+      );
 
-    return UserProfileThreads.fromJson(response.data);
+      return UserProfileThreads.fromJson(response.data);
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<SyncDataModel> getSyncData() async {
-    final response = await _request(
-      url: 'user/syncData',
-      type: 'get',
-    );
-    return SyncDataModel.fromJson(response.data);
+    try {
+      final response = await _request(
+        url: 'user/syncData',
+        type: 'get',
+      );
+      return SyncDataModel.fromJson(response.data);
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<bool> markMentionsAsRead(List<int?> postIds) async {
-    final response = await _request(
-        url: 'mentions', type: 'put', data: {'postIds': postIds});
+    try {
+      final response = await _request(
+          url: 'mentions', type: 'put', data: {'postIds': postIds});
 
-    if (response.statusCode == 200) return true;
-    return false;
+      if (response.statusCode == 200) return true;
+      return false;
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<KnockoutAd> randomAd() async {
-    final response = await _request(url: 'threadAds/random', type: 'get');
+    try {
+      final response = await _request(url: 'threadAds/random', type: 'get');
 
-    return KnockoutAd.fromJson(response.data);
+      return KnockoutAd.fromJson(response.data);
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<List<KnockoutMotd>?> motd() async {
-    final response = await _request(url: 'motd', type: 'get');
+    try {
+      final response = await _request(url: 'motd', type: 'get');
 
-    return response.data
-        .map<KnockoutMotd>((json) => KnockoutMotd.fromJson(json))
-        .toList();
+      return response.data
+          .map<KnockoutMotd>((json) => KnockoutMotd.fromJson(json))
+          .toList();
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 
   Future<List<NotificationModel>?> notifications() async {
-    final response = await _request(url: 'v2/notifications', type: 'get');
+    try {
+      final response = await _request(url: 'v2/notifications', type: 'get');
 
-    return response.data
-        .map<NotificationModel>((json) => NotificationModel.fromJson(json))
-        .toList();
+      return response.data
+          .map<NotificationModel>((json) => NotificationModel.fromJson(json))
+          .toList();
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
   }
 }

@@ -3,6 +3,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/models/syncData.dart';
+import 'package:knocky/models/v2/user.dart';
 import 'package:knocky/models/v2/userRole.dart';
 
 class AuthController extends GetxController {
@@ -75,14 +76,14 @@ class AuthController extends GetxController {
     }
   }
 
-  logout() {
+  logout({bool noSnackBar = false}) {
     this.isAuthenticated.value = false;
     this.userId.value = 0;
     this.username.value = '';
     this.avatar.value = '';
     this.background.value = '';
     this.jwt.value = '';
-    this.role.value = null;
+    this.role.value = UserRole();
 
     GetStorage prefs = GetStorage();
     prefs.write('isAuthenticated', false);
@@ -92,8 +93,8 @@ class AuthController extends GetxController {
     prefs.write('background', '');
     prefs.write('cookieString', '');
     prefs.write('jwt', '');
-    prefs.write('role', '');
+    prefs.write('role', UserRole().toJson());
 
-    KnockySnackbar.success('You are now logged out');
+    if (!noSnackBar) KnockySnackbar.success('You are now logged out');
   }
 }
