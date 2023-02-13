@@ -41,7 +41,7 @@ class Username extends StatelessWidget {
               style: TextStyle(
                 fontSize: fontSize,
                 color: AppColors(context).userRoleToColor(
-                  role!.code,
+                  role?.code,
                   banned: banned!,
                 ),
                 fontWeight: bold! ? FontWeight.bold : FontWeight.normal,

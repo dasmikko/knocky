@@ -158,7 +158,7 @@ class ThreadListItem extends StatelessWidget {
   @protected
   Widget getSubtitle(BuildContext context) {
     Color userColor =
-        AppColors(context).userRoleToColor(threadDetails.user.role.code);
+        AppColors(context).userRoleToColor(threadDetails.user.role?.code);
     return RichText(
       text: TextSpan(
         children: [

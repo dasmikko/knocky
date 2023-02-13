@@ -61,7 +61,7 @@ class _ProfileHeaderState extends State<ProfileHeader>
   }
 
   Widget linksButton() {
-    return (widget.details!.social!.entries.length ?? 0) > 0
+    return (widget.details?.social?.entries.length ?? 0) > 0
         ? IconButton(
             icon: FaIcon(showingLinks
                 ? FontAwesomeIcons.addressCard

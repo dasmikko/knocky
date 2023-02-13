@@ -180,23 +180,26 @@ class ForumListItem extends StatelessWidget {
                                       children: <InlineSpan>[
                                         TextSpan(text: 'Last post by '),
                                         TextSpan(
-                                          text:
-                                              subforum.lastPost!.user!.username !=
-                                                      null
-                                                  ? subforum.lastPost!.user!
-                                                          .username! +
-                                                      ' '
-                                                  : ' ',
+                                          text: subforum.lastPost!.user!
+                                                      .username !=
+                                                  null
+                                              ? subforum.lastPost!.user!
+                                                      .username! +
+                                                  ' '
+                                              : ' ',
                                           style: TextStyle(
                                             color: AppColors(context)
                                                 .userRoleToColor(subforum
-                                                    .lastPost!.user!.role!.code),
+                                                    .lastPost
+                                                    ?.user
+                                                    ?.role
+                                                    ?.code),
                                           ),
                                         ),
                                         TextSpan(
                                             text: timeago
-                                                .format(
-                                                    subforum.lastPost!.createdAt!)
+                                                .format(subforum
+                                                    .lastPost!.createdAt!)
                                                 .toString())
                                       ],
                                     ),

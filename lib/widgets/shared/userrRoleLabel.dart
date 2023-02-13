@@ -19,8 +19,8 @@ class UserRoleLabel extends StatelessWidget {
   }
 
   Widget userRoleLabel(BuildContext context) {
-    print(role!.toJson());
-    switch (role!.code) {
+    print(role?.toJson());
+    switch (role?.code) {
       case RoleCode.BASIC_USER:
         return Text(
           'Member',
