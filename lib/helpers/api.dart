@@ -10,6 +10,7 @@ import 'package:knocky/models/events.dart';
 import 'package:knocky/models/forum.dart';
 import 'package:knocky/models/motd.dart';
 import 'package:knocky/models/notification.dart';
+import 'package:knocky/models/rule.dart';
 import 'package:knocky/models/significantThreads.dart';
 import 'package:knocky/models/subforumv2.dart' as SubforumV2;
 import 'package:knocky/models/syncData.dart';
@@ -468,6 +469,19 @@ class KnockoutAPI {
 
       return response.data
           .map<NotificationModel>((json) => NotificationModel.fromJson(json))
+          .toList();
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
+  }
+
+  Future<List<KnockoutRule>?> rules() async {
+    try {
+      final response = await _request(url: 'v2/rules', type: 'get');
+
+      return response.data
+          .map<KnockoutRule>((json) => KnockoutRule.fromJson(json))
           .toList();
     } on DioError catch (e) {
       onDioErrorHandler(e);

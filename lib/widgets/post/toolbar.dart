@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/threadController.dart';
+import 'package:knocky/dialogs/reportPostDialog.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:knocky/models/thread.dart';
 
@@ -69,9 +70,11 @@ class Toolbar extends StatelessWidget {
           IconButton(
             iconSize: 12,
             icon: FaIcon(
-              FontAwesomeIcons.pen,
+              FontAwesomeIcons.solidFlag,
             ),
-            onPressed: () => this.onToggleEditPost!.call(),
+            onPressed: () {
+              Get.dialog(ReportPostDialog());
+            },
           ),
           (authController.isAuthenticated.value &&
                   post!.user!.id == authController.userId.value)
