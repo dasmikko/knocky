@@ -40,6 +40,10 @@ void main() async {
     settingsController.apiEndpoint.value = prefs.read('apiEndpoint');
   }
 
+  if (prefs.hasData('useDevAPI')) {
+    settingsController.useDevAPI.value = prefs.read('useDevAPI');
+  }
+
   authController.getStoredAuthInfo();
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(

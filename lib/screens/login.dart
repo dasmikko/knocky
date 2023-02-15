@@ -23,9 +23,16 @@ class _LoginScreenState extends State<LoginScreen> {
     // Start listening to auth finish url
     initUniLinks();
 
-    // Launch login url
-    await launch(
-        '${settingsController.apiEndpoint.value}auth/$provider/login?redirect=${settingsController.apiEndpoint.value}handleAuth');
+    if (settingsController.useDevAPI.value) {
+      print(
+          '${settingsController.apiEndpoint.value}auth/$provider/login?redirect=${settingsController.apiEndpoint.value}handleAuth');
+      await launch(
+          '${settingsController.apiEndpoint.value}auth/$provider/login?redirect=${settingsController.apiEndpoint.value}handleAuth');
+    } else {
+      // Launch login url
+      await launch(
+          'https://api.knockout.chat/auth/$provider/login?redirect=${settingsController.apiEndpoint.value}handleAuth');
+    }
   }
 
   @override

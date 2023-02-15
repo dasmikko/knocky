@@ -163,7 +163,7 @@ class SettingsScreen extends StatelessWidget {
               ),
               onTap: () async {
                 var dialogResult = await Get.dialog(InputDialog(
-                  title: 'Enter API URL token',
+                  title: 'Enter Proxy API URL',
                   content: settingsController.apiEndpoint.value,
                 ));
 
@@ -172,10 +172,23 @@ class SettingsScreen extends StatelessWidget {
                   GetStorage prefs = GetStorage();
                   prefs.write('apiEndpoint', dialogResult);
 
-                  KnockySnackbar.success('API URL was saved!',
+                  KnockySnackbar.success('Proxy API URL was saved!',
                       icon: Icon(Icons.check));
                 }
               },
+            ),
+            Obx(
+              () => SwitchListTile(
+                title: Text('Use Proxy API for login'),
+                subtitle: Text('(Only needed for development)',
+                    style: TextStyle(color: Colors.grey)),
+                value: settingsController.useDevAPI.value,
+                onChanged: (bool value) {
+                  settingsController.useDevAPI.value = value;
+                  GetStorage prefs = GetStorage();
+                  prefs.write('useDevAPI', value);
+                },
+              ),
             ),
             ListTile(
               title: Text('Reset API URL to default'),
