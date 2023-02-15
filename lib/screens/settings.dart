@@ -72,7 +72,7 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Settings'),
       ),
-      body: Container(
+      body: SingleChildScrollView(
         child: Column(
           children: [
             ListTile(
