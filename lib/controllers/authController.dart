@@ -59,6 +59,7 @@ class AuthController extends GetxController {
 
     try {
       SyncDataModel syncData = await KnockoutAPI().getSyncData();
+      print(syncData.toJson());
       prefs.write('userId', syncData.id);
       prefs.write('username', syncData.username);
       prefs.write('avatar', syncData.avatarUrl);
@@ -73,6 +74,7 @@ class AuthController extends GetxController {
     } catch (err) {
       print(err);
       logout();
+      throw (err);
     }
   }
 

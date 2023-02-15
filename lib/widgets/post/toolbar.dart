@@ -66,6 +66,13 @@ class Toolbar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          IconButton(
+            iconSize: 12,
+            icon: FaIcon(
+              FontAwesomeIcons.pen,
+            ),
+            onPressed: () => this.onToggleEditPost!.call(),
+          ),
           (authController.isAuthenticated.value &&
                   post!.user!.id == authController.userId.value)
               ? IconButton(
