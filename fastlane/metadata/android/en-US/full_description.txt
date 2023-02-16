@@ -11,7 +11,7 @@ Browse the Knockout forum the native way!
 - Latest/Popular threads
 - Events screen
 
-### What is to implemented
+### What is to be implemented
 - Dm's
 - Mentions
 - Ticker
