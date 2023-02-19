@@ -17,6 +17,7 @@ class _ReportPostDialogState extends State<ReportPostDialog> {
   String? selectedRule = null;
   bool fetchingRules = true;
   late List<KnockoutRule>? rules;
+  TextEditingController textEditingController = new TextEditingController();
 
   @override
   void initState() {
@@ -38,8 +39,16 @@ class _ReportPostDialogState extends State<ReportPostDialog> {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        DropdownButton(
+        DropdownButtonFormField(
+            decoration: InputDecoration(
+              labelText: "Which of the site rules did the post break?",
+              labelStyle: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             value: selectedRule,
+            isExpanded: true,
             hint: Text('Select rule...'),
             items: [
               ...rules!.map(
@@ -51,7 +60,22 @@ class _ReportPostDialogState extends State<ReportPostDialog> {
               setState(() {
                 selectedRule = val!;
               });
-            })
+            }),
+        Container(
+          height: 12,
+        ),
+        Expanded(
+          child: TextFormField(
+            decoration: InputDecoration(
+                labelStyle: TextStyle(),
+                labelText: "Add more details (optional)",
+                floatingLabelBehavior: FloatingLabelBehavior.always),
+            controller: textEditingController,
+            maxLines: null,
+            minLines: null,
+            expands: true,
+          ),
+        ),
       ],
     );
   }
