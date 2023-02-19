@@ -78,11 +78,6 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
     if (!authController.isAuthenticated.value) return [];
 
     return [
-      DrawerListTile(
-        iconData: FontAwesomeIcons.tableList,
-        title: 'Forum',
-        onTap: () => {},
-      ),
       DrawerNotificationsListTile(
           disabled: !authController.isAuthenticated.value,
           iconData: FontAwesomeIcons.solidNewspaper,
@@ -160,11 +155,6 @@ class _MainDrawerState extends State<MainDrawer> with TickerProviderStateMixin {
   List<Widget> guestDrawerItems() {
     if (authController.isAuthenticated.value) return [];
     return [
-      DrawerListTile(
-        iconData: FontAwesomeIcons.tableList,
-        title: 'Forum',
-        onTap: () => {},
-      ),
       DrawerListTile(
           iconData: FontAwesomeIcons.solidClock,
           title: 'Latest Threads',
