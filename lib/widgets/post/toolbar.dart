@@ -79,16 +79,24 @@ class Toolbar extends StatelessWidget {
                     String? reportReason = await Get.dialog(ReportPostDialog());
 
                     if (reportReason != null) {
-                      print(reportReason);
                       SnackbarController snackbar = KnockySnackbar.normal(
                           'Report post', 'Sending report...',
                           isDismissible: false, showProgressIndicator: true);
-                      await KnockoutAPI().createReport(post!.id!, reportReason);
-                      snackbar.close();
-                      KnockySnackbar.success(
-                        'Post was reported!',
-                        title: 'Report post',
-                      ).show();
+                      try {
+                        await KnockoutAPI()
+                            .createReport(post!.id!, reportReason);
+                        snackbar.close();
+                        KnockySnackbar.success(
+                          'Post was reported!',
+                          title: 'Report post',
+                        ).show();
+                      } catch (e) {
+                        snackbar.close();
+                        KnockySnackbar.error(
+                          'Failed to report post... Try again...',
+                          title: 'Report post',
+                        ).show();
+                      }
                     }
                   },
                 )
