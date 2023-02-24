@@ -8,6 +8,8 @@ import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/snackbar.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:knocky/models/thread.dart';
+import 'package:emoji_flag_converter/emoji_flag_converter.dart';
+import 'package:flutter_emoji/flutter_emoji.dart';
 
 class Toolbar extends StatelessWidget {
   final ThreadPost? post;
@@ -40,12 +42,26 @@ class Toolbar extends StatelessWidget {
 
   @protected
   List<Widget> contents() {
-    return [timestamp(), postNumber(), Expanded(child: controls())];
+    return [timestamp(), country(), postNumber(), Expanded(child: controls())];
   }
 
   @protected
   Widget timestamp() {
     return Text(timeago.format(post!.createdAt!));
+  }
+
+  Widget country() {
+    if (post?.countryCode != null) {
+      String flag = EmojiConverter.fromAlpha2CountryCode(post!.countryCode!);
+      return Container(
+        margin: EdgeInsets.only(left: 4),
+        child: Text(
+          'from ${flag}',
+          style: TextStyle(fontFamily: 'Roboto'),
+        ),
+      );
+    }
+    return Container();
   }
 
   Widget postNumber() {
@@ -69,7 +85,8 @@ class Toolbar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          (authController.isAuthenticated.value)
+          (authController.isAuthenticated.value &&
+                  post!.user!.id == authController.userId.value)
               ? IconButton(
                   iconSize: 12,
                   icon: FaIcon(
