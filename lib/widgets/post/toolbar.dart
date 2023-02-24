@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
 import 'package:knocky/controllers/threadController.dart';
 import 'package:knocky/dialogs/reportPostDialog.dart';
+import 'package:knocky/helpers/api.dart';
+import 'package:knocky/helpers/snackbar.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:knocky/models/thread.dart';
 
@@ -67,15 +69,30 @@ class Toolbar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          IconButton(
-            iconSize: 12,
-            icon: FaIcon(
-              FontAwesomeIcons.solidFlag,
-            ),
-            onPressed: () {
-              Get.dialog(ReportPostDialog());
-            },
-          ),
+          (authController.isAuthenticated.value)
+              ? IconButton(
+                  iconSize: 12,
+                  icon: FaIcon(
+                    FontAwesomeIcons.solidFlag,
+                  ),
+                  onPressed: () async {
+                    String? reportReason = await Get.dialog(ReportPostDialog());
+
+                    if (reportReason != null) {
+                      print(reportReason);
+                      SnackbarController snackbar = KnockySnackbar.normal(
+                          'Report post', 'Sending report...',
+                          isDismissible: false, showProgressIndicator: true);
+                      await KnockoutAPI().createReport(post!.id!, reportReason);
+                      snackbar.close();
+                      KnockySnackbar.success(
+                        'Post was reported!',
+                        title: 'Report post',
+                      ).show();
+                    }
+                  },
+                )
+              : Container(),
           (authController.isAuthenticated.value &&
                   post!.user!.id == authController.userId.value)
               ? IconButton(

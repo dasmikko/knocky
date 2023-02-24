@@ -102,9 +102,24 @@ class _ReportPostDialogState extends State<ReportPostDialog> {
       ),
       actions: [
         TextButton(
-            onPressed: () => Get.back(result: false), child: Text('Cancel')),
+            onPressed: () => Get.back(result: null), child: Text('Cancel')),
         ElevatedButton(
-            onPressed: () => Get.back(result: true), child: Text('Submit')),
+            onPressed: () {
+              String reportReason = '';
+              KnockoutRule rule = rules!
+                  .where((element) => element.title == selectedRule)
+                  .first;
+
+              switch (rule.category) {
+                case 'Site Wide Rules':
+                  reportReason += 'Site Wide Rule';
+              }
+
+              reportReason +=
+                  ' ${rule.id.toString()}: ${rule.title} - ${textEditingController.text}';
+              Get.back(result: reportReason);
+            },
+            child: Text('Submit')),
       ],
     );
   }

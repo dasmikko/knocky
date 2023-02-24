@@ -488,4 +488,16 @@ class KnockoutAPI {
       throw e;
     }
   }
+
+  Future<void> createReport(int postId, String reportReason) async {
+    try {
+      final response = await _request(url: 'reports', type: 'post', data: {
+        'postId': postId,
+        'reportReason': reportReason,
+      });
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
+  }
 }
