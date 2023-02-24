@@ -86,7 +86,7 @@ class Toolbar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           (authController.isAuthenticated.value &&
-                  post!.user!.id == authController.userId.value)
+                  post!.user!.id != authController.userId.value)
               ? IconButton(
                   iconSize: 12,
                   icon: FaIcon(
