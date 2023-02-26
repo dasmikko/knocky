@@ -270,14 +270,15 @@ class KnockoutAPI {
 
   Future<void> newPost(dynamic content, int? threadId) async {
     try {
-      await _request(type: 'post', url: 'post', data: {
-        'displayCountryInfo': false,
-        'appName': 'knocky',
+      final SettingsController settingsController =
+          Getx.Get.put(SettingsController());
+      await _request(type: 'post', url: 'v2/posts', data: {
+        'display_country': settingsController.flagPunchy.value,
+        'app_name': 'knocky',
         'content': content.toString(),
         'thread_id': threadId,
       }, headers: {
         'content-type': 'application/json; charset=UTF-8',
-        'content-format-version': '1'
       });
     } on DioError catch (e) {
       onDioErrorHandler(e);

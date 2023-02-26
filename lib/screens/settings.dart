@@ -66,7 +66,6 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final SettingsController settingsController = Get.put(SettingsController());
-    print(FlavorConfig.instance.variables["allowUpdater"]);
 
     return Scaffold(
       appBar: AppBar(
@@ -128,6 +127,36 @@ class SettingsScreen extends StatelessWidget {
                 storage.write('hiddenMotds', forumController.hiddenMotds);
                 KnockySnackbar.success('Hidden Motds cleared');
               },
+            ),
+
+            /**
+             * User experience
+             */
+
+            Divider(),
+            ListTile(
+              dense: true,
+              title: Text(
+                'User experience',
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            Obx(
+              () => SwitchListTile(
+                title: Text('FlagPunchy'),
+                subtitle: Text(
+                  "Show which country you're posting from",
+                  style: TextStyle(color: Colors.grey),
+                ),
+                value: settingsController.flagPunchy.value,
+                onChanged: (bool value) {
+                  settingsController.flagPunchy.value = value;
+                  GetStorage prefs = GetStorage();
+                  prefs.write('flagPunchy', value);
+                },
+              ),
             ),
 
             /**

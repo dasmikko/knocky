@@ -36,6 +36,12 @@ void main() async {
     settingsController.showNSFWThreads.value = prefs.read('showNSFW');
   }
 
+  if (!prefs.hasData('flagPunchy')) {
+    await prefs.write('flagPunchy', false);
+  } else {
+    settingsController.flagPunchy.value = prefs.read('flagPunchy');
+  }
+
   if (prefs.hasData('apiEndpoint')) {
     settingsController.apiEndpoint.value = prefs.read('apiEndpoint');
   }
