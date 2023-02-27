@@ -27,6 +27,7 @@ import 'package:knocky/models/userProfileThreads.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:knocky/models/v2/alerts.dart' as AlertsV2;
 import 'package:knocky/models/v2/thread.dart';
+import 'dart:convert' show JSON;
 
 class KnockoutAPI {
   static const DEFAULT_API_URL = "https://knockyauth.rekna.xyz/";
@@ -387,7 +388,8 @@ class KnockoutAPI {
         type: 'get',
       );
 
-      return response.data
+      // For some fucked reason, I need to use jsonDecode here?!
+      return jsonDecode(response.data)
           .map<UserProfileRating>((json) => UserProfileRating.fromJson(json))
           .toList();
     } on DioError catch (e) {

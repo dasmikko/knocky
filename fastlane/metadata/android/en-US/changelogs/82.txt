@@ -1,0 +1,13 @@
+Version 2.3.2 *(2023-02-27)*
+----------------------------
+
+New
+ * Post reporting. You can now report other users posts.
+ * FlagPunchy, see where other users post from, and show others where you post from!
+ * Mark those threads you don't read anymore as unread.
+
+Changes
+ * Move to the new API endpoint for posting.
+
+Fixes
+ * Profiles not loading (again...)
