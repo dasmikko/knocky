@@ -20,7 +20,9 @@ class SubforumListItem extends ThreadListItem {
       ),
     );
 
-    Get.to(() => ThreadScreen(id: threadDetails!.id, page: page));
+    if (page != null) {
+      Get.to(() => ThreadScreen(id: threadDetails?.id, page: page));
+    }
   }
 
   @override

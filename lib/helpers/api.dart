@@ -192,6 +192,16 @@ class KnockoutAPI {
     }
   }
 
+  Future<void> readThreadsMarkUnread(int threadId) async {
+    try {
+      await _request(
+          type: 'post', url: 'readThreads', data: {'thread_id': threadId});
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
+  }
+
   Future<void> createAlert(int? threadId, int? lastPostNumber) async {
     try {
       Alert jsonToPost =
