@@ -54,6 +54,9 @@ class _SubforumScreenState extends State<SubforumScreen> {
       widgets.add(
         SubforumListItem(
           threadDetails: thread,
+          onShouldRefresh: () {
+            subforumController.fetchData();
+          },
         ),
       );
     });

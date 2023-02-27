@@ -195,7 +195,7 @@ class KnockoutAPI {
   Future<void> readThreadsMarkUnread(int threadId) async {
     try {
       await _request(
-          type: 'post', url: 'readThreads', data: {'thread_id': threadId});
+          type: 'delete', url: 'readThreads', data: {'threadId': threadId});
     } on DioError catch (e) {
       onDioErrorHandler(e);
       throw e;
