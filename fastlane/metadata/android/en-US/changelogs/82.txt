@@ -9,6 +9,7 @@ New
 
 Changes
  * Move to the new API endpoint for posting.
+ * Remove twitter login
 
 Fixes
  * Profiles not loading (again...)

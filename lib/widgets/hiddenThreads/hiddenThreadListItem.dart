@@ -22,7 +22,6 @@ class HiddenThreadListItem extends ThreadListItem {
 
   @override
   void onTapItem(BuildContext context) async {
-    // TODO: implement onTapItem
     bool confirmResult = await (Get.dialog(ConfirmDialog(
       content: "Do you want unhide the thread?",
     )));
@@ -36,10 +35,16 @@ class HiddenThreadListItem extends ThreadListItem {
       showProgressIndicator: true,
     );
 
-    await KnockoutAPI().unhideThread(threadDetails!.id!);
-    snackbarController.close();
+    try {
+      await KnockoutAPI().unhideThread(threadDetails!.id!);
+      snackbarController.close();
 
-    KnockySnackbar.success('Thread is now unhidden!');
-    hiddenThreadsController.fetch();
+      KnockySnackbar.success('Thread is now unhidden!');
+      hiddenThreadsController.fetch();
+    } catch (e) {
+      snackbarController.close();
+
+      KnockySnackbar.error('Failed to unhide thread...');
+    }
   }
 }
