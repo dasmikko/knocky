@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/postsPerPage.dart';
+import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/models/v2/alerts.dart';
 import 'package:knocky/models/v2/thread.dart';
 
@@ -20,7 +21,12 @@ class HiddenThreadsController extends GetxController {
   void fetch() async {
     isFetching.value = true;
     // Get hidden threads
-    threads.value = await KnockoutAPI().hiddenThreads();
-    isFetching.value = false;
+    try {
+      threads.value = await KnockoutAPI().hiddenThreads();
+    } catch (e) {
+      KnockySnackbar.error('Failed to fetch hidden threads');
+    } finally {
+      isFetching.value = false;
+    }
   }
 }
