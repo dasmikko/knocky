@@ -228,7 +228,9 @@ class ThreadListItem extends StatelessWidget {
                               ),
                             ),
                             ...getTagWidgets(context),
-                            getSubtitle(context)
+                            (threadDetails.user.runtimeType != int)
+                                ? getSubtitle(context)
+                                : Container(),
                           ],
                         ),
                       ),

@@ -513,4 +513,37 @@ class KnockoutAPI {
       throw e;
     }
   }
+
+  Future<void> hideThread(int threadId) async {
+    try {
+      final response =
+          await _request(url: 'v2/hidden-threads/${threadId}', type: 'post');
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
+  }
+
+  Future<void> unhideThread(int threadId) async {
+    try {
+      final response =
+          await _request(url: 'v2/hidden-threads/${threadId}', type: 'delete');
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
+  }
+
+  Future<List<ForumThread>> hiddenThreads() async {
+    try {
+      final response = await _request(url: 'v2/hidden-threads', type: 'get');
+
+      return response.data
+          .map<ForumThread>((json) => ForumThread.fromJson(json))
+          .toList();
+    } on DioError catch (e) {
+      onDioErrorHandler(e);
+      throw e;
+    }
+  }
 }

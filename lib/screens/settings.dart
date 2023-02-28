@@ -10,6 +10,7 @@ import 'package:knocky/dialogs/inputDialog.dart';
 import 'package:knocky/dialogs/updateAvailableDialog.dart';
 import 'package:knocky/helpers/snackbar.dart';
 import 'package:knocky/helpers/version.dart';
+import 'package:knocky/screens/manageHiddenThreads.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:github/github.dart';
 
@@ -157,6 +158,13 @@ class SettingsScreen extends StatelessWidget {
                   prefs.write('flagPunchy', value);
                 },
               ),
+            ),
+            ListTile(
+              title: Text('Manage hidden threads'),
+              onTap: () async {
+                // TODO: Go to screen where you can manage hidden threads
+                Get.to(() => ManageHiddenThreadsScreen());
+              },
             ),
 
             /**

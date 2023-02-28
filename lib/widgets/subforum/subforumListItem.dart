@@ -73,6 +73,35 @@ class SubforumListItem extends ThreadListItem {
                 }
               }),
           ListTile(
+              leading: FaIcon(FontAwesomeIcons.eyeSlash),
+              title: Text('Hide thread'),
+              onTap: () async {
+                Get.back();
+
+                bool confirmResult = await (Get.dialog(ConfirmDialog(
+                  content:
+                      "Do you want to hide the thread?\n\nYou can find hidden threads in the settings screen.",
+                )));
+
+                if (!confirmResult) return;
+
+                SnackbarController snackbarController = KnockySnackbar.normal(
+                  "Adding thread to hidden...",
+                  "Please wait...",
+                  isDismissible: false,
+                  showProgressIndicator: true,
+                );
+
+                await KnockoutAPI().hideThread(threadDetails!.id!);
+                snackbarController.close();
+
+                KnockySnackbar.success("Thread is now hidden");
+
+                if (onShouldRefresh != null) {
+                  onShouldRefresh!();
+                }
+              }),
+          ListTile(
             leading: FaIcon(FontAwesomeIcons.arrowRotateRight),
             title: Text('Go to page'),
             onTap: () {
