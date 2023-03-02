@@ -1,4 +1,4 @@
-import 'package:app_installer/app_installer.dart';
+//import 'package:app_installer/app_installer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:get/get.dart';
@@ -57,7 +57,7 @@ class SettingsScreen extends StatelessWidget {
         ));
 
         if (downloadFilePath != false) {
-          AppInstaller.installApk(downloadFilePath);
+          //AppInstaller.installApk(downloadFilePath);
         }
       }
     } else {
