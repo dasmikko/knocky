@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
+import 'package:knocky/controllers/blockedUsersController.dart';
 import 'package:knocky/controllers/settingsController.dart';
 import 'package:knocky/helpers/themeService.dart';
 import 'package:knocky/screens/forum.dart';
@@ -13,6 +14,8 @@ import 'package:layout/layout.dart';
 void main() async {
   final AuthController authController = Get.put(AuthController());
   final SettingsController settingsController = Get.put(SettingsController());
+  final BlockedUsersController blockedUsersController =
+      Get.put(BlockedUsersController());
   await GetStorage.init();
 
   // Setup flavor
@@ -49,6 +52,8 @@ void main() async {
   if (prefs.hasData('useDevAPI')) {
     settingsController.useDevAPI.value = prefs.read('useDevAPI');
   }
+
+  blockedUsersController.initBlockedUsers();
 
   authController.getStoredAuthInfo();
 

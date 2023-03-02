@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
+import 'package:knocky/controllers/blockedUsersController.dart';
 import 'package:knocky/models/thread.dart';
 import 'package:knocky/widgets/bbcode/bbcodeRendererNew.dart';
 import 'package:knocky/widgets/post/ratings.dart';
@@ -48,6 +49,8 @@ class _PostListItemState extends State<PostListItem> {
         widget.readThreadLastSeen!.isBefore(widget.post!.createdAt!)) {
       isNewPost = true;
     }
+    final BlockedUsersController blockedUsersController =
+        Get.put(BlockedUsersController());
 
     return [
       UserInfo(
@@ -67,8 +70,27 @@ class _PostListItemState extends State<PostListItem> {
           });
         },
       ),
-      postBody(context),
+      Obx(
+        () => blockedUsersController.userIsBlocked(widget.post!.user!.id)
+            ? blockedUserPostBody(context)
+            : postBody(context),
+      )
     ];
+  }
+
+  Widget blockedUserPostBody(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(18),
+      child: Center(
+        child: Text(
+          'User is blocked',
+          style: TextStyle(
+              color: Colors.redAccent,
+              fontWeight: FontWeight.bold,
+              fontSize: 24),
+        ),
+      ),
+    );
   }
 
   @protected

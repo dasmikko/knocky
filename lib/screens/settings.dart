@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:knocky/controllers/blockedUsersController.dart';
 import 'package:knocky/controllers/forumController.dart';
 import 'package:knocky/controllers/settingsController.dart';
 import 'package:knocky/dialogs/downloadUpdateDialog.dart';
@@ -162,8 +163,18 @@ class SettingsScreen extends StatelessWidget {
             ListTile(
               title: Text('Manage hidden threads'),
               onTap: () async {
-                // TODO: Go to screen where you can manage hidden threads
                 Get.to(() => ManageHiddenThreadsScreen());
+              },
+            ),
+            ListTile(
+              title: Text('Clear list of blocked users'),
+              onTap: () async {
+                final BlockedUsersController blockedUsersController =
+                    Get.put(BlockedUsersController());
+
+                blockedUsersController.clearBlockedUserIds();
+
+                KnockySnackbar.success('List of blocked users is now cleared!');
               },
             ),
 

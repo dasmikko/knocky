@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:knocky/controllers/authController.dart';
+import 'package:knocky/controllers/blockedUsersController.dart';
 import 'package:knocky/controllers/threadController.dart';
+import 'package:knocky/dialogs/confirmDialog.dart';
 import 'package:knocky/dialogs/reportPostDialog.dart';
 import 'package:knocky/helpers/api.dart';
 import 'package:knocky/helpers/snackbar.dart';
@@ -79,6 +81,52 @@ class Toolbar extends StatelessWidget {
     return Container();
   }
 
+  Widget postMenuBottomSheetContent() {
+    final BlockedUsersController blockedUsersController =
+        Get.put(BlockedUsersController());
+
+    return Container(
+      color: Get.theme.bottomAppBarTheme.color,
+      padding: EdgeInsets.all(8),
+      child: Wrap(
+        children: <Widget>[
+          blockedUsersController.userIsBlocked(post!.user!.id!)
+              ? ListTile(
+                  leading: FaIcon(FontAwesomeIcons.userSlash),
+                  title: Text('Unblock user'),
+                  onTap: () async {
+                    Get.back();
+
+                    bool confirmResult = await (Get.dialog(ConfirmDialog(
+                      content: "Do you want to unblock the user?",
+                    )));
+
+                    if (!confirmResult) return;
+
+                    blockedUsersController.removeBlockedUserId(post!.user!.id!);
+
+                    KnockySnackbar.success('User is now unblocked!');
+                  })
+              : ListTile(
+                  leading: FaIcon(FontAwesomeIcons.userSlash),
+                  title: Text('Block user'),
+                  onTap: () async {
+                    Get.back();
+
+                    bool confirmResult = await (Get.dialog(ConfirmDialog(
+                      content: "Do you want to block the user?",
+                    )));
+
+                    if (!confirmResult) return;
+
+                    blockedUsersController.addBlockedUserId(post!.user!.id!);
+                    KnockySnackbar.success('User is now blocked!');
+                  }),
+        ],
+      ),
+    );
+  }
+
   // ignore: missing_return
   Widget controls() {
     return Material(
@@ -146,6 +194,20 @@ class Toolbar extends StatelessWidget {
 
               threadController.replyToAdd.value = contentToInsert;
               threadController.itemScrollController.jumpTo(index: 999);
+            },
+          ),
+          IconButton(
+            iconSize: 12,
+            icon: FaIcon(
+              FontAwesomeIcons.ellipsisVertical,
+            ),
+            onPressed: () async {
+              print('Show menu');
+              Get.bottomSheet(
+                postMenuBottomSheetContent(),
+                enterBottomSheetDuration: Duration(milliseconds: 150),
+                exitBottomSheetDuration: Duration(milliseconds: 150),
+              );
             },
           )
         ],
