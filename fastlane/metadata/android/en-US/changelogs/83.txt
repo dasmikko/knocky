@@ -8,4 +8,4 @@ Changes
 
 
 Fixes
-
+* Couldn't leave thread if post editor wasn't empty
