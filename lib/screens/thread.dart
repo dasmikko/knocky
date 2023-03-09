@@ -183,10 +183,10 @@ class _ThreadScreenState extends State<ThreadScreen>
     return WillPopScope(
       onWillPop: () async {
         if (threadController.currentNewPostText.value.isNotEmpty) {
-          return await (Get.dialog(ConfirmDialog(
+          return await Get.dialog(ConfirmDialog(
             content:
                 'You seem to be writing a post, are you sure you want to leave the thread and lose the post content?',
-          )) as FutureOr<bool>);
+          ));
         }
         return true;
       },
