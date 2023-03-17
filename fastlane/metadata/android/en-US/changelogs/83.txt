@@ -1,11 +1,8 @@
-Version 2.3.3 *(TBD)*
+Version 2.3.3 *(2023-03-17)*
 ----------------------------
 
 New
 * A simple way to block a user. The content of a user wont be displayed.
-
-Changes
-
 
 Fixes
 * Couldn't leave thread if post editor wasn't empty
