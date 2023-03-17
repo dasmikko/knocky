@@ -13,11 +13,13 @@ import 'package:knocky/widgets/shared/threadListItem.dart';
 
 class SubscriptionListItem extends ThreadListItem {
   final SubforumThread? threadDetails;
+  final firstUnreadId;
   final int? unreadPosts;
   final SubscriptionController subscriptionController =
       Get.put(SubscriptionController());
 
-  SubscriptionListItem({required this.threadDetails, this.unreadPosts})
+  SubscriptionListItem(
+      {required this.threadDetails, this.unreadPosts, this.firstUnreadId})
       : super(threadDetails: threadDetails);
 
   @override
@@ -40,6 +42,15 @@ class SubscriptionListItem extends ThreadListItem {
     );
 
     Get.to(() => ThreadScreen(id: threadDetails!.id, page: page));
+  }
+
+  @override
+  void onTapUnreadPostsButton(
+      BuildContext context, int unreadCount, int? totalCount) {
+    Get.to(() => ThreadScreen(
+        id: threadDetails!.id,
+        page: PostsPerPage.unreadPostsPage(unreadCount, totalCount!),
+        linkedPostId: firstUnreadId));
   }
 
   Widget longPressBottomSheetContent() {

@@ -10,6 +10,7 @@ import 'package:knocky/widgets/InkWellOnWidget.dart';
 import 'dart:ui' as ui;
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:knocky/screens/thread.dart';
+import 'package:get/get.dart';
 
 class ThreadListItem extends StatelessWidget {
   final dynamic threadDetails;
@@ -111,13 +112,10 @@ class ThreadListItem extends StatelessWidget {
   @protected
   void onTapUnreadPostsButton(
       BuildContext context, int unreadCount, int? totalCount) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ThreadScreen(
-                id: threadDetails.id,
-                page: PostsPerPage.unreadPostsPage(unreadCount, totalCount!),
-                linkedPostId: threadDetails.firstUnreadId)));
+    Get.to(() => ThreadScreen(
+        id: threadDetails.id,
+        page: PostsPerPage.unreadPostsPage(unreadCount, totalCount!),
+        linkedPostId: threadDetails.firstUnreadId));
   }
 
   @protected

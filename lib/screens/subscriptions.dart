@@ -72,6 +72,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
           return SubscriptionListItem(
             threadDetails: alert.thread,
             unreadPosts: alert.unreadPosts,
+            firstUnreadId: alert.firstUnreadId,
           );
         },
       ),

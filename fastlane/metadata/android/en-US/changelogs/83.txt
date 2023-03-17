@@ -2,10 +2,11 @@ Version 2.3.3 *(TBD)*
 ----------------------------
 
 New
-
+* A simple way to block a user. The content of a user wont be displayed.
 
 Changes
 
 
 Fixes
 * Couldn't leave thread if post editor wasn't empty
+* When tapping the new post button on the subscription screen wouldn't scroll the to newest post

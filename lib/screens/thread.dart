@@ -105,14 +105,18 @@ class _ThreadScreenState extends State<ThreadScreen>
     subscription = threadController.data.listen((Thread? thread) async {
       await Future.delayed(Duration(milliseconds: 100));
 
-      // Find the index of the post to scroll to
-      int postIndex =
-          thread!.posts!.indexWhere((o) => o.id == this.widget.linkedPostId) +
-              1;
+      if (this.widget.linkedPostId != null) {
+        // Find the index of the post to scroll to
+        int postIndex =
+            thread!.posts!.indexWhere((o) => o.id == this.widget.linkedPostId) +
+                1;
 
-      // If we can't find the postIndex, just scroll to the top.
-      threadController.itemScrollController
-          .jumpTo(index: postIndex == -1 ? 0 : postIndex);
+        print(postIndex);
+
+        // If we can't find the postIndex, just scroll to the top.
+        threadController.itemScrollController
+            .jumpTo(index: postIndex == -1 ? 0 : postIndex);
+      }
 
       // Stop listening for more change, as we will never have to scroll to specific post anymore
       subscription.cancel();
