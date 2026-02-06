@@ -1,9 +1,13 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'firebase_options.dart';
 import 'services/knockout_api_service.dart';
 import 'services/settings_service.dart';
 import 'services/update_service.dart';
 import 'screens/home_screen.dart';
+import 'screens/welcome_screen.dart';
 import 'theme/knockout_theme.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
@@ -14,6 +18,14 @@ void main() async {
   // Load settings
   final settings = SettingsService();
   await settings.load();
+
+  // Initialize Firebase if user has consented
+  if (settings.analyticsConsent) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+  }
 
   // Load API service and apply stored base URL
   final api = KnockoutApiService();
@@ -53,7 +65,9 @@ class MyApp extends StatelessWidget {
       darkTheme: KnockoutTheme.dark(),
       themeMode: settings.flutterThemeMode,
       navigatorObservers: [routeObserver],
-      home: const HomeScreen(title: 'Knocky'),
+      home: settings.hasSeenWelcome
+          ? const HomeScreen(title: 'Knocky')
+          : const WelcomeScreen(),
     );
   }
 }

@@ -1,6 +1,9 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:knocky/firebase_options.dart';
 import 'package:knocky/services/knockout_api_service.dart';
 import 'package:knocky/services/update_service.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -133,6 +136,34 @@ class SettingsScreen extends StatelessWidget {
                 subtitle: const Text('Subscribe to threads when you reply'),
                 value: settings.autoSubscribe,
                 onChanged: (value) => settings.setAutoSubscribe(value),
+              ),
+            ],
+          ),
+          _SettingsSection(
+            title: 'Privacy',
+            children: [
+              SwitchListTile(
+                secondary: const Icon(Icons.analytics_outlined),
+                title: const Text('Analytics'),
+                subtitle: const Text(
+                  'Help improve Knocky by sharing anonymous install data',
+                ),
+                value: settings.analyticsConsent,
+                onChanged: (value) async {
+                  await settings.setAnalyticsConsent(value);
+                  if (value) {
+                    await Firebase.initializeApp(
+                      options: DefaultFirebaseOptions.currentPlatform,
+                    );
+                    await FirebaseAnalytics.instance
+                        .setAnalyticsCollectionEnabled(true);
+                  } else {
+                    if (Firebase.apps.isNotEmpty) {
+                      await FirebaseAnalytics.instance
+                          .setAnalyticsCollectionEnabled(false);
+                    }
+                  }
+                },
               ),
             ],
           ),

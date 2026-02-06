@@ -1,4 +1,4 @@
-package com.example.knocky
+package com.rekna.knocky
 
 import io.flutter.embedding.android.FlutterActivity
 

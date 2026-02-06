@@ -51,6 +51,8 @@ class SettingsService extends ChangeNotifier {
   static const String _countryFlagsKey = 'show_country_flags';
   static const String _autoSubscribeKey = 'auto_subscribe';
   static const String _baseUrlKey = 'api_base_url';
+  static const String _analyticsConsentKey = 'analytics_consent';
+  static const String _hasSeenWelcomeKey = 'has_seen_welcome';
 
   // Current values
   AppThemeMode _themeMode = AppThemeMode.system;
@@ -58,6 +60,8 @@ class SettingsService extends ChangeNotifier {
   bool _showCountryFlags = false;
   bool _autoSubscribe = false;
   String _baseUrl = KnockoutApiService.defaultBaseUrl;
+  bool _analyticsConsent = false;
+  bool _hasSeenWelcome = false;
 
   // Getters
   AppThemeMode get themeMode => _themeMode;
@@ -66,6 +70,8 @@ class SettingsService extends ChangeNotifier {
   bool get showCountryFlags => _showCountryFlags;
   bool get autoSubscribe => _autoSubscribe;
   String get baseUrl => _baseUrl;
+  bool get analyticsConsent => _analyticsConsent;
+  bool get hasSeenWelcome => _hasSeenWelcome;
 
   /// Load all settings from storage
   Future<void> load() async {
@@ -85,6 +91,13 @@ class SettingsService extends ChangeNotifier {
     if (baseUrlValue != null && baseUrlValue.isNotEmpty) {
       _baseUrl = baseUrlValue;
     }
+
+    final analyticsConsentValue =
+        await _storage.read(key: _analyticsConsentKey);
+    _analyticsConsent = analyticsConsentValue == 'true';
+
+    final hasSeenWelcomeValue = await _storage.read(key: _hasSeenWelcomeKey);
+    _hasSeenWelcome = hasSeenWelcomeValue == 'true';
 
     notifyListeners();
   }
@@ -132,5 +145,21 @@ class SettingsService extends ChangeNotifier {
   /// Reset the API base URL to default
   Future<void> resetBaseUrl() async {
     await setBaseUrl(KnockoutApiService.defaultBaseUrl);
+  }
+
+  /// Set analytics consent
+  Future<void> setAnalyticsConsent(bool value) async {
+    if (_analyticsConsent == value) return;
+    _analyticsConsent = value;
+    await _storage.write(key: _analyticsConsentKey, value: value.toString());
+    notifyListeners();
+  }
+
+  /// Set whether the welcome screen has been shown
+  Future<void> setHasSeenWelcome(bool value) async {
+    if (_hasSeenWelcome == value) return;
+    _hasSeenWelcome = value;
+    await _storage.write(key: _hasSeenWelcomeKey, value: value.toString());
+    notifyListeners();
   }
 }
