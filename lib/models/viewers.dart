@@ -1,11 +1,19 @@
 import 'package:json_annotation/json_annotation.dart';
 
+part 'viewers.g.dart';
+
 @JsonSerializable()
 class Viewers {
-  final int? memberCount;
-  Viewers({this.memberCount});
+  final int memberCount;
+  @JsonKey(defaultValue: 0)
+  final int guestCount;
 
-  factory Viewers.fromJson(Map<String, dynamic> json) {
-    return Viewers(memberCount: json['memberCount'] as int?);
-  }
+  Viewers({
+    required this.memberCount,
+    required this.guestCount,
+  });
+
+  factory Viewers.fromJson(Map<String, dynamic> json) =>
+      _$ViewersFromJson(json);
+  Map<String, dynamic> toJson() => _$ViewersToJson(this);
 }

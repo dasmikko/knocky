@@ -1,9 +1,0 @@
-Version 2.3.0 *(2023-02-08)*
-----------------------------
-
-Changes
- * Removing twitter embed, as the Twitter API will be a paid thing after 9.Feb. (Thanks elon)
- * Update to newer dart version, and make it null-sound
- * Improve spoilier handling (Tapping on one spoiler will reveal all, will make them work individually in the future!)
- * Various cleanup in the code
- * New and fancy build in updater if you are using the Non F-droid version

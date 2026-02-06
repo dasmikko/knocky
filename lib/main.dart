@@ -1,77 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_flavor/flutter_flavor.dart';
-import 'package:get/get.dart';
-import 'package:knocky/controllers/authController.dart';
-import 'package:knocky/controllers/settingsController.dart';
-import 'package:knocky/helpers/themeService.dart';
-import 'package:knocky/screens/forum.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:knocky/themes/DarkTheme.dart';
-import 'package:layout/layout.dart';
+import 'package:provider/provider.dart';
+import 'services/knockout_api_service.dart';
+import 'services/settings_service.dart';
+import 'services/update_service.dart';
+import 'screens/home_screen.dart';
+import 'theme/knockout_theme.dart';
+
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
 void main() async {
-  final AuthController authController = Get.put(AuthController());
-  final SettingsController settingsController = Get.put(SettingsController());
-  await GetStorage.init();
+  WidgetsFlutterBinding.ensureInitialized();
 
-  // Setup flavor
-  FlavorConfig(
-      name: "FDroid",
-      color: Colors.red,
-      location: BannerLocation.bottomStart,
-      variables: {
-        "allowUpdater": false,
-      });
+  // Load settings
+  final settings = SettingsService();
+  await settings.load();
 
-  GetStorage prefs = GetStorage();
-
-  if (prefs.read('env') == null) {
-    await prefs.write('env', 'knockout');
+  // Load API service and apply stored base URL
+  final api = KnockoutApiService();
+  api.setBaseUrl(settings.baseUrl);
+  await api.loadToken();
+  if (api.isAuthenticated) {
+    api.getSyncData();
   }
 
-  if (!prefs.hasData('showNSFW')) {
-    await prefs.write('showNSFW', false);
-  } else {
-    settingsController.showNSFWThreads.value = prefs.read('showNSFW');
-  }
+  final updateService = UpdateService();
 
-  if (!prefs.hasData('flagPunchy')) {
-    await prefs.write('flagPunchy', false);
-  } else {
-    settingsController.flagPunchy.value = prefs.read('flagPunchy');
-  }
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: settings),
+        ChangeNotifierProvider.value(value: api),
+        ChangeNotifierProvider.value(value: updateService),
+      ],
+      child: const MyApp(),
+    ),
+  );
 
-  if (prefs.hasData('apiEndpoint')) {
-    settingsController.apiEndpoint.value = prefs.read('apiEndpoint');
-  }
-
-  if (prefs.hasData('useDevAPI')) {
-    settingsController.useDevAPI.value = prefs.read('useDevAPI');
-  }
-
-  authController.getStoredAuthInfo();
-
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: Colors.grey[900],
-      systemNavigationBarIconBrightness: Brightness.light));
-
-  runApp(MyApp());
+  // Fire-and-forget: check for updates if last check was >24h ago
+  updateService.checkForUpdateIfStale();
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    precacheImage(AssetImage('assets/logo.png'), context);
-    return Layout(
-      child: GetMaterialApp(
-        title: 'Flutter Demo',
-        theme: darkTheme(),
-        darkTheme: darkTheme(),
-        themeMode: ThemeService().theme,
-        home: ForumScreen(),
-      ),
+    final settings = context.watch<SettingsService>();
+
+    return MaterialApp(
+      title: 'Knocky',
+      theme: KnockoutTheme.light(),
+      darkTheme: KnockoutTheme.dark(),
+      themeMode: settings.flutterThemeMode,
+      navigatorObservers: [routeObserver],
+      home: const HomeScreen(title: 'Knocky'),
     );
   }
 }

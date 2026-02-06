@@ -1,0 +1,83 @@
+{
+  "agree": {
+    "name": "Agree",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-agree.png"
+  },
+  "disagree": {
+    "name": "Disagree",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-disagree.png"
+  },
+  "funny": {
+    "name": "Funny",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-funny.png"
+  },
+  "friendly": {
+    "name": "Friendly",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-friendly.png"
+  },
+  "kawaii": {
+    "name": "Kawaii",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-cute.png"
+  },
+  "sad": {
+    "name": "Sad",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-sad.png"
+  },
+  "artistic": {
+    "name": "Creative",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-artistic.png"
+  },
+  "informative": {
+    "name": "Informative",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-informative.png"
+  },
+  "idea": {
+    "name": "Idea",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-idea.png"
+  },
+  "winner": {
+    "name": "Winner",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-winner.png"
+  },
+  "glasses": {
+    "name": "Bad Reading",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-badreading.png"
+  },
+  "late": {
+    "name": "Late",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-late.png"
+  },
+  "dumb": {
+    "name": "Dumb",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-dumb.png",
+    "disabled": true
+  },
+  "citation": {
+    "name": "Citation Needed",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-citation.png"
+  },
+  "optimistic": {
+    "name": "Optimistic",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-optimistic.png"
+  },
+  "zing": {
+    "name": "Zing",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-zing.png"
+  },
+  "yeet": {
+    "name": "Yeet",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-yeet.png"
+  },
+  "rude": {
+    "name": "Rude",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-rude.png"
+  },
+  "confusing": {
+    "name": "Confusing",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-confusing.png"
+  },
+  "scary": {
+    "name": "Scary",
+    "url": "https://cdn.knockout.chat/assets/ratings/rating-scary.png"
+  }
+}

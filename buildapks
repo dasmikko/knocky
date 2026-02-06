@@ -1,3 +1,0 @@
-flutter build apk --split-per-abi
-
-flutter build apk -t lib/main_nonfdroid.dart

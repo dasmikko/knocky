@@ -1,0 +1,45 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    // Android configurations
+    {
+      "name": "Debug",
+      "request": "launch",
+      "type": "dart",
+    },
+    {
+      "name": "Profile",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile",
+    },
+    {
+      "name": "Release",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+    },
+
+    // Desktop configurations (change "windows" to "linux" or "macos" as needed)
+    {
+      "name": "Desktop - Debug",
+      "request": "launch",
+      "type": "dart",
+      "args": ["-d", "linux"]
+    },
+    {
+      "name": "Desktop - Profile",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile",
+      "args": ["-d", "linux"]
+    },
+    {
+      "name": "Desktop - Release",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "args": ["-d", "linux"]
+    }
+  ]
+}

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<paths>
-    <cache-path path="//data/data/com.apps.anker.flutter_ko.debug/cache/" name="files_root" />
-    <cache-path path="//data/data/com.apps.anker.flutter_ko/cache/" name="files_root" />
-    <cache-path path="." name="cache_path" />
-</paths>

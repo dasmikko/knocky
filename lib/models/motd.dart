@@ -1,21 +1,29 @@
-class KnockoutMotd {
-  String? message;
-  String? buttonLink;
-  String? buttonName;
-  int? id;
+/// Message of the Day from the Knockout.chat API.
+class Motd {
+  final int id;
+  final String message;
+  final String? buttonLink;
+  final String? buttonName;
 
-  KnockoutMotd({this.message, this.buttonLink, this.buttonName, this.id});
+  Motd({
+    required this.id,
+    required this.message,
+    this.buttonLink,
+    this.buttonName,
+  });
 
-  factory KnockoutMotd.fromJson(Map<String, dynamic> json) => KnockoutMotd(
-        message: json['message'] as String?,
-        buttonName: json['buttonName'] as String?,
-        buttonLink: json['buttonLink'] as String?,
-        id: json['id'] as int?,
-      );
-  Map<String, dynamic> toJson() => {
-        'message': message,
-        'buttonName': buttonName,
-        'buttonLink': buttonLink,
-        'id': id
-      };
+  factory Motd.fromJson(Map<String, dynamic> json) {
+    return Motd(
+      id: json['id'] as int? ?? 0,
+      message: json['message'] as String? ?? '',
+      buttonLink: json['buttonLink'] as String?,
+      buttonName: json['buttonName'] as String?,
+    );
+  }
+
+  bool get hasButton =>
+      buttonName != null &&
+      buttonName!.isNotEmpty &&
+      buttonLink != null &&
+      buttonLink!.isNotEmpty;
 }

@@ -1,0 +1,439 @@
+{
+  "!  LEGEND  !": {
+    "title": "image title, can be omitted",
+    "hidden": "boolean, hide from listing, can be omitted",
+    "url": "main image url",
+    "url_dark": "for legibility in dark themes, can be omitted"
+  },
+
+  "alien": {
+    "url": "https://cdn.knockout.chat/assets/emotes/alien.webp"
+  },
+  "angry": {
+    "url": "https://cdn.knockout.chat/assets/emotes/angry.webp"
+  },
+  "asdfghjkl": {
+    "title": "asdfghjkl;'",
+    "url": "https://cdn.knockout.chat/assets/emotes/asdfghjkl.webp"
+  },
+  "ass": {
+    "hidden": true,
+    "url": "https://cdn.knockout.chat/assets/emotes/ass.webp"
+  },
+  "badage": {
+    "title": "the badage boys are back in town",
+    "url": "https://cdn.knockout.chat/assets/emotes/badage.webp"
+  },
+  "badzing": {
+    "url": "https://cdn.knockout.chat/assets/emotes/badzing.webp"
+  },
+  "blank": {
+    "url": "https://cdn.knockout.chat/assets/emotes/blank.webp"
+  },
+  "blaze": {
+    "url": "https://cdn.knockout.chat/assets/emotes/blaze.webp"
+  },
+  "boxhide": {
+    "url": "https://cdn.knockout.chat/assets/emotes/boxhide.webp"
+  },
+  "buckteeth": {
+    "url": "https://cdn.knockout.chat/assets/emotes/buckteeth.webp"
+  },
+  "buddy": {
+    "url": "https://cdn.knockout.chat/assets/emotes/buddy.webp"
+  },
+  "bullshit": {
+    "url": "https://cdn.knockout.chat/assets/emotes/bullshit.webp"
+  },
+  "cat": {
+    "url": "https://cdn.knockout.chat/assets/emotes/cat.webp"
+  },
+  "chem101": {
+    "url": "https://cdn.knockout.chat/assets/emotes/chem101.webp"
+  },
+  "chillout": {
+    "url": "https://cdn.knockout.chat/assets/emotes/chillout.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/chillout.dark.webp"
+  },
+  "class": {
+    "title": "classy",
+    "url": "https://cdn.knockout.chat/assets/emotes/class.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/class.dark.webp"
+  },
+  "clickbait": {
+    "url": "https://cdn.knockout.chat/assets/emotes/clickbait.webp"
+  },
+  "clown": {
+    "url": "https://cdn.knockout.chat/assets/emotes/clown.webp"
+  },
+  "cool": {
+    "url": "https://cdn.knockout.chat/assets/emotes/cool.webp"
+  },
+  "cry": {
+    "url": "https://cdn.knockout.chat/assets/emotes/cry.webp"
+  },
+  "dance": {
+    "url": "https://cdn.knockout.chat/assets/emotes/dance.webp"
+  },
+  "dead": {
+    "url": "https://cdn.knockout.chat/assets/emotes/dead.webp"
+  },
+  "dig": {
+    "url": "https://cdn.knockout.chat/assets/emotes/dig.webp"
+  },
+  "dewritos": {
+    "url": "https://cdn.knockout.chat/assets/emotes/dewritos.webp"
+  },
+  "disgust": {
+    "url": "https://cdn.knockout.chat/assets/emotes/disgust.webp"
+  },
+  "disappoint": {
+    "url": "https://cdn.knockout.chat/assets/emotes/disappoint.webp"
+  },
+  "dog": {
+    "url": "https://cdn.knockout.chat/assets/emotes/dog.webp"
+  },
+  "dogchill": {
+    "url": "https://cdn.knockout.chat/assets/emotes/dogchill.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/dogchill.dark.webp"
+  },
+  "dogcited": {
+    "url": "https://cdn.knockout.chat/assets/emotes/dogcited.webp"
+  },
+  "doghidden": {
+    "url": "https://cdn.knockout.chat/assets/emotes/doghidden.webp"
+  },
+  "dogsleep": {
+    "url": "https://cdn.knockout.chat/assets/emotes/dogsleep.webp"
+  },
+  "dogwow": {
+    "url": "https://cdn.knockout.chat/assets/emotes/dogwow.webp"
+  },
+  "doubt": {
+    "url": "https://cdn.knockout.chat/assets/emotes/doubt.webp"
+  },
+  "drool": {
+    "url": "https://cdn.knockout.chat/assets/emotes/drool.webp"
+  },
+  "eng101": {
+    "title": "English 101",
+    "url": "https://cdn.knockout.chat/assets/emotes/eng101.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/eng101.dark.webp"
+  },
+  "eng101s": {
+    "url": "https://cdn.knockout.chat/assets/emotes/eng101s.webp"
+  },
+  "evil": {
+    "url": "https://cdn.knockout.chat/assets/emotes/evil.webp"
+  },
+  "excited": {
+    "url": "https://cdn.knockout.chat/assets/emotes/excited.webp"
+  },
+  "facemelt": {
+    "url": "https://cdn.knockout.chat/assets/emotes/facemelt.webp"
+  },
+  "fap": {
+    "url": "https://cdn.knockout.chat/assets/emotes/fap.webp"
+  },
+  "flex": {
+    "url": "https://cdn.knockout.chat/assets/emotes/flex.webp"
+  },
+  "freakout": {
+    "url": "https://cdn.knockout.chat/assets/emotes/freakout.webp"
+  },
+  "frown": {
+    "url": "https://cdn.knockout.chat/assets/emotes/frown.webp"
+  },
+  "glare": {
+    "url": "https://cdn.knockout.chat/assets/emotes/glare.webp"
+  },
+  "goodjob": {
+    "url": "https://cdn.knockout.chat/assets/emotes/goodjob.webp"
+  },
+  "hammered": {
+    "url": "https://cdn.knockout.chat/assets/emotes/hammered.webp"
+  },
+  "happy": {
+    "url": "https://cdn.knockout.chat/assets/emotes/happy.webp"
+  },
+  "hist101": {
+    "url": "https://cdn.knockout.chat/assets/emotes/hist101.webp"
+  },
+  "huh": {
+    "url": "https://cdn.knockout.chat/assets/emotes/huh.webp"
+  },
+  "hoff": {
+    "url": "https://cdn.knockout.chat/assets/emotes/hoff.webp"
+  },
+  "hurr": {
+    "url": "https://cdn.knockout.chat/assets/emotes/hurr.webp"
+  },
+  "hypeisreal": {
+    "url": "https://cdn.knockout.chat/assets/emotes/hypeisreal.webp"
+  },
+  "hypeisnotreal": {
+    "url": "https://cdn.knockout.chat/assets/emotes/hypeisnotreal.webp"
+  },
+  "johnnymo1": {
+    "url": "https://cdn.knockout.chat/assets/emotes/johnnymo1.webp"
+  },
+  "joy": {
+    "url": "https://cdn.knockout.chat/assets/emotes/joy.webp"
+  },
+  "lick": {
+    "url": "https://cdn.knockout.chat/assets/emotes/lick.webp"
+  },
+  "magic101": {
+    "url": "https://cdn.knockout.chat/assets/emotes/magic101.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/magic101.dark.webp"
+  },
+  "mindblown": {
+    "url": "https://cdn.knockout.chat/assets/emotes/mindblown.webp"
+  },
+  "mystery": {
+    "url": "https://cdn.knockout.chat/assets/emotes/mystery.webp"
+  },
+  "mysterysolved": {
+    "url": "https://cdn.knockout.chat/assets/emotes/mysterysolved.webp"
+  },
+  "neat": {
+    "url": "https://cdn.knockout.chat/assets/emotes/neat.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/neat.dark.webp"
+  },
+  "ninja": {
+    "url": "https://cdn.knockout.chat/assets/emotes/ninja.webp"
+  },
+  "nope": {
+    "url": "https://cdn.knockout.chat/assets/emotes/nope.webp"
+  },
+  "nsfw": {
+    "url": "https://cdn.knockout.chat/assets/emotes/nsfw.webp"
+  },
+  "ohno": {
+    "url": "https://cdn.knockout.chat/assets/emotes/ohno.webp"
+  },
+  "ok": {
+    "url": "https://cdn.knockout.chat/assets/emotes/ok.webp"
+  },
+  "payne": {
+    "url": "https://cdn.knockout.chat/assets/emotes/payne.webp"
+  },
+  "pcrepair": {
+    "url": "https://cdn.knockout.chat/assets/emotes/pcrepair.webp"
+  },
+  "plsunderstand": {
+    "url": "https://cdn.knockout.chat/assets/emotes/plsunderstand.webp"
+  },
+  "punchy": {
+    "title": "punchy",
+    "url": "https://cdn.knockout.chat/assets/emotes/punchy.webp"
+  },
+  "poot": {
+    "url": "https://cdn.knockout.chat/assets/emotes/poot.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/poot.dark.webp"
+  },
+  "pridespin": {
+    "url": "https://cdn.knockout.chat/assets/emotes/pridespin.webp"
+  },
+  "pudge": {
+    "url": "https://cdn.knockout.chat/assets/emotes/pudge.webp"
+  },
+  "pwn": {
+    "url": "https://cdn.knockout.chat/assets/emotes/pwn.webp"
+  },
+  "pyramid": {
+    "url": "https://cdn.knockout.chat/assets/emotes/pyramid.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/pyramid.dark.webp"
+  },
+  "q": {
+    "url": "https://cdn.knockout.chat/assets/emotes/q.webp"
+  },
+  "quotes": {
+    "url": "https://cdn.knockout.chat/assets/emotes/quotes.webp"
+  },
+  "qsex101": {
+    "url": "https://cdn.knockout.chat/assets/emotes/qsex101.webp"
+  },
+  "rock": {
+    "url": "https://cdn.knockout.chat/assets/emotes/rock.webp"
+  },
+  "rollout": {
+    "url": "https://cdn.knockout.chat/assets/emotes/rollout.webp"
+  },
+  "rrerr": {
+    "url": "https://cdn.knockout.chat/assets/emotes/rrerr.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/rrerr.dark.webp"
+  },
+  "s": {
+    "url": "https://cdn.knockout.chat/assets/emotes/s.webp"
+  },
+  "sax": {
+    "url": "https://cdn.knockout.chat/assets/emotes/sax.webp"
+  },
+  "saxout": {
+    "url": "https://cdn.knockout.chat/assets/emotes/saxout.webp"
+  },
+  "sbhj": {
+    "url": "https://cdn.knockout.chat/assets/emotes/sbhj.webp"
+  },
+  "sex101": {
+    "url": "https://cdn.knockout.chat/assets/emotes/sex101.webp"
+  },
+  "shh": {
+    "url": "https://cdn.knockout.chat/assets/emotes/shh.webp"
+  },
+  "shitposting": {
+    "url": "https://cdn.knockout.chat/assets/emotes/shitposting.webp"
+  },
+  "science101": {
+    "url": "https://cdn.knockout.chat/assets/emotes/science101.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/science101.dark.webp"
+  },
+  "scream": {
+    "url": "https://cdn.knockout.chat/assets/emotes/scream.webp"
+  },
+  "shock": {
+    "url": "https://cdn.knockout.chat/assets/emotes/shock.webp"
+  },
+  "sick": {
+    "url": "https://cdn.knockout.chat/assets/emotes/sick.webp"
+  },
+  "smile": {
+    "url": "https://cdn.knockout.chat/assets/emotes/smile.webp"
+  },
+  "smug": {
+    "url": "https://cdn.knockout.chat/assets/emotes/smug.webp"
+  },
+  "snip": {
+    "url": "https://cdn.knockout.chat/assets/emotes/snip.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/snip.dark.webp"
+  },
+  "speedfap": {
+    "url": "https://cdn.knockout.chat/assets/emotes/speedfap.webp"
+  },
+  "speechless": {
+    "url": "https://cdn.knockout.chat/assets/emotes/speechless.webp"
+  },
+  "stop": {
+    "url": "https://cdn.knockout.chat/assets/emotes/stop.webp"
+  },
+  "suicide": {
+    "hidden": true,
+    "url": "https://cdn.knockout.chat/assets/emotes/suicide.webp"
+  },
+  "surrender": {
+    "url": "https://cdn.knockout.chat/assets/emotes/surrender.webp"
+  },
+  "tableflip": {
+    "url": "https://cdn.knockout.chat/assets/emotes/tableflip.webp"
+  },
+  "terrists": {
+    "url": "https://cdn.knockout.chat/assets/emotes/terrists.webp"
+  },
+  "thatwasfunnyright": {
+    "title": "That was funny, right?",
+    "url": "https://cdn.knockout.chat/assets/emotes/thatwasfunnyright.webp"
+  },
+  "thebest": {
+    "url": "https://cdn.knockout.chat/assets/emotes/thebest.webp"
+  },
+  "thinking": {
+    "url": "https://cdn.knockout.chat/assets/emotes/thinking.webp"
+  },
+  "thisthread": {
+    "url": "https://cdn.knockout.chat/assets/emotes/thisthread.webp"
+  },
+  "tinfoil": {
+    "url": "https://cdn.knockout.chat/assets/emotes/tinfoil.webp"
+  },
+  "tired": {
+    "url": "https://cdn.knockout.chat/assets/emotes/tired.webp"
+  },
+  "toadleave": {
+    "hidden": true,
+    "url": "https://cdn.knockout.chat/assets/emotes/toadleave.webp"
+  },
+  "toot": {
+    "url": "https://cdn.knockout.chat/assets/emotes/toot.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/toot.dark.webp"
+  },
+  "toxx": {
+    "url": "https://cdn.knockout.chat/assets/emotes/toxx.webp"
+  },
+  "tried": {
+    "title": "u tryd",
+    "url": "https://cdn.knockout.chat/assets/emotes/tried.webp"
+  },
+  "trumpet": {
+    "url": "https://cdn.knockout.chat/assets/emotes/trumpet.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/trumpet.dark.webp"
+  },
+  "unimpressed": {
+    "url": "https://cdn.knockout.chat/assets/emotes/unimpressed.webp"
+  },
+  "v": {
+    "title": "funny",
+    "url": "https://cdn.knockout.chat/assets/emotes/v.webp"
+  },
+  "vomit": {
+    "url": "https://cdn.knockout.chat/assets/emotes/vomit.webp"
+  },
+  "vr": {
+    "url": "https://cdn.knockout.chat/assets/emotes/vr.webp"
+  },
+  "vrreact": {
+    "url": "https://cdn.knockout.chat/assets/emotes/vrreact.webp"
+  },
+  "vs": {
+    "title": "Sarcastic Funny",
+    "url": "https://cdn.knockout.chat/assets/emotes/vs.webp"
+  },
+  "wavey": {
+    "url": "https://cdn.knockout.chat/assets/emotes/wavey.webp"
+  },
+  "weeb": {
+    "url": "https://cdn.knockout.chat/assets/emotes/weeb.webp"
+  },
+  "what": {
+    "title": "what?",
+    "url": "https://cdn.knockout.chat/assets/emotes/what.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/what.dark.webp"
+  },
+  "why": {
+    "url": "https://cdn.knockout.chat/assets/emotes/why.webp"
+  },
+  "wideeye": {
+    "url": "https://cdn.knockout.chat/assets/emotes/wideeye.webp"
+  },
+  "wink": {
+    "url": "https://cdn.knockout.chat/assets/emotes/wink.webp"
+  },
+  "words": {
+    "url": "https://cdn.knockout.chat/assets/emotes/words.webp"
+  },
+  "worried": {
+    "url": "https://cdn.knockout.chat/assets/emotes/worried.webp"
+  },
+  "wow": {
+    "url": "https://cdn.knockout.chat/assets/emotes/wow.webp"
+  },
+  "wok": {
+    "url": "https://cdn.knockout.chat/assets/emotes/wok.webp"
+  },
+  "wtc": {
+    "title": "what the christ",
+    "url": "https://cdn.knockout.chat/assets/emotes/wtc.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/wtc.dark.webp"
+  },
+  "xfiles": {
+    "url": "https://cdn.knockout.chat/assets/emotes/xfiles.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/xfiles.dark.webp"
+  },
+  "yarr": {
+    "url": "https://cdn.knockout.chat/assets/emotes/yarr.webp",
+    "url_dark": "https://cdn.knockout.chat/assets/emotes/yarr.dark.webp"
+  },
+  "zing": {
+    "url": "https://cdn.knockout.chat/assets/emotes/zing.webp"
+  }
+}
