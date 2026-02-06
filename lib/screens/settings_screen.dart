@@ -157,6 +157,7 @@ class SettingsScreen extends StatelessWidget {
                     );
                     await FirebaseAnalytics.instance
                         .setAnalyticsCollectionEnabled(true);
+                    await FirebaseAnalytics.instance.logAppOpen();
                   } else {
                     if (Firebase.apps.isNotEmpty) {
                       await FirebaseAnalytics.instance

@@ -22,6 +22,7 @@ class WelcomeScreen extends StatelessWidget {
         options: DefaultFirebaseOptions.currentPlatform,
       );
       await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+      await FirebaseAnalytics.instance.logAppOpen();
     }
 
     if (context.mounted) {

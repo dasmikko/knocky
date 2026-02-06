@@ -25,6 +25,7 @@ void main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+    await FirebaseAnalytics.instance.logAppOpen();
   }
 
   // Load API service and apply stored base URL
