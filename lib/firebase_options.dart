@@ -54,9 +54,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCCp1Ddw6kvd6Kfr8HVKwFiE-Ejr-bBtLg',
-    appId: '1:94914695644:android:2f63d0b52b9fd120bb7f19',
+    appId: '1:94914695644:android:756d62a9db62f5cdbb7f19',
     messagingSenderId: '94914695644',
     projectId: 'knocky-790f1',
     storageBucket: 'knocky-790f1.firebasestorage.app',
   );
+
 }
