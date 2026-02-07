@@ -24,12 +24,14 @@ class ThreadScreen extends StatefulWidget {
   final int threadId;
   final String threadTitle;
   final int? page;
+  final bool scrollToUnread;
 
   const ThreadScreen({
     super.key,
     required this.threadId,
     required this.threadTitle,
     this.page,
+    this.scrollToUnread = false,
   });
 
   @override
@@ -45,6 +47,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
   final Map<int, ThreadResponse> _pageCache = {};
   CancelToken? _pageCancelToken;
   ReadThread? _initialReadThread;
+  bool _shouldScrollToUnread = false;
 
   // Scroll tracking for paginator
   final Map<int, ScrollController> _scrollControllers = {};
@@ -66,6 +69,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
   void initState() {
     super.initState();
     _currentPage = widget.page ?? 1;
+    _shouldScrollToUnread = widget.scrollToUnread;
     _pageController = PageController(initialPage: _currentPage - 1);
     _paginatorController.onVisibilityChanged = (visible) {
       setState(() => _isPaginatorVisible = visible);
@@ -129,6 +133,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
         _isLoading = false;
       });
       _markPageAsRead(response);
+      _scrollToFirstUnread(response);
     } catch (e) {
       setState(() {
         _error = e.toString();
@@ -255,6 +260,36 @@ class _ThreadScreenState extends State<ThreadScreen> {
     if (lastPostOnPage.id < readThread.firstUnreadId) return;
 
     apiService.markThreadRead(widget.threadId, lastPostOnPage.threadPostNumber);
+  }
+
+  void _scrollToFirstUnread(ThreadResponse response) {
+    if (!_shouldScrollToUnread) return;
+    _shouldScrollToUnread = false;
+
+    final readThread = _initialReadThread;
+    if (readThread == null || response.posts.isEmpty) return;
+
+    final firstUnreadIndex = response.posts.indexWhere(
+      (post) => post.threadPostNumber > readThread.lastPostNumber,
+    );
+    if (firstUnreadIndex <= 0) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final controller = _getScrollController(_currentPage);
+      if (!controller.hasClients) return;
+
+      final itemCount = response.posts.length;
+      if (itemCount <= 1) return;
+
+      final fraction = firstUnreadIndex / itemCount;
+      final targetOffset = fraction * controller.position.maxScrollExtent;
+
+      controller.animateTo(
+        targetOffset,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
   }
 
   Future<void> _toggleSubscription() async {

@@ -207,6 +207,7 @@ class UserThreadListItem extends StatelessWidget {
                 threadId: thread.id,
                 threadTitle: thread.title,
                 page: page,
+                scrollToUnread: true,
               ),
             ),
           );
