@@ -127,7 +127,7 @@ class KnockoutApiService extends ChangeNotifier {
     try {
       final response = await _dio.get(
         '/v2/subforums',
-        queryParameters: {if (showNsfw) 'nsfw': 1},
+        queryParameters: {if (!showNsfw) 'hideNsfw': 1},
         options: _options,
       );
 
@@ -177,7 +177,7 @@ class KnockoutApiService extends ChangeNotifier {
     try {
       final response = await _dio.get(
         '/v2/subforums/$subforumId/$page',
-        queryParameters: {if (showNsfw) 'nsfw': 1},
+        queryParameters: {if (!showNsfw) 'hideNsfw': 1},
         options: _options,
         cancelToken: cancelToken,
       );
@@ -196,7 +196,7 @@ class KnockoutApiService extends ChangeNotifier {
     try {
       final response = await _dio.get(
         '/v2/threads/latest',
-        queryParameters: {if (showNsfw) 'nsfw': 1},
+        queryParameters: {if (!showNsfw) 'hideNsfw': 1},
         options: _options,
       );
 
@@ -225,7 +225,7 @@ class KnockoutApiService extends ChangeNotifier {
     try {
       final response = await _dio.get(
         '/v2/threads/popular',
-        queryParameters: {if (showNsfw) 'nsfw': 1},
+        queryParameters: {if (!showNsfw) 'hideNsfw': 1},
         options: _options,
       );
 
