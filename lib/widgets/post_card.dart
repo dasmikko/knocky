@@ -19,12 +19,14 @@ class PostCard extends StatelessWidget {
   final VoidCallback? onRate;
   final void Function(String ratingName, String? assetPath, List<dynamic> users)?
       onShowRatingUsers;
+  final bool isUnread;
 
   const PostCard({
     super.key,
     required this.post,
     this.isAuthenticated = false,
     this.isOwnPost = false,
+    this.isUnread = false,
     this.userRatingCode,
     this.onQuote,
     this.onEdit,
@@ -134,6 +136,26 @@ class PostCard extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                if (isUnread) ...[
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      'NEW',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                ],
                 if (post.countryCode != null) ...[
                   Tooltip(
                     message: post.countryName ?? post.countryCode!,

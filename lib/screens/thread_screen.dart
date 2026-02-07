@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../models/read_thread.dart';
 import '../models/thread_response.dart';
 import '../models/thread_post.dart';
 import '../services/knockout_api_service.dart';
@@ -43,6 +44,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
   late PageController _pageController;
   final Map<int, ThreadResponse> _pageCache = {};
   CancelToken? _pageCancelToken;
+  ReadThread? _initialReadThread;
 
   // Scroll tracking for paginator
   final Map<int, ScrollController> _scrollControllers = {};
@@ -120,6 +122,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
       );
       _pageController.dispose();
       _pageController = PageController(initialPage: _currentPage - 1);
+      _initialReadThread ??= response.readThread;
       setState(() {
         _threadResponse = response;
         _pageCache[_currentPage] = response;
@@ -460,11 +463,15 @@ class _ThreadScreenState extends State<ThreadScreen> {
     final apiService = context.watch<KnockoutApiService>();
     final userRating = _getUserRating(post.ratings);
     final isOwnPost = post.userId == apiService.syncData?.id;
+    final lastReadPost = _initialReadThread?.lastPostNumber;
+    final isUnread =
+        lastReadPost != null && lastReadPost < post.threadPostNumber;
 
     return PostCard(
       post: post,
       isAuthenticated: apiService.isAuthenticated,
       isOwnPost: isOwnPost,
+      isUnread: isUnread,
       userRatingCode: userRating,
       onQuote: () => _quotePost(post),
       onEdit: () => _editPost(post),
