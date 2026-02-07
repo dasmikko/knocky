@@ -71,6 +71,7 @@ dependencies:
   # Firebase
   firebase_core: ^3.12.1
   firebase_analytics: ^11.6.0
+  flutter_dotenv: ^6.0.0
 
 dev_dependencies:
   flutter_test:
@@ -111,6 +112,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - .env
     - assets/logo.png
     - assets/icons/
     - assets/emotes/
