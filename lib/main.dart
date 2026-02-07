@@ -19,13 +19,17 @@ void main() async {
   final settings = SettingsService();
   await settings.load();
 
-  // Initialize Firebase if user has consented
+  // Initialize Firebase if user has consented (only on supported platforms)
   if (settings.analyticsConsent) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
-    await FirebaseAnalytics.instance.logAppOpen();
+    try {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+      await FirebaseAnalytics.instance.logAppOpen();
+    } on UnsupportedError {
+      // Firebase not configured for this platform (e.g. Linux) — skip
+    }
   }
 
   // Load API service and apply stored base URL
