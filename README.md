@@ -25,7 +25,11 @@ It's because knockout.chat has NSFW content, and if I want to release it there, 
 
 ## Privacy
 
-The app includes firebase, for tracking installs. It does not collect any other data. 
+The app includes firebase, for tracking installs. It does not collect any other data.
+
+This it completely optional, and the app will ask for consent upon opening the first time. You can always update the consent in the settings.
+
+## Discord
 
 Best way to keep updated is, joining the Discord server: https://discord.gg/4AnpprqK
 
