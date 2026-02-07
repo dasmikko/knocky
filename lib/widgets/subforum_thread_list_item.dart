@@ -28,6 +28,16 @@ class SubforumThreadListItem extends StatelessWidget {
     }
   }
 
+  bool get _isNsfw {
+    if (thread.tags.isEmpty) return false;
+    final tag = thread.tags.first;
+    if (tag is Map) {
+      final value = tag.values.firstOrNull?.toString().toLowerCase() ?? '';
+      return value == 'nsfw';
+    }
+    return tag.toString().toLowerCase() == 'nsfw';
+  }
+
   @override
   Widget build(BuildContext context) {
     final hasUnread =
@@ -125,6 +135,26 @@ class SubforumThreadListItem extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.only(right: 8),
             child: Icon(Icons.lock, size: 16, color: Colors.grey),
+          ),
+        if (_isNsfw)
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: const Text(
+                'NSFW',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
           ),
         Expanded(
           child: Text(
