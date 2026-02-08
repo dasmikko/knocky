@@ -28,11 +28,11 @@ void main() async {
     try {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
-      );
+      ).timeout(const Duration(seconds: 5));
       await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
       await FirebaseAnalytics.instance.logAppOpen();
-    } on UnsupportedError {
-      // Firebase not configured for this platform (e.g. Linux) — skip
+    } catch (_) {
+      // Firebase init failed — continue without analytics
     }
   }
 
