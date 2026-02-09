@@ -81,7 +81,7 @@ class ConversationListItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              _formatTimeAgo(conversation.updatedAt),
+              _formatTimeAgo(conversation.updatedAt ?? ''),
               style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
             ),
             if (hasUnread)

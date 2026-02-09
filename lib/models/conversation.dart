@@ -9,15 +9,15 @@ class Conversation {
   final int id;
   final List<Message> messages;
   final List<ThreadUser> users;
-  final String createdAt;
-  final String updatedAt;
+  final String? createdAt;
+  final String? updatedAt;
 
   Conversation({
     required this.id,
     required this.messages,
     required this.users,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   /// Get the other participants in the conversation (excluding the current user)
@@ -30,7 +30,7 @@ class Conversation {
 
   /// Check if there are unread messages
   bool hasUnread(int currentUserId) {
-    return messages.any((m) => m.user.id != currentUserId && m.readAt == null);
+    return messages.any((m) => m.user?.id != currentUserId && m.readAt == null);
   }
 
   factory Conversation.fromJson(Map<String, dynamic> json) =>

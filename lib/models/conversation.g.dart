@@ -14,8 +14,8 @@ Conversation _$ConversationFromJson(Map<String, dynamic> json) => Conversation(
   users: (json['users'] as List<dynamic>)
       .map((e) => ThreadUser.fromJson(e as Map<String, dynamic>))
       .toList(),
-  createdAt: json['createdAt'] as String,
-  updatedAt: json['updatedAt'] as String,
+  createdAt: json['createdAt'] as String?,
+  updatedAt: json['updatedAt'] as String?,
 );
 
 Map<String, dynamic> _$ConversationToJson(Conversation instance) =>

@@ -8,7 +8,9 @@ class ThreadUser {
   final int id;
   final Role role;
   final String username;
+  @JsonKey(defaultValue: '')
   final String avatarUrl;
+  @JsonKey(defaultValue: '')
   final String backgroundUrl;
   final int posts;
   final int threads;

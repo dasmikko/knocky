@@ -13,9 +13,6 @@ KnockyNotification _$KnockyNotificationFromJson(Map<String, dynamic> json) =>
       userId: (json['userId'] as num).toInt(),
       read: json['read'] as bool,
       createdAt: json['createdAt'] as String,
-      data: json['data'] == null
-          ? null
-          : Conversation.fromJson(json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$KnockyNotificationToJson(KnockyNotification instance) =>
@@ -25,5 +22,4 @@ Map<String, dynamic> _$KnockyNotificationToJson(KnockyNotification instance) =>
       'userId': instance.userId,
       'read': instance.read,
       'createdAt': instance.createdAt,
-      'data': instance.data,
     };

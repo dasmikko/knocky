@@ -168,7 +168,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
 
   Widget _buildMessageBubble(Message message, bool isMe) {
-    final avatarUrl = message.user.avatarUrl;
+    final avatarUrl = message.user?.avatarUrl ?? '';
     final hasAvatar = avatarUrl.isNotEmpty && avatarUrl != 'none.webp';
 
     return Padding(
@@ -179,14 +179,16 @@ class _ConversationScreenState extends State<ConversationScreen> {
         children: [
           if (!isMe) ...[
             GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UserScreen(userId: message.user.id),
-                  ),
-                );
-              },
+              onTap: message.user != null
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UserScreen(userId: message.user!.id),
+                        ),
+                      );
+                    }
+                  : null,
               child: CircleAvatar(
                 radius: 16,
                 backgroundImage: hasAvatar
@@ -218,12 +220,12 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 crossAxisAlignment:
                     isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: [
-                  if (!isMe)
+                  if (!isMe && message.user != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 4),
                       child: RoleColoredUsername(
-                        username: message.user.username,
-                        roleCode: message.user.role.code,
+                        username: message.user!.username,
+                        roleCode: message.user!.role.code,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
@@ -253,7 +255,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => UserScreen(userId: message.user.id),
+                    builder: (context) => UserScreen(userId: message.user!.id),
                   ),
                 );
               },
@@ -335,7 +337,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
-                final isMe = message.user.id == _getCurrentUserId(context);
+                final isMe = message.user?.id == _getCurrentUserId(context);
                 return _buildMessageBubble(message, isMe);
               },
             ),

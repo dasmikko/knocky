@@ -9,7 +9,9 @@ part of 'message.dart';
 Message _$MessageFromJson(Map<String, dynamic> json) => Message(
   id: (json['id'] as num).toInt(),
   conversationId: (json['conversationId'] as num).toInt(),
-  user: ThreadUser.fromJson(json['user'] as Map<String, dynamic>),
+  user: json['user'] == null
+      ? null
+      : ThreadUser.fromJson(json['user'] as Map<String, dynamic>),
   content: json['content'] as String,
   readAt: json['readAt'] as String?,
   createdAt: json['createdAt'] as String,

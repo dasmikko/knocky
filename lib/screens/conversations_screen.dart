@@ -34,7 +34,7 @@ class _ConversationsScreenState extends State<ConversationsScreen> {
 
     try {
       final conversations = await context.read<KnockoutApiService>().getConversations();
-      conversations.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      conversations.sort((a, b) => (b.updatedAt ?? '').compareTo(a.updatedAt ?? ''));
       setState(() {
         _conversations = conversations;
         _isLoading = false;

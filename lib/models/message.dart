@@ -7,7 +7,7 @@ part 'message.g.dart';
 class Message {
   final int id;
   final int conversationId;
-  final ThreadUser user;
+  final ThreadUser? user;
   final String content;
   final String? readAt;
   final String createdAt;
@@ -16,7 +16,7 @@ class Message {
   Message({
     required this.id,
     required this.conversationId,
-    required this.user,
+    this.user,
     required this.content,
     this.readAt,
     required this.createdAt,
