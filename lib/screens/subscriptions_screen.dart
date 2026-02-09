@@ -244,7 +244,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
             unreadPosts: alert.unreadPosts,
             onUnreadTap: () {
               final lastPostNumber = thread.postCount - alert.unreadPosts;
-              final page = (lastPostNumber ~/ 20) + 1;
+              final page = ((lastPostNumber - 1) ~/ 20) + 1;
               Navigator.push(
                 context,
                 MaterialPageRoute(

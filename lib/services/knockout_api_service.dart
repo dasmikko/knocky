@@ -382,13 +382,13 @@ class KnockoutApiService extends ChangeNotifier {
   }
 
   /// Subscribe to a thread
-  Future<bool> subscribeToThread(int threadId, int lastPostId) async {
+  Future<bool> subscribeToThread(int threadId, int lastPostNumber) async {
     if (!isAuthenticated) return false;
 
     try {
       await _dio.post(
         '/v2/alerts',
-        data: {'threadId': threadId, 'lastPostNumber': lastPostId},
+        data: {'threadId': threadId, 'lastPostNumber': lastPostNumber},
         options: _options,
       );
       await getSyncData(); // Refresh sync data

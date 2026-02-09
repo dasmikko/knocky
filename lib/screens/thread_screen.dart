@@ -303,8 +303,8 @@ class _ThreadScreenState extends State<ThreadScreen> {
     if (_isSubscribed) {
       success = await apiService.unsubscribeFromThread(widget.threadId);
     } else {
-      final lastPostId = _pageCache[_currentPage]?.posts.last.id ?? 0;
-      success = await apiService.subscribeToThread(widget.threadId, lastPostId);
+      final lastPostNumber = _pageCache[_currentPage]?.posts.last.threadPostNumber ?? 0;
+      success = await apiService.subscribeToThread(widget.threadId, lastPostNumber);
     }
 
     if (mounted) {
