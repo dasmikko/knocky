@@ -209,7 +209,7 @@ class SubscriptionListItem extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           final lastPostNumber = thread.postCount - alert.unreadPosts;
-          final page = ((lastPostNumber - 1) ~/ 20) + 1;
+          final page = (lastPostNumber ~/ 20) + 1;
           Navigator.push(
             context,
             MaterialPageRoute(
