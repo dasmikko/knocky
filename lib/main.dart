@@ -26,13 +26,15 @@ void main() async {
   // Initialize Firebase if user has consented (only on supported platforms)
   if (settings.analyticsConsent) {
     try {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+      if (Firebase.apps.isEmpty) {
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        ).timeout(const Duration(seconds: 5));
+      }
       await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
       await FirebaseAnalytics.instance.logAppOpen();
-    } on UnsupportedError {
-      // Firebase not configured for this platform (e.g. Linux) — skip
+    } catch (_) {
+      // Firebase init failed — continue without analytics
     }
   }
 
