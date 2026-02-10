@@ -32,24 +32,86 @@ class BbcodeRenderer extends StatelessWidget {
 
   /// Simple link tags: [tagname]url[/tagname] → tappable link block
   static const _linkTags = {
-    'youtube': (label: 'YouTube', icon: FontAwesomeIcons.youtube, color: Colors.red),
-    'vimeo': (label: 'Vimeo', icon: FontAwesomeIcons.vimeo, color: Color(0xFF1AB7EA)),
-    'streamable': (label: 'Streamable', icon: Icons.stream, color: Color(0xFF0F90FA)),
+    'youtube': (
+      label: 'YouTube',
+      icon: FontAwesomeIcons.youtube,
+      color: Colors.red,
+    ),
+    'vimeo': (
+      label: 'Vimeo',
+      icon: FontAwesomeIcons.vimeo,
+      color: Color(0xFF1AB7EA),
+    ),
+    'streamable': (
+      label: 'Streamable',
+      icon: Icons.stream,
+      color: Color(0xFF0F90FA),
+    ),
     'vocaroo': (label: 'Vocaroo', icon: Icons.mic, color: Color(0xFF4CAF50)),
-    'spotify': (label: 'Spotify', icon: Icons.music_note, color: Color(0xFF1DB954)),
-    'soundcloud': (label: 'SoundCloud', icon: FontAwesomeIcons.soundcloud, color: Color(0xFFFF5500)),
-    'twitter': (label: 'Twitter', icon: FontAwesomeIcons.twitter, color: Color(0xFF1DA1F2)),
-    'reddit': (label: 'Reddit', icon: FontAwesomeIcons.reddit, color: Colors.deepOrange),
-    'twitch': (label: 'Twitch', icon: FontAwesomeIcons.twitch, color: Colors.purple),
-    'bluesky': (label: 'Bluesky', icon: FontAwesomeIcons.bluesky, color: Color(0xFF0085FF)),
-    'instagram': (label: 'Instagram', icon: FontAwesomeIcons.instagram, color: Color(0xFFE1306C)),
-    'tiktok': (label: 'TikTok', icon: FontAwesomeIcons.tiktok, color: Color(0xFF010101)),
-    'tumblr': (label: 'Tumblr', icon: FontAwesomeIcons.tumblr, color: Color(0xFF36465D)),
-    'mastodon': (label: 'Mastodon', icon: FontAwesomeIcons.mastodon, color: Color(0xFF6364FF)),
+    'spotify': (
+      label: 'Spotify',
+      icon: Icons.music_note,
+      color: Color(0xFF1DB954),
+    ),
+    'soundcloud': (
+      label: 'SoundCloud',
+      icon: FontAwesomeIcons.soundcloud,
+      color: Color(0xFFFF5500),
+    ),
+    'twitter': (
+      label: 'Twitter',
+      icon: FontAwesomeIcons.twitter,
+      color: Color(0xFF1DA1F2),
+    ),
+    'reddit': (
+      label: 'Reddit',
+      icon: FontAwesomeIcons.reddit,
+      color: Colors.deepOrange,
+    ),
+    'twitch': (
+      label: 'Twitch',
+      icon: FontAwesomeIcons.twitch,
+      color: Colors.purple,
+    ),
+    'bluesky': (
+      label: 'Bluesky',
+      icon: FontAwesomeIcons.bluesky,
+      color: Color(0xFF0085FF),
+    ),
+    'instagram': (
+      label: 'Instagram',
+      icon: FontAwesomeIcons.instagram,
+      color: Color(0xFFE1306C),
+    ),
+    'tiktok': (
+      label: 'TikTok',
+      icon: FontAwesomeIcons.tiktok,
+      color: Color(0xFF010101),
+    ),
+    'tumblr': (
+      label: 'Tumblr',
+      icon: FontAwesomeIcons.tumblr,
+      color: Color(0xFF36465D),
+    ),
+    'mastodon': (
+      label: 'Mastodon',
+      icon: FontAwesomeIcons.mastodon,
+      color: Color(0xFF6364FF),
+    ),
   };
 
   /// Custom tags that need special rendering (handled in _buildBlock)
-  static const _customTags = ['quote', 'blockquote', 'img', 'video', 'ol', 'ul', 'spoiler', 'collapse', 'code'];
+  static const _customTags = [
+    'quote',
+    'blockquote',
+    'img',
+    'video',
+    'ol',
+    'ul',
+    'spoiler',
+    'collapse',
+    'code',
+  ];
 
   // ============================================================================
   // RENDERING
@@ -70,10 +132,7 @@ class BbcodeRenderer extends StatelessWidget {
   Widget _buildBlock(BuildContext context, _Block block) {
     // Check if it's an embed tag - use rich preview cards
     if (_linkTags.containsKey(block.tag)) {
-      return EmbedPreviewCard(
-        url: block.content,
-        provider: block.tag,
-      );
+      return EmbedPreviewCard(url: block.content, provider: block.tag);
     }
 
     // Handle custom tags
@@ -153,19 +212,25 @@ class BbcodeRenderer extends StatelessWidget {
       _TagMatch? earliest;
 
       for (final tag in _allTags) {
-        final pattern = RegExp(
-          '\\[$tag([^\\]]*)\\](.*?)\\[/$tag\\]',
-          caseSensitive: false,
-          dotAll: true,
-        );
-        final match = pattern.firstMatch(remaining);
-        if (match != null && (earliest == null || match.start < earliest.start)) {
+        // Find the opening tag
+        final openPattern = RegExp('\\[$tag([^\\]]*)\\]', caseSensitive: false);
+        final openMatch = openPattern.firstMatch(remaining);
+        if (openMatch == null) continue;
+
+        // Find the matching closing tag (accounting for nesting)
+        final closeIndex = _findMatchingClose(remaining, tag, openMatch.end);
+        if (closeIndex == -1) continue;
+
+        final content = remaining.substring(openMatch.end, closeIndex);
+        final end = closeIndex + '[/$tag]'.length;
+
+        if (earliest == null || openMatch.start < earliest.start) {
           earliest = _TagMatch(
             tag: tag,
-            start: match.start,
-            end: match.end,
-            attributes: match.group(1) ?? '',
-            content: match.group(2) ?? '',
+            start: openMatch.start,
+            end: end,
+            attributes: openMatch.group(1) ?? '',
+            content: content,
           );
         }
       }
@@ -185,16 +250,47 @@ class BbcodeRenderer extends StatelessWidget {
       }
 
       // The tag itself
-      blocks.add(_Block(
-        earliest.tag,
-        earliest.content,
-        _parseAttributes(earliest.attributes),
-      ));
+      blocks.add(
+        _Block(
+          earliest.tag,
+          earliest.content,
+          _parseAttributes(earliest.attributes),
+        ),
+      );
 
       remaining = remaining.substring(earliest.end);
     }
 
     return blocks;
+  }
+
+  /// Finds the index of the matching closing tag, accounting for nesting.
+  /// Returns the start index of the closing tag, or -1 if not found.
+  int _findMatchingClose(String input, String tag, int startFrom) {
+    final openPattern = RegExp('\\[$tag[^\\]]*\\]', caseSensitive: false);
+    final closePattern = RegExp('\\[/$tag\\]', caseSensitive: false);
+
+    var depth = 1;
+    var pos = startFrom;
+
+    while (pos < input.length && depth > 0) {
+      final sub = input.substring(pos);
+      final nextOpen = openPattern.firstMatch(sub);
+      final nextClose = closePattern.firstMatch(sub);
+
+      if (nextClose == null) return -1;
+
+      if (nextOpen != null && nextOpen.start < nextClose.start) {
+        depth++;
+        pos += nextOpen.end;
+      } else {
+        depth--;
+        if (depth == 0) return pos + nextClose.start;
+        pos += nextClose.end;
+      }
+    }
+
+    return -1;
   }
 
   Map<String, String> _parseAttributes(String attrString) {
@@ -215,7 +311,8 @@ class BbcodeRenderer extends StatelessWidget {
     // Convert [url href="..."]text[/url] → [url=...]text[/url]
     result = result.replaceAllMapped(
       RegExp(r'\[url href="([^"]+)"\](.*?)\[/url\]', caseSensitive: false),
-      (m) => '[url=${m.group(1)!}]${m.group(2)!.isNotEmpty ? m.group(2)! : m.group(1)!}[/url]',
+      (m) =>
+          '[url=${m.group(1)!}]${m.group(2)!.isNotEmpty ? m.group(2)! : m.group(1)!}[/url]',
     );
     // Convert [URL]link[/URL] → [URL=link]link[/URL]
     result = result.replaceAllMapped(
@@ -237,7 +334,9 @@ class BbcodeRenderer extends StatelessWidget {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: lines.map((line) => _buildLineWithEmotes(context, line)).toList(),
+      children: lines
+          .map((line) => _buildLineWithEmotes(context, line))
+          .toList(),
     );
   }
 
@@ -303,7 +402,8 @@ class BbcodeRenderer extends StatelessWidget {
       children: segments.map((segment) {
         if (segment.isEmote && segment.emote != null) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
-          final emoteAssetPath = (isDark && segment.emote!.assetPathDark != null)
+          final emoteAssetPath =
+              (isDark && segment.emote!.assetPathDark != null)
               ? segment.emote!.assetPathDark!
               : segment.emote!.assetPath;
           return Tooltip(
@@ -343,17 +443,17 @@ class BbcodeRenderer extends StatelessWidget {
   BBStylesheet _buildStylesheet(BuildContext context) {
     final theme = Theme.of(context);
     return defaultBBStylesheet(
-      textStyle: TextStyle(
-        fontSize: 14,
-        color: theme.textTheme.bodyMedium?.color,
-      ),
-    )
+        textStyle: TextStyle(
+          fontSize: 14,
+          color: theme.textTheme.bodyMedium?.color,
+        ),
+      )
       ..replaceTag(UrlTag(onTap: _launchUrl))
-      ..replaceTag(HeaderTag(1, 22))  // h1 - was ~32 by default
-      ..replaceTag(HeaderTag(2, 20))  // h2
-      ..replaceTag(HeaderTag(3, 18))  // h3
-      ..replaceTag(HeaderTag(4, 16))  // h4
-      ..replaceTag(HeaderTag(5, 15))  // h5
+      ..replaceTag(HeaderTag(1, 22)) // h1 - was ~32 by default
+      ..replaceTag(HeaderTag(2, 20)) // h2
+      ..replaceTag(HeaderTag(3, 18)) // h3
+      ..replaceTag(HeaderTag(4, 16)) // h4
+      ..replaceTag(HeaderTag(5, 15)) // h5
       ..replaceTag(HeaderTag(6, 14)); // h6
   }
 
@@ -383,8 +483,12 @@ class BbcodeRenderer extends StatelessWidget {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          border: Border(left: BorderSide(color: theme.colorScheme.primary, width: 3)),
-          color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+          border: Border(
+            left: BorderSide(color: theme.colorScheme.primary, width: 3),
+          ),
+          color: theme.colorScheme.surfaceContainerHighest.withValues(
+            alpha: 0.5,
+          ),
         ),
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -417,7 +521,10 @@ class BbcodeRenderer extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 4),
-            BbcodeRenderer(content: block.content, postId: quotedPostId ?? postId),
+            BbcodeRenderer(
+              content: block.content,
+              postId: quotedPostId ?? postId,
+            ),
           ],
         ),
       ),
@@ -432,8 +539,12 @@ class BbcodeRenderer extends StatelessWidget {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          border: Border(left: BorderSide(color: theme.colorScheme.primary, width: 3)),
-          color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+          border: Border(
+            left: BorderSide(color: theme.colorScheme.primary, width: 3),
+          ),
+          color: theme.colorScheme.surfaceContainerHighest.withValues(
+            alpha: 0.5,
+          ),
         ),
         padding: const EdgeInsets.all(12),
         child: BbcodeRenderer(content: block.content, postId: postId),
@@ -447,7 +558,7 @@ class BbcodeRenderer extends StatelessWidget {
 
     // Use a brighter background that stands out from the post background
     final bgColor = isDark
-        ? const Color(0xFF3A4A5C)  // Brighter than dark post bg
+        ? const Color(0xFF3A4A5C) // Brighter than dark post bg
         : const Color(0xFFD0D0D0); // Darker than light post bg
 
     return Padding(
@@ -464,15 +575,21 @@ class BbcodeRenderer extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final bgColor = isDark
-        ? const Color(0xFF3A4A5C)
-        : const Color(0xFFD0D0D0);
+    final bgColor = isDark ? const Color(0xFF3A4A5C) : const Color(0xFFD0D0D0);
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+    final borderColor = isDark
+        ? const Color(0xFF1E2E3E)
+        : const Color(0xFF999999);
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: borderColor, width: 1.0),
+        borderRadius: BorderRadius.circular(4),
+      ),
       child: _CollapseWidget(
         title: title,
         backgroundColor: bgColor,
+        borderColor: borderColor,
         child: BbcodeRenderer(content: block.content, postId: postId),
       ),
     );
@@ -483,7 +600,7 @@ class BbcodeRenderer extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     final bgColor = isDark
-        ? const Color(0xFF1A1A2E)  // Dark code background
+        ? const Color(0xFF1A1A2E) // Dark code background
         : const Color(0xFFF5F5F5); // Light code background
 
     final borderColor = isDark
@@ -517,7 +634,9 @@ class BbcodeRenderer extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: borderColor,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(5)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(5),
+                ),
               ),
               child: Row(
                 children: [
@@ -556,13 +675,26 @@ class BbcodeRenderer extends StatelessWidget {
     );
   }
 
-  Widget _buildList(BuildContext context, String content, {required bool ordered}) {
-    final liPattern = RegExp(r'\[li\](.*?)\[/li\]', caseSensitive: false, dotAll: true);
-    final items = liPattern.allMatches(content).map((m) => m.group(1) ?? '').toList();
+  Widget _buildList(
+    BuildContext context,
+    String content, {
+    required bool ordered,
+  }) {
+    final liPattern = RegExp(
+      r'\[li\](.*?)\[/li\]',
+      caseSensitive: false,
+      dotAll: true,
+    );
+    final items = liPattern
+        .allMatches(content)
+        .map((m) => m.group(1) ?? '')
+        .toList();
 
     if (items.isEmpty) return const SizedBox.shrink();
 
-    final bulletWidth = ordered ? (items.length.toString().length * 10.0) + 12 : 16.0;
+    final bulletWidth = ordered
+        ? (items.length.toString().length * 10.0) + 12
+        : 16.0;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -585,7 +717,12 @@ class BbcodeRenderer extends StatelessWidget {
                     ),
                   ),
                 ),
-                Expanded(child: BbcodeRenderer(content: entry.value.trim(), postId: postId)),
+                Expanded(
+                  child: BbcodeRenderer(
+                    content: entry.value.trim(),
+                    postId: postId,
+                  ),
+                ),
               ],
             ),
           );
@@ -603,7 +740,10 @@ class BbcodeRenderer extends StatelessWidget {
       child: GestureDetector(
         onTap: () => Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => ImageViewerScreen(url: trimmedUrl, heroTag: heroTag)),
+          MaterialPageRoute(
+            builder: (_) =>
+                ImageViewerScreen(url: trimmedUrl, heroTag: heroTag),
+          ),
         ),
         child: Hero(
           tag: heroTag,
@@ -616,9 +756,15 @@ class BbcodeRenderer extends StatelessWidget {
                 imageUrl: trimmedUrl,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Container(
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                   child: const Center(
-                    child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
                   ),
                 ),
                 errorWidget: (context, url, error) => Container(
@@ -632,7 +778,10 @@ class BbcodeRenderer extends StatelessWidget {
                     children: [
                       Icon(Icons.broken_image, color: Colors.grey),
                       SizedBox(width: 8),
-                      Text('Image failed to load', style: TextStyle(color: Colors.grey)),
+                      Text(
+                        'Image failed to load',
+                        style: TextStyle(color: Colors.grey),
+                      ),
                     ],
                   ),
                 ),
@@ -646,12 +795,16 @@ class BbcodeRenderer extends StatelessWidget {
 
   Widget _buildVideoBlock(BuildContext context, String url) {
     final trimmedUrl = url.trim();
-    final filename = Uri.tryParse(trimmedUrl)?.pathSegments.lastOrNull ?? 'Video';
+    final filename =
+        Uri.tryParse(trimmedUrl)?.pathSegments.lastOrNull ?? 'Video';
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: InkWell(
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => VideoPlayerScreen(url: trimmedUrl))),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => VideoPlayerScreen(url: trimmedUrl)),
+        ),
         borderRadius: BorderRadius.circular(8),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -662,10 +815,18 @@ class BbcodeRenderer extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.play_circle_outline, size: 18, color: Colors.purple),
+              const Icon(
+                Icons.play_circle_outline,
+                size: 18,
+                color: Colors.purple,
+              ),
               const SizedBox(width: 8),
               Flexible(
-                child: Text(filename, style: const TextStyle(color: Colors.purple, fontSize: 13), overflow: TextOverflow.ellipsis),
+                child: Text(
+                  filename,
+                  style: const TextStyle(color: Colors.purple, fontSize: 13),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
@@ -723,10 +884,7 @@ class _SpoilerWidget extends StatefulWidget {
   final Widget child;
   final Color backgroundColor;
 
-  const _SpoilerWidget({
-    required this.child,
-    required this.backgroundColor,
-  });
+  const _SpoilerWidget({required this.child, required this.backgroundColor});
 
   @override
   State<_SpoilerWidget> createState() => _SpoilerWidgetState();
@@ -764,7 +922,9 @@ class _SpoilerWidgetState extends State<_SpoilerWidget>
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    _isRevealed ? 'Spoiler (tap to hide)' : 'Spoiler (tap to reveal)',
+                    _isRevealed
+                        ? 'Spoiler (tap to hide)'
+                        : 'Spoiler (tap to reveal)',
                     style: theme.textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
@@ -806,11 +966,13 @@ class _CollapseWidget extends StatefulWidget {
   final String title;
   final Widget child;
   final Color backgroundColor;
+  final Color borderColor;
 
   const _CollapseWidget({
     required this.title,
     required this.child,
     required this.backgroundColor,
+    required this.borderColor,
   });
 
   @override
@@ -827,15 +989,17 @@ class _CollapseWidgetState extends State<_CollapseWidget> {
     return Material(
       color: widget.backgroundColor,
       borderRadius: BorderRadius.circular(4),
-      child: InkWell(
-        onTap: () => setState(() => _isExpanded = !_isExpanded),
-        borderRadius: BorderRadius.circular(4),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+      clipBehavior: Clip.hardEdge,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          InkWell(
+            onTap: () => setState(() => _isExpanded = !_isExpanded),
+            borderRadius: BorderRadius.circular(4),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
                 children: [
                   Expanded(
                     child: Text(
@@ -856,21 +1020,20 @@ class _CollapseWidgetState extends State<_CollapseWidget> {
                   ),
                 ],
               ),
-              AnimatedCrossFade(
-                firstChild: const SizedBox.shrink(),
-                secondChild: Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: widget.child,
-                ),
-                crossFadeState: _isExpanded
-                    ? CrossFadeState.showSecond
-                    : CrossFadeState.showFirst,
-                duration: const Duration(milliseconds: 200),
-                sizeCurve: Curves.easeInOut,
-              ),
-            ],
+            ),
           ),
-        ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            alignment: Alignment.topCenter,
+            child: _isExpanded
+                ? Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                    child: widget.child,
+                  )
+                : const SizedBox(width: double.infinity),
+          ),
+        ],
       ),
     );
   }
