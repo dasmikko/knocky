@@ -3,3 +3,4 @@ v1.0.2
 - Fix emotes not rendering properly
 - Add background to post headers
 - Fix nested collapes rendering improperly
+- Add deep links for knockout.chat links.
