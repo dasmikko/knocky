@@ -772,10 +772,11 @@ class _ThreadScreenState extends State<ThreadScreen> {
 
   Widget _buildPostList(int page, ThreadResponse pageData, bool hasPagination) {
     final scrollController = _getScrollController(page);
+    final fabHeight = 56.0 + 12; // The FAB itself should be 56.0, the other is just a bit of padding
     final bottomPadding = BottomPaginator.getBottomPadding(
       context,
       hasPagination: hasPagination,
-    );
+    ) + fabHeight;
 
     return RefreshIndicator(
       key: _getRefreshIndicatorKey(page),
