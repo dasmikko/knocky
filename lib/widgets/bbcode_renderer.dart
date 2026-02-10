@@ -248,42 +248,18 @@ class BbcodeRenderer extends StatelessWidget {
     }
 
     final emotePattern = RegExp(r':([a-zA-Z0-9_]+):');
-    final segments = <_TextSegment>[];
-    var lastEnd = 0;
 
+    // Check if any valid emotes exist in this line
+    bool hasValidEmotes = false;
     for (final match in emotePattern.allMatches(line)) {
-      // Add text before the emote
-      if (match.start > lastEnd) {
-        final textBefore = line.substring(lastEnd, match.start);
-        if (textBefore.isNotEmpty) {
-          segments.add(_TextSegment(textBefore, isEmote: false));
-        }
-      }
-
-      // Check if this is a valid emote
-      final emoteCode = match.group(1)!;
-      final emote = emoteMap[emoteCode];
-
-      if (emote != null) {
-        segments.add(_TextSegment(emoteCode, isEmote: true, emote: emote));
-      } else {
-        // Not a valid emote, keep the original text
-        segments.add(_TextSegment(match.group(0)!, isEmote: false));
-      }
-
-      lastEnd = match.end;
-    }
-
-    // Add remaining text
-    if (lastEnd < line.length) {
-      final remaining = line.substring(lastEnd);
-      if (remaining.isNotEmpty) {
-        segments.add(_TextSegment(remaining, isEmote: false));
+      if (emoteMap[match.group(1)!] != null) {
+        hasValidEmotes = true;
+        break;
       }
     }
 
-    // If no emotes found, just render BBCode
-    if (segments.every((s) => !s.isEmote)) {
+    // If no valid emotes, render as BBCode normally
+    if (!hasValidEmotes) {
       return BBCodeText(
         data: line,
         stylesheet: _buildStylesheet(context),
@@ -297,17 +273,32 @@ class BbcodeRenderer extends StatelessWidget {
       );
     }
 
-    // Build a Wrap widget with mixed BBCode text and emotes
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: segments.map((segment) {
-        if (segment.isEmote && segment.emote != null) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final emoteAssetPath = (isDark && segment.emote!.assetPathDark != null)
-              ? segment.emote!.assetPathDark!
-              : segment.emote!.assetPath;
-          return Tooltip(
-            message: segment.emote!.title ?? ':${segment.emote!.code}:',
+    // Build inline spans: parse BBCode text segments, WidgetSpans for emotes
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final stylesheet = _buildStylesheet(context);
+    final spans = <InlineSpan>[];
+    var lastEnd = 0;
+
+    for (final match in emotePattern.allMatches(line)) {
+      if (match.start > lastEnd) {
+        final textBefore = line.substring(lastEnd, match.start);
+        if (textBefore.isNotEmpty) {
+          spans.addAll(parseBBCode(textBefore, stylesheet: stylesheet));
+        }
+      }
+
+      final emoteCode = match.group(1)!;
+      final emote = emoteMap[emoteCode];
+
+      if (emote != null) {
+        final emoteAssetPath = (isDark && emote.assetPathDark != null)
+            ? emote.assetPathDark!
+            : emote.assetPath;
+        spans.add(WidgetSpan(
+          alignment: PlaceholderAlignment.middle,
+          child: Tooltip(
+            message: emote.title ?? ':${emote.code}:',
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: SizedBox(
@@ -319,24 +310,25 @@ class BbcodeRenderer extends StatelessWidget {
                 ),
               ),
             ),
-          );
-        } else {
-          // Render BBCode text segment
-          final trimmed = segment.text;
-          if (trimmed.isEmpty) return const SizedBox.shrink();
-          return BBCodeText(
-            data: trimmed,
-            stylesheet: _buildStylesheet(context),
-            errorBuilder: (context, error, stack) => Text(
-              _stripAllBBCode(trimmed),
-              style: TextStyle(
-                fontSize: 14,
-                color: Theme.of(context).textTheme.bodyMedium?.color,
-              ),
-            ),
-          );
-        }
-      }).toList(),
+          ),
+        ));
+      } else {
+        spans.add(TextSpan(text: match.group(0)!, style: stylesheet.defaultTextStyle));
+      }
+
+      lastEnd = match.end;
+    }
+
+    if (lastEnd < line.length) {
+      final remaining = line.substring(lastEnd);
+      if (remaining.isNotEmpty) {
+        spans.addAll(parseBBCode(remaining, stylesheet: stylesheet));
+      }
+    }
+
+    return RichText(
+      text: TextSpan(children: spans, style: stylesheet.defaultTextStyle),
+      textScaler: MediaQuery.of(context).textScaler,
     );
   }
 
@@ -708,14 +700,6 @@ class _Block {
   final Map<String, String> attributes;
 
   _Block(this.tag, this.content, [this.attributes = const {}]);
-}
-
-class _TextSegment {
-  final String text;
-  final bool isEmote;
-  final Emote? emote;
-
-  _TextSegment(this.text, {required this.isEmote, this.emote});
 }
 
 /// A tappable spoiler widget that reveals content when tapped
