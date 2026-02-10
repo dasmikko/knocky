@@ -18,9 +18,7 @@ class DeepLinkService {
     try {
       _initialUri = await _appLinks.getInitialLink();
       if (_initialUri != null) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _handleDeepLink(_initialUri!);
-        });
+        _waitForNavigatorAndHandle(_initialUri!);
       }
     } catch (_) {}
 
@@ -36,6 +34,17 @@ class DeepLinkService {
       },
       onError: (_) {},
     );
+  }
+
+  Future<void> _waitForNavigatorAndHandle(Uri uri) async {
+    // Poll until the navigator is attached (max ~3 seconds)
+    for (var i = 0; i < 30; i++) {
+      if (navigatorKey.currentState != null) {
+        _handleDeepLink(uri);
+        return;
+      }
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
   }
 
   void dispose() {
