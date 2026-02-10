@@ -60,50 +60,56 @@ class PostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final avatarUrl = post.user.avatarUrl;
     final hasAvatar = avatarUrl.isNotEmpty && avatarUrl != 'none.webp';
+    final backgroundUrl = post.user.backgroundUrl;
+    final hasBackground = backgroundUrl.isNotEmpty;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Post header: avatar, username, time
-            _buildHeader(context, hasAvatar, avatarUrl),
-            const SizedBox(height: 12),
-            // Post content rendered as BBCode
-            if (post.content.isNotEmpty)
-              BbcodeRenderer(content: post.content, postId: post.id),
-            // Ban notice
-            if (post.bans.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              ...post.bans.map((ban) => Padding(
-                padding: EdgeInsets.only(bottom: ban == post.bans.last ? 0 : 8),
-                child: _buildBanNotice(context, ban),
-              )),
-            ],
-            // Ratings and action buttons
-            const Divider(height: 20),
-            _buildFooter(context),
-          ],
-        ),
+      clipBehavior: Clip.hardEdge,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Post header: avatar, username, time, background
+          _buildHeader(context, hasAvatar, avatarUrl, hasBackground, backgroundUrl),
+          // Post content and footer
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (post.content.isNotEmpty)
+                  BbcodeRenderer(content: post.content, postId: post.id),
+                // Ban notice
+                if (post.bans.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  ...post.bans.map((ban) => Padding(
+                    padding: EdgeInsets.only(bottom: ban == post.bans.last ? 0 : 8),
+                    child: _buildBanNotice(context, ban),
+                  )),
+                ],
+                // Ratings and action buttons
+                const Divider(height: 20),
+                _buildFooter(context),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, bool hasAvatar, String avatarUrl) {
-    return Row(
+  Widget _buildHeader(BuildContext context, bool hasAvatar, String avatarUrl, bool hasBackground, String backgroundUrl) {
+    final header = Row(
       children: [
-        CircleAvatar(
-          radius: 16,
-          backgroundImage: hasAvatar
-              ? CachedNetworkImageProvider(
-                  'https://cdn.knockout.chat/image/$avatarUrl',
-                )
-              : null,
-          child: hasAvatar ? null : const Icon(Icons.person, size: 18),
-        ),
-        const SizedBox(width: 10),
+        if (hasAvatar) ...[
+          CircleAvatar(
+            radius: 16,
+            backgroundImage: CachedNetworkImageProvider(
+              'https://cdn.knockout.chat/image/$avatarUrl',
+            ),
+          ),
+          const SizedBox(width: 10),
+        ],
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,6 +198,33 @@ class PostCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ],
+    );
+
+    if (!hasBackground) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+        child: header,
+      );
+    }
+
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Opacity(
+            opacity: 0.15,
+            child: CachedNetworkImage(
+              imageUrl: 'https://cdn.knockout.chat/image/$backgroundUrl',
+              fit: BoxFit.cover,
+              alignment: Alignment.center,
+              errorWidget: (context, url, error) => const SizedBox.shrink(),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+          child: header,
         ),
       ],
     );
