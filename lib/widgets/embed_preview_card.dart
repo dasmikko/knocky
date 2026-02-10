@@ -115,7 +115,14 @@ class _EmbedPreviewCardState extends State<EmbedPreviewCard> {
   @override
   void initState() {
     super.initState();
-    _fetchMetadata();
+    // Check cache synchronously to avoid loading flicker on revisit
+    final cached = _oembedService.getCached(widget.url);
+    if (cached != null) {
+      _metadata = cached;
+      _isLoading = false;
+    } else {
+      _fetchMetadata();
+    }
   }
 
   Future<void> _fetchMetadata() async {
@@ -149,28 +156,30 @@ class _EmbedPreviewCardState extends State<EmbedPreviewCard> {
           color: Colors.grey,
         );
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8, left: 1, right: 1),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: _launchUrl,
-          borderRadius: BorderRadius.circular(12),
-          child: Container(
-            height: 100, // Fixed height to prevent layout shifts
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: config.color.withValues(alpha: 0.3),
-                width: 1,
+    return RepaintBoundary(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8, left: 1, right: 1),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: _launchUrl,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              height: 100, // Fixed height to prevent layout shifts
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: config.color.withValues(alpha: 0.3),
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(12),
               ),
-              borderRadius: BorderRadius.circular(12),
+              clipBehavior: Clip.antiAlias,
+              child: _isLoading
+                  ? _buildLoadingState(config)
+                  : _hasError
+                      ? _buildErrorState(config)
+                      : _buildContent(config),
             ),
-            clipBehavior: Clip.antiAlias,
-            child: _isLoading
-                ? _buildLoadingState(config)
-                : _hasError
-                    ? _buildErrorState(config)
-                    : _buildContent(config),
           ),
         ),
       ),

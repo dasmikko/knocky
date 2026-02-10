@@ -38,6 +38,12 @@ class OEmbedService {
   // Cache to avoid repeated fetches
   final Map<String, EmbedMetadata> _cache = {};
 
+  // In-flight requests to deduplicate concurrent fetches for the same URL
+  final Map<String, Future<EmbedMetadata?>> _pending = {};
+
+  /// Check cache synchronously (useful to avoid loading flicker)
+  EmbedMetadata? getCached(String url) => _cache[url.trim()];
+
   /// Fetch embed metadata for a URL
   Future<EmbedMetadata?> fetchMetadata(String url, String provider) async {
     // Check cache first
@@ -45,6 +51,21 @@ class OEmbedService {
       return _cache[url];
     }
 
+    // Deduplicate: if a request for this URL is already in-flight, await it
+    if (_pending.containsKey(url)) {
+      return _pending[url];
+    }
+
+    final future = _doFetch(url, provider);
+    _pending[url] = future;
+    try {
+      return await future;
+    } finally {
+      _pending.remove(url);
+    }
+  }
+
+  Future<EmbedMetadata?> _doFetch(String url, String provider) async {
     try {
       EmbedMetadata? metadata;
 
