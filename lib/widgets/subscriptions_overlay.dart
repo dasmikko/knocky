@@ -87,11 +87,27 @@ class _SubscriptionsOverlayState extends State<SubscriptionsOverlay>
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final safePadding = MediaQuery.of(context).padding;
+    const screenMargin = 8.0;
+    final overlayWidth = 320.0.clamp(0.0, screenSize.width - screenMargin * 2);
+
     final overlayTop = widget.anchorPosition.dy + widget.anchorSize.height + 8;
     final overlayRight =
-        MediaQuery.of(context).size.width -
+        screenSize.width -
         widget.anchorPosition.dx -
         widget.anchorSize.width;
+
+    // Clamp so the overlay stays within screen bounds
+    final clampedRight = overlayRight.clamp(
+      screenMargin,
+      screenSize.width - overlayWidth - screenMargin,
+    );
+    final clampedTop = overlayTop.clamp(
+      safePadding.top + screenMargin,
+      screenSize.height * 0.4, // don't push below 40% of screen
+    );
+
 
     return Material(
       color: Colors.transparent,
@@ -107,17 +123,14 @@ class _SubscriptionsOverlayState extends State<SubscriptionsOverlay>
           ),
           // Overlay positioned under the subscriptions icon
           Positioned(
-            top: overlayTop,
-            right: overlayRight,
+            top: clampedTop,
+            right: clampedRight,
             child: FadeTransition(
               opacity: _fadeAnimation,
               child: SlideTransition(
                 position: _slideAnimation,
                 child: Container(
-                  width: 320,
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.6,
-                  ),
+                  width: overlayWidth,
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(12),
@@ -188,18 +201,23 @@ class _SubscriptionsOverlayState extends State<SubscriptionsOverlay>
       );
     }
 
-    return ListView.separated(
-      shrinkWrap: true,
-      padding: EdgeInsets.zero,
-      itemCount: unread.length,
-      separatorBuilder: (context, index) => const Divider(height: 1),
-      itemBuilder: (context, index) {
-        final subscription = unread[index];
-        return _SubscriptionTile(
-          subscription: subscription,
-          onTap: () => _onSubscriptionTap(subscription),
-        );
-      },
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.4,
+      ),
+      child: ListView.separated(
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        itemCount: unread.length,
+        separatorBuilder: (context, index) => const Divider(height: 1),
+        itemBuilder: (context, index) {
+          final subscription = unread[index];
+          return _SubscriptionTile(
+            subscription: subscription,
+            onTap: () => _onSubscriptionTap(subscription),
+          );
+        },
+      ),
     );
   }
 
@@ -247,7 +265,7 @@ class _SubscriptionTile extends StatelessWidget {
           Expanded(
             child: Text(
               subscription.threadTitle,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

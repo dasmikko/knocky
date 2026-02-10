@@ -130,9 +130,29 @@ class _NotificationsOverlayState extends State<NotificationsOverlay>
   @override
   Widget build(BuildContext context) {
     // Position overlay below the anchor, aligned to the right edge
+    final screenSize = MediaQuery.of(context).size;
+    final safePadding = MediaQuery.of(context).padding;
+    const screenMargin = 8.0;
+    final overlayWidth = 320.0.clamp(0.0, screenSize.width - screenMargin * 2);
+
     final overlayTop = widget.anchorPosition.dy + widget.anchorSize.height + 8;
     final overlayRight =
-        MediaQuery.of(context).size.width - widget.anchorPosition.dx - widget.anchorSize.width;
+        screenSize.width - widget.anchorPosition.dx - widget.anchorSize.width;
+
+    // Clamp so the overlay stays within screen bounds
+    final clampedRight = overlayRight.clamp(
+      screenMargin,
+      screenSize.width - overlayWidth - screenMargin,
+    );
+    final clampedTop = overlayTop.clamp(
+      safePadding.top + screenMargin,
+      screenSize.height * 0.4,
+    );
+
+    // Fit content up to 60% of screen, but never exceed available space
+    final availableHeight =
+        screenSize.height - clampedTop - safePadding.bottom - screenMargin;
+    final maxOverlayHeight = (screenSize.height * 0.6).clamp(0.0, availableHeight);
 
     return Material(
       color: Colors.transparent,
@@ -148,16 +168,16 @@ class _NotificationsOverlayState extends State<NotificationsOverlay>
           ),
           // Overlay positioned under the notification icon
           Positioned(
-            top: overlayTop,
-            right: overlayRight,
+            top: clampedTop,
+            right: clampedRight,
             child: FadeTransition(
               opacity: _fadeAnimation,
               child: SlideTransition(
                 position: _slideAnimation,
                 child: Container(
-                  width: 320,
+                  width: overlayWidth,
                   constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.6,
+                    maxHeight: maxOverlayHeight,
                   ),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
