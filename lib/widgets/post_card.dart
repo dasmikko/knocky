@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../data/ratings.dart';
 import '../data/role_colors.dart';
+import '../models/ban.dart';
 import '../models/thread_post.dart';
 import '../screens/user_screen.dart';
 import 'bbcode_renderer.dart';
@@ -73,6 +74,14 @@ class PostCard extends StatelessWidget {
             // Post content rendered as BBCode
             if (post.content.isNotEmpty)
               BbcodeRenderer(content: post.content, postId: post.id),
+            // Ban notice
+            if (post.bans.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              ...post.bans.map((ban) => Padding(
+                padding: EdgeInsets.only(bottom: ban == post.bans.last ? 0 : 8),
+                child: _buildBanNotice(context, ban),
+              )),
+            ],
             // Ratings and action buttons
             const Divider(height: 20),
             _buildFooter(context),
@@ -186,6 +195,79 @@ class PostCard extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Widget _buildBanNotice(BuildContext context, Ban ban) {
+    final bannedByName = ban.bannedBy?.username;
+    final banLength = _humanizeBanDuration(ban.createdAt, ban.expiresAt);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.red.shade900.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: Colors.red.shade300.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.gavel, size: 16, color: Colors.red.shade400),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: ban.isPermanent
+                        ? 'User was banned forever '
+                        : 'User was muted ',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const TextSpan(text: 'for this post'),
+                  if (bannedByName != null) ...[
+                    const TextSpan(text: ' by '),
+                    TextSpan(
+                      text: bannedByName,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                  if (ban.banReason.isNotEmpty) ...[
+                    const TextSpan(text: ' with reason "'),
+                    TextSpan(
+                      text: ban.banReason,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const TextSpan(text: '"'),
+                  ],
+                  if (!ban.isPermanent && banLength != null) ...[
+                    const TextSpan(text: ' for '),
+                    TextSpan(text: banLength),
+                  ],
+                ],
+              ),
+              style: TextStyle(fontSize: 12, color: Colors.red.shade300),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String? _humanizeBanDuration(String createdAt, String expiresAt) {
+    try {
+      final start = DateTime.parse(createdAt);
+      final end = DateTime.parse(expiresAt);
+      final diff = end.difference(start);
+      final years = (diff.inDays / 365).round();
+      if (years > 0) return '$years ${years == 1 ? 'year' : 'years'}';
+      final months = (diff.inDays / 30).round();
+      if (months > 0) return '$months ${months == 1 ? 'month' : 'months'}';
+      if (diff.inDays > 0) return '${diff.inDays} ${diff.inDays == 1 ? 'day' : 'days'}';
+      if (diff.inHours > 0) return '${diff.inHours} ${diff.inHours == 1 ? 'hour' : 'hours'}';
+      return '${diff.inMinutes} ${diff.inMinutes == 1 ? 'minute' : 'minutes'}';
+    } catch (_) {
+      return null;
+    }
   }
 
   Widget _buildFooter(BuildContext context) {

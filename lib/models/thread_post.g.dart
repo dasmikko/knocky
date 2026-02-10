@@ -15,7 +15,9 @@ ThreadPost _$ThreadPostFromJson(Map<String, dynamic> json) => ThreadPost(
   updatedAt: json['updatedAt'] as String,
   userId: (json['userId'] as num).toInt(),
   ratings: json['ratings'] as List<dynamic>,
-  bans: json['bans'] as List<dynamic>,
+  bans: (json['bans'] as List<dynamic>)
+      .map((e) => Ban.fromJson(e as Map<String, dynamic>))
+      .toList(),
   threadPostNumber: (json['threadPostNumber'] as num).toInt(),
   countryName: json['countryName'] as String?,
   countryCode: json['countryCode'] as String?,

@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'ban.dart';
 import 'thread_user.dart';
 
 part 'thread_post.g.dart';
@@ -13,7 +14,7 @@ class ThreadPost {
   final String updatedAt;
   final int userId;
   final List<dynamic> ratings;
-  final List<dynamic> bans;
+  final List<Ban> bans;
   final int threadPostNumber;
   final String? countryName;
   final String? countryCode;
