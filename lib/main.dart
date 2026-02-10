@@ -6,12 +6,14 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'services/knockout_api_service.dart';
 import 'services/settings_service.dart';
+import 'services/deep_link_service.dart';
 import 'services/update_service.dart';
 import 'screens/home_screen.dart';
 import 'screens/welcome_screen.dart';
 import 'theme/knockout_theme.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,6 +61,9 @@ void main() async {
     ),
   );
 
+  // Initialize deep link handling
+  DeepLinkService(navigatorKey: navigatorKey).init();
+
   // Fire-and-forget: check for updates if last check was >24h ago
   updateService.checkForUpdateIfStale();
 }
@@ -71,6 +76,7 @@ class MyApp extends StatelessWidget {
     final settings = context.watch<SettingsService>();
 
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'Knocky',
       theme: KnockoutTheme.light(),
       darkTheme: KnockoutTheme.dark(),

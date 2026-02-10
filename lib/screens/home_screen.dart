@@ -17,6 +17,7 @@ import '../services/update_service.dart';
 import '../models/notification.dart';
 import '../models/sync_data.dart';
 import '../models/thread_ad.dart';
+import '../services/deep_link_service.dart';
 import '../services/knockout_api_service.dart';
 import '../services/settings_service.dart';
 import '../models/subforum.dart';
@@ -106,19 +107,13 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
   }
 
   void _openMotdLink(String link) {
-    // Try to extract thread ID from knockout.chat URLs or relative paths
-    // Formats: https://knockout.chat/thread/123, /thread/123, /thread/123/2
-    final threadMatch = RegExp(r'/thread/(\d+)').firstMatch(link);
-    if (threadMatch != null) {
-      final threadId = int.parse(threadMatch.group(1)!);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              ThreadScreen(threadId: threadId, threadTitle: ''),
-        ),
-      );
-      return;
+    final uri = Uri.tryParse(link);
+    if (uri != null) {
+      final route = DeepLinkService.parseUri(uri);
+      if (route != null) {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => route));
+        return;
+      }
     }
     launchUrl(Uri.parse(link), mode: LaunchMode.externalApplication);
   }

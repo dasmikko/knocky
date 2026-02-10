@@ -5,8 +5,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../data/emotes.dart';
+import '../main.dart';
 import '../screens/image_viewer_screen.dart';
 import '../screens/thread_screen.dart';
+import '../services/deep_link_service.dart';
 import '../screens/video_player_screen.dart';
 import 'embed_preview_card.dart';
 
@@ -828,7 +830,16 @@ class BbcodeRenderer extends StatelessWidget {
 
   Future<void> _launchUrl(String url) async {
     final uri = Uri.tryParse(url);
-    if (uri != null && await canLaunchUrl(uri)) {
+    if (uri == null) return;
+
+    // Navigate in-app for knockout.chat links
+    final route = DeepLinkService.parseUri(uri);
+    if (route != null) {
+      navigatorKey.currentState?.push(MaterialPageRoute(builder: (_) => route));
+      return;
+    }
+
+    if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
