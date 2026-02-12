@@ -444,11 +444,17 @@ class KnockoutApiService extends ChangeNotifier {
       final response = await _dio.get('/v2/notifications', options: _options);
 
       final List<dynamic> jsonData = response.data;
-      return jsonData
-          .map(
-            (json) => KnockyNotification.fromJson(json as Map<String, dynamic>),
-          )
-          .toList();
+      final notifications = <KnockyNotification>[];
+      for (final json in jsonData) {
+        try {
+          notifications.add(
+            KnockyNotification.fromJson(json as Map<String, dynamic>),
+          );
+        } catch (_) {
+          // Skip notifications that fail to parse
+        }
+      }
+      return notifications;
     } on DioException catch (e) {
       throw Exception('Error fetching notifications: ${e.message}');
     }

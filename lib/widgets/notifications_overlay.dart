@@ -5,6 +5,8 @@ import '../models/notification.dart';
 import '../services/knockout_api_service.dart';
 import '../screens/conversation_screen.dart';
 import '../screens/conversations_screen.dart';
+import '../screens/thread_screen.dart';
+import '../screens/user_screen.dart';
 
 class NotificationsOverlay extends StatefulWidget {
   final VoidCallback onClose;
@@ -109,21 +111,59 @@ class _NotificationsOverlayState extends State<NotificationsOverlay>
   }
 
   void _onNotificationTap(KnockyNotification notification) {
-    if (notification.type == 'MESSAGE' && notification.data != null) {
-      final conversation = notification.data!;
+    if (!notification.read) {
+      _apiService.markNotificationsRead([notification.id]);
+    }
 
-      if (!notification.read) {
-        _apiService.markNotificationsRead([notification.id]);
-      }
+    final rawData = notification.rawData;
 
-      widget.onClose();
+    switch (notification.type) {
+      case 'MESSAGE':
+        if (notification.data != null) {
+          widget.onClose();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  ConversationScreen(conversation: notification.data!),
+            ),
+          );
+        }
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ConversationScreen(conversation: conversation),
-        ),
-      );
+      case 'POST_REPLY' || 'POST_MENTION':
+        final thread = rawData?['thread'] as Map<String, dynamic>?;
+        final threadId = thread?['id'] as int? ?? rawData?['threadId'] as int?;
+        final threadTitle = thread?['title'] as String? ?? 'Thread';
+        final page = rawData?['page'] as int? ?? 1;
+        if (threadId != null) {
+          widget.onClose();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ThreadScreen(
+                threadId: threadId,
+                threadTitle: threadTitle,
+                page: page,
+              ),
+            ),
+          );
+        }
+
+      case 'PROFILE_COMMENT':
+        final userProfileId = rawData?['userProfile'] as int?;
+        if (userProfileId != null) {
+          widget.onClose();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UserScreen(userId: userProfileId),
+            ),
+          );
+        }
+
+      case 'REPORT_RESOLUTION':
+        // No navigation - just mark as read
+        break;
     }
   }
 
@@ -346,26 +386,72 @@ class _NotificationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isUnread = !notification.read;
-    final conversation = notification.data;
+    final rawData = notification.rawData;
 
     String title = 'Notification';
     String subtitle = '';
     String? avatarUrl;
+    IconData fallbackIcon = Icons.notifications;
 
-    if (notification.type == 'MESSAGE' && conversation != null) {
-      final otherUsers = conversation.getOtherUsers(currentUserId);
-      if (otherUsers.isNotEmpty) {
-        title = otherUsers.map((u) => u.username).join(', ');
-        final avatar = otherUsers.first.avatarUrl;
-        if (avatar.isNotEmpty && avatar != 'none.webp') {
-          avatarUrl = 'https://cdn.knockout.chat/image/$avatar';
+    switch (notification.type) {
+      case 'MESSAGE':
+        fallbackIcon = Icons.mail;
+        final conversation = notification.data;
+        if (conversation != null) {
+          final otherUsers = conversation.getOtherUsers(currentUserId);
+          if (otherUsers.isNotEmpty) {
+            title = otherUsers.map((u) => u.username).join(', ');
+            final avatar = otherUsers.first.avatarUrl;
+            if (avatar.isNotEmpty && avatar != 'none.webp') {
+              avatarUrl = 'https://cdn.knockout.chat/image/$avatar';
+            }
+          }
+          final latestMessage = conversation.latestMessage;
+          if (latestMessage != null) {
+            subtitle = latestMessage.content;
+          }
         }
-      }
 
-      final latestMessage = conversation.latestMessage;
-      if (latestMessage != null) {
-        subtitle = latestMessage.content;
-      }
+      case 'POST_REPLY':
+        fallbackIcon = Icons.reply;
+        final user = rawData?['user'] as Map<String, dynamic>?;
+        final thread = rawData?['thread'] as Map<String, dynamic>?;
+        final username = user?['username'] as String? ?? 'Someone';
+        final threadTitle = thread?['title'] as String?;
+        title = username;
+        subtitle = threadTitle != null
+            ? 'Replied to your post in $threadTitle'
+            : 'Replied to your post';
+        avatarUrl = _extractAvatarUrl(user);
+
+      case 'POST_MENTION':
+        fallbackIcon = Icons.alternate_email;
+        final user = rawData?['user'] as Map<String, dynamic>?;
+        final thread = rawData?['thread'] as Map<String, dynamic>?;
+        final username = user?['username'] as String? ?? 'Someone';
+        final threadTitle = thread?['title'] as String?;
+        title = username;
+        subtitle = threadTitle != null
+            ? 'Mentioned you in $threadTitle'
+            : 'Mentioned you in a post';
+        avatarUrl = _extractAvatarUrl(user);
+
+      case 'PROFILE_COMMENT':
+        fallbackIcon = Icons.comment;
+        final author = rawData?['author'];
+        if (author is Map<String, dynamic>) {
+          final username = author['username'] as String? ?? 'Someone';
+          title = username;
+          avatarUrl = _extractAvatarUrl(author);
+        } else {
+          title = 'Someone';
+        }
+        subtitle = 'Commented on your profile';
+
+      case 'REPORT_RESOLUTION':
+        fallbackIcon = Icons.shield;
+        title = 'Moderation';
+        subtitle = 'Action has been taken on a post you reported';
     }
 
     final createdAt = DateTime.tryParse(notification.createdAt);
@@ -379,7 +465,7 @@ class _NotificationTile extends StatelessWidget {
           : null,
       leading: CircleAvatar(
         backgroundImage: avatarUrl != null ? CachedNetworkImageProvider(avatarUrl) : null,
-        child: avatarUrl == null ? const Icon(Icons.person) : null,
+        child: avatarUrl == null ? Icon(fallbackIcon) : null,
       ),
       title: Row(
         children: [
@@ -413,5 +499,13 @@ class _NotificationTile extends StatelessWidget {
             )
           : null,
     );
+  }
+
+  String? _extractAvatarUrl(Map<String, dynamic>? user) {
+    final avatar = user?['avatarUrl'] as String?;
+    if (avatar != null && avatar.isNotEmpty && avatar != 'none.webp') {
+      return 'https://cdn.knockout.chat/image/$avatar';
+    }
+    return null;
   }
 }

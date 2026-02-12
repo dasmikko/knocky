@@ -14,6 +14,11 @@ class KnockyNotification {
   @JsonKey(includeFromJson: false, includeToJson: false)
   final Conversation? data;
 
+  /// Raw JSON data for non-MESSAGE types (POST_REPLY, POST_MENTION,
+  /// PROFILE_COMMENT, REPORT_RESOLUTION).
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final Map<String, dynamic>? rawData;
+
   KnockyNotification({
     required this.id,
     required this.type,
@@ -21,14 +26,14 @@ class KnockyNotification {
     required this.read,
     required this.createdAt,
     this.data,
+    this.rawData,
   });
 
   factory KnockyNotification.fromJson(Map<String, dynamic> json) {
     final notification = _$KnockyNotificationFromJson(json);
-    // Only parse data as Conversation for MESSAGE notifications.
-    // Other types (POST_REPLY, POST_MENTION, PROFILE_COMMENT, REPORT_RESOLUTION)
-    // have differently shaped data.
-    if (json['type'] == 'MESSAGE' && json['data'] is Map<String, dynamic>) {
+    final rawData = json['data'] as Map<String, dynamic>?;
+
+    if (json['type'] == 'MESSAGE' && rawData != null) {
       try {
         return KnockyNotification(
           id: notification.id,
@@ -36,13 +41,29 @@ class KnockyNotification {
           userId: notification.userId,
           read: notification.read,
           createdAt: notification.createdAt,
-          data: Conversation.fromJson(json['data'] as Map<String, dynamic>),
+          data: Conversation.fromJson(rawData),
+          rawData: rawData,
         );
       } catch (_) {
-        return notification;
+        return KnockyNotification(
+          id: notification.id,
+          type: notification.type,
+          userId: notification.userId,
+          read: notification.read,
+          createdAt: notification.createdAt,
+          rawData: rawData,
+        );
       }
     }
-    return notification;
+
+    return KnockyNotification(
+      id: notification.id,
+      type: notification.type,
+      userId: notification.userId,
+      read: notification.read,
+      createdAt: notification.createdAt,
+      rawData: rawData,
+    );
   }
 
   Map<String, dynamic> toJson() => _$KnockyNotificationToJson(this);
