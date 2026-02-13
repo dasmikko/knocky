@@ -174,22 +174,18 @@ class SubforumThreadListItem extends StatelessWidget {
   Widget _buildMetadataRow(BuildContext context) {
     return Row(
       children: [
-        CircleAvatar(
-          radius: 12,
-          backgroundImage:
-              thread.user.avatarUrl.isNotEmpty &&
-                  thread.user.avatarUrl != 'none.webp'
-              ? CachedNetworkImageProvider(
-                  'https://cdn.knockout.chat/image/${thread.user.avatarUrl}',
-                )
-              : null,
-          child:
-              thread.user.avatarUrl.isEmpty ||
-                  thread.user.avatarUrl == 'none.webp'
-              ? const Icon(Icons.person, size: 16)
-              : null,
-        ),
-        const SizedBox(width: 8),
+        if (thread.user.avatarUrl.isNotEmpty &&
+                        thread.user.avatarUrl != 'none.webp')
+                      Container(
+                        padding: EdgeInsets.only(right: 8),
+                        child: CircleAvatar(
+                          radius: 12,
+                          backgroundImage: CachedNetworkImageProvider(
+                            'https://cdn.knockout.chat/image/${thread.user.avatarUrl}',
+                          ),
+                        ),
+                      ),
+        
         Expanded(
           child: GestureDetector(
             onTap: () {
