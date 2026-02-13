@@ -13,6 +13,7 @@ import '../models/user_posts_response.dart';
 import '../models/user_profile.dart';
 import '../models/user_threads_response.dart';
 import '../services/knockout_api_service.dart';
+import '../widgets/bbcode_renderer.dart';
 import '../widgets/user_thread_list_item.dart';
 import 'conversation_screen.dart';
 import 'thread_screen.dart';
@@ -635,12 +636,10 @@ class _UserPostsTabState extends State<_UserPostsTab>
                 ),
                 const Divider(height: 16),
               ],
-              // Post content preview
-              Text(
-                _stripBbcode(post.content),
-                maxLines: 4,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 13),
+              // Post content
+              BbcodeRenderer(
+                content: post.content,
+                postId: post.id,
               ),
               // Ratings
               if (post.ratings.isNotEmpty) ...[
@@ -652,13 +651,6 @@ class _UserPostsTabState extends State<_UserPostsTab>
         ),
       ),
     );
-  }
-
-  String _stripBbcode(String text) {
-    return text
-        .replaceAll(RegExp(r'\[/?[^\]]+\]'), '')
-        .replaceAll(RegExp(r'\n{3,}'), '\n\n')
-        .trim();
   }
 
   Widget _buildRatings(List<dynamic> postRatings) {
