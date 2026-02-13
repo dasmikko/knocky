@@ -273,17 +273,6 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SearchScreen(),
-                ),
-              );
-            },
-          ),
           if (syncData != null) _buildSubscriptionsButton(),
           if (syncData != null) _buildNotificationButton(),
         ],
@@ -545,7 +534,19 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
                   Positioned.fill(
                     child: Material(
                       color: Colors.transparent,
-                      child: InkWell(onTap: () {}),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SearchScreen(
+                                initialQuery: _currentAd!.query,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ],
