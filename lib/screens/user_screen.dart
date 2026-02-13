@@ -239,33 +239,81 @@ class _UserScreenState extends State<UserScreen>
     final social = _profile!.social!;
     final links = <Widget>[];
 
-    final website = social['website'] as String?;
-    if (website != null && website.isNotEmpty) {
-      links.add(_buildSocialTile(Icons.language, 'Website', website, website));
+    if (social.website != null && social.website!.isNotEmpty) {
+      links.add(_buildSocialTile(
+        Icons.language, 'Website', social.website!, social.website!,
+      ));
     }
 
-    final github = social['github'] as String?;
-    if (github != null && github.isNotEmpty) {
-      links.add(
-        _buildSocialTile(
-          Icons.code,
-          'GitHub',
-          github,
-          'https://github.com/$github',
-        ),
-      );
+    if (social.steam != null && social.steam!.url != null && social.steam!.url!.isNotEmpty) {
+      links.add(_buildSocialTile(
+        FontAwesomeIcons.steam, 'Steam',
+        social.steam!.name ?? 'Steam Profile',
+        social.steam!.url!,
+      ));
     }
 
-    final twitter = social['twitter'] as String?;
-    if (twitter != null && twitter.isNotEmpty) {
-      links.add(
-        _buildSocialTile(
-          Icons.alternate_email,
-          'Twitter',
-          '@$twitter',
-          'https://twitter.com/$twitter',
-        ),
-      );
+    if (social.discord != null && social.discord!.isNotEmpty) {
+      links.add(_buildSocialTile(
+        FontAwesomeIcons.discord, 'Discord', social.discord!, '',
+        launchable: false,
+      ));
+    }
+
+    if (social.github != null && social.github!.isNotEmpty) {
+      links.add(_buildSocialTile(
+        FontAwesomeIcons.github, 'GitHub',
+        social.github!, 'https://github.com/${social.github}',
+      ));
+    }
+
+    if (social.gitlab != null && social.gitlab!.isNotEmpty) {
+      links.add(_buildSocialTile(
+        FontAwesomeIcons.gitlab, 'GitLab',
+        social.gitlab!, 'https://gitlab.com/${social.gitlab}',
+      ));
+    }
+
+    if (social.twitter != null && social.twitter!.isNotEmpty) {
+      links.add(_buildSocialTile(
+        FontAwesomeIcons.xTwitter, 'Twitter',
+        '@${social.twitter}', 'https://x.com/${social.twitter}',
+      ));
+    }
+
+    if (social.bluesky != null && social.bluesky!.isNotEmpty) {
+      links.add(_buildSocialTile(
+        FontAwesomeIcons.bluesky, 'Bluesky',
+        social.bluesky!, 'https://bsky.app/profile/${social.bluesky}',
+      ));
+    }
+
+    if (social.fediverse != null && social.fediverse!.isNotEmpty) {
+      links.add(_buildSocialTile(
+        FontAwesomeIcons.mastodon, 'Fediverse',
+        social.fediverse!, social.fediverse!,
+      ));
+    }
+
+    if (social.youtube != null && social.youtube!.isNotEmpty) {
+      links.add(_buildSocialTile(
+        FontAwesomeIcons.youtube, 'YouTube',
+        social.youtube!, 'https://youtube.com/@${social.youtube}',
+      ));
+    }
+
+    if (social.twitch != null && social.twitch!.isNotEmpty) {
+      links.add(_buildSocialTile(
+        FontAwesomeIcons.twitch, 'Twitch',
+        social.twitch!, 'https://twitch.tv/${social.twitch}',
+      ));
+    }
+
+    if (social.tumblr != null && social.tumblr!.isNotEmpty) {
+      links.add(_buildSocialTile(
+        FontAwesomeIcons.tumblr, 'Tumblr',
+        social.tumblr!, 'https://${social.tumblr}.tumblr.com',
+      ));
     }
 
     if (links.isEmpty) return [];
@@ -284,15 +332,16 @@ class _UserScreenState extends State<UserScreen>
     IconData icon,
     String label,
     String display,
-    String url,
-  ) {
+    String url, {
+    bool launchable = true,
+  }) {
     return ListTile(
       dense: true,
       contentPadding: EdgeInsets.zero,
       leading: Icon(icon, size: 20),
       title: Text(display, style: const TextStyle(fontSize: 14)),
       subtitle: Text(label, style: const TextStyle(fontSize: 11)),
-      onTap: () => _launchUrl(url),
+      onTap: launchable ? () => _launchUrl(url) : null,
     );
   }
 

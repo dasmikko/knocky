@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'user_profile_social.dart';
 
 part 'user_profile.g.dart';
 
@@ -6,7 +7,7 @@ part 'user_profile.g.dart';
 class UserProfile {
   final int id;
   final String? bio;
-  final Map<String, dynamic>? social;
+  final UserProfileSocial? social;
   final Map<String, dynamic>? background;
   final String? header;
   @JsonKey(defaultValue: false)

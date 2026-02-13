@@ -9,7 +9,9 @@ part of 'user_profile.dart';
 UserProfile _$UserProfileFromJson(Map<String, dynamic> json) => UserProfile(
   id: (json['id'] as num).toInt(),
   bio: json['bio'] as String?,
-  social: json['social'] as Map<String, dynamic>?,
+  social: json['social'] == null
+      ? null
+      : UserProfileSocial.fromJson(json['social'] as Map<String, dynamic>),
   background: json['background'] as Map<String, dynamic>?,
   header: json['header'] as String?,
   disableComments: json['disableComments'] as bool? ?? false,
