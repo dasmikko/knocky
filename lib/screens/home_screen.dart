@@ -9,6 +9,7 @@ import 'package:knocky/screens/events_screen.dart';
 import 'package:knocky/screens/login_screen.dart';
 import 'package:knocky/screens/latest_threads_screen.dart';
 import 'package:knocky/screens/popular_threads_screen.dart';
+import 'package:knocky/screens/search_screen.dart';
 import 'package:knocky/screens/settings_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../data/role_colors.dart';
@@ -272,6 +273,17 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SearchScreen(),
+                ),
+              );
+            },
+          ),
           if (syncData != null) _buildSubscriptionsButton(),
           if (syncData != null) _buildNotificationButton(),
         ],
@@ -463,6 +475,19 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const PopularThreadsScreen(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const FaIcon(FontAwesomeIcons.magnifyingGlass, size: 20),
+            title: const Text('Search'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SearchScreen(),
                 ),
               );
             },

@@ -9,6 +9,7 @@ import '../models/calendar_event.dart';
 import '../models/motd.dart';
 import '../models/conversation.dart';
 import '../models/thread_ad.dart';
+import '../models/thread_search_response.dart';
 import '../models/notification.dart';
 import '../models/subforum.dart';
 import '../models/subforum_response.dart';
@@ -724,6 +725,39 @@ class KnockoutApiService extends ChangeNotifier {
         log('Response: ${e.response?.data}');
       }
       rethrow;
+    }
+  }
+
+  /// Search for threads
+  Future<ThreadSearchResponse> searchThreads({
+    required String title,
+    int page = 1,
+    String sortBy = 'relevance',
+    String sortOrder = 'desc',
+    bool locked = false,
+    int? subforumId,
+    int? userId,
+  }) async {
+    try {
+      final data = <String, dynamic>{
+        'title': title,
+        'page': page,
+        'sort_by': sortBy,
+        'sort_order': sortOrder,
+        'locked': locked,
+      };
+      if (subforumId != null) data['subforum_id'] = subforumId;
+      if (userId != null) data['user_id'] = userId;
+
+      final response = await _dio.post(
+        '/v2/threadsearch',
+        data: data,
+        options: _options,
+      );
+
+      return ThreadSearchResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      throw Exception('Error searching threads: ${e.message}');
     }
   }
 
