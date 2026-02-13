@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -257,7 +258,12 @@ class _UserScreenState extends State<UserScreen>
     if (social.discord != null && social.discord!.isNotEmpty) {
       links.add(_buildSocialTile(
         FontAwesomeIcons.discord, 'Discord', social.discord!, '',
-        launchable: false,
+        onTap: () {
+          Clipboard.setData(ClipboardData(text: social.discord!));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Copied ${social.discord} to clipboard')),
+          );
+        },
       ));
     }
 
@@ -291,8 +297,13 @@ class _UserScreenState extends State<UserScreen>
 
     if (social.fediverse != null && social.fediverse!.isNotEmpty) {
       links.add(_buildSocialTile(
-        FontAwesomeIcons.mastodon, 'Fediverse',
-        social.fediverse!, social.fediverse!,
+        FontAwesomeIcons.mastodon, 'Fediverse', social.fediverse!, '',
+        onTap: () {
+          Clipboard.setData(ClipboardData(text: social.fediverse!));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Copied ${social.fediverse} to clipboard')),
+          );
+        },
       ));
     }
 
@@ -334,7 +345,7 @@ class _UserScreenState extends State<UserScreen>
     String label,
     String display,
     String url, {
-    bool launchable = true,
+    VoidCallback? onTap,
   }) {
     return ListTile(
       dense: true,
@@ -342,7 +353,7 @@ class _UserScreenState extends State<UserScreen>
       leading: Icon(icon, size: 20),
       title: Text(display, style: const TextStyle(fontSize: 14)),
       subtitle: Text(label, style: const TextStyle(fontSize: 11)),
-      onTap: launchable ? () => _launchUrl(url) : null,
+      onTap: onTap ?? (url.isNotEmpty ? () => _launchUrl(url) : null),
     );
   }
 
