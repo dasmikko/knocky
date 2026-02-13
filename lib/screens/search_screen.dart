@@ -66,7 +66,9 @@ class _SearchScreenState extends State<SearchScreen> {
     final query = _titleController.text.trim();
     if (query.length < 5) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Search query must be at least 5 characters')),
+        const SnackBar(
+          content: Text('Search query must be at least 5 characters'),
+        ),
       );
       return;
     }
@@ -218,45 +220,52 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     final response = _searchResponse;
-    final showPagination = _hasSearched && !_isLoading && _error == null &&
-        response != null && response.threads.isNotEmpty && response.totalPages > 1;
+    final showPagination =
+        _hasSearched &&
+        !_isLoading &&
+        _error == null &&
+        response != null &&
+        response.threads.isNotEmpty &&
+        response.totalPages > 1;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Search')),
-      body: Column(
-        children: [
-          Expanded(
-            child: CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                _buildSearchFormSliver(),
-                _buildResultsSliver(),
-              ],
-            ),
-          ),
-          if (showPagination)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: _currentPage > 1
-                        ? () => _search(page: _currentPage - 1)
-                        : null,
-                    icon: const Icon(Icons.chevron_left),
-                  ),
-                  Text('$_currentPage / ${response.totalPages}'),
-                  IconButton(
-                    onPressed: _currentPage < response.totalPages
-                        ? () => _search(page: _currentPage + 1)
-                        : null,
-                    icon: const Icon(Icons.chevron_right),
-                  ),
-                ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: CustomScrollView(
+                controller: _scrollController,
+                slivers: [_buildSearchFormSliver(), _buildResultsSliver()],
               ),
             ),
-        ],
+            if (showPagination)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: _currentPage > 1
+                          ? () => _search(page: _currentPage - 1)
+                          : null,
+                      icon: const Icon(Icons.chevron_left),
+                    ),
+                    Text('$_currentPage / ${response.totalPages}'),
+                    IconButton(
+                      onPressed: _currentPage < response.totalPages
+                          ? () => _search(page: _currentPage + 1)
+                          : null,
+                      icon: const Icon(Icons.chevron_right),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -288,18 +297,30 @@ class _SearchScreenState extends State<SearchScreen> {
                     decoration: const InputDecoration(
                       labelText: 'Subforum',
                       border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                     ),
                     isExpanded: true,
                     items: [
-                      const DropdownMenuItem(value: null, child: Text('Any subforum')),
+                      const DropdownMenuItem(
+                        value: null,
+                        child: Text('Any subforum'),
+                      ),
                       if (_subforums != null)
-                        ..._subforums!.map((s) => DropdownMenuItem(
-                              value: s.id,
-                              child: Text(s.name, overflow: TextOverflow.ellipsis),
-                            )),
+                        ..._subforums!.map(
+                          (s) => DropdownMenuItem(
+                            value: s.id,
+                            child: Text(
+                              s.name,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
                     ],
-                    onChanged: (value) => setState(() => _selectedSubforumId = value),
+                    onChanged: (value) =>
+                        setState(() => _selectedSubforumId = value),
                   ),
                 ),
               ],
@@ -313,12 +334,24 @@ class _SearchScreenState extends State<SearchScreen> {
                     decoration: const InputDecoration(
                       labelText: 'Sort by',
                       border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                     ),
                     items: const [
-                      DropdownMenuItem(value: 'relevance', child: Text('Relevance')),
-                      DropdownMenuItem(value: 'updated_at', child: Text('Updated')),
-                      DropdownMenuItem(value: 'created_at', child: Text('Created')),
+                      DropdownMenuItem(
+                        value: 'relevance',
+                        child: Text('Relevance'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'updated_at',
+                        child: Text('Updated'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'created_at',
+                        child: Text('Created'),
+                      ),
                     ],
                     onChanged: (value) {
                       if (value != null) setState(() => _sortBy = value);
@@ -332,16 +365,23 @@ class _SearchScreenState extends State<SearchScreen> {
                     decoration: const InputDecoration(
                       labelText: 'Order',
                       border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                     ),
                     items: const [
-                      DropdownMenuItem(value: 'desc', child: Text('Descending')),
+                      DropdownMenuItem(
+                        value: 'desc',
+                        child: Text('Descending'),
+                      ),
                       DropdownMenuItem(value: 'asc', child: Text('Ascending')),
                     ],
                     onChanged: _sortBy == 'relevance'
                         ? null
                         : (value) {
-                            if (value != null) setState(() => _sortOrder = value);
+                            if (value != null)
+                              setState(() => _sortOrder = value);
                           },
                   ),
                 ),
