@@ -197,22 +197,17 @@ class SubforumListItem extends StatelessWidget {
               ? Row(
                   children: [
                     // User avatar
-                    CircleAvatar(
-                      radius: 12,
-                      backgroundImage:
-                          lastPost.user.avatarUrl.isNotEmpty &&
-                              lastPost.user.avatarUrl != 'none.webp'
-                          ? CachedNetworkImageProvider(
-                              'https://cdn.knockout.chat/image/${lastPost.user.avatarUrl}',
-                            )
-                          : null,
-                      child:
-                          lastPost.user.avatarUrl.isEmpty ||
-                              lastPost.user.avatarUrl == 'none.webp'
-                          ? const Icon(Icons.person, size: 14)
-                          : null,
-                    ),
-                    const SizedBox(width: 8),
+                    if (lastPost.user.avatarUrl.isNotEmpty &&
+                        lastPost.user.avatarUrl != 'none.webp')
+                      Container(
+                        padding: EdgeInsets.only(right: 8),
+                        child: CircleAvatar(
+                          radius: 12,
+                          backgroundImage: CachedNetworkImageProvider(
+                            'https://cdn.knockout.chat/image/${lastPost.user.avatarUrl}',
+                          ),
+                        ),
+                      ),
                     // Last post info with thread title
                     Expanded(
                       child: Column(
