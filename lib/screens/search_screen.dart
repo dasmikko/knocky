@@ -39,6 +39,7 @@ class _SearchScreenState extends State<SearchScreen> {
     super.initState();
     if (widget.initialQuery != null) {
       _titleController.text = widget.initialQuery!;
+      _search();
     }
     _loadSubforums();
   }
