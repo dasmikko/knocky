@@ -79,10 +79,9 @@ class SubforumThreadListItem extends StatelessWidget {
                 blendMode: BlendMode.dstIn,
                 child: Opacity(
                   opacity: 0.25,
-                  child: getThreadIconById(thread.iconId).buildIcon(
-                    width: 80,
-                    height: 80,
-                  ),
+                  child: getThreadIconById(
+                    thread.iconId,
+                  ).buildIcon(width: 80, height: 80),
                 ),
               ),
             ),
@@ -175,17 +174,17 @@ class SubforumThreadListItem extends StatelessWidget {
     return Row(
       children: [
         if (thread.user.avatarUrl.isNotEmpty &&
-                        thread.user.avatarUrl != 'none.webp')
-                      Container(
-                        padding: EdgeInsets.only(right: 8),
-                        child: CircleAvatar(
-                          radius: 12,
-                          backgroundImage: CachedNetworkImageProvider(
-                            'https://cdn.knockout.chat/image/${thread.user.avatarUrl}',
-                          ),
-                        ),
-                      ),
-        
+            thread.user.avatarUrl != 'none.webp')
+          Container(
+            padding: EdgeInsets.only(right: 8),
+            child: CircleAvatar(
+              radius: 12,
+              backgroundImage: CachedNetworkImageProvider(
+                'https://cdn.knockout.chat/image/${thread.user.avatarUrl}',
+              ),
+            ),
+          ),
+
         Expanded(
           child: GestureDetector(
             onTap: () {
