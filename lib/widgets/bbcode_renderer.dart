@@ -5,9 +5,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../data/emotes.dart';
+import '../data/role_colors.dart';
 import '../main.dart';
 import '../screens/image_viewer_screen.dart';
 import '../screens/thread_screen.dart';
+import '../screens/user_screen.dart';
 import '../services/deep_link_service.dart';
 import '../screens/video_player_screen.dart';
 import 'embed_preview_card.dart';
@@ -25,8 +27,33 @@ import 'embed_preview_card.dart';
 class BbcodeRenderer extends StatelessWidget {
   final String content;
   final int? postId;
+  final List<dynamic> mentionUsers;
 
-  const BbcodeRenderer({super.key, required this.content, this.postId});
+  const BbcodeRenderer({
+    super.key,
+    required this.content,
+    this.postId,
+    this.mentionUsers = const [],
+  });
+
+  static final _mentionPattern = RegExp(r'@<(\d+;?.*?)>');
+
+  static bool _hasMentions(String text) {
+    return _mentionPattern.hasMatch(text);
+  }
+
+  Map<int, Map<String, dynamic>> _buildMentionUserMap() {
+    final map = <int, Map<String, dynamic>>{};
+    for (final user in mentionUsers) {
+      if (user is Map<String, dynamic>) {
+        final id = user['id'] as int?;
+        if (id != null) {
+          map[id] = user;
+        }
+      }
+    }
+    return map;
+  }
 
   // ============================================================================
   // TAG CONFIGURATION - Add new tags here!
@@ -143,8 +170,8 @@ class BbcodeRenderer extends StatelessWidget {
         final text = block.content.trim();
         if (text.isEmpty) return const SizedBox.shrink();
 
-        // If text has emotes, use custom renderer that handles both BBCode and emotes
-        if (_hasEmotes(text)) {
+        // If text has emotes or mentions, use custom renderer
+        if (_hasEmotes(text) || _hasMentions(text)) {
           return Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: _buildBBCodeWithEmotes(context, text),
@@ -342,7 +369,7 @@ class BbcodeRenderer extends StatelessWidget {
     );
   }
 
-  /// Build a single line with emotes
+  /// Build a single line with emotes and mentions
   Widget _buildLineWithEmotes(BuildContext context, String line) {
     if (line.isEmpty) {
       return const SizedBox(height: 14); // Empty line height
@@ -359,8 +386,10 @@ class BbcodeRenderer extends StatelessWidget {
       }
     }
 
-    // If no valid emotes, render as BBCode normally
-    if (!hasValidEmotes) {
+    final hasMentions = _hasMentions(line);
+
+    // If no valid emotes and no mentions, render as BBCode normally
+    if (!hasValidEmotes && !hasMentions) {
       return BBCodeText(
         data: line,
         stylesheet: _buildStylesheet(context),
@@ -374,14 +403,20 @@ class BbcodeRenderer extends StatelessWidget {
       );
     }
 
-    // Build inline spans: parse BBCode text segments, WidgetSpans for emotes
+    // Build inline spans: parse BBCode text segments, WidgetSpans for emotes/mentions
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final brightness = theme.brightness;
     final stylesheet = _buildStylesheet(context);
+    final mentionUserMap = _buildMentionUserMap();
+
+    // Combined pattern: emotes (:code:) and mentions (@<id>)
+    final combinedPattern = RegExp(r'(:([a-zA-Z0-9_]+):)|(@<(\d+;?.*?)>)');
+
     final spans = <InlineSpan>[];
     var lastEnd = 0;
 
-    for (final match in emotePattern.allMatches(line)) {
+    for (final match in combinedPattern.allMatches(line)) {
       if (match.start > lastEnd) {
         final textBefore = line.substring(lastEnd, match.start);
         if (textBefore.isNotEmpty) {
@@ -389,32 +424,83 @@ class BbcodeRenderer extends StatelessWidget {
         }
       }
 
-      final emoteCode = match.group(1)!;
-      final emote = emoteMap[emoteCode];
+      if (match.group(1) != null) {
+        // Emote match
+        final emoteCode = match.group(2)!;
+        final emote = emoteMap[emoteCode];
 
-      if (emote != null) {
-        final emoteAssetPath = (isDark && emote.assetPathDark != null)
-            ? emote.assetPathDark!
-            : emote.assetPath;
-        spans.add(WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: Tooltip(
-            message: emote.title ?? ':${emote.code}:',
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: SizedBox(
-                height: 18,
-                child: Image.asset(
-                  emoteAssetPath,
-                  fit: BoxFit.cover,
-                  filterQuality: FilterQuality.high,
+        if (emote != null) {
+          final emoteAssetPath = (isDark && emote.assetPathDark != null)
+              ? emote.assetPathDark!
+              : emote.assetPath;
+          spans.add(WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: Tooltip(
+              message: emote.title ?? ':${emote.code}:',
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: SizedBox(
+                  height: 18,
+                  child: Image.asset(
+                    emoteAssetPath,
+                    fit: BoxFit.cover,
+                    filterQuality: FilterQuality.high,
+                  ),
                 ),
               ),
             ),
-          ),
-        ));
-      } else {
-        spans.add(TextSpan(text: match.group(0)!, style: stylesheet.defaultTextStyle));
+          ));
+        } else {
+          spans.add(TextSpan(
+            text: match.group(0)!,
+            style: stylesheet.defaultTextStyle,
+          ));
+        }
+      } else if (match.group(3) != null) {
+        // Mention match
+        final mentionContent = match.group(4)!;
+        final userId = int.tryParse(mentionContent.split(';')[0]);
+        final user = userId != null ? mentionUserMap[userId] : null;
+
+        if (user != null) {
+          final username = user['username'] as String? ?? 'Unknown';
+          final roleCode =
+              (user['role'] as Map<String, dynamic>?)?['code'] as String?;
+          final color = getRoleColor(roleCode, brightness: brightness);
+
+          spans.add(WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => UserScreen(userId: userId!),
+                ),
+              ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                child: Text(
+                  '@$username',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                ),
+              ),
+            ),
+          ));
+        } else {
+          // Unknown user — render raw text
+          spans.add(TextSpan(
+            text: match.group(0)!,
+            style: stylesheet.defaultTextStyle,
+          ));
+        }
       }
 
       lastEnd = match.end;
@@ -517,6 +603,7 @@ class BbcodeRenderer extends StatelessWidget {
             BbcodeRenderer(
               content: block.content,
               postId: quotedPostId ?? postId,
+              mentionUsers: mentionUsers,
             ),
           ],
         ),
@@ -540,7 +627,7 @@ class BbcodeRenderer extends StatelessWidget {
           ),
         ),
         padding: const EdgeInsets.all(12),
-        child: BbcodeRenderer(content: block.content, postId: postId),
+        child: BbcodeRenderer(content: block.content, postId: postId, mentionUsers: mentionUsers),
       ),
     );
   }
@@ -558,7 +645,7 @@ class BbcodeRenderer extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: _SpoilerWidget(
         backgroundColor: bgColor,
-        child: BbcodeRenderer(content: block.content, postId: postId),
+        child: BbcodeRenderer(content: block.content, postId: postId, mentionUsers: mentionUsers),
       ),
     );
   }
@@ -583,7 +670,7 @@ class BbcodeRenderer extends StatelessWidget {
         title: title,
         backgroundColor: bgColor,
         borderColor: borderColor,
-        child: BbcodeRenderer(content: block.content, postId: postId),
+        child: BbcodeRenderer(content: block.content, postId: postId, mentionUsers: mentionUsers),
       ),
     );
   }
@@ -714,6 +801,7 @@ class BbcodeRenderer extends StatelessWidget {
                   child: BbcodeRenderer(
                     content: entry.value.trim(),
                     postId: postId,
+                    mentionUsers: mentionUsers,
                   ),
                 ),
               ],

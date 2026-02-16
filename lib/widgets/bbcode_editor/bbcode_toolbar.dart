@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'bbcode_text_controller.dart';
-import 'bbcode_toolbar_config.dart';
+import 'bbcode_editor.dart';
 import 'dialogs/emote_picker_dialog.dart';
 import 'dialogs/media_dialog.dart';
+import 'dialogs/mention_dialog.dart';
 import 'dialogs/quote_dialog.dart';
 import 'dialogs/url_dialog.dart';
 
@@ -11,11 +11,13 @@ import 'dialogs/url_dialog.dart';
 class BbcodeToolbar extends StatelessWidget {
   final BbcodeTextController controller;
   final BbcodeToolbarConfig config;
+  final BbcodeEditorController? editorController;
 
   const BbcodeToolbar({
     super.key,
     required this.controller,
     this.config = const BbcodeToolbarConfig(),
+    this.editorController,
   });
 
   @override
@@ -195,6 +197,17 @@ class BbcodeToolbar extends StatelessWidget {
         final emote = await showEmotePickerDialog(context);
         if (emote != null) {
           controller.insertTag(':${emote.code}:');
+        }
+
+      case DialogType.mention:
+        final result = await showMentionDialog(context);
+        if (result != null) {
+          controller.insertTag('@<${result.userId}>');
+          editorController?.addMentionUser(
+            userId: result.userId,
+            username: result.username,
+            roleCode: result.roleCode,
+          );
         }
     }
   }

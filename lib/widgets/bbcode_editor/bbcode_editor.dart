@@ -19,6 +19,11 @@ enum BbcodeEditorViewMode {
 class BbcodeEditorController extends ChangeNotifier {
   BbcodeTextController? _textController;
 
+  /// Mention user data for preview rendering
+  final List<Map<String, dynamic>> _mentionUsers = [];
+  List<Map<String, dynamic>> get mentionUsers =>
+      List.unmodifiable(_mentionUsers);
+
   /// Get the current BBCode content
   String get bbcode => _textController?.text ?? '';
 
@@ -27,9 +32,26 @@ class BbcodeEditorController extends ChangeNotifier {
     _textController?.text = value;
   }
 
+  /// Add a mention user for preview rendering
+  void addMentionUser({
+    required int userId,
+    required String username,
+    String? roleCode,
+  }) {
+    // Avoid duplicates
+    if (_mentionUsers.any((u) => u['id'] == userId)) return;
+    _mentionUsers.add({
+      'id': userId,
+      'username': username,
+      if (roleCode != null) 'role': {'code': roleCode},
+    });
+    notifyListeners();
+  }
+
   /// Clear all content
   void clear() {
     _textController?.clearContent();
+    _mentionUsers.clear();
   }
 
   /// Internal: attach the text controller
@@ -132,6 +154,7 @@ class _BbcodeEditorState extends State<BbcodeEditor> {
           BbcodeToolbar(
             controller: _textController,
             config: widget.toolbarConfig,
+            editorController: widget.controller,
           ),
 
           // View mode toggle
@@ -230,8 +253,11 @@ class _BbcodeEditorState extends State<BbcodeEditor> {
   }
 
   Widget _buildPreview(BuildContext context) {
+    final listenables = <Listenable>[_textController];
+    if (widget.controller != null) listenables.add(widget.controller!);
+
     return ListenableBuilder(
-      listenable: _textController,
+      listenable: Listenable.merge(listenables),
       builder: (context, _) {
         final content = _textController.text;
         if (content.isEmpty) {
@@ -250,7 +276,10 @@ class _BbcodeEditorState extends State<BbcodeEditor> {
           padding: const EdgeInsets.all(12),
           child: Align(
             alignment: Alignment.topLeft,
-            child: BbcodeRenderer(content: content),
+            child: BbcodeRenderer(
+              content: content,
+              mentionUsers: widget.controller?.mentionUsers ?? const [],
+            ),
           ),
         );
       },

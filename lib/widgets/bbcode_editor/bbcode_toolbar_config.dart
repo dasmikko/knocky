@@ -66,6 +66,7 @@ enum DialogType {
   mastodon,
   quote,
   emote,
+  mention,
 }
 
 /// Default toolbar configuration matching BbcodeRenderer supported tags
@@ -113,6 +114,12 @@ class BbcodeToolbarConfig {
       icon: Icons.emoji_emotions,
       tooltip: 'Insert Emote',
       dialogType: DialogType.emote,
+    ),
+    DialogTagConfig(
+      id: 'mention',
+      icon: Icons.alternate_email,
+      tooltip: 'Mention User',
+      dialogType: DialogType.mention,
     ),
     ToolbarSeparator(),
 

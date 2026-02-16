@@ -78,7 +78,11 @@ class PostCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (post.content.isNotEmpty)
-                  BbcodeRenderer(content: post.content, postId: post.id),
+                  BbcodeRenderer(
+                    content: post.content,
+                    postId: post.id,
+                    mentionUsers: post.mentionUsers,
+                  ),
                 // Ban notice
                 if (post.bans.isNotEmpty) ...[
                   const SizedBox(height: 12),
