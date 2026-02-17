@@ -15,20 +15,28 @@ enum BbcodeEditorViewMode {
   split,
 }
 
-/// Controller for accessing and manipulating BBCode editor content
+/// Controller for accessing and manipulating BBCode editor content.
+///
+/// Buffers content so it survives the editor widget being disposed
+/// (e.g. when a bottom sheet is closed and reopened).
 class BbcodeEditorController extends ChangeNotifier {
   BbcodeTextController? _textController;
+  String _bufferedContent = '';
 
   /// Mention user data for preview rendering
   final List<Map<String, dynamic>> _mentionUsers = [];
   List<Map<String, dynamic>> get mentionUsers =>
       List.unmodifiable(_mentionUsers);
 
+  /// Whether there is any draft content buffered
+  bool get hasDraft => bbcode.trim().isNotEmpty;
+
   /// Get the current BBCode content
-  String get bbcode => _textController?.text ?? '';
+  String get bbcode => _textController?.text ?? _bufferedContent;
 
   /// Set the BBCode content
   set bbcode(String value) {
+    _bufferedContent = value;
     _textController?.text = value;
   }
 
@@ -50,6 +58,7 @@ class BbcodeEditorController extends ChangeNotifier {
 
   /// Clear all content
   void clear() {
+    _bufferedContent = '';
     _textController?.clearContent();
     _mentionUsers.clear();
   }
@@ -57,10 +66,14 @@ class BbcodeEditorController extends ChangeNotifier {
   /// Internal: attach the text controller
   void _attach(BbcodeTextController controller) {
     _textController = controller;
+    if (_bufferedContent.isNotEmpty) {
+      controller.text = _bufferedContent;
+    }
   }
 
   /// Internal: detach the text controller
   void _detach() {
+    _bufferedContent = _textController?.text ?? _bufferedContent;
     _textController = null;
   }
 }
@@ -119,7 +132,12 @@ class _BbcodeEditorState extends State<BbcodeEditor> {
   @override
   void initState() {
     super.initState();
-    _textController = BbcodeTextController(text: widget.initialContent ?? '');
+    // Prefer controller's buffered content (from a previous session),
+    // then fall back to initialContent.
+    final initial = (widget.controller?.bbcode.isNotEmpty == true)
+        ? widget.controller!.bbcode
+        : (widget.initialContent ?? '');
+    _textController = BbcodeTextController(text: initial);
     _viewMode = widget.initialViewMode;
 
     _textController.addListener(_onTextChanged);

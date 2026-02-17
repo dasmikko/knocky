@@ -65,6 +65,9 @@ class _ThreadScreenState extends State<ThreadScreen> {
   // Debounce timer for marking thread as read
   Timer? _markAsReadTimer;
 
+  // Persistent editor controller for the create-post sheet
+  final BbcodeEditorController _editorController = BbcodeEditorController();
+
   @override
   void initState() {
     super.initState();
@@ -90,6 +93,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
     _markAsReadTimer?.cancel();
     _pageController.dispose();
     _paginatorController.onVisibilityChanged = null;
+    _editorController.dispose();
     for (final controller in _scrollControllers.values) {
       controller.dispose();
     }
@@ -326,7 +330,6 @@ class _ThreadScreenState extends State<ThreadScreen> {
   }
 
   Future<void> _showCreatePostSheet() async {
-    final editorController = BbcodeEditorController();
     final apiService = context.read<KnockoutApiService>();
     final settingsService = context.read<SettingsService>();
 
@@ -335,7 +338,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
       isScrollControlled: true,
       useSafeArea: true,
       builder: (sheetContext) => CreatePostSheet(
-        editorController: editorController,
+        editorController: _editorController,
         threadId: widget.threadId,
         apiService: apiService,
         settingsService: settingsService,
@@ -343,6 +346,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
     );
 
     if (result == true && mounted) {
+      _editorController.clear();
       // Clear cache and refresh to get updated page count
       _pageCache.clear();
       await _refreshSilently();
@@ -399,8 +403,6 @@ class _ThreadScreenState extends State<ThreadScreen> {
   }
 
   Future<void> _quotePost(ThreadPost post) async {
-    final editorController = BbcodeEditorController();
-
     // Strip existing quotes to prevent quote pyramids
     final strippedContent = stripQuotes(post.content);
 
@@ -414,20 +416,30 @@ class _ThreadScreenState extends State<ThreadScreen> {
         '$strippedContent'
         '[/quote]\n\n';
 
+    // Append quote to any existing draft content
+    final existing = _editorController.bbcode;
+    _editorController.bbcode = existing + quoteTag;
+
+    // Add mention user data for preview rendering
+    _editorController.addMentionUser(
+      userId: post.userId,
+      username: post.user.username,
+    );
+
     final result = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
       builder: (sheetContext) => CreatePostSheet(
-        editorController: editorController,
+        editorController: _editorController,
         threadId: widget.threadId,
         apiService: context.read<KnockoutApiService>(),
         settingsService: context.read<SettingsService>(),
-        initialContent: quoteTag,
       ),
     );
 
     if (result == true && mounted) {
+      _editorController.clear();
       // Clear cache and refresh to get updated page count
       _pageCache.clear();
       await _refreshSilently();
@@ -637,7 +649,35 @@ class _ThreadScreenState extends State<ThreadScreen> {
         ? BottomPaginator.paginatorHeight + 8
         : 0.0;
 
-    return Scaffold(
+    return PopScope(
+      canPop: !_editorController.hasDraft,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        final discard = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Discard draft?'),
+            content: const Text(
+              'You have an unfinished post. If you leave now, your draft will be lost.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Keep editing'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Discard'),
+              ),
+            ],
+          ),
+        );
+        if (discard == true && context.mounted) {
+          _editorController.clear();
+          Navigator.of(context).pop();
+        }
+      },
+      child: Scaffold(
       appBar: AppBar(
         title: Text(title),
         actions: [
@@ -744,6 +784,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
           ],
         ),
       ),
+    ),
     );
   }
 
