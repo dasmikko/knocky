@@ -52,6 +52,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
   // Scroll tracking for paginator
   final Map<int, ScrollController> _scrollControllers = {};
   final Map<int, GlobalKey<RefreshIndicatorState>> _refreshIndicatorKeys = {};
+  final Map<int, GlobalKey> _postKeys = {};
   final BottomPaginatorController _paginatorController =
       BottomPaginatorController();
 
@@ -508,26 +509,17 @@ class _ThreadScreenState extends State<ThreadScreen> {
 
   void _navigateToPost(int postId, int page) {
     if (page == _currentPage) {
-      // Post is on the current page — find it and scroll to it
-      final pageData = _pageCache[_currentPage];
-      if (pageData == null) return;
-      final index = pageData.posts.indexWhere((p) => p.id == postId);
-      if (index < 0) return;
-
-      final controller = _scrollControllers[_currentPage];
-      if (controller == null || !controller.hasClients) return;
-
-      final itemCount = pageData.posts.length;
-      if (itemCount <= 1) return;
-      final fraction = index / itemCount;
-      final targetOffset = fraction * controller.position.maxScrollExtent;
-      controller.animateTo(
-        targetOffset,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
+      final key = _postKeys[postId];
+      final ctx = key?.currentContext;
+      if (ctx != null) {
+        Scrollable.ensureVisible(
+          ctx,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+          alignment: 0.0,
+        );
+      }
     } else {
-      // Post is on a different page — jump there
       _goToPage(page);
     }
   }
@@ -540,7 +532,10 @@ class _ThreadScreenState extends State<ThreadScreen> {
     final isUnread =
         lastReadPost != null && lastReadPost < post.threadPostNumber;
 
+    final postKey = _postKeys.putIfAbsent(post.id, () => GlobalKey());
+
     return PostCard(
+      key: postKey,
       post: post,
       isAuthenticated: apiService.isAuthenticated,
       isOwnPost: isOwnPost,
