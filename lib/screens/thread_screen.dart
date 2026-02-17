@@ -26,6 +26,7 @@ class ThreadScreen extends StatefulWidget {
   final String threadTitle;
   final int? page;
   final bool scrollToUnread;
+  final int? scrollToPostId;
 
   const ThreadScreen({
     super.key,
@@ -33,6 +34,7 @@ class ThreadScreen extends StatefulWidget {
     required this.threadTitle,
     this.page,
     this.scrollToUnread = false,
+    this.scrollToPostId,
   });
 
   @override
@@ -77,6 +79,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
     super.initState();
     _currentPage = widget.page ?? 1;
     _shouldScrollToUnread = widget.scrollToUnread;
+    _pendingScrollPostId = widget.scrollToPostId;
     _pageController = PageController(initialPage: _currentPage - 1);
     _paginatorController.onVisibilityChanged = (visible) {
       setState(() => _isPaginatorVisible = visible);
@@ -283,19 +286,11 @@ class _ThreadScreenState extends State<ThreadScreen> {
     if (firstUnreadIndex <= 0) return;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final controller = _getScrollController(_currentPage);
-      if (!controller.hasClients) return;
-
-      final itemCount = response.posts.length;
-      if (itemCount <= 1) return;
-
-      final fraction = firstUnreadIndex / itemCount;
-      final targetOffset = fraction * controller.position.maxScrollExtent;
-
-      controller.animateTo(
-        targetOffset,
+      final controller = _scrollControllers[_currentPage];
+      controller?.scrollToIndex(
+        firstUnreadIndex,
+        preferPosition: AutoScrollPosition.begin,
         duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
       );
     });
   }

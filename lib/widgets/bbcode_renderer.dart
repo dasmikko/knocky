@@ -583,6 +583,7 @@ class BbcodeRenderer extends StatelessWidget {
                             threadId: threadId,
                             threadTitle: '',
                             page: threadPage,
+                            scrollToPostId: quotedPostId,
                           ),
                         ),
                       );

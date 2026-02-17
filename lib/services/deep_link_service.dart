@@ -77,10 +77,16 @@ class DeepLinkService {
           if (threadId == null) return null;
           final page =
               segments.length >= 3 ? int.tryParse(segments[2]) : null;
+          // Support #post-123 fragment for scrolling to a specific post
+          final fragment = uri.fragment;
+          final scrollToPostId = fragment.startsWith('post-')
+              ? int.tryParse(fragment.substring(5))
+              : null;
           return ThreadScreen(
             threadId: threadId,
             threadTitle: '',
             page: page,
+            scrollToPostId: scrollToPostId,
           );
         }
         return null;

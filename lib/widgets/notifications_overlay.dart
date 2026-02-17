@@ -135,6 +135,7 @@ class _NotificationsOverlayState extends State<NotificationsOverlay>
         final threadId = thread?['id'] as int? ?? rawData?['threadId'] as int?;
         final threadTitle = thread?['title'] as String? ?? 'Thread';
         final page = rawData?['page'] as int? ?? 1;
+        final postId = rawData?['id'] as int? ?? rawData?['postId'] as int?;
         if (threadId != null) {
           widget.onClose();
           Navigator.push(
@@ -144,6 +145,7 @@ class _NotificationsOverlayState extends State<NotificationsOverlay>
                 threadId: threadId,
                 threadTitle: threadTitle,
                 page: page,
+                scrollToPostId: postId,
               ),
             ),
           );
