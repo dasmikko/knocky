@@ -28,12 +28,14 @@ class BbcodeRenderer extends StatelessWidget {
   final String content;
   final int? postId;
   final List<dynamic> mentionUsers;
+  final String? heroTagPrefix;
 
   const BbcodeRenderer({
     super.key,
     required this.content,
     this.postId,
     this.mentionUsers = const [],
+    this.heroTagPrefix,
   });
 
   static final _mentionPattern = RegExp(r'@<(\d+;?.*?)>');
@@ -605,6 +607,7 @@ class BbcodeRenderer extends StatelessWidget {
               content: block.content,
               postId: quotedPostId ?? postId,
               mentionUsers: mentionUsers,
+              heroTagPrefix: 'quote_${postId}_${quotedPostId}',
             ),
           ],
         ),
@@ -815,7 +818,8 @@ class BbcodeRenderer extends StatelessWidget {
 
   Widget _buildImage(BuildContext context, String url) {
     final trimmedUrl = url.trim();
-    final heroTag = 'image_${postId}_$trimmedUrl';
+    final prefix = heroTagPrefix ?? 'image_$postId';
+    final heroTag = '${prefix}_$trimmedUrl';
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
