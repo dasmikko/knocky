@@ -506,6 +506,32 @@ class _ThreadScreenState extends State<ThreadScreen> {
     }
   }
 
+  void _navigateToPost(int postId, int page) {
+    if (page == _currentPage) {
+      // Post is on the current page — find it and scroll to it
+      final pageData = _pageCache[_currentPage];
+      if (pageData == null) return;
+      final index = pageData.posts.indexWhere((p) => p.id == postId);
+      if (index < 0) return;
+
+      final controller = _scrollControllers[_currentPage];
+      if (controller == null || !controller.hasClients) return;
+
+      final itemCount = pageData.posts.length;
+      if (itemCount <= 1) return;
+      final fraction = index / itemCount;
+      final targetOffset = fraction * controller.position.maxScrollExtent;
+      controller.animateTo(
+        targetOffset,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    } else {
+      // Post is on a different page — jump there
+      _goToPage(page);
+    }
+  }
+
   Widget _buildPostCard(ThreadPost post) {
     final apiService = context.watch<KnockoutApiService>();
     final userRating = _getUserRating(post.ratings);
@@ -524,6 +550,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
       onEdit: () => _editPost(post),
       onRate: () => _ratePost(post, hasExistingRating: userRating != null),
       onShowRatingUsers: _showRatingUsers,
+      onResponseTap: _navigateToPost,
     );
   }
 
