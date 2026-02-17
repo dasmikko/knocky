@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -50,9 +51,8 @@ class _ThreadScreenState extends State<ThreadScreen> {
   bool _shouldScrollToUnread = false;
 
   // Scroll tracking for paginator
-  final Map<int, ScrollController> _scrollControllers = {};
+  final Map<int, AutoScrollController> _scrollControllers = {};
   final Map<int, GlobalKey<RefreshIndicatorState>> _refreshIndicatorKeys = {};
-  final Map<int, GlobalKey> _postKeys = {};
   final BottomPaginatorController _paginatorController =
       BottomPaginatorController();
 
@@ -65,6 +65,9 @@ class _ThreadScreenState extends State<ThreadScreen> {
 
   // Debounce timer for marking thread as read
   Timer? _markAsReadTimer;
+
+  // Pending scroll target after page navigation
+  int? _pendingScrollPostId;
 
   // Persistent editor controller for the create-post sheet
   final BbcodeEditorController _editorController = BbcodeEditorController();
@@ -101,9 +104,9 @@ class _ThreadScreenState extends State<ThreadScreen> {
     super.dispose();
   }
 
-  ScrollController _getScrollController(int page) {
+  AutoScrollController _getScrollController(int page) {
     if (!_scrollControllers.containsKey(page)) {
-      final controller = ScrollController();
+      final controller = AutoScrollController();
       controller.addListener(() => _paginatorController.onScroll(controller));
       _scrollControllers[page] = controller;
     }
@@ -509,22 +512,31 @@ class _ThreadScreenState extends State<ThreadScreen> {
 
   void _navigateToPost(int postId, int page) {
     if (page == _currentPage) {
-      final key = _postKeys[postId];
-      final ctx = key?.currentContext;
-      if (ctx != null) {
-        Scrollable.ensureVisible(
-          ctx,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-          alignment: 0.0,
-        );
-      }
+      _scrollToPost(postId);
     } else {
+      _pendingScrollPostId = postId;
       _goToPage(page);
     }
   }
 
-  Widget _buildPostCard(ThreadPost post) {
+  void _scrollToPost(int postId) {
+    final pageData = _pageCache[_currentPage];
+    if (pageData == null) return;
+    final index = pageData.posts.indexWhere((p) => p.id == postId);
+    if (index < 0) return;
+    final controller = _scrollControllers[_currentPage];
+    controller?.scrollToIndex(
+      index,
+      preferPosition: AutoScrollPosition.begin,
+      duration: const Duration(milliseconds: 300),
+    );
+  }
+
+  Widget _buildPostCard(
+    ThreadPost post,
+    int index,
+    AutoScrollController controller,
+  ) {
     final apiService = context.watch<KnockoutApiService>();
     final userRating = _getUserRating(post.ratings);
     final isOwnPost = post.userId == apiService.syncData?.id;
@@ -532,20 +544,22 @@ class _ThreadScreenState extends State<ThreadScreen> {
     final isUnread =
         lastReadPost != null && lastReadPost < post.threadPostNumber;
 
-    final postKey = _postKeys.putIfAbsent(post.id, () => GlobalKey());
-
-    return PostCard(
-      key: postKey,
-      post: post,
-      isAuthenticated: apiService.isAuthenticated,
-      isOwnPost: isOwnPost,
-      isUnread: isUnread,
+    return AutoScrollTag(
+      key: ValueKey(post.id),
+      controller: controller,
+      index: index,
+      child: PostCard(
+        post: post,
+        isAuthenticated: apiService.isAuthenticated,
+        isOwnPost: isOwnPost,
+        isUnread: isUnread,
       userRatingCode: userRating,
       onQuote: () => _quotePost(post),
       onEdit: () => _editPost(post),
       onRate: () => _ratePost(post, hasExistingRating: userRating != null),
       onShowRatingUsers: _showRatingUsers,
       onResponseTap: _navigateToPost,
+      ),
     );
   }
 
@@ -841,16 +855,25 @@ class _ThreadScreenState extends State<ThreadScreen> {
       hasPagination: hasPagination,
     ) + fabHeight;
 
+    // Execute pending scroll after the frame is laid out
+    if (_pendingScrollPostId != null && page == _currentPage) {
+      final targetPostId = _pendingScrollPostId!;
+      _pendingScrollPostId = null;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _scrollToPost(targetPostId);
+      });
+    }
+
     return RefreshIndicator(
       key: _getRefreshIndicatorKey(page),
       onRefresh: () => _doRefresh(page),
-      child: ListView.builder(
+      child: ListView(
         controller: scrollController,
         padding: EdgeInsets.only(bottom: bottomPadding),
-        itemCount: pageData.posts.length,
-        itemBuilder: (context, index) {
-          return _buildPostCard(pageData.posts[index]);
-        },
+        children: [
+          for (var i = 0; i < pageData.posts.length; i++)
+            _buildPostCard(pageData.posts[i], i, scrollController),
+        ],
       ),
     );
   }

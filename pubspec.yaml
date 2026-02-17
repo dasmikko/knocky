@@ -73,6 +73,7 @@ dependencies:
   firebase_analytics: ^11.6.0
   flutter_dotenv: ^6.0.0
   app_links: ^7.0.0
+  scroll_to_index: ^3.0.1
 
 dev_dependencies:
   flutter_test:
