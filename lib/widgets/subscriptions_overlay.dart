@@ -80,6 +80,7 @@ class _SubscriptionsOverlayState extends State<SubscriptionsOverlay>
           threadId: subscription.threadId,
           threadTitle: subscription.threadTitle,
           page: page,
+          scrollToUnread: true,
         ),
       ),
     );
