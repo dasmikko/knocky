@@ -55,9 +55,10 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
   bool _updateBannerDismissed = false;
   Motd? _motd;
   bool _motdVisible = false;
-
   static const _adRefreshDuration = Duration(minutes: 5);
   static const _motdDismissedKey = 'motd_dismissed';
+
+  
 
   int get _unreadNotificationCount =>
       _notifications?.where((n) => !n.read).length ?? 0;
@@ -69,6 +70,8 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
             .length ??
         0;
   }
+
+
 
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
 
@@ -83,7 +86,8 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
       _adRefreshDuration,
       (_) => _loadRandomAd(),
     );
-  }
+
+}
 
   @override
   void didChangeDependencies() {
@@ -587,7 +591,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
                   ),
                 );
               },
-              onLastPostTap: threadInfo != null
+              onLastPostTap: threadInfo != null && lastPost != null
                   ? () {
                       Navigator.push(
                         context,
@@ -595,6 +599,8 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
                           builder: (context) => ThreadScreen(
                             threadId: threadInfo.id,
                             threadTitle: threadInfo.title,
+                            page: lastPost.page,
+                            scrollToPostId: lastPost.id,
                           ),
                         ),
                       );

@@ -51,8 +51,12 @@ class SubforumThreadListItem extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  ThreadScreen(threadId: thread.id, threadTitle: thread.title),
+              builder: (context) => ThreadScreen(
+                threadId: thread.id,
+                threadTitle: thread.title,
+                page: thread.lastPost?.page,
+                scrollToPostId: thread.lastPost?.id,
+              ),
             ),
           );
         },
