@@ -53,6 +53,7 @@ class SettingsService extends ChangeNotifier {
   static const String _baseUrlKey = 'api_base_url';
   static const String _analyticsConsentKey = 'analytics_consent';
   static const String _hasSeenWelcomeKey = 'has_seen_welcome';
+  static const String _disableAdInDrawerKey = 'disable_drawer_ad';
 
   // Current values
   AppThemeMode _themeMode = AppThemeMode.system;
@@ -62,6 +63,8 @@ class SettingsService extends ChangeNotifier {
   String _baseUrl = KnockoutApiService.defaultBaseUrl;
   bool _analyticsConsent = false;
   bool _hasSeenWelcome = false;
+  bool _disableAdInDrawer = false;
+
 
   // Getters
   AppThemeMode get themeMode => _themeMode;
@@ -72,6 +75,7 @@ class SettingsService extends ChangeNotifier {
   String get baseUrl => _baseUrl;
   bool get analyticsConsent => _analyticsConsent;
   bool get hasSeenWelcome => _hasSeenWelcome;
+  bool get disableAdInDrawer => _disableAdInDrawer;
 
   /// Load all settings from storage
   Future<void> load() async {
@@ -98,6 +102,9 @@ class SettingsService extends ChangeNotifier {
 
     final hasSeenWelcomeValue = await _storage.read(key: _hasSeenWelcomeKey);
     _hasSeenWelcome = hasSeenWelcomeValue == 'true';
+
+    final disableAdInDrawer = await _storage.read(key: _disableAdInDrawerKey);
+    _disableAdInDrawer = disableAdInDrawer == 'true';
 
     notifyListeners();
   }
@@ -160,6 +167,14 @@ class SettingsService extends ChangeNotifier {
     if (_hasSeenWelcome == value) return;
     _hasSeenWelcome = value;
     await _storage.write(key: _hasSeenWelcomeKey, value: value.toString());
+    notifyListeners();
+  }
+
+  // Set wether disable ad in drawer
+  Future<void> setDisableAdInDrawer(bool value) async {
+    if (_disableAdInDrawer == value) return;
+    _disableAdInDrawer = value;
+    await _storage.write(key: _disableAdInDrawerKey, value: value.toString());
     notifyListeners();
   }
 }

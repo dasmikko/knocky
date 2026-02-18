@@ -516,7 +516,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
             },
           ),
           const Divider(),
-          if (_currentAd != null)
+          if (_currentAd != null && !context.watch<SettingsService>().disableAdInDrawer)
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Stack(

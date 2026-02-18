@@ -211,6 +211,17 @@ class SettingsScreen extends StatelessWidget {
                   }
                 },
               ),
+              SwitchListTile(
+                secondary: const Icon(Icons.ad_units),
+                title: const Text('Disable ad in drawer'),
+                subtitle: const Text(
+                  'Disable the ad, inside the drawer',
+                ),
+                value: settings.disableAdInDrawer,
+                onChanged: (value) async {
+                  await settings.setDisableAdInDrawer(value);
+                },
+              ),
             ],
           ),
           if (apiService.isAuthenticated)
