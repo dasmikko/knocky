@@ -42,8 +42,11 @@ class SubforumThreadListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasUnread =
         thread.readThread != null && thread.readThread!.unreadPostCount > 0;
+    final isRead = thread.readThread != null && !hasUnread;
 
-    return Card(
+    return Opacity(
+      opacity: isRead ? 0.6 : 1.0,
+      child: Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -123,6 +126,7 @@ class SubforumThreadListItem extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 
