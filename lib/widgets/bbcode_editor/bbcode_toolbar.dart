@@ -88,7 +88,7 @@ class BbcodeToolbar extends StatelessWidget {
       case DialogType.url:
         final result = await showUrlDialog(context, initialText: selectedText);
         if (result != null) {
-          controller.insertUrl(result.url, linkText: result.linkText);
+          controller.insertUrl(result.url, linkText: result.linkText, smart: result.smart);
         }
 
       case DialogType.image:

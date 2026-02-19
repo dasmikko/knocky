@@ -79,11 +79,12 @@ class BbcodeTextController extends TextEditingController {
   }
 
   /// Inserts a URL tag, optionally with link text
-  void insertUrl(String url, {String? linkText}) {
+  void insertUrl(String url, {String? linkText, bool smart = false}) {
+    final smartAttr = smart ? ' smart' : '';
     if (linkText != null && linkText.isNotEmpty && linkText != url) {
-      insertTag('[url href="$url"]$linkText[/url]');
+      insertTag('[url$smartAttr href="$url"]$linkText[/url]');
     } else {
-      insertTag('[url href="$url"][/url]');
+      insertTag('[url$smartAttr href="$url"][/url]');
     }
   }
 

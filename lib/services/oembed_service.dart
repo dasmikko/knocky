@@ -99,7 +99,7 @@ class OEmbedService {
         case 'mastodon':
           metadata = parseMastodon(url);
         default:
-          return null;
+          metadata = await _fetchOpenGraph(url);
       }
 
       if (metadata != null) {
@@ -454,6 +454,61 @@ class OEmbedService {
       title: username != null ? '$username on $instance' : 'Mastodon Post',
       authorName: username,
     );
+  }
+
+  /// Fetch Open Graph metadata from any URL by parsing <meta> tags
+  Future<EmbedMetadata?> _fetchOpenGraph(String url) async {
+    try {
+      final response = await _dio.get(
+        url,
+        options: Options(
+          headers: {'Accept': 'text/html'},
+          // Only read the head — stop early for large pages
+          responseType: ResponseType.plain,
+        ),
+      );
+
+      final html = response.data as String;
+
+      String? ogGet(String property) {
+        final match = RegExp(
+          '<meta[^>]+property=["\']og:$property["\'][^>]+content=["\'](.*?)["\']',
+          caseSensitive: false,
+        ).firstMatch(html);
+        if (match != null) return match.group(1);
+        // Try reversed order (content before property)
+        final alt = RegExp(
+          '<meta[^>]+content=["\'](.*?)["\'][^>]+property=["\']og:$property["\']',
+          caseSensitive: false,
+        ).firstMatch(html);
+        return alt?.group(1);
+      }
+
+      final title = ogGet('title');
+      final description = ogGet('description');
+      final image = ogGet('image');
+      final siteName = ogGet('site_name');
+
+      // Fall back to <title> tag if no OG title
+      final fallbackTitle = title ??
+          RegExp(r'<title[^>]*>(.*?)</title>', caseSensitive: false, dotAll: true)
+              .firstMatch(html)
+              ?.group(1)
+              ?.trim();
+
+      if (fallbackTitle == null && description == null) return null;
+
+      return EmbedMetadata(
+        provider: siteName ?? 'Link',
+        url: url,
+        title: fallbackTitle,
+        description: description,
+        thumbnailUrl: image,
+      );
+    } catch (e) {
+      log('Open Graph fetch error for $url: $e');
+      return null;
+    }
   }
 
   /// Clear the cache

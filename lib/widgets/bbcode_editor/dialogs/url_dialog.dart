@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 class UrlDialogResult {
   final String url;
   final String? linkText;
+  final bool smart;
 
-  UrlDialogResult({required this.url, this.linkText});
+  UrlDialogResult({required this.url, this.linkText, this.smart = false});
 }
 
 /// Shows a dialog to input a URL and optional link text
@@ -30,6 +31,7 @@ class _UrlDialogState extends State<_UrlDialog> {
   late final TextEditingController _urlController;
   late final TextEditingController _textController;
   final _formKey = GlobalKey<FormState>();
+  bool _smart = false;
 
   @override
   void initState() {
@@ -50,6 +52,7 @@ class _UrlDialogState extends State<_UrlDialog> {
       Navigator.of(context).pop(UrlDialogResult(
         url: _urlController.text.trim(),
         linkText: _textController.text.trim().isEmpty ? null : _textController.text.trim(),
+        smart: _smart,
       ));
     }
   }
@@ -93,6 +96,15 @@ class _UrlDialogState extends State<_UrlDialog> {
                 prefixIcon: Icon(Icons.text_fields),
               ),
               onFieldSubmitted: (_) => _submit(),
+            ),
+            const SizedBox(height: 8),
+            CheckboxListTile(
+              value: _smart,
+              onChanged: (value) => setState(() => _smart = value ?? false),
+              title: const Text('Smart URL'),
+              subtitle: const Text('Show as embed preview'),
+              contentPadding: EdgeInsets.zero,
+              controlAffinity: ListTileControlAffinity.leading,
             ),
           ],
         ),
