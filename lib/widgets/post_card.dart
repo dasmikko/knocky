@@ -44,6 +44,7 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   bool _responsesExpanded = false;
+  bool _showRaw = false;
 
   String _formatTimeAgo(String dateString) {
     try {
@@ -88,6 +89,8 @@ class _PostCardState extends State<PostCard> {
         children: [
           // Post header: avatar, username, time, background
           _buildHeader(context, hasAvatar, avatarUrl, hasBackground, backgroundUrl),
+          // Secondary toolbar
+          _buildToolbar(context),
           // Post content and footer
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
@@ -95,11 +98,20 @@ class _PostCardState extends State<PostCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (post.content.isNotEmpty)
-                  BbcodeRenderer(
-                    content: post.content,
-                    postId: post.id,
-                    mentionUsers: post.mentionUsers,
-                  ),
+                  _showRaw
+                      ? SelectableText(
+                          post.content,
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontFamily: 'monospace',
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        )
+                      : BbcodeRenderer(
+                          content: post.content,
+                          postId: post.id,
+                          mentionUsers: post.mentionUsers,
+                        ),
                 // Ban notice
                 if (post.bans.isNotEmpty) ...[
                   const SizedBox(height: 12),
@@ -469,6 +481,53 @@ class _PostCardState extends State<PostCard> {
     } catch (_) {
       return null;
     }
+  }
+
+  Widget _buildToolbar(BuildContext context) {
+    return Container(
+      height: 30,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+      ),
+      child: Row(
+        children: [
+          const Spacer(),
+          _buildToolbarButton(
+            context,
+            icon: Icons.code,
+            tooltip: _showRaw ? 'Show rendered' : 'Show raw BBCode',
+            isActive: _showRaw,
+            onTap: () => setState(() => _showRaw = !_showRaw),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildToolbarButton(
+    BuildContext context, {
+    required IconData icon,
+    required String tooltip,
+    required VoidCallback onTap,
+    bool isActive = false,
+  }) {
+    return Tooltip(
+      message: tooltip,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          child: Icon(
+            icon,
+            size: 16,
+            color: isActive
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildFooter(BuildContext context) {
