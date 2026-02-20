@@ -12,7 +12,6 @@ It also has self-updating, and will inform if there is an update
 ## Missing features
 
 * Post reporting
-* Searching
 * Thread hiding
 
 ## Planned features
