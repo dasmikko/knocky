@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:knocky/widgets/media_action_bar.dart';
 import 'package:video_player/video_player.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   final String url;
@@ -31,6 +32,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       _controller.setLooping(true);
       _controller.addListener(_onVideoUpdate);
       _controller.play();
+      WakelockPlus.enable();
       setState(() {
         _isInitialized = true;
       });
@@ -49,6 +51,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   @override
   void dispose() {
+    WakelockPlus.disable();
     _controller.removeListener(_onVideoUpdate);
     _controller.dispose();
     super.dispose();

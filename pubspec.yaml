@@ -74,6 +74,7 @@ dependencies:
   flutter_dotenv: ^6.0.0
   app_links: ^7.0.0
   scroll_to_index: ^3.0.1
+  wakelock_plus: ^1.4.0
 
 dev_dependencies:
   flutter_test:
