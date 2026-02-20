@@ -27,7 +27,7 @@ import '../widgets/animated_content_switcher.dart';
 import '../widgets/overlays/notifications_overlay.dart';
 import '../widgets/overlays/subscriptions_overlay.dart';
 import '../widgets/sliding_banner.dart';
-import '../widgets/subforum/subforum_list_item.dart';
+import '../widgets/subforum_list_item.dart';
 import 'subforum_screen.dart';
 import 'thread_screen.dart';
 import 'user_screen.dart';
