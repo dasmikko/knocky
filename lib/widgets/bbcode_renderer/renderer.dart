@@ -1,6 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bbcode/flutter_bbcode.dart';
+import 'package:flutter_highlight/themes/atom-one-dark.dart';
+import 'package:flutter_highlight/themes/atom-one-light.dart';
+import 'package:highlight/highlight.dart' show highlight, Node;
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../main.dart';
@@ -310,22 +313,34 @@ class BbcodeRenderer extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final bgColor = isDark
-        ? const Color(0xFF1A1A2E)
-        : const Color(0xFFF5F5F5);
-
+    final highlightTheme = isDark ? atomOneDarkTheme : atomOneLightTheme;
+    final bgColor = highlightTheme['root']?.backgroundColor ??
+        (isDark ? const Color(0xFF282c34) : const Color(0xFFFAFAFA));
     final borderColor = isDark
         ? const Color(0xFF2D2D44)
         : const Color(0xFFE0E0E0);
-
-    final textColor = isDark
-        ? const Color(0xFFE0E0E0)
-        : const Color(0xFF333333);
 
     // Strip any nested BBCode from code blocks
     final codeContent = block.content
         .replaceAll(RegExp(r'\[/?[^\]]+\]'), '')
         .trim();
+
+    final language = block.attributes['language'];
+    final headerLabel = language != null ? 'Code \u2014 $language' : 'Code';
+
+    // Parse and highlight
+    final result = language != null
+        ? highlight.parse(codeContent, language: language)
+        : highlight.parse(codeContent, autoDetection: true);
+    final spans = _convertHighlightNodes(result.nodes ?? [], highlightTheme);
+
+    final textStyle = TextStyle(
+      fontFamily: 'monospace',
+      fontSize: 13,
+      color: highlightTheme['root']?.color ??
+          (isDark ? const Color(0xFFABB2BF) : const Color(0xFF383A42)),
+      height: 1.4,
+    );
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -358,7 +373,7 @@ class BbcodeRenderer extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    'Code',
+                    headerLabel,
                     style: theme.textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
@@ -370,20 +385,48 @@ class BbcodeRenderer extends StatelessWidget {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.all(12),
-              child: SelectableText(
-                codeContent,
-                style: TextStyle(
-                  fontFamily: 'monospace',
-                  fontSize: 13,
-                  color: textColor,
-                  height: 1.4,
-                ),
+              child: SelectableText.rich(
+                TextSpan(style: textStyle, children: spans),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  /// Converts highlight.js parsed nodes into Flutter TextSpans.
+  static List<TextSpan> _convertHighlightNodes(
+    List<Node> nodes,
+    Map<String, TextStyle> theme,
+  ) {
+    final spans = <TextSpan>[];
+    for (final node in nodes) {
+      _traverseNode(node, theme, spans);
+    }
+    return spans;
+  }
+
+  static void _traverseNode(
+    Node node,
+    Map<String, TextStyle> theme,
+    List<TextSpan> spans,
+  ) {
+    if (node.value != null) {
+      spans.add(TextSpan(
+        text: node.value,
+        style: node.className != null ? theme[node.className!] : null,
+      ));
+    } else if (node.children != null) {
+      final childSpans = <TextSpan>[];
+      for (final child in node.children!) {
+        _traverseNode(child, theme, childSpans);
+      }
+      spans.add(TextSpan(
+        children: childSpans,
+        style: node.className != null ? theme[node.className!] : null,
+      ));
+    }
   }
 
   Widget _buildList(
