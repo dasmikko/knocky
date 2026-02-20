@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import '../../data/role_colors.dart';
-import '../../models/subforum.dart';
+import '../data/role_colors.dart';
+import '../models/subforum.dart';
 
 /// Accent color pairs for subforums (gradient start, gradient end)
 const List<List<Color>> subforumAccentColors = [
