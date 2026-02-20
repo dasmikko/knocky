@@ -582,7 +582,7 @@ class KnockoutApiService extends ChangeNotifier {
         data: {
           'thread_id': threadId,
           'content': content,
-          'display_country_info': displayCountryInfo,
+          'display_country': displayCountryInfo,
         },
         options: _options.copyWith(
           headers: {...?_options.headers, 'Content-Format-Version': '1'},
