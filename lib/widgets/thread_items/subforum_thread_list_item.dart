@@ -57,8 +57,6 @@ class SubforumThreadListItem extends StatelessWidget {
               builder: (context) => ThreadScreen(
                 threadId: thread.id,
                 threadTitle: thread.title,
-                page: thread.lastPost?.page,
-                scrollToPostId: thread.lastPost?.id,
               ),
             ),
           );
