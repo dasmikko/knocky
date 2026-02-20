@@ -9,7 +9,7 @@ import '../services/knockout_api_service.dart';
 import '../services/settings_service.dart';
 import '../widgets/animated_content_switcher.dart';
 import '../widgets/bottom_paginator.dart';
-import '../widgets/subforum_thread_list_item.dart';
+import '../widgets/thread_items/subforum_thread_list_item.dart';
 import 'thread_screen.dart';
 
 class SubforumScreen extends StatefulWidget {

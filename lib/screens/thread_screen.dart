@@ -16,9 +16,9 @@ import '../services/settings_service.dart';
 import '../widgets/animated_content_switcher.dart';
 import '../widgets/bbcode_editor/bbcode_editor.dart';
 import '../widgets/bottom_paginator.dart';
-import '../widgets/post_card.dart';
-import '../widgets/post_sheets.dart';
-import '../widgets/rating_picker_dialog.dart';
+import '../widgets/post/post_card.dart';
+import '../widgets/post/post_sheets.dart';
+import '../widgets/post/rating_picker_dialog.dart';
 import 'user_screen.dart';
 
 class ThreadScreen extends StatefulWidget {

@@ -2,12 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import '../data/ratings.dart';
-import '../data/role_colors.dart';
-import '../models/ban.dart';
-import '../models/thread_post.dart';
-import '../screens/user_screen.dart';
-import 'bbcode_renderer/bbcode_renderer.dart';
+import '../../data/ratings.dart';
+import '../../data/role_colors.dart';
+import '../../models/ban.dart';
+import '../../models/thread_post.dart';
+import '../../screens/user_screen.dart';
+import '../bbcode_renderer/bbcode_renderer.dart';
 import 'post_sheets.dart' show stripQuotes;
 
 /// A card widget for displaying a single post in a thread.

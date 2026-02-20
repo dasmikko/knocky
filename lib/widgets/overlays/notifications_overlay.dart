@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import '../models/notification.dart';
-import '../services/knockout_api_service.dart';
-import '../screens/conversation_screen.dart';
-import '../screens/conversations_screen.dart';
-import '../screens/thread_screen.dart';
-import '../screens/user_screen.dart';
+import '../../models/notification.dart';
+import '../../services/knockout_api_service.dart';
+import '../../screens/conversation_screen.dart';
+import '../../screens/conversations_screen.dart';
+import '../../screens/thread_screen.dart';
+import '../../screens/user_screen.dart';
 
 class NotificationsOverlay extends StatefulWidget {
   final VoidCallback onClose;

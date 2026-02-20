@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import '../data/role_colors.dart';
-import '../data/thread_icons.dart';
-import '../models/alert.dart';
-import '../screens/thread_screen.dart';
-import '../screens/user_screen.dart';
+import '../../data/role_colors.dart';
+import '../../data/thread_icons.dart';
+import '../../models/alert.dart';
+import '../../screens/thread_screen.dart';
+import '../../screens/user_screen.dart';
 
 /// A list item widget for displaying subscription alerts.
 class SubscriptionListItem extends StatelessWidget {

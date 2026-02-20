@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import '../data/role_colors.dart';
-import '../data/thread_icons.dart';
-import '../models/user_thread.dart';
-import '../screens/thread_screen.dart';
-import '../screens/user_screen.dart';
+import '../../data/role_colors.dart';
+import '../../data/thread_icons.dart';
+import '../../models/user_thread.dart';
+import '../../screens/thread_screen.dart';
+import '../../screens/user_screen.dart';
 
 /// A list item widget for displaying threads created by a user.
 class UserThreadListItem extends StatelessWidget {

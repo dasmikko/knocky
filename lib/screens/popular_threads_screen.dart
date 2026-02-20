@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/thread.dart' as thread_model;
 import '../services/knockout_api_service.dart';
 import '../services/settings_service.dart';
-import '../widgets/thread_list_item.dart';
+import '../widgets/thread_items/thread_list_item.dart';
 
 class PopularThreadsScreen extends StatefulWidget {
   const PopularThreadsScreen({super.key});

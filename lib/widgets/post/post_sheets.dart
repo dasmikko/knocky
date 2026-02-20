@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../services/knockout_api_service.dart';
-import '../services/settings_service.dart';
-import 'bbcode_editor/bbcode_editor.dart';
+import '../../services/knockout_api_service.dart';
+import '../../services/settings_service.dart';
+import '../bbcode_editor/bbcode_editor.dart';
 
 /// A bottom sheet for creating a new post in a thread.
 class CreatePostSheet extends StatefulWidget {

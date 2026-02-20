@@ -8,7 +8,7 @@ import '../../screens/image_viewer_screen.dart';
 import '../../screens/thread_screen.dart';
 import '../../screens/video_player_screen.dart';
 import '../../services/deep_link_service.dart';
-import '../embed_preview_card.dart';
+import 'embed_preview_card.dart';
 import 'collapse_widget.dart';
 import 'inline_renderer.dart';
 import 'parser.dart';

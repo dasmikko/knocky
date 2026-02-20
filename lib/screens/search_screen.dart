@@ -5,7 +5,7 @@ import '../models/thread.dart' as thread_model;
 import '../models/thread_search_response.dart';
 import '../services/knockout_api_service.dart';
 import '../services/settings_service.dart';
-import '../widgets/subforum_thread_list_item.dart';
+import '../widgets/thread_items/subforum_thread_list_item.dart';
 import 'thread_screen.dart';
 
 class SearchScreen extends StatefulWidget {
