@@ -25,8 +25,10 @@ import 'stylesheet.dart';
 /// ```
 ///
 /// ## Adding a Custom Block Tag
-/// For tags that need custom rendering, add to `BBCodeParser.customTags`
-/// and handle the new case in `_buildBlock`.
+/// Add one entry to `_customBuilders` and write the builder method:
+/// ```dart
+/// 'newtag': _buildNewTag,
+/// ```
 class BbcodeRenderer extends StatelessWidget {
   final String content;
   final int? postId;
@@ -41,10 +43,29 @@ class BbcodeRenderer extends StatelessWidget {
     this.heroTagPrefix,
   });
 
+  /// Custom block tag builders — the single source of truth for custom tags.
+  /// Adding a new tag = one entry here + one builder method.
+  Map<String, Widget Function(BuildContext, BBCodeBlock)> get _customBuilders =>
+      {
+        'quote': _buildQuote,
+        'blockquote': _buildBlockquote,
+        'img': (ctx, b) => _buildImage(ctx, b.content),
+        'video': (ctx, b) => _buildVideoBlock(ctx, b.content),
+        'ol': (ctx, b) => _buildList(ctx, b.content, ordered: true),
+        'ul': (ctx, b) => _buildList(ctx, b.content, ordered: false),
+        'spoiler': _buildSpoiler,
+        'collapse': _buildCollapse,
+        'code': _buildCode,
+        'smarturl': (_, b) => _buildSmartUrl(b),
+      };
+
   @override
   Widget build(BuildContext context) {
     final normalizedContent = BBCodeParser.preNormalize(content);
-    final blocks = BBCodeParser.parseBlocks(normalizedContent);
+    final blocks = BBCodeParser.parseBlocks(
+      normalizedContent,
+      customTags: _customBuilders.keys.toList(),
+    );
     if (blocks.isEmpty) return const SizedBox.shrink();
 
     return Column(
@@ -58,81 +79,54 @@ class BbcodeRenderer extends StatelessWidget {
   // ==========================================================================
 
   Widget _buildBlock(BuildContext context, BBCodeBlock block) {
-    // Check if it's an embed tag - use rich preview cards
+    // Link tags → embed preview cards
     if (BBCodeParser.linkTags.containsKey(block.tag)) {
       return EmbedPreviewCard(url: block.content, provider: block.tag);
     }
 
-    // Handle custom tags
-    switch (block.tag) {
-      case 'text':
-        final text = block.content.trim();
-        if (text.isEmpty) return const SizedBox.shrink();
-
-        // If text has emotes, mentions, or inline code, use custom renderer
-        if (BBCodeInlineRenderer.needsCustomRenderer(text)) {
-          final inlineRenderer =
-              BBCodeInlineRenderer(mentionUsers: mentionUsers);
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: inlineRenderer.build(
-              context,
-              text,
-              buildBBCodeStylesheet(context, onUrlTap: _launchUrl),
-            ),
-          );
-        }
-
-        final stylesheet =
-            buildBBCodeStylesheet(context, onUrlTap: _launchUrl);
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: BBCodeText(
-            data: text,
-            stylesheet: stylesheet,
-            errorBuilder: (context, error, stack) => SelectableText(
-              stripAllBBCode(text),
-              style: TextStyle(
-                fontSize: 14,
-                color: Theme.of(context).textTheme.bodyMedium?.color,
-              ),
-            ),
-          ),
-        );
-
-      case 'quote':
-        return _buildQuote(context, block);
-
-      case 'blockquote':
-        return _buildBlockquote(context, block);
-
-      case 'img':
-        return _buildImage(context, block.content);
-
-      case 'video':
-        return _buildVideoBlock(context, block.content);
-
-      case 'ol':
-        return _buildList(context, block.content, ordered: true);
-
-      case 'ul':
-        return _buildList(context, block.content, ordered: false);
-
-      case 'spoiler':
-        return _buildSpoiler(context, block);
-
-      case 'collapse':
-        return _buildCollapse(context, block);
-
-      case 'code':
-        return _buildCode(context, block);
-
-      case 'smarturl':
-        return _buildSmartUrl(block);
-
-      default:
-        return const SizedBox.shrink();
+    // Text blocks
+    if (block.tag == 'text') {
+      return _buildText(context, block.content.trim());
     }
+
+    // Custom tag builders
+    final builder = _customBuilders[block.tag];
+    if (builder != null) return builder(context, block);
+
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildText(BuildContext context, String text) {
+    if (text.isEmpty) return const SizedBox.shrink();
+
+    // If text has emotes, mentions, or inline code, use custom renderer
+    if (BBCodeInlineRenderer.needsCustomRenderer(text)) {
+      final inlineRenderer = BBCodeInlineRenderer(mentionUsers: mentionUsers);
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: inlineRenderer.build(
+          context,
+          text,
+          buildBBCodeStylesheet(context, onUrlTap: _launchUrl),
+        ),
+      );
+    }
+
+    final stylesheet = buildBBCodeStylesheet(context, onUrlTap: _launchUrl);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: BBCodeText(
+        data: text,
+        stylesheet: stylesheet,
+        errorBuilder: (context, error, stack) => SelectableText(
+          stripAllBBCode(text),
+          style: TextStyle(
+            fontSize: 14,
+            color: Theme.of(context).textTheme.bodyMedium?.color,
+          ),
+        ),
+      ),
+    );
   }
 
   // ==========================================================================

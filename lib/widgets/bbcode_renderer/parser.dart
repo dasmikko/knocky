@@ -104,23 +104,6 @@ class BBCodeParser {
     ),
   };
 
-  /// Custom tags that need special rendering (handled in _buildBlock)
-  static const customTags = [
-    'quote',
-    'blockquote',
-    'img',
-    'video',
-    'ol',
-    'ul',
-    'spoiler',
-    'collapse',
-    'code',
-    'smarturl',
-  ];
-
-  /// All block-level tags (link tags + custom tags)
-  static List<String> get allTags => [...linkTags.keys, ...customTags];
-
   // ==========================================================================
   // PRE-PROCESSING
   // ==========================================================================
@@ -171,7 +154,11 @@ class BBCodeParser {
   // BLOCK PARSING
   // ==========================================================================
 
-  static List<BBCodeBlock> parseBlocks(String input) {
+  static List<BBCodeBlock> parseBlocks(
+    String input, {
+    required List<String> customTags,
+  }) {
+    final allTags = [...linkTags.keys, ...customTags];
     final blocks = <BBCodeBlock>[];
     var remaining = input;
 
