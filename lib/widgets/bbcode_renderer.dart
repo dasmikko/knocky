@@ -44,6 +44,12 @@ class BbcodeRenderer extends StatelessWidget {
     return _mentionPattern.hasMatch(text);
   }
 
+  static final _inlineCodePattern = RegExp(r'\[icode\](.*?)\[/icode\]', caseSensitive: false);
+
+  static bool _hasInlineCode(String text) {
+    return _inlineCodePattern.hasMatch(text);
+  }
+
   Map<int, Map<String, dynamic>> _buildMentionUserMap() {
     final map = <int, Map<String, dynamic>>{};
     for (final user in mentionUsers) {
@@ -173,8 +179,8 @@ class BbcodeRenderer extends StatelessWidget {
         final text = block.content.trim();
         if (text.isEmpty) return const SizedBox.shrink();
 
-        // If text has emotes or mentions, use custom renderer
-        if (_hasEmotes(text) || _hasMentions(text)) {
+        // If text has emotes, mentions, or inline code, use custom renderer
+        if (_hasEmotes(text) || _hasMentions(text) || _hasInlineCode(text)) {
           return Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: _buildBBCodeWithEmotes(context, text),
@@ -357,9 +363,17 @@ class BbcodeRenderer extends StatelessWidget {
 
   Map<String, String> _parseAttributes(String attrString) {
     final attrs = <String, String>{};
-    final pattern = RegExp(r'(\w+)="([^"]*)"');
-    for (final match in pattern.allMatches(attrString)) {
+    // Match key="value" pairs
+    final kvPattern = RegExp(r'(\w+)="([^"]*)"');
+    for (final match in kvPattern.allMatches(attrString)) {
       attrs[match.group(1)!] = match.group(2)!;
+    }
+    // Match bare attributes (e.g. "inline", "smart", "thumbnail")
+    final stripped = attrString.replaceAll(kvPattern, '').trim();
+    for (final word in stripped.split(RegExp(r'\s+'))) {
+      if (word.isNotEmpty && RegExp(r'^\w+$').hasMatch(word)) {
+        attrs[word] = 'true';
+      }
     }
     return attrs;
   }
@@ -370,6 +384,13 @@ class BbcodeRenderer extends StatelessWidget {
 
   String _preNormalize(String text) {
     var result = text;
+
+    // Convert [code inline]...[/code] → [icode]...[/icode] for inline rendering
+    // Must run BEFORE block parsing since [code] is a block tag
+    result = result.replaceAllMapped(
+      RegExp(r'\[code\s+inline\](.*?)\[/code\]', caseSensitive: false, dotAll: true),
+      (m) => '[icode]${m.group(1)!}[/icode]',
+    );
 
     // Convert [url smart href="..."]text[/url] → [smarturl]url[/smarturl]
     // Must run BEFORE the generic url href normalization below.
@@ -439,9 +460,10 @@ class BbcodeRenderer extends StatelessWidget {
     }
 
     final hasMentions = _hasMentions(line);
+    final hasInlineCode = _hasInlineCode(line);
 
-    // If no valid emotes and no mentions, render as BBCode normally
-    if (!hasValidEmotes && !hasMentions) {
+    // If no valid emotes, no mentions, and no inline code, render as BBCode normally
+    if (!hasValidEmotes && !hasMentions && !hasInlineCode) {
       return BBCodeText(
         data: line,
         stylesheet: _buildStylesheet(context),
@@ -462,8 +484,8 @@ class BbcodeRenderer extends StatelessWidget {
     final stylesheet = _buildStylesheet(context);
     final mentionUserMap = _buildMentionUserMap();
 
-    // Combined pattern: emotes (:code:) and mentions (@<id>)
-    final combinedPattern = RegExp(r'(:([a-zA-Z0-9_]+):)|(@<(\d+;?.*?)>)');
+    // Combined pattern: emotes (:code:), mentions (@<id>), and inline code ([icode]...[/icode])
+    final combinedPattern = RegExp(r'(:([a-zA-Z0-9_]+):)|(@<(\d+;?.*?)>)|(\[icode\](.*?)\[/icode\])', caseSensitive: false);
 
     final spans = <InlineSpan>[];
     var lastEnd = 0;
@@ -553,6 +575,38 @@ class BbcodeRenderer extends StatelessWidget {
             style: stylesheet.defaultTextStyle,
           ));
         }
+      } else if (match.group(5) != null) {
+        // Inline code match
+        final codeText = match.group(6) ?? '';
+        final codeBg = isDark
+            ? const Color(0xFF1A1A2E)
+            : const Color(0xFFF5F5F5);
+        final codeBorder = isDark
+            ? const Color(0xFF2D2D44)
+            : const Color(0xFFE0E0E0);
+        final codeColor = isDark
+            ? const Color(0xFFE0E0E0)
+            : const Color(0xFF333333);
+
+        spans.add(WidgetSpan(
+          alignment: PlaceholderAlignment.middle,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+            decoration: BoxDecoration(
+              color: codeBg,
+              borderRadius: BorderRadius.circular(3),
+              border: Border.all(color: codeBorder, width: 1),
+            ),
+            child: Text(
+              codeText,
+              style: TextStyle(
+                fontFamily: 'monospace',
+                fontSize: 13,
+                color: codeColor,
+              ),
+            ),
+          ),
+        ));
       }
 
       lastEnd = match.end;
