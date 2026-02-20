@@ -8,7 +8,7 @@ import '../models/message.dart';
 import '../models/thread_user.dart';
 import '../data/role_colors.dart';
 import '../services/knockout_api_service.dart';
-import '../widgets/bbcode_renderer.dart';
+import '../widgets/bbcode_renderer/bbcode_renderer.dart';
 import 'user_screen.dart';
 
 class ConversationScreen extends StatefulWidget {

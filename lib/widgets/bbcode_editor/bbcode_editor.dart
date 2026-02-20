@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../bbcode_renderer.dart';
+import '../bbcode_renderer/bbcode_renderer.dart';
 import 'bbcode_text_controller.dart';
 import 'bbcode_toolbar.dart';
 import 'bbcode_toolbar_config.dart';

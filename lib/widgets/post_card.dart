@@ -7,7 +7,7 @@ import '../data/role_colors.dart';
 import '../models/ban.dart';
 import '../models/thread_post.dart';
 import '../screens/user_screen.dart';
-import 'bbcode_renderer.dart';
+import 'bbcode_renderer/bbcode_renderer.dart';
 import 'post_sheets.dart' show stripQuotes;
 
 /// A card widget for displaying a single post in a thread.

@@ -14,7 +14,7 @@ import '../models/user_posts_response.dart';
 import '../models/user_profile.dart';
 import '../models/user_threads_response.dart';
 import '../services/knockout_api_service.dart';
-import '../widgets/bbcode_renderer.dart';
+import '../widgets/bbcode_renderer/bbcode_renderer.dart';
 import '../widgets/user_thread_list_item.dart';
 import 'conversation_screen.dart';
 import 'thread_screen.dart';
