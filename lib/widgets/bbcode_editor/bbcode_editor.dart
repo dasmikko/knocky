@@ -4,6 +4,7 @@ import '../bbcode_renderer/bbcode_renderer.dart';
 import 'bbcode_text_controller.dart';
 import 'bbcode_toolbar.dart';
 import 'bbcode_toolbar_config.dart';
+import 'smart_paste.dart';
 
 export 'bbcode_text_controller.dart';
 export 'bbcode_toolbar_config.dart';
@@ -250,22 +251,58 @@ class _BbcodeEditorState extends State<BbcodeEditor> {
     };
   }
 
-  Widget _buildRawEditor(BuildContext context) {
-    return TextField(
+  Future<void> _onSmartPaste() async {
+    await handleSmartPaste(
+      context,
       controller: _textController,
       focusNode: _focusNode,
-      decoration: InputDecoration(
-        hintText: widget.hintText,
-        border: InputBorder.none,
-        contentPadding: const EdgeInsets.all(12),
-      ),
-      maxLines: null,
-      expands: true,
-      textAlignVertical: TextAlignVertical.top,
-      style: TextStyle(
-        fontFamily: 'monospace',
-        fontSize: 14,
-        color: Theme.of(context).textTheme.bodyMedium?.color,
+    );
+  }
+
+  Widget _buildRawEditor(BuildContext context) {
+    return Actions(
+      actions: {
+        PasteTextIntent: CallbackAction<PasteTextIntent>(
+          onInvoke: (_) {
+            _onSmartPaste();
+            return null;
+          },
+        ),
+      },
+      child: TextField(
+        controller: _textController,
+        focusNode: _focusNode,
+        decoration: InputDecoration(
+          hintText: widget.hintText,
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.all(12),
+        ),
+        maxLines: null,
+        expands: true,
+        textAlignVertical: TextAlignVertical.top,
+        contextMenuBuilder: (context, editableTextState) {
+          return AdaptiveTextSelectionToolbar.buttonItems(
+            anchors: editableTextState.contextMenuAnchors,
+            buttonItems: editableTextState.contextMenuButtonItems.map((item) {
+              if (item.type == ContextMenuButtonType.paste) {
+                return ContextMenuButtonItem(
+                  label: item.label,
+                  type: ContextMenuButtonType.paste,
+                  onPressed: () {
+                    ContextMenuController.removeAny();
+                    _onSmartPaste();
+                  },
+                );
+              }
+              return item;
+            }).toList(),
+          );
+        },
+        style: TextStyle(
+          fontFamily: 'monospace',
+          fontSize: 14,
+          color: Theme.of(context).textTheme.bodyMedium?.color,
+        ),
       ),
     );
   }

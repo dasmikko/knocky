@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../data/ratings.dart';
+import '../../data/ratings.dart';
 
 /// Result from rating picker - either a rating or a request to unrate
 class RatingPickerResult {

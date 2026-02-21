@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../models/alerts_response.dart';
 import '../services/knockout_api_service.dart';
 import '../widgets/bottom_paginator.dart';
-import '../widgets/thread_list_item.dart';
+import '../widgets/thread_items/thread_list_item.dart';
 import 'thread_screen.dart';
 
 class SubscriptionsScreen extends StatefulWidget {
