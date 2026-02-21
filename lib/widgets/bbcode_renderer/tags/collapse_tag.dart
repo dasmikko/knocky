@@ -1,14 +1,59 @@
+import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:flutter/material.dart';
+import 'package:flutter_bbcode/flutter_bbcode.dart';
 
-/// A collapsible section widget with a custom title
-class BbcodeCollapse extends StatefulWidget {
+/// [collapse title="..."]...[/collapse] — collapsible section.
+class KnockoutCollapseTag extends WrappedStyleTag {
+  final bool isDark;
+
+  KnockoutCollapseTag({required this.isDark}) : super('collapse');
+
+  @override
+  List<InlineSpan> wrap(
+    FlutterRenderer renderer,
+    bbob.Element element,
+    List<InlineSpan> spans,
+  ) {
+    final title = element.attributes.isNotEmpty
+        ? element.attributes.values.first
+        : 'Collapsed';
+
+    final bgColor =
+        isDark ? const Color(0xFF3A4A5C) : const Color(0xFFD0D0D0);
+    final borderColor =
+        isDark ? const Color(0xFF1E2E3E) : const Color(0xFF999999);
+
+    return [
+      WidgetSpan(
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: borderColor, width: 1.0),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Builder(builder: (context) {
+            return _CollapseWidget(
+              title: title,
+              backgroundColor: bgColor,
+              borderColor: borderColor,
+              child: RichText(
+                text: TextSpan(children: spans),
+                textScaler: MediaQuery.of(context).textScaler,
+              ),
+            );
+          }),
+        ),
+      ),
+    ];
+  }
+}
+
+class _CollapseWidget extends StatefulWidget {
   final String title;
   final Widget child;
   final Color backgroundColor;
   final Color borderColor;
 
-  const BbcodeCollapse({
-    super.key,
+  const _CollapseWidget({
     required this.title,
     required this.child,
     required this.backgroundColor,
@@ -16,10 +61,10 @@ class BbcodeCollapse extends StatefulWidget {
   });
 
   @override
-  State<BbcodeCollapse> createState() => _BbcodeCollapseState();
+  State<_CollapseWidget> createState() => _CollapseWidgetState();
 }
 
-class _BbcodeCollapseState extends State<BbcodeCollapse> {
+class _CollapseWidgetState extends State<_CollapseWidget> {
   bool _isExpanded = false;
 
   @override

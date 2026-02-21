@@ -1,21 +1,55 @@
+import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:flutter/material.dart';
+import 'package:flutter_bbcode/flutter_bbcode.dart';
 
-/// A tappable spoiler widget that reveals content when tapped
-class BbcodeSpoiler extends StatefulWidget {
+/// [spoiler]...[/spoiler] — tap-to-reveal spoiler.
+class KnockoutSpoilerTag extends WrappedStyleTag {
+  final bool isDark;
+
+  KnockoutSpoilerTag({required this.isDark}) : super('spoiler');
+
+  @override
+  List<InlineSpan> wrap(
+    FlutterRenderer renderer,
+    bbob.Element element,
+    List<InlineSpan> spans,
+  ) {
+    final bgColor =
+        isDark ? const Color(0xFF3A4A5C) : const Color(0xFFD0D0D0);
+
+    return [
+      WidgetSpan(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Builder(builder: (context) {
+            return _SpoilerWidget(
+              backgroundColor: bgColor,
+              child: RichText(
+                text: TextSpan(children: spans),
+                textScaler: MediaQuery.of(context).textScaler,
+              ),
+            );
+          }),
+        ),
+      ),
+    ];
+  }
+}
+
+class _SpoilerWidget extends StatefulWidget {
   final Widget child;
   final Color backgroundColor;
 
-  const BbcodeSpoiler({
-    super.key,
+  const _SpoilerWidget({
     required this.child,
     required this.backgroundColor,
   });
 
   @override
-  State<BbcodeSpoiler> createState() => _BbcodeSpoilerState();
+  State<_SpoilerWidget> createState() => _SpoilerWidgetState();
 }
 
-class _BbcodeSpoilerState extends State<BbcodeSpoiler>
+class _SpoilerWidgetState extends State<_SpoilerWidget>
     with SingleTickerProviderStateMixin {
   bool _isRevealed = false;
 
