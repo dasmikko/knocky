@@ -4,6 +4,8 @@ import 'package:flutter_bbcode/flutter_bbcode.dart';
 import 'parser.dart';
 import 'tags.dart';
 
+const double bbcodeFontSize = 14;
+
 BBStylesheet buildBBCodeStylesheet(
   BuildContext context, {
   required Function(String) onUrlTap,
@@ -14,6 +16,7 @@ BBStylesheet buildBBCodeStylesheet(
   List<dynamic> mentionUsers = const [],
   int? postId,
   String? heroTagPrefix,
+  Widget Function(String content)? contentBuilder,
 }) {
   final theme = Theme.of(context);
   final isDark = theme.brightness == Brightness.dark;
@@ -40,15 +43,15 @@ BBStylesheet buildBBCodeStylesheet(
 
   final stylesheet = defaultBBStylesheet(
     textStyle: TextStyle(
-      fontSize: 14,
+      fontSize: bbcodeFontSize,
       color: textColor,
     ),
   )
     // Replace default tags with customised versions
     ..replaceTag(UrlTag(onTap: onUrlTap))
     ..replaceTag(KnockoutImgTag(onTap: onImageTap, heroTagPrefix: prefix))
-    ..replaceTag(KnockoutQuoteTag(isDark: isDark, onQuoteTap: onQuoteTap))
-    ..replaceTag(KnockoutSpoilerTag(isDark: isDark))
+    ..replaceTag(KnockoutQuoteTag(isDark: isDark, onQuoteTap: onQuoteTap, contentBuilder: contentBuilder))
+    ..replaceTag(KnockoutSpoilerTag(isDark: isDark, contentBuilder: contentBuilder))
     ..replaceTag(ListTag(listNumberStyle, listBulletStyle))
     ..replaceTag(OrderedList(listNumberStyle))
     ..replaceTag(UnorderedList(listBulletStyle))
@@ -69,8 +72,8 @@ BBStylesheet buildBBCodeStylesheet(
     ..addTag(KnockoutVideoTag(onTap: onVideoTap))
     ..addTag(CodeBlockTag(isDark: isDark))
     ..addTag(SmartUrlTag())
-    ..addTag(BlockquoteTag())
-    ..addTag(KnockoutCollapseTag(isDark: isDark));
+    ..addTag(BlockquoteTag(contentBuilder: contentBuilder))
+    ..addTag(KnockoutCollapseTag(isDark: isDark, contentBuilder: contentBuilder));
 
   // Register a LinkEmbedTag for each link provider (youtube, twitter, etc.)
   for (final entry in linkTags.entries) {

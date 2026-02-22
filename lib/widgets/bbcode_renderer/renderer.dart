@@ -41,6 +41,12 @@ class BbcodeRenderer extends StatelessWidget {
       mentionUsers: mentionUsers,
       postId: postId,
       heroTagPrefix: heroTagPrefix,
+      contentBuilder: (innerContent) => BbcodeRenderer(
+        content: innerContent,
+        postId: postId,
+        mentionUsers: mentionUsers,
+        heroTagPrefix: heroTagPrefix,
+      ),
     );
 
     return BBCodeText(
@@ -49,7 +55,7 @@ class BbcodeRenderer extends StatelessWidget {
       errorBuilder: (context, error, stack) => SelectableText(
         stripAllBBCode(processed),
         style: TextStyle(
-          fontSize: 14,
+          fontSize: bbcodeFontSize,
           color: Theme.of(context).textTheme.bodyMedium?.color,
         ),
       ),

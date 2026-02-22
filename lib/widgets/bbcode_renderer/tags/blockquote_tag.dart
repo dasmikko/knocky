@@ -2,16 +2,18 @@ import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:flutter/material.dart';
 import 'package:flutter_bbcode/flutter_bbcode.dart';
 
+import '../parser.dart' show nodesToBBCode;
+
 /// [blockquote]...[/blockquote] — simple left-border quote.
-class BlockquoteTag extends WrappedStyleTag {
-  BlockquoteTag() : super('blockquote');
+class BlockquoteTag extends AdvancedTag {
+  final Widget Function(String content)? contentBuilder;
+
+  BlockquoteTag({this.contentBuilder}) : super('blockquote');
 
   @override
-  List<InlineSpan> wrap(
-    FlutterRenderer renderer,
-    bbob.Element element,
-    List<InlineSpan> spans,
-  ) {
+  List<InlineSpan> parse(FlutterRenderer renderer, bbob.Element element) {
+    final innerContent = nodesToBBCode(element.children);
+
     return [
       WidgetSpan(
         child: Padding(
@@ -29,10 +31,8 @@ class BlockquoteTag extends WrappedStyleTag {
                     .withValues(alpha: 0.5),
               ),
               padding: const EdgeInsets.all(12),
-              child: RichText(
-                text: TextSpan(children: spans),
-                textScaler: MediaQuery.of(context).textScaler,
-              ),
+              child: contentBuilder?.call(innerContent) ??
+                  Text(innerContent),
             );
           }),
         ),

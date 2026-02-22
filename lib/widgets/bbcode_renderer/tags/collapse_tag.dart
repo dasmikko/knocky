@@ -2,18 +2,18 @@ import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:flutter/material.dart';
 import 'package:flutter_bbcode/flutter_bbcode.dart';
 
-/// [collapse title="..."]...[/collapse] — collapsible section.
-class KnockoutCollapseTag extends WrappedStyleTag {
-  final bool isDark;
+import '../parser.dart' show nodesToBBCode;
 
-  KnockoutCollapseTag({required this.isDark}) : super('collapse');
+/// [collapse title="..."]...[/collapse] — collapsible section.
+class KnockoutCollapseTag extends AdvancedTag {
+  final bool isDark;
+  final Widget Function(String content)? contentBuilder;
+
+  KnockoutCollapseTag({required this.isDark, this.contentBuilder})
+      : super('collapse');
 
   @override
-  List<InlineSpan> wrap(
-    FlutterRenderer renderer,
-    bbob.Element element,
-    List<InlineSpan> spans,
-  ) {
+  List<InlineSpan> parse(FlutterRenderer renderer, bbob.Element element) {
     final title = element.attributes.isNotEmpty
         ? element.attributes.values.first
         : 'Collapsed';
@@ -22,6 +22,7 @@ class KnockoutCollapseTag extends WrappedStyleTag {
         isDark ? const Color(0xFF3A4A5C) : const Color(0xFFD0D0D0);
     final borderColor =
         isDark ? const Color(0xFF1E2E3E) : const Color(0xFF999999);
+    final innerContent = nodesToBBCode(element.children);
 
     return [
       WidgetSpan(
@@ -30,17 +31,13 @@ class KnockoutCollapseTag extends WrappedStyleTag {
             border: Border.all(color: borderColor, width: 1.0),
             borderRadius: BorderRadius.circular(4),
           ),
-          child: Builder(builder: (context) {
-            return _CollapseWidget(
-              title: title,
-              backgroundColor: bgColor,
-              borderColor: borderColor,
-              child: RichText(
-                text: TextSpan(children: spans),
-                textScaler: MediaQuery.of(context).textScaler,
-              ),
-            );
-          }),
+          child: _CollapseWidget(
+            title: title,
+            backgroundColor: bgColor,
+            borderColor: borderColor,
+            child: contentBuilder?.call(innerContent) ??
+                Text(innerContent),
+          ),
         ),
       ),
     ];

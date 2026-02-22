@@ -1,3 +1,4 @@
+import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -91,6 +92,12 @@ String preNormalize(String text) {
   result = result.replaceAll(RegExp(r'\[li\]', caseSensitive: false), '[*]');
   result = result.replaceAll(RegExp(r'\[/li\]', caseSensitive: false), '[/*]');
 
+  // Strip thumbnail attribute from img tags: [img thumbnail]...[/img] → [img]...[/img]
+  result = result.replaceAll(
+    RegExp(r'\[img\s+thumbnail\]', caseSensitive: false),
+    '[img]',
+  );
+
   // Convert [code inline]...[/code] → [icode]...[/icode]
   result = result.replaceAllMapped(
     RegExp(r'\[code\s+inline\](.*?)\[/code\]',
@@ -155,6 +162,32 @@ String preprocessMentions(String text) {
       return '[mention=$userId][/mention]';
     },
   );
+}
+
+/// Serializes bbob parsed nodes back into a BBCode string.
+/// Used by container tags (quote, spoiler, etc.) to pass inner content
+/// to a nested BbcodeRenderer.
+String nodesToBBCode(List<bbob.Node> nodes) {
+  final buffer = StringBuffer();
+  for (final node in nodes) {
+    if (node is bbob.Text) {
+      buffer.write(node.text);
+    } else if (node is bbob.Element) {
+      buffer.write('[${node.tag}');
+      for (final attr in node.attributes.entries) {
+        if (attr.key == attr.value) {
+          // [tag=value] style — bbob stores as {value: value}
+          buffer.write('=${attr.value}');
+        } else {
+          buffer.write(' ${attr.key}="${attr.value}"');
+        }
+      }
+      buffer.write(']');
+      buffer.write(nodesToBBCode(node.children));
+      buffer.write('[/${node.tag}]');
+    }
+  }
+  return buffer.toString();
 }
 
 /// Runs the full preprocessing pipeline: normalize → emotes → mentions.

@@ -2,25 +2,30 @@ import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:flutter/material.dart';
 import 'package:flutter_bbcode/flutter_bbcode.dart';
 
+import '../parser.dart' show nodesToBBCode;
+import '../stylesheet.dart' show bbcodeFontSize;
+
 /// [quote username="..." threadId="..." threadPage="..." postId="..."]...[/quote]
-class KnockoutQuoteTag extends WrappedStyleTag {
+class KnockoutQuoteTag extends AdvancedTag {
   final bool isDark;
   final void Function(int threadId, int page, int? postId)? onQuoteTap;
+  final Widget Function(String content)? contentBuilder;
 
-  KnockoutQuoteTag({required this.isDark, this.onQuoteTap}) : super('quote');
+  KnockoutQuoteTag({
+    required this.isDark,
+    this.onQuoteTap,
+    this.contentBuilder,
+  }) : super('quote');
 
   @override
-  List<InlineSpan> wrap(
-    FlutterRenderer renderer,
-    bbob.Element element,
-    List<InlineSpan> spans,
-  ) {
+  List<InlineSpan> parse(FlutterRenderer renderer, bbob.Element element) {
     final attrs = element.attributes;
     final username = attrs['username'] ?? 'Quote';
     final threadId = int.tryParse(attrs['threadId'] ?? '');
     final threadPage = int.tryParse(attrs['threadPage'] ?? '');
     final quotedPostId = int.tryParse(attrs['postId'] ?? '');
     final canNavigate = threadId != null && threadPage != null;
+    final innerContent = nodesToBBCode(element.children);
 
     return [
       WidgetSpan(
@@ -51,7 +56,7 @@ class KnockoutQuoteTag extends WrappedStyleTag {
                       '$username posted:',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 12,
+                        fontSize: bbcodeFontSize,
                         color: theme.colorScheme.primary,
                         decoration:
                             canNavigate ? TextDecoration.underline : null,
@@ -60,10 +65,8 @@ class KnockoutQuoteTag extends WrappedStyleTag {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  RichText(
-                    text: TextSpan(children: spans),
-                    textScaler: MediaQuery.of(context).textScaler,
-                  ),
+                  contentBuilder?.call(innerContent) ??
+                      Text(innerContent),
                 ],
               ),
             );

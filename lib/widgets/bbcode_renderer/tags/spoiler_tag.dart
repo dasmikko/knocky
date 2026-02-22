@@ -2,34 +2,31 @@ import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:flutter/material.dart';
 import 'package:flutter_bbcode/flutter_bbcode.dart';
 
-/// [spoiler]...[/spoiler] — tap-to-reveal spoiler.
-class KnockoutSpoilerTag extends WrappedStyleTag {
-  final bool isDark;
+import '../parser.dart' show nodesToBBCode;
 
-  KnockoutSpoilerTag({required this.isDark}) : super('spoiler');
+/// [spoiler]...[/spoiler] — tap-to-reveal spoiler.
+class KnockoutSpoilerTag extends AdvancedTag {
+  final bool isDark;
+  final Widget Function(String content)? contentBuilder;
+
+  KnockoutSpoilerTag({required this.isDark, this.contentBuilder})
+      : super('spoiler');
 
   @override
-  List<InlineSpan> wrap(
-    FlutterRenderer renderer,
-    bbob.Element element,
-    List<InlineSpan> spans,
-  ) {
+  List<InlineSpan> parse(FlutterRenderer renderer, bbob.Element element) {
     final bgColor =
         isDark ? const Color(0xFF3A4A5C) : const Color(0xFFD0D0D0);
+    final innerContent = nodesToBBCode(element.children);
 
     return [
       WidgetSpan(
         child: Padding(
           padding: const EdgeInsets.only(bottom: 8),
-          child: Builder(builder: (context) {
-            return _SpoilerWidget(
-              backgroundColor: bgColor,
-              child: RichText(
-                text: TextSpan(children: spans),
-                textScaler: MediaQuery.of(context).textScaler,
-              ),
-            );
-          }),
+          child: _SpoilerWidget(
+            backgroundColor: bgColor,
+            child: contentBuilder?.call(innerContent) ??
+                Text(innerContent),
+          ),
         ),
       ),
     ];
@@ -49,8 +46,7 @@ class _SpoilerWidget extends StatefulWidget {
   State<_SpoilerWidget> createState() => _SpoilerWidgetState();
 }
 
-class _SpoilerWidgetState extends State<_SpoilerWidget>
-    with SingleTickerProviderStateMixin {
+class _SpoilerWidgetState extends State<_SpoilerWidget> {
   bool _isRevealed = false;
 
   @override
@@ -70,14 +66,10 @@ class _SpoilerWidgetState extends State<_SpoilerWidget>
             children: [
               Row(
                 children: [
-                  AnimatedRotation(
-                    turns: _isRevealed ? 0.0 : 0.0,
-                    duration: const Duration(milliseconds: 200),
-                    child: Icon(
-                      _isRevealed ? Icons.visibility : Icons.visibility_off,
-                      size: 16,
-                      color: theme.textTheme.bodySmall?.color,
-                    ),
+                  Icon(
+                    _isRevealed ? Icons.visibility : Icons.visibility_off,
+                    size: 16,
+                    color: theme.textTheme.bodySmall?.color,
                   ),
                   const SizedBox(width: 6),
                   Text(
