@@ -175,6 +175,7 @@ String nodesToBBCode(List<bbob.Node> nodes) {
     } else if (node is bbob.Element) {
       buffer.write('[${node.tag}');
       for (final attr in node.attributes.entries) {
+        if (attr.value.isEmpty) continue;
         if (attr.key == attr.value) {
           // [tag=value] style — bbob stores as {value: value}
           buffer.write('=${attr.value}');
