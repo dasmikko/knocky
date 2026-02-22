@@ -41,24 +41,38 @@ class BbcodeRenderer extends StatelessWidget {
       mentionUsers: mentionUsers,
       postId: postId,
       heroTagPrefix: heroTagPrefix,
-      contentBuilder: (innerContent) => BbcodeRenderer(
-        content: innerContent,
-        postId: postId,
-        mentionUsers: mentionUsers,
-        heroTagPrefix: heroTagPrefix,
+      contentBuilder: (innerContent) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaler: TextScaler.noScaling,
+        ),
+        child: BbcodeRenderer(
+          content: innerContent,
+          postId: postId,
+          mentionUsers: mentionUsers,
+          heroTagPrefix: heroTagPrefix,
+        ),
       ),
     );
 
-    return BBCodeText(
-      data: processed,
-      stylesheet: stylesheet,
-      errorBuilder: (context, error, stack) => SelectableText(
+    // Parse BBCode ourselves to catch errors that BBCodeText doesn't handle
+    // (e.g. RangeError from bbob_dart's trimChar on malformed attributes).
+    List<InlineSpan> spans;
+    try {
+      spans = parseBBCode(processed, stylesheet: stylesheet);
+    } catch (_) {
+      return SelectableText(
         stripAllBBCode(processed),
         style: TextStyle(
           fontSize: bbcodeFontSize,
           color: Theme.of(context).textTheme.bodyMedium?.color,
         ),
-      ),
+      );
+    }
+
+    final textScaler = MediaQuery.of(context).textScaler;
+    return RichText(
+      text: TextSpan(children: spans, style: stylesheet.defaultTextStyle),
+      textScaler: textScaler,
     );
   }
 
