@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bbcode/flutter_bbcode.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'parser.dart';
 import 'tags.dart';
@@ -42,7 +43,7 @@ BBStylesheet buildBBCodeStylesheet(
   );
 
   final stylesheet = defaultBBStylesheet(
-    textStyle: TextStyle(
+    textStyle: GoogleFonts.openSans(
       fontSize: bbcodeFontSize,
       color: textColor,
     ),

@@ -1,6 +1,7 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../../data/ratings.dart';
 import '../../data/role_colors.dart';
@@ -101,9 +102,8 @@ class _PostCardState extends State<PostCard> {
                   _showRaw
                       ? SelectableText(
                           post.content,
-                          style: TextStyle(
+                          style: GoogleFonts.sourceCodePro(
                             fontSize: 13,
-                            fontFamily: 'monospace',
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
                         )

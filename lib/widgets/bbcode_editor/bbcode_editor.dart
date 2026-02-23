@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../bbcode_renderer/bbcode_renderer.dart';
 import 'bbcode_text_controller.dart';
@@ -298,8 +299,7 @@ class _BbcodeEditorState extends State<BbcodeEditor> {
             }).toList(),
           );
         },
-        style: TextStyle(
-          fontFamily: 'monospace',
+        style: GoogleFonts.sourceCodePro(
           fontSize: 14,
           color: Theme.of(context).textTheme.bodyMedium?.color,
         ),

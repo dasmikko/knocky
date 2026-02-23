@@ -1,6 +1,8 @@
 import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:flutter/material.dart';
 import 'package:flutter_bbcode/flutter_bbcode.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:knocky/widgets/bbcode_renderer/stylesheet.dart';
 
 /// [icode]...[/icode] — inline monospace code with border/padding.
 class InlineCodeTag extends AdvancedTag {
@@ -32,9 +34,8 @@ class InlineCodeTag extends AdvancedTag {
           ),
           child: Text(
             text,
-            style: TextStyle(
-              fontFamily: 'monospace',
-              fontSize: 13,
+            style: GoogleFonts.sourceCodePro(
+              fontSize: bbcodeFontSize-2,
               color: textColor,
             ),
           ),

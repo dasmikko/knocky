@@ -1,9 +1,11 @@
 import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:flutter/material.dart';
 import 'package:flutter_bbcode/flutter_bbcode.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_highlight/themes/atom-one-dark.dart';
 import 'package:flutter_highlight/themes/atom-one-light.dart';
 import 'package:highlight/highlight.dart' show highlight, Node;
+import 'package:knocky/widgets/bbcode_renderer/stylesheet.dart';
 
 /// [code]...[/code] — syntax-highlighted code block.
 class CodeBlockTag extends AdvancedTag {
@@ -37,9 +39,8 @@ class CodeBlockTag extends AdvancedTag {
         : highlight.parse(codeContent, autoDetection: true);
     final spans = _convertHighlightNodes(result.nodes ?? [], highlightTheme);
 
-    final textStyle = TextStyle(
-      fontFamily: 'monospace',
-      fontSize: 13,
+    final textStyle = GoogleFonts.sourceCodePro(
+      fontSize: bbcodeFontSize-2,
       color: highlightTheme['root']?.color ??
           (isDark ? const Color(0xFFABB2BF) : const Color(0xFF383A42)),
       height: 1.4,

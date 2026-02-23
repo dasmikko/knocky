@@ -56,7 +56,7 @@ class KnockoutQuoteTag extends AdvancedTag {
                       '$username posted:',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: bbcodeFontSize,
+                        fontSize: 12,
                         color: theme.colorScheme.primary,
                         decoration:
                             canNavigate ? TextDecoration.underline : null,
