@@ -1,9 +1,7 @@
 import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:flutter/material.dart';
 import 'package:flutter_bbcode/flutter_bbcode.dart';
-
 import '../parser.dart' show nodesToBBCode;
-import '../stylesheet.dart' show bbcodeFontSize;
 
 /// [quote username="..." threadId="..." threadPage="..." postId="..."]...[/quote]
 class KnockoutQuoteTag extends AdvancedTag {
