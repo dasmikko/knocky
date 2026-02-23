@@ -74,7 +74,14 @@ class KnockoutImgTag extends AdvancedTag {
                             ),
                           );
                         case LoadState.completed:
-                          return null;
+                          if (state.wasSynchronouslyLoaded) return null;
+                          return TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0.0, end: 1.0),
+                            duration: const Duration(milliseconds: 300),
+                            builder: (context, value, child) =>
+                                Opacity(opacity: value, child: child),
+                            child: state.completedWidget,
+                          );
                       }
                     },
                   ),
