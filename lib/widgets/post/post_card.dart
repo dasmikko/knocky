@@ -382,12 +382,6 @@ class _PostCardState extends State<PostCard> {
       ],
     );
 
-    if (!hasBackground) {
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-        child: header,
-      );
-    }
 
     return Stack(
       children: [
