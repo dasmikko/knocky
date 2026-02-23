@@ -108,63 +108,78 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
                       details?.velocity.pixelsPerSecond.dy.abs() ?? 0.0;
                   return offset.dy.abs() > threshold || velocity > 800;
                 },
-            child: Hero(
-              tag: widget.heroTag ?? 'image_${widget.url.trim()}',
-              child: ExtendedImage.network(
-                widget.url.trim(),
-                cache: true,
-                fit: BoxFit.contain,
-                width: double.infinity,
-                height: double.infinity,
-                mode: ExtendedImageMode.gesture,
-                enableSlideOutPage: true,
-                initGestureConfigHandler: (state) {
-                  return GestureConfig(
-                    minScale: 1.0,
-                    animationMinScale: 0.8,
-                    maxScale: 4.0,
-                    animationMaxScale: 4.5,
-                    initialScale: 1.0,
-                    inertialSpeed: 100.0,
-                  );
-                },
-                onDoubleTap: _onDoubleTap,
-                loadStateChanged: (state) {
-                  switch (state.extendedImageLoadState) {
-                    case LoadState.loading:
-                      return const Center(
-                        child: CircularProgressIndicator(color: Colors.white),
-                      );
-                    case LoadState.failed:
-                      return const Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.broken_image,
-                              color: Colors.white54,
-                              size: 48,
-                            ),
-                            SizedBox(height: 12),
-                            Text(
-                              'Failed to load image',
-                              style: TextStyle(color: Colors.white54),
-                            ),
-                          ],
-                        ),
-                      );
-                    case LoadState.completed:
-                      if (state.wasSynchronouslyLoaded) return null;
-                      return TweenAnimationBuilder<double>(
-                        tween: Tween(begin: 0.0, end: 1.0),
-                        duration: const Duration(milliseconds: 300),
-                        builder: (context, value, child) =>
-                            Opacity(opacity: value, child: child),
-                        child: state.completedWidget,
-                      );
-                  }
-                },
-              ),
+            child: ExtendedImage.network(
+              widget.url.trim(),
+              cache: true,
+              fit: BoxFit.contain,
+              width: double.infinity,
+              height: double.infinity,
+              mode: ExtendedImageMode.gesture,
+              enableSlideOutPage: true,
+              heroBuilderForSlidingPage: (Widget result) {
+                return Hero(
+                  tag: widget.heroTag ?? 'image_${widget.url.trim()}',
+                  child: result,
+                  flightShuttleBuilder:
+                      (
+                        BuildContext flightContext,
+                        Animation<double> animation,
+                        HeroFlightDirection flightDirection,
+                        BuildContext fromHeroContext,
+                        BuildContext toHeroContext,
+                      ) {
+                        final hero =
+                            toHeroContext.widget as Hero;
+                        return hero.child;
+                      },
+                );
+              },
+              initGestureConfigHandler: (state) {
+                return GestureConfig(
+                  minScale: 1.0,
+                  animationMinScale: 0.8,
+                  maxScale: 4.0,
+                  animationMaxScale: 4.5,
+                  initialScale: 1.0,
+                  inertialSpeed: 100.0,
+                );
+              },
+              onDoubleTap: _onDoubleTap,
+              loadStateChanged: (state) {
+                switch (state.extendedImageLoadState) {
+                  case LoadState.loading:
+                    return const Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    );
+                  case LoadState.failed:
+                    return const Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.broken_image,
+                            color: Colors.white54,
+                            size: 48,
+                          ),
+                          SizedBox(height: 12),
+                          Text(
+                            'Failed to load image',
+                            style: TextStyle(color: Colors.white54),
+                          ),
+                        ],
+                      ),
+                    );
+                  case LoadState.completed:
+                    if (state.wasSynchronouslyLoaded) return null;
+                    return TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0.0, end: 1.0),
+                      duration: const Duration(milliseconds: 300),
+                      builder: (context, value, child) =>
+                          Opacity(opacity: value, child: child),
+                      child: state.completedWidget,
+                    );
+                }
+              },
             ),
           ),
           MediaActionBar(url: widget.url),
