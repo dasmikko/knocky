@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -302,14 +302,24 @@ class _EmbedPreviewCardState extends State<EmbedPreviewCard> {
             ),
             child: SizedBox(
               width: 100,
-              child: CachedNetworkImage(
-                imageUrl: metadata.thumbnailUrl!,
+              child: ExtendedImage.network(
+                metadata.thumbnailUrl!,
+                cache: true,
                 fit: BoxFit.cover,
                 height: double.infinity,
-                errorWidget: (context, url, error) => Container(
-                  color: config.color.withValues(alpha: 0.1),
-                  child: Icon(config.icon, color: config.color, size: 32),
-                ),
+                loadStateChanged: (state) {
+                  switch (state.extendedImageLoadState) {
+                    case LoadState.loading:
+                      return null;
+                    case LoadState.failed:
+                      return Container(
+                        color: config.color.withValues(alpha: 0.1),
+                        child: Icon(config.icon, color: config.color, size: 32),
+                      );
+                    case LoadState.completed:
+                      return null;
+                  }
+                },
               ),
             ),
           )

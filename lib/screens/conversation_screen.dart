@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -192,7 +192,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
               child: CircleAvatar(
                 radius: 16,
                 backgroundImage: hasAvatar
-                    ? CachedNetworkImageProvider('https://cdn.knockout.chat/image/$avatarUrl')
+                    ? ExtendedNetworkImageProvider('https://cdn.knockout.chat/image/$avatarUrl')
                     : null,
                 child: hasAvatar ? null : const Icon(Icons.person, size: 18),
               ),
@@ -262,7 +262,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
               child: CircleAvatar(
                 radius: 16,
                 backgroundImage: hasAvatar
-                    ? CachedNetworkImageProvider('https://cdn.knockout.chat/image/$avatarUrl')
+                    ? ExtendedNetworkImageProvider('https://cdn.knockout.chat/image/$avatarUrl')
                     : null,
                 child: hasAvatar ? null : const Icon(Icons.person, size: 18),
               ),

@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../models/conversation.dart';
@@ -57,7 +57,7 @@ class ConversationListItem extends StatelessWidget {
               : null,
           child: CircleAvatar(
             backgroundImage: hasAvatar
-                ? CachedNetworkImageProvider('https://cdn.knockout.chat/image/$avatarUrl')
+                ? ExtendedNetworkImageProvider('https://cdn.knockout.chat/image/$avatarUrl')
                 : null,
             child: hasAvatar ? null : const Icon(Icons.person),
           ),

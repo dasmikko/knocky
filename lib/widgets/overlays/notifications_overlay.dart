@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../../models/notification.dart';
@@ -466,7 +466,7 @@ class _NotificationTile extends StatelessWidget {
           ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3)
           : null,
       leading: CircleAvatar(
-        backgroundImage: avatarUrl != null ? CachedNetworkImageProvider(avatarUrl) : null,
+        backgroundImage: avatarUrl != null ? ExtendedNetworkImageProvider(avatarUrl) : null,
         child: avatarUrl == null ? Icon(fallbackIcon) : null,
       ),
       title: Row(

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -394,7 +394,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
           },
           child: CircleAvatar(
             backgroundImage: hasAvatar
-                ? CachedNetworkImageProvider(
+                ? ExtendedNetworkImageProvider(
                     'https://cdn.knockout.chat/image/$avatarUrl',
                   )
                 : null,
@@ -405,7 +405,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
           color: Theme.of(context).colorScheme.primary,
           image: hasBg
               ? DecorationImage(
-                  image: CachedNetworkImageProvider(
+                  image: ExtendedNetworkImageProvider(
                     'https://cdn.knockout.chat/image/$bgUrl',
                   ),
                   fit: BoxFit.cover,
@@ -525,15 +525,23 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
               padding: const EdgeInsets.all(8.0),
               child: Stack(
                 children: [
-                  CachedNetworkImage(
-                    imageUrl: _currentAd!.imageUrl,
+                  ExtendedImage.network(
+                    _currentAd!.imageUrl,
+                    cache: true,
                     fit: BoxFit.contain,
-                    placeholder: (context, url) => const SizedBox(
-                      height: 100,
-                      child: Center(child: CircularProgressIndicator()),
-                    ),
-                    errorWidget: (context, url, error) =>
-                        const SizedBox.shrink(),
+                    loadStateChanged: (state) {
+                      switch (state.extendedImageLoadState) {
+                        case LoadState.loading:
+                          return const SizedBox(
+                            height: 100,
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        case LoadState.failed:
+                          return const SizedBox.shrink();
+                        case LoadState.completed:
+                          return null;
+                      }
+                    },
                   ),
                   Positioned.fill(
                     child: Material(

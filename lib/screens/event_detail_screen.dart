@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../data/role_colors.dart';
@@ -312,7 +312,7 @@ class EventDetailScreen extends StatelessWidget {
                                   event.createdBy.avatarUrl.isNotEmpty &&
                                           event.createdBy.avatarUrl !=
                                               'none.webp'
-                                      ? CachedNetworkImageProvider(
+                                      ? ExtendedNetworkImageProvider(
                                           'https://cdn.knockout.chat/image/${event.createdBy.avatarUrl}',
                                         )
                                       : null,

@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../../data/ratings.dart';
@@ -185,7 +185,7 @@ class SubforumThreadListItem extends StatelessWidget {
             padding: EdgeInsets.only(right: 8),
             child: CircleAvatar(
               radius: 12,
-              backgroundImage: CachedNetworkImageProvider(
+              backgroundImage: ExtendedNetworkImageProvider(
                 'https://cdn.knockout.chat/image/${thread.user.avatarUrl}',
               ),
             ),

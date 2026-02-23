@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -175,7 +175,7 @@ class _PostCardState extends State<PostCard> {
                             left: i * 14.0,
                             child: CircleAvatar(
                               radius: 10,
-                              backgroundImage: CachedNetworkImageProvider(
+                              backgroundImage: ExtendedNetworkImageProvider(
                                 'https://cdn.knockout.chat/image/${avatarUrls[i]}',
                               ),
                             ),
@@ -244,7 +244,7 @@ class _PostCardState extends State<PostCard> {
             CircleAvatar(
               radius: 12,
               backgroundImage: hasAvatar
-                  ? CachedNetworkImageProvider(
+                  ? ExtendedNetworkImageProvider(
                       'https://cdn.knockout.chat/image/$avatarUrl',
                     )
                   : null,
@@ -284,7 +284,7 @@ class _PostCardState extends State<PostCard> {
         if (hasAvatar) ...[
           CircleAvatar(
             radius: 16,
-            backgroundImage: CachedNetworkImageProvider(
+            backgroundImage: ExtendedNetworkImageProvider(
               'https://cdn.knockout.chat/image/$avatarUrl',
             ),
           ),
@@ -394,11 +394,21 @@ class _PostCardState extends State<PostCard> {
         Positioned.fill(
           child: Opacity(
             opacity: 0.15,
-            child: CachedNetworkImage(
-              imageUrl: 'https://cdn.knockout.chat/image/$backgroundUrl',
+            child: ExtendedImage.network(
+              'https://cdn.knockout.chat/image/$backgroundUrl',
+              cache: true,
               fit: BoxFit.cover,
               alignment: Alignment.center,
-              errorWidget: (context, url, error) => const SizedBox.shrink(),
+              loadStateChanged: (state) {
+                switch (state.extendedImageLoadState) {
+                  case LoadState.loading:
+                    return null;
+                  case LoadState.failed:
+                    return const SizedBox.shrink();
+                  case LoadState.completed:
+                    return null;
+                }
+              },
             ),
           ),
         ),

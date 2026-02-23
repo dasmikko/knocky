@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -108,7 +108,7 @@ class _UserScreenState extends State<UserScreen>
             color: Theme.of(context).colorScheme.primaryContainer,
             image: hasHeader
                 ? DecorationImage(
-                    image: CachedNetworkImageProvider(
+                    image: ExtendedNetworkImageProvider(
                       'https://cdn.knockout.chat/image/$headerUrl',
                     ),
                     fit: BoxFit.cover,
@@ -126,7 +126,7 @@ class _UserScreenState extends State<UserScreen>
             child: CircleAvatar(
               radius: 29,
               backgroundImage: hasAvatar
-                  ? CachedNetworkImageProvider(
+                  ? ExtendedNetworkImageProvider(
                       'https://cdn.knockout.chat/image/$avatarUrl',
                     )
                   : null,

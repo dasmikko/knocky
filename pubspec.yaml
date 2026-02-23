@@ -64,7 +64,6 @@ dependencies:
   font_awesome_flutter: ^10.12.0
   flutter_inappwebview: ^6.1.5
   image_picker: ^1.1.2
-  cached_network_image: ^3.4.1
   intl: ^0.20.2
   table_calendar: ^3.2.0
   package_info_plus: ^9.0.0
@@ -78,6 +77,7 @@ dependencies:
   wakelock_plus: ^1.4.0
   flutter_highlight: ^0.7.0
   highlight: ^0.7.0
+  extended_image: ^10.0.1
 
 dev_dependencies:
   flutter_test:

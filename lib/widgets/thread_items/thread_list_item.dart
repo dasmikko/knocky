@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../../data/role_colors.dart';
@@ -129,7 +129,7 @@ class ThreadListItem extends StatelessWidget {
                         backgroundImage:
                             thread.user.avatarUrl.isNotEmpty &&
                                 thread.user.avatarUrl != 'none.webp'
-                            ? CachedNetworkImageProvider(
+                            ? ExtendedNetworkImageProvider(
                                 'https://cdn.knockout.chat/image/${thread.user.avatarUrl}',
                               )
                             : null,

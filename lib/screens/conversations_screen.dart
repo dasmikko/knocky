@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -321,7 +321,7 @@ class _UserSearchDialogState extends State<_UserSearchDialog> {
                       return ListTile(
                         leading: CircleAvatar(
                           backgroundImage: hasAvatar
-                              ? CachedNetworkImageProvider(
+                              ? ExtendedNetworkImageProvider(
                                   'https://cdn.knockout.chat/image/$avatarUrl',
                                 )
                               : null,

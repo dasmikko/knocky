@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -620,7 +620,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
                     leading: CircleAvatar(
                       radius: 16,
                       backgroundImage: hasAvatar
-                          ? CachedNetworkImageProvider(
+                          ? ExtendedNetworkImageProvider(
                               'https://cdn.knockout.chat/image/$avatarUrl',
                             )
                           : null,

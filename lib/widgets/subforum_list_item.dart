@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../data/role_colors.dart';
@@ -59,12 +59,21 @@ class SubforumListItem extends StatelessWidget {
       child: Center(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(4),
-          child: CachedNetworkImage(
-            imageUrl: subforum.icon,
+          child: ExtendedImage.network(
+            subforum.icon,
+            cache: true,
             height: 40,
             fit: BoxFit.contain,
-            errorWidget: (context, url, error) =>
-                const SizedBox(width: 40, height: 40),
+            loadStateChanged: (state) {
+              switch (state.extendedImageLoadState) {
+                case LoadState.loading:
+                  return null;
+                case LoadState.failed:
+                  return const SizedBox(width: 40, height: 40);
+                case LoadState.completed:
+                  return null;
+              }
+            },
           ),
         ),
       ),
@@ -203,7 +212,7 @@ class SubforumListItem extends StatelessWidget {
                         padding: EdgeInsets.only(right: 8),
                         child: CircleAvatar(
                           radius: 12,
-                          backgroundImage: CachedNetworkImageProvider(
+                          backgroundImage: ExtendedNetworkImageProvider(
                             'https://cdn.knockout.chat/image/${lastPost.user.avatarUrl}',
                           ),
                         ),
