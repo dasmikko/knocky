@@ -110,58 +110,53 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
                 },
             child: Hero(
               tag: widget.heroTag ?? 'image_${widget.url.trim()}',
-              child: Padding(
-                padding: EdgeInsets.only(
-                  bottom: MediaActionBar.getBottomPadding(context),
-                ),
-                child: ExtendedImage.network(
-                  widget.url.trim(),
-                  cache: true,
-                  fit: BoxFit.contain,
-                  width: double.infinity,
-                  height: double.infinity,
-                  mode: ExtendedImageMode.gesture,
-                  enableSlideOutPage: true,
-                  initGestureConfigHandler: (state) {
-                    return GestureConfig(
-                      minScale: 1.0,
-                      animationMinScale: 0.8,
-                      maxScale: 4.0,
-                      animationMaxScale: 4.5,
-                      initialScale: 1.0,
-                      inertialSpeed: 100.0,
-                    );
-                  },
-                  onDoubleTap: _onDoubleTap,
-                  loadStateChanged: (state) {
-                    switch (state.extendedImageLoadState) {
-                      case LoadState.loading:
-                        return const Center(
-                          child: CircularProgressIndicator(color: Colors.white),
-                        );
-                      case LoadState.failed:
-                        return const Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.broken_image,
-                                color: Colors.white54,
-                                size: 48,
-                              ),
-                              SizedBox(height: 12),
-                              Text(
-                                'Failed to load image',
-                                style: TextStyle(color: Colors.white54),
-                              ),
-                            ],
-                          ),
-                        );
-                      case LoadState.completed:
-                        return null;
-                    }
-                  },
-                ),
+              child: ExtendedImage.network(
+                widget.url.trim(),
+                cache: true,
+                fit: BoxFit.contain,
+                width: double.infinity,
+                height: double.infinity,
+                mode: ExtendedImageMode.gesture,
+                enableSlideOutPage: true,
+                initGestureConfigHandler: (state) {
+                  return GestureConfig(
+                    minScale: 1.0,
+                    animationMinScale: 0.8,
+                    maxScale: 4.0,
+                    animationMaxScale: 4.5,
+                    initialScale: 1.0,
+                    inertialSpeed: 100.0,
+                  );
+                },
+                onDoubleTap: _onDoubleTap,
+                loadStateChanged: (state) {
+                  switch (state.extendedImageLoadState) {
+                    case LoadState.loading:
+                      return const Center(
+                        child: CircularProgressIndicator(color: Colors.white),
+                      );
+                    case LoadState.failed:
+                      return const Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.broken_image,
+                              color: Colors.white54,
+                              size: 48,
+                            ),
+                            SizedBox(height: 12),
+                            Text(
+                              'Failed to load image',
+                              style: TextStyle(color: Colors.white54),
+                            ),
+                          ],
+                        ),
+                      );
+                    case LoadState.completed:
+                      return null;
+                  }
+                },
               ),
             ),
           ),
