@@ -252,9 +252,11 @@ class _UserSearchDialogState extends State<_UserSearchDialog> {
     });
 
     try {
-      final results = await context.read<KnockoutApiService>().searchUsers(query);
+      final api = context.read<KnockoutApiService>();
+      final results = await api.searchUsers(query);
+      final currentUserId = api.syncData?.id;
       setState(() {
-        _searchResults = results;
+        _searchResults = results.where((u) => u.id != currentUserId).toList();
         _isSearching = false;
       });
     } catch (e) {

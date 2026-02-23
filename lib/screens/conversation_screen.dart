@@ -114,11 +114,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
     final content = _messageController.text.trim();
     if (content.isEmpty || _isSending) return;
 
+    final currentUserId = _getCurrentUserId(context);
+
     int receivingUserId;
     int? conversationId;
 
     if (_isNewConversation) {
       receivingUserId = widget.recipient!.id;
+      if (receivingUserId == currentUserId) return;
       conversationId = null;
     } else {
       final conversation = _fullConversation ?? widget.conversation!;

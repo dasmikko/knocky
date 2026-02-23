@@ -401,18 +401,19 @@ class _UserScreenState extends State<UserScreen>
       appBar: AppBar(
         title: Text(_user!.username),
         actions: [
-          IconButton(
-            icon: const FaIcon(FontAwesomeIcons.envelope, size: 20),
-            tooltip: 'Send message',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ConversationScreen(recipient: _user),
-                ),
-              );
-            },
-          ),
+          if (widget.userId != context.read<KnockoutApiService>().syncData?.id)
+            IconButton(
+              icon: const FaIcon(FontAwesomeIcons.envelope, size: 20),
+              tooltip: 'Send message',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ConversationScreen(recipient: _user),
+                  ),
+                );
+              },
+            ),
         ],
       ),
       body: SafeArea(
