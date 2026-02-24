@@ -242,90 +242,140 @@ class _UserScreenState extends State<UserScreen>
     final links = <Widget>[];
 
     if (social.website != null && social.website!.isNotEmpty) {
-      links.add(_buildSocialTile(
-        Icons.language, 'Website', social.website!, social.website!,
-      ));
+      links.add(
+        _buildSocialTile(
+          Icons.language,
+          'Website',
+          social.website!,
+          social.website!,
+        ),
+      );
     }
 
-    if (social.steam != null && social.steam!.url != null && social.steam!.url!.isNotEmpty) {
-      links.add(_buildSocialTile(
-        FontAwesomeIcons.steam, 'Steam',
-        social.steam!.name ?? 'Steam Profile',
-        social.steam!.url!,
-      ));
+    if (social.steam != null &&
+        social.steam!.url != null &&
+        social.steam!.url!.isNotEmpty) {
+      links.add(
+        _buildSocialTile(
+          FontAwesomeIcons.steam,
+          'Steam',
+          social.steam!.name ?? 'Steam Profile',
+          social.steam!.url!,
+        ),
+      );
     }
 
     if (social.discord != null && social.discord!.isNotEmpty) {
-      links.add(_buildSocialTile(
-        FontAwesomeIcons.discord, 'Discord', social.discord!, '',
-        onTap: () {
-          Clipboard.setData(ClipboardData(text: social.discord!));
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Copied ${social.discord} to clipboard')),
-          );
-        },
-      ));
+      links.add(
+        _buildSocialTile(
+          FontAwesomeIcons.discord,
+          'Discord',
+          social.discord!,
+          '',
+          onTap: () {
+            Clipboard.setData(ClipboardData(text: social.discord!));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Copied ${social.discord} to clipboard')),
+            );
+          },
+        ),
+      );
     }
 
     if (social.github != null && social.github!.isNotEmpty) {
-      links.add(_buildSocialTile(
-        FontAwesomeIcons.github, 'GitHub',
-        social.github!, 'https://github.com/${social.github}',
-      ));
+      links.add(
+        _buildSocialTile(
+          FontAwesomeIcons.github,
+          'GitHub',
+          social.github!,
+          'https://github.com/${social.github}',
+        ),
+      );
     }
 
     if (social.gitlab != null && social.gitlab!.isNotEmpty) {
-      links.add(_buildSocialTile(
-        FontAwesomeIcons.gitlab, 'GitLab',
-        social.gitlab!, 'https://gitlab.com/${social.gitlab}',
-      ));
+      links.add(
+        _buildSocialTile(
+          FontAwesomeIcons.gitlab,
+          'GitLab',
+          social.gitlab!,
+          'https://gitlab.com/${social.gitlab}',
+        ),
+      );
     }
 
     if (social.twitter != null && social.twitter!.isNotEmpty) {
-      links.add(_buildSocialTile(
-        FontAwesomeIcons.xTwitter, 'Twitter',
-        '@${social.twitter}', 'https://x.com/${social.twitter}',
-      ));
+      links.add(
+        _buildSocialTile(
+          FontAwesomeIcons.xTwitter,
+          'Twitter',
+          '@${social.twitter}',
+          'https://x.com/${social.twitter}',
+        ),
+      );
     }
 
     if (social.bluesky != null && social.bluesky!.isNotEmpty) {
-      links.add(_buildSocialTile(
-        FontAwesomeIcons.bluesky, 'Bluesky',
-        social.bluesky!, 'https://bsky.app/profile/${social.bluesky}',
-      ));
+      links.add(
+        _buildSocialTile(
+          FontAwesomeIcons.bluesky,
+          'Bluesky',
+          social.bluesky!,
+          'https://bsky.app/profile/${social.bluesky}',
+        ),
+      );
     }
 
     if (social.fediverse != null && social.fediverse!.isNotEmpty) {
-      links.add(_buildSocialTile(
-        FontAwesomeIcons.mastodon, 'Fediverse', social.fediverse!, '',
-        onTap: () {
-          Clipboard.setData(ClipboardData(text: social.fediverse!));
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Copied ${social.fediverse} to clipboard')),
-          );
-        },
-      ));
+      links.add(
+        _buildSocialTile(
+          FontAwesomeIcons.mastodon,
+          'Fediverse',
+          social.fediverse!,
+          '',
+          onTap: () {
+            Clipboard.setData(ClipboardData(text: social.fediverse!));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Copied ${social.fediverse} to clipboard'),
+              ),
+            );
+          },
+        ),
+      );
     }
 
     if (social.youtube != null && social.youtube!.isNotEmpty) {
-      links.add(_buildSocialTile(
-        FontAwesomeIcons.youtube, 'YouTube',
-        social.youtube!, 'https://youtube.com/@${social.youtube}',
-      ));
+      links.add(
+        _buildSocialTile(
+          FontAwesomeIcons.youtube,
+          'YouTube',
+          social.youtube!,
+          'https://youtube.com/@${social.youtube}',
+        ),
+      );
     }
 
     if (social.twitch != null && social.twitch!.isNotEmpty) {
-      links.add(_buildSocialTile(
-        FontAwesomeIcons.twitch, 'Twitch',
-        social.twitch!, 'https://twitch.tv/${social.twitch}',
-      ));
+      links.add(
+        _buildSocialTile(
+          FontAwesomeIcons.twitch,
+          'Twitch',
+          social.twitch!,
+          'https://twitch.tv/${social.twitch}',
+        ),
+      );
     }
 
     if (social.tumblr != null && social.tumblr!.isNotEmpty) {
-      links.add(_buildSocialTile(
-        FontAwesomeIcons.tumblr, 'Tumblr',
-        social.tumblr!, 'https://${social.tumblr}.tumblr.com',
-      ));
+      links.add(
+        _buildSocialTile(
+          FontAwesomeIcons.tumblr,
+          'Tumblr',
+          social.tumblr!,
+          'https://${social.tumblr}.tumblr.com',
+        ),
+      );
     }
 
     if (links.isEmpty) return [];
@@ -606,6 +656,7 @@ class _UserPostsTabState extends State<_UserPostsTab>
                       threadId: threadInfo.id,
                       threadTitle: threadInfo.title,
                       page: post.page,
+                      scrollToPostId: post.id,
                     ),
                   ),
                 );
@@ -649,10 +700,7 @@ class _UserPostsTabState extends State<_UserPostsTab>
                 const Divider(height: 16),
               ],
               // Post content
-              BbcodeRenderer(
-                content: post.content,
-                postId: post.id,
-              ),
+              BbcodeRenderer(content: post.content, postId: post.id),
               // Ratings
               if (post.ratings.isNotEmpty) ...[
                 const SizedBox(height: 8),
