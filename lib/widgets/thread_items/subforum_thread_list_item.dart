@@ -47,84 +47,82 @@ class SubforumThreadListItem extends StatelessWidget {
     return Opacity(
       opacity: isRead ? 0.6 : 1.0,
       child: Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ThreadScreen(
-                threadId: thread.id,
-                threadTitle: thread.title,
-              ),
-            ),
-          );
-        },
-        onLongPress: onLongPress,
-        child: Stack(
-          children: [
-            // Background thread icon in corner with radial fade
-            Positioned(
-              right: -20,
-              bottom: -20,
-              child: ShaderMask(
-                shaderCallback: (Rect bounds) {
-                  return RadialGradient(
-                    center: Alignment.center,
-                    radius: 0.8,
-                    colors: [
-                      Colors.white.withValues(alpha: 0.8),
-                      Colors.white.withValues(alpha: 0.4),
-                      Colors.transparent,
-                    ],
-                    stops: const [0.0, 0.5, 1.0],
-                  ).createShader(bounds);
-                },
-                blendMode: BlendMode.dstIn,
-                child: Opacity(
-                  opacity: 0.25,
-                  child: getThreadIconById(
-                    thread.iconId,
-                  ).buildIcon(width: 80, height: 80),
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ThreadScreen(
+                  threadId: thread.id,
+                  threadTitle: thread.title,
                 ),
               ),
-            ),
-            // Thread content
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Thread title and status badges
-                  _buildTitleRow(hasUnread),
-                  const SizedBox(height: 8),
-
-                  // Thread metadata
-                  _buildMetadataRow(context),
-                  const SizedBox(height: 8),
-
-                  // Last post info
-                  if (thread.lastPost != null) _buildLastPostRow(context),
-
-                  // Unread count badge
-                  if (hasUnread) _buildUnreadBadge(context),
-
-                  // Top rating
-                  if (thread.firstPostTopRating != null) _buildTopRating(),
-
-                  // Viewers
-                  if (thread.viewers != null &&
-                      (thread.viewers!.memberCount > 0 ||
-                          thread.viewers!.guestCount > 0))
-                    _buildViewers(),
-                ],
+            );
+          },
+          onLongPress: onLongPress,
+          child: Stack(
+            children: [
+              // Background thread icon in corner with radial fade
+              Positioned(
+                right: -20,
+                bottom: -20,
+                child: ShaderMask(
+                  shaderCallback: (Rect bounds) {
+                    return RadialGradient(
+                      center: Alignment.center,
+                      radius: 0.8,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.8),
+                        Colors.white.withValues(alpha: 0.4),
+                        Colors.transparent,
+                      ],
+                      stops: const [0.0, 0.5, 1.0],
+                    ).createShader(bounds);
+                  },
+                  blendMode: BlendMode.dstIn,
+                  child: Opacity(
+                    opacity: 0.25,
+                    child: getThreadIconById(
+                      thread.iconId,
+                    ).buildIcon(width: 80, height: 80),
+                  ),
+                ),
               ),
-            ),
-          ],
+              // Thread content
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Thread title and status badges
+                    _buildTitleRow(hasUnread),
+                    const SizedBox(height: 8),
+
+                    // Thread metadata
+                    _buildMetadataRow(context),
+                    const SizedBox(height: 8),
+
+                    // Last post info
+                    if (thread.lastPost != null) _buildLastPostRow(context),
+
+                    // Top rating and unread count badge
+                    if (hasUnread || thread.firstPostTopRating != null)
+                      _buildRatingAndUnreadRow(context, hasUnread),
+
+                    // Viewers
+                    if (thread.viewers != null &&
+                        (thread.viewers!.memberCount > 0 ||
+                            thread.viewers!.guestCount > 0))
+                      _buildViewers(),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
     );
   }
 
@@ -264,60 +262,69 @@ class SubforumThreadListItem extends StatelessWidget {
     );
   }
 
-  Widget _buildUnreadBadge(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: GestureDetector(
-        onTap: () {
-          final page = (thread.readThread!.lastPostNumber ~/ 20) + 1;
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ThreadScreen(
-                threadId: thread.id,
-                threadTitle: thread.title,
-                page: page,
-                scrollToUnread: true,
-              ),
-            ),
-          );
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(
-            '${thread.readThread!.unreadPostCount} unread',
-            style: const TextStyle(color: Colors.white, fontSize: 11),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTopRating() {
-    final ratingCode = thread.firstPostTopRating!.rating.toLowerCase();
-    final rating = ratingMap[ratingCode];
+  Widget _buildRatingAndUnreadRow(BuildContext context, bool hasUnread) {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Row(
         children: [
-          if (rating != null)
-            Image.asset(
-              rating.assetPath,
-              width: 16,
-              height: 16,
-              filterQuality: FilterQuality.high,
-            )
-          else
-            const Icon(Icons.star, size: 14, color: Colors.amber),
-          const SizedBox(width: 4),
-          Text(
-            '${rating?.name ?? thread.firstPostTopRating!.rating}: ${thread.firstPostTopRating!.count}',
-            style: const TextStyle(fontSize: 11, color: Colors.grey),
-          ),
+          if (thread.firstPostTopRating != null) ...[
+            () {
+              final ratingCode = thread.firstPostTopRating!.rating
+                  .toLowerCase();
+              final rating = ratingMap[ratingCode];
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (rating != null)
+                    Image.asset(
+                      rating.assetPath,
+                      width: 16,
+                      height: 16,
+                      filterQuality: FilterQuality.high,
+                    )
+                  else
+                    const Icon(Icons.star, size: 14, color: Colors.amber),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${rating?.name ?? thread.firstPostTopRating!.rating}: ${thread.firstPostTopRating!.count}',
+                    style: const TextStyle(fontSize: 11, color: Colors.grey),
+                  ),
+                ],
+              );
+            }(),
+          ],
+          const Spacer(),
+          if (hasUnread)
+            GestureDetector(
+              onTap: () {
+                final page = (thread.readThread!.lastPostNumber ~/ 20) + 1;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ThreadScreen(
+                      threadId: thread.id,
+                      threadTitle: thread.title,
+                      page: page,
+                      scrollToUnread: true,
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '${thread.readThread!.unreadPostCount} unread',
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
+            ),
         ],
       ),
     );
