@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:knocky/screens/image_viewer_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
@@ -97,50 +98,64 @@ class _UserScreenState extends State<UserScreen>
     final avatarUrl = _user!.avatarUrl;
     final hasAvatar = avatarUrl.isNotEmpty && avatarUrl != 'none.webp';
 
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        // Header image
-        Container(
-          height: 120,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            image: hasHeader
-                ? DecorationImage(
-                    image: ExtendedNetworkImageProvider(
-                      'https://cdn.knockout.chat/image/$headerUrl',
-                    ),
-                    fit: BoxFit.cover,
-                  )
-                : null,
-          ),
-        ),
-        // Avatar overlapping the header
-        Positioned(
-          bottom: -32,
-          left: 16,
-          child: CircleAvatar(
-            radius: 32,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            child: CircleAvatar(
-              radius: 29,
-              backgroundImage: hasAvatar
-                  ? ExtendedNetworkImageProvider(
-                      'https://cdn.knockout.chat/image/$avatarUrl',
+    return SizedBox(
+      height: 168, // 120 header + 48 avatar overflow
+      child: Stack(
+        children: [
+          // Header image
+          Container(
+            height: 120,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              image: hasHeader
+                  ? DecorationImage(
+                      image: ExtendedNetworkImageProvider(
+                        'https://cdn.knockout.chat/image/$headerUrl',
+                      ),
+                      fit: BoxFit.cover,
                     )
                   : null,
-              child: hasAvatar ? null : const Icon(Icons.person, size: 32),
+            ),
+          ),
+          // Avatar overlapping the header
+          Positioned(
+            bottom: 0,
+            left: 16,
+          child: CircleAvatar(
+            radius: 48,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ImageViewerScreen(
+                      url: 'https://cdn.knockout.chat/image/$avatarUrl',
+                    ),
+                  ),
+                );
+              },
+              child: CircleAvatar(
+                radius: 45,
+                backgroundImage: hasAvatar
+                    ? ExtendedNetworkImageProvider(
+                        'https://cdn.knockout.chat/image/$avatarUrl',
+                      )
+                    : null,
+                child: hasAvatar ? null : const Icon(Icons.person, size: 48),
+              ),
             ),
           ),
         ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _buildUserInfo() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 40, 16, 12),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
