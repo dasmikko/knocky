@@ -28,6 +28,10 @@ class SubforumThreadListItem extends StatelessWidget {
     }
   }
 
+  bool get _hasViewers =>
+      thread.viewers != null &&
+      (thread.viewers!.memberCount > 0 || thread.viewers!.guestCount > 0);
+
   bool get _isNsfw {
     if (thread.tags.isEmpty) return false;
     final tag = thread.tags.first;
@@ -107,15 +111,11 @@ class SubforumThreadListItem extends StatelessWidget {
                     // Last post info
                     if (thread.lastPost != null) _buildLastPostRow(context),
 
-                    // Top rating and unread count badge
-                    if (hasUnread || thread.firstPostTopRating != null)
+                    // Top rating / viewers and unread count badge
+                    if (hasUnread ||
+                        thread.firstPostTopRating != null ||
+                        _hasViewers)
                       _buildRatingAndUnreadRow(context, hasUnread),
-
-                    // Viewers
-                    if (thread.viewers != null &&
-                        (thread.viewers!.memberCount > 0 ||
-                            thread.viewers!.guestCount > 0))
-                      _buildViewers(),
                   ],
                 ),
               ),
@@ -263,86 +263,100 @@ class SubforumThreadListItem extends StatelessWidget {
   }
 
   Widget _buildRatingAndUnreadRow(BuildContext context, bool hasUnread) {
+    final hasTopRating = thread.firstPostTopRating != null;
+
+    // Left side: top rating if present, otherwise viewers
+    Widget? leftWidget;
+    if (hasTopRating) {
+      final ratingCode = thread.firstPostTopRating!.rating.toLowerCase();
+      final rating = ratingMap[ratingCode];
+      leftWidget = Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (rating != null)
+            Image.asset(
+              rating.assetPath,
+              width: 16,
+              height: 16,
+              filterQuality: FilterQuality.high,
+            )
+          else
+            const Icon(Icons.star, size: 14, color: Colors.amber),
+          const SizedBox(width: 4),
+          Text(
+            '${rating?.name ?? thread.firstPostTopRating!.rating}: ${thread.firstPostTopRating!.count}',
+            style: const TextStyle(fontSize: 11, color: Colors.grey),
+          ),
+        ],
+      );
+    } else if (_hasViewers) {
+      leftWidget = _buildViewersContent();
+    }
+
     return Padding(
       padding: const EdgeInsets.only(top: 8),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (thread.firstPostTopRating != null) ...[
-            () {
-              final ratingCode = thread.firstPostTopRating!.rating
-                  .toLowerCase();
-              final rating = ratingMap[ratingCode];
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (rating != null)
-                    Image.asset(
-                      rating.assetPath,
-                      width: 16,
-                      height: 16,
-                      filterQuality: FilterQuality.high,
-                    )
-                  else
-                    const Icon(Icons.star, size: 14, color: Colors.amber),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${rating?.name ?? thread.firstPostTopRating!.rating}: ${thread.firstPostTopRating!.count}',
-                    style: const TextStyle(fontSize: 11, color: Colors.grey),
-                  ),
-                ],
-              );
-            }(),
-          ],
-          const Spacer(),
-          if (hasUnread)
-            GestureDetector(
-              onTap: () {
-                final page = (thread.readThread!.lastPostNumber ~/ 20) + 1;
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ThreadScreen(
-                      threadId: thread.id,
-                      threadTitle: thread.title,
-                      page: page,
-                      scrollToUnread: true,
+          Row(
+            children: [
+              if (leftWidget != null) leftWidget,
+              const Spacer(),
+              if (hasUnread)
+                GestureDetector(
+                  onTap: () {
+                    final page = (thread.readThread!.lastPostNumber ~/ 20) + 1;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ThreadScreen(
+                          threadId: thread.id,
+                          threadTitle: thread.title,
+                          page: page,
+                          scrollToUnread: true,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      '${thread.readThread!.unreadPostCount} unread',
+                      style: const TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ),
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 4,
                 ),
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  '${thread.readThread!.unreadPostCount} unread',
-                  style: const TextStyle(color: Colors.white, fontSize: 12),
-                ),
-              ),
+            ],
+          ),
+          // Show viewers below when top rating is also present
+          if (hasTopRating && _hasViewers)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: _buildViewersContent(),
             ),
         ],
       ),
     );
   }
 
-  Widget _buildViewers() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 4),
-      child: Row(
-        children: [
-          const Icon(Icons.visibility, size: 14, color: Colors.grey),
-          const SizedBox(width: 4),
-          Text(
-            'Viewing: ${thread.viewers!.memberCount} members, ${thread.viewers!.guestCount} guests',
-            style: const TextStyle(fontSize: 11, color: Colors.grey),
-          ),
-        ],
-      ),
+  Widget _buildViewersContent() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Icon(Icons.visibility, size: 14, color: Colors.grey),
+        const SizedBox(width: 4),
+        Text(
+          'Viewing: ${thread.viewers!.memberCount} members, ${thread.viewers!.guestCount} guests',
+          style: const TextStyle(fontSize: 11, color: Colors.grey),
+        ),
+      ],
     );
   }
 }
