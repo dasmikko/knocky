@@ -239,8 +239,8 @@ import '../models/thread.dart';
 
 - Place state variables at top of State class
 - Group lifecycle methods together
-- Private helper methods prefixed with `_`
-- Build methods return Widget, helper methods build specific sections
+- **Never use helper methods/functions that return widgets** (e.g. `Widget _buildHeader()`). Instead, extract these into separate widget classes. This enables Flutter to optimize rebuilds and keeps the widget tree explicit. Private widget classes in the same file are fine for small, tightly-coupled components.
+- Screen-specific extracted widgets go in `lib/widgets/<screen_name>/`
 
 ### Error Handling
 
@@ -356,4 +356,3 @@ The project uses Flutter stable channel. FVM configuration in `.fvmrc`.
 
 - `README.md` - Project overview and feature status
 - `README_JSON.md` - Detailed JSON handling guide
-- `SUBFORUM_FEATURE.md` - Subforum feature implementation details
