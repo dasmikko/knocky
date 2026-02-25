@@ -126,6 +126,15 @@ String preNormalize(String text) {
     (m) => '[smarturl]${m.group(1)!}[/smarturl]',
   );
 
+  // Convert [url smart]content[/url] → [smarturl]content[/smarturl] (no href)
+  result = result.replaceAllMapped(
+    RegExp(
+      r'\[url\s+smart\]([^\[]+)\[/url\]',
+      caseSensitive: false,
+    ),
+    (m) => '[smarturl]${m.group(1)!}[/smarturl]',
+  );
+
   // Convert [url href="..."]text[/url] → [url=...]text[/url]
   result = result.replaceAllMapped(
     RegExp(r'\[url href="([^"]+)"\](.*?)\[/url\]', caseSensitive: false),
