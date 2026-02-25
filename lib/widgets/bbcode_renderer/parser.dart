@@ -94,14 +94,17 @@ String preNormalize(String text) {
 
   // Strip thumbnail attribute from img tags: [img thumbnail]...[/img] → [img]...[/img]
   result = result.replaceAll(
-    RegExp(r'\[img\s+thumbnail\]', caseSensitive: false),
+    RegExp(r'\[img\s+thumb(?:nail)?\]', caseSensitive: false),
     '[img]',
   );
 
   // Convert [code inline]...[/code] → [icode]...[/icode]
   result = result.replaceAllMapped(
-    RegExp(r'\[code\s+inline\](.*?)\[/code\]',
-        caseSensitive: false, dotAll: true),
+    RegExp(
+      r'\[code\s+inline\](.*?)\[/code\]',
+      caseSensitive: false,
+      dotAll: true,
+    ),
     (m) => '[icode]${m.group(1)!}[/icode]',
   );
 
@@ -113,7 +116,7 @@ String preNormalize(String text) {
     ),
     (m) => '[smarturl]${m.group(1)!}[/smarturl]',
   );
-  
+
   // Handle reversed attribute order: [url href="..." smart]
   result = result.replaceAllMapped(
     RegExp(
@@ -141,27 +144,21 @@ String preNormalize(String text) {
 /// Converts :emote_code: syntax into [emote=code][/emote] BBCode tags
 /// for valid emotes only (checked against the emote map).
 String preprocessEmotes(String text) {
-  return text.replaceAllMapped(
-    RegExp(r':([a-zA-Z0-9_]+):'),
-    (m) {
-      final code = m.group(1)!;
-      if (emoteMap.containsKey(code)) {
-        return '[emote=$code][/emote]';
-      }
-      return m.group(0)!; // Not a valid emote, leave as-is
-    },
-  );
+  return text.replaceAllMapped(RegExp(r':([a-zA-Z0-9_]+):'), (m) {
+    final code = m.group(1)!;
+    if (emoteMap.containsKey(code)) {
+      return '[emote=$code][/emote]';
+    }
+    return m.group(0)!; // Not a valid emote, leave as-is
+  });
 }
 
 /// Converts @<id;...> mention syntax into [mention=id][/mention] BBCode tags.
 String preprocessMentions(String text) {
-  return text.replaceAllMapped(
-    RegExp(r'@<(\d+);?[^>]*>'),
-    (m) {
-      final userId = m.group(1)!;
-      return '[mention=$userId][/mention]';
-    },
-  );
+  return text.replaceAllMapped(RegExp(r'@<(\d+);?[^>]*>'), (m) {
+    final userId = m.group(1)!;
+    return '[mention=$userId][/mention]';
+  });
 }
 
 /// Serializes bbob parsed nodes back into a BBCode string.
