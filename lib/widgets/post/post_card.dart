@@ -20,8 +20,12 @@ class PostCard extends StatefulWidget {
   final VoidCallback? onQuote;
   final VoidCallback? onEdit;
   final VoidCallback? onRate;
-  final void Function(String ratingName, String? assetPath, List<dynamic> users)?
-      onShowRatingUsers;
+  final void Function(
+    String ratingName,
+    String? assetPath,
+    List<dynamic> users,
+  )?
+  onShowRatingUsers;
   final void Function(int postId, int page)? onResponseTap;
   final bool isUnread;
 
@@ -89,7 +93,13 @@ class _PostCardState extends State<PostCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Post header: avatar, username, time, background
-          _buildHeader(context, hasAvatar, avatarUrl, hasBackground, backgroundUrl),
+          _buildHeader(
+            context,
+            hasAvatar,
+            avatarUrl,
+            hasBackground,
+            backgroundUrl,
+          ),
           // Secondary toolbar
           _buildToolbar(context),
           // Post content and footer
@@ -115,10 +125,14 @@ class _PostCardState extends State<PostCard> {
                 // Ban notice
                 if (post.bans.isNotEmpty) ...[
                   const SizedBox(height: 12),
-                  ...post.bans.map((ban) => Padding(
-                    padding: EdgeInsets.only(bottom: ban == post.bans.last ? 0 : 8),
-                    child: _buildBanNotice(context, ban),
-                  )),
+                  ...post.bans.map(
+                    (ban) => Padding(
+                      padding: EdgeInsets.only(
+                        bottom: ban == post.bans.last ? 0 : 8,
+                      ),
+                      child: _buildBanNotice(context, ban),
+                    ),
+                  ),
                 ],
                 // Response list
                 if (post.responses.isNotEmpty) ...[
@@ -177,6 +191,7 @@ class _PostCardState extends State<PostCard> {
                               radius: 10,
                               backgroundImage: ExtendedNetworkImageProvider(
                                 'https://cdn.knockout.chat/image/${avatarUrls[i]}',
+                                cache: true,
                               ),
                             ),
                           ),
@@ -246,6 +261,7 @@ class _PostCardState extends State<PostCard> {
               backgroundImage: hasAvatar
                   ? ExtendedNetworkImageProvider(
                       'https://cdn.knockout.chat/image/$avatarUrl',
+                      cache: true,
                     )
                   : null,
               child: hasAvatar ? null : const Icon(Icons.person, size: 14),
@@ -254,10 +270,7 @@ class _PostCardState extends State<PostCard> {
             RoleColoredUsername(
               username: username,
               roleCode: roleCode,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
             ),
             const SizedBox(width: 8),
             Expanded(
@@ -277,7 +290,13 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  Widget _buildHeader(BuildContext context, bool hasAvatar, String avatarUrl, bool hasBackground, String backgroundUrl) {
+  Widget _buildHeader(
+    BuildContext context,
+    bool hasAvatar,
+    String avatarUrl,
+    bool hasBackground,
+    String backgroundUrl,
+  ) {
     final post = widget.post;
     final header = Row(
       children: [
@@ -286,6 +305,7 @@ class _PostCardState extends State<PostCard> {
             radius: 16,
             backgroundImage: ExtendedNetworkImageProvider(
               'https://cdn.knockout.chat/image/$avatarUrl',
+              cache: true,
             ),
           ),
           const SizedBox(width: 10),
@@ -315,10 +335,7 @@ class _PostCardState extends State<PostCard> {
               if (post.user.title != null && post.user.title!.isNotEmpty)
                 Text(
                   post.user.title!,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -333,8 +350,10 @@ class _PostCardState extends State<PostCard> {
               children: [
                 if (widget.isUnread) ...[
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.circular(4),
@@ -363,25 +382,18 @@ class _PostCardState extends State<PostCard> {
                 ],
                 Text(
                   '#${post.threadPostNumber}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade500,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                 ),
               ],
             ),
             Text(
               _formatTimeAgo(post.createdAt),
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.grey.shade500,
-              ),
+              style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
             ),
           ],
         ),
       ],
     );
-
 
     return Stack(
       children: [
@@ -479,8 +491,10 @@ class _PostCardState extends State<PostCard> {
       if (years > 0) return '$years ${years == 1 ? 'year' : 'years'}';
       final months = (diff.inDays / 30).round();
       if (months > 0) return '$months ${months == 1 ? 'month' : 'months'}';
-      if (diff.inDays > 0) return '${diff.inDays} ${diff.inDays == 1 ? 'day' : 'days'}';
-      if (diff.inHours > 0) return '${diff.inHours} ${diff.inHours == 1 ? 'hour' : 'hours'}';
+      if (diff.inDays > 0)
+        return '${diff.inDays} ${diff.inDays == 1 ? 'day' : 'days'}';
+      if (diff.inHours > 0)
+        return '${diff.inHours} ${diff.inHours == 1 ? 'hour' : 'hours'}';
       return '${diff.inMinutes} ${diff.inMinutes == 1 ? 'minute' : 'minutes'}';
     } catch (_) {
       return null;
@@ -492,7 +506,9 @@ class _PostCardState extends State<PostCard> {
       height: 30,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
       ),
       child: Row(
         children: [
@@ -527,7 +543,9 @@ class _PostCardState extends State<PostCard> {
             size: 16,
             color: isActive
                 ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                : Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.4),
           ),
         ),
       ),
@@ -562,7 +580,8 @@ class _PostCardState extends State<PostCard> {
             constraints: const BoxConstraints(),
             visualDensity: VisualDensity.compact,
           ),
-        if (widget.isAuthenticated && widget.isOwnPost) const SizedBox(width: 8),
+        if (widget.isAuthenticated && widget.isOwnPost)
+          const SizedBox(width: 8),
         if (widget.isAuthenticated)
           IconButton(
             icon: Icon(
@@ -572,7 +591,9 @@ class _PostCardState extends State<PostCard> {
               size: 20,
             ),
             onPressed: widget.onRate,
-            tooltip: widget.userRatingCode != null ? 'Change rating' : 'Rate post',
+            tooltip: widget.userRatingCode != null
+                ? 'Change rating'
+                : 'Rate post',
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
             visualDensity: VisualDensity.compact,
@@ -632,8 +653,9 @@ class _PostCardState extends State<PostCard> {
                     count.toString(),
                     style: TextStyle(
                       fontSize: 11,
-                      fontWeight:
-                          isUserRating ? FontWeight.bold : FontWeight.w500,
+                      fontWeight: isUserRating
+                          ? FontWeight.bold
+                          : FontWeight.w500,
                     ),
                   ),
                 ],
