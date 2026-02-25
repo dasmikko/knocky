@@ -1,22 +1,13 @@
 import 'dart:async';
 
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:knocky/screens/events_screen.dart';
-import 'package:knocky/screens/login_screen.dart';
-import 'package:knocky/screens/latest_threads_screen.dart';
-import 'package:knocky/screens/popular_threads_screen.dart';
-import 'package:knocky/screens/search_screen.dart';
-import 'package:knocky/screens/settings_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../data/role_colors.dart';
 import '../models/motd.dart';
 import '../services/update_service.dart';
 import '../models/notification.dart';
-import '../models/sync_data.dart';
 import '../models/thread_ad.dart';
 import '../services/deep_link_service.dart';
 import '../services/knockout_api_service.dart';
@@ -27,10 +18,10 @@ import '../widgets/animated_content_switcher.dart';
 import '../widgets/overlays/notifications_overlay.dart';
 import '../widgets/overlays/subscriptions_overlay.dart';
 import '../widgets/sliding_banner.dart';
+import '../widgets/home_screen/home_drawer.dart';
 import '../widgets/subforum_list_item.dart';
 import 'subforum_screen.dart';
 import 'thread_screen.dart';
-import 'user_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -58,8 +49,6 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
   static const _adRefreshDuration = Duration(minutes: 5);
   static const _motdDismissedKey = 'motd_dismissed';
 
-  
-
   int get _unreadNotificationCount =>
       _notifications?.where((n) => !n.read).length ?? 0;
 
@@ -70,8 +59,6 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
             .length ??
         0;
   }
-
-
 
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
 
@@ -86,8 +73,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
       _adRefreshDuration,
       (_) => _loadRandomAd(),
     );
-
-}
+  }
 
   @override
   void didChangeDependencies() {
@@ -336,7 +322,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
           Expanded(child: _buildBody()),
         ],
       ),
-      drawer: _buildDrawer(syncData, apiService),
+      drawer: HomeDrawer(syncData: syncData, currentAd: _currentAd),
     );
   }
 
@@ -364,207 +350,6 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
       child: IconButton(
         icon: const FaIcon(FontAwesomeIcons.bell, size: 20),
         onPressed: _toggleNotificationsOverlay,
-      ),
-    );
-  }
-
-  Widget _buildDrawerHeader(SyncData? syncData) {
-    if (syncData != null) {
-      final avatarUrl = syncData.avatarUrl;
-      final hasAvatar = avatarUrl.isNotEmpty && avatarUrl != 'none.webp';
-      final bgUrl = syncData.backgroundUrl;
-      final hasBg = bgUrl.isNotEmpty;
-
-      return UserAccountsDrawerHeader(
-        accountName: RoleColoredUsername(
-          username: syncData.username,
-          roleCode: syncData.role.code,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        accountEmail: const Text(''),
-        currentAccountPicture: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => UserScreen(userId: syncData.id),
-              ),
-            );
-          },
-          child: CircleAvatar(
-            backgroundImage: hasAvatar
-                ? ExtendedNetworkImageProvider(
-                    'https://cdn.knockout.chat/image/$avatarUrl',
-                  )
-                : null,
-            child: hasAvatar ? null : const Icon(Icons.person, size: 36),
-          ),
-        ),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary,
-          image: hasBg
-              ? DecorationImage(
-                  image: ExtendedNetworkImageProvider(
-                    'https://cdn.knockout.chat/image/$bgUrl',
-                  ),
-                  fit: BoxFit.cover,
-                )
-              : null,
-        ),
-      );
-    }
-
-    return DrawerHeader(
-      decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset('assets/logo.png', height: 80),
-          const SizedBox(height: 8),
-          OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.white,
-              side: BorderSide(color: Colors.white),
-            ),
-            child: Text('Login'),
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginScreen()),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDrawer(SyncData? syncData, KnockoutApiService apiService) {
-    return Drawer(
-      child: ListView(
-        children: [
-          _buildDrawerHeader(syncData),
-          ListTile(
-            leading: const FaIcon(FontAwesomeIcons.clock, size: 20),
-            title: const Text('Latest threads'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LatestThreadsScreen(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const FaIcon(FontAwesomeIcons.fire, size: 20),
-            title: const Text('Popular threads'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PopularThreadsScreen(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const FaIcon(FontAwesomeIcons.magnifyingGlass, size: 20),
-            title: const Text('Search'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SearchScreen(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const FaIcon(FontAwesomeIcons.gear, size: 20),
-            title: const Text('Settings'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
-              );
-            },
-          ),
-          const Divider(),
-          ListTile(
-            leading: const FaIcon(FontAwesomeIcons.calendar, size: 20),
-            title: const Text('Events'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const EventsScreen()),
-              );
-            },
-          ),
-          ListTile(
-            leading: const FaIcon(FontAwesomeIcons.discord, size: 20),
-            title: const Text('Discord'),
-            onTap: () {
-              Navigator.pop(context);
-              launchUrl(
-                Uri.parse('https://discord.gg/wjWpapC'),
-                mode: LaunchMode.externalApplication,
-              );
-            },
-          ),
-          const Divider(),
-          if (_currentAd != null && !context.watch<SettingsService>().disableAdInDrawer)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Stack(
-                children: [
-                  ExtendedImage.network(
-                    _currentAd!.imageUrl,
-                    cache: true,
-                    fit: BoxFit.contain,
-                    loadStateChanged: (state) {
-                      switch (state.extendedImageLoadState) {
-                        case LoadState.loading:
-                          return const SizedBox(
-                            height: 100,
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        case LoadState.failed:
-                          return const SizedBox.shrink();
-                        case LoadState.completed:
-                          return null;
-                      }
-                    },
-                  ),
-                  Positioned.fill(
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SearchScreen(
-                                initialQuery: _currentAd!.query,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        ],
       ),
     );
   }
