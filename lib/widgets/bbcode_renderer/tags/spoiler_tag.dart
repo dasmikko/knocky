@@ -16,7 +16,7 @@ class KnockoutSpoilerTag extends AdvancedTag {
   final Widget Function(String content)? contentBuilder;
 
   KnockoutSpoilerTag({required this.isDark, this.contentBuilder})
-      : super('spoiler');
+    : super('spoiler');
 
   @override
   List<InlineSpan> parse(FlutterRenderer renderer, bbob.Element element) {
@@ -25,8 +25,7 @@ class KnockoutSpoilerTag extends AdvancedTag {
 
     if (isInline) {
       // Plain text — render inline, hidden via color matching.
-      final text =
-          element.children.map((c) => c.textContent).join();
+      final text = element.children.map((c) => c.textContent).join();
 
       return [
         WidgetSpan(
@@ -47,8 +46,7 @@ class KnockoutSpoilerTag extends AdvancedTag {
           padding: const EdgeInsets.only(bottom: 8),
           child: _BlockSpoiler(
             isDark: isDark,
-            child:
-                contentBuilder?.call(innerContent) ?? Text(innerContent),
+            child: contentBuilder?.call(innerContent) ?? Text(innerContent),
           ),
         ),
       ),
@@ -65,11 +63,7 @@ class _InlineSpoiler extends StatefulWidget {
   final bool isDark;
   final TextStyle? style;
 
-  const _InlineSpoiler({
-    required this.text,
-    required this.isDark,
-    this.style,
-  });
+  const _InlineSpoiler({required this.text, required this.isDark, this.style});
 
   @override
   State<_InlineSpoiler> createState() => _InlineSpoilerState();
@@ -81,7 +75,8 @@ class _InlineSpoilerState extends State<_InlineSpoiler> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final hiddenColor = theme.textTheme.bodyMedium?.color ??
+    final hiddenColor =
+        theme.textTheme.bodyMedium?.color ??
         (widget.isDark ? Colors.white : Colors.black);
 
     return GestureDetector(
@@ -96,7 +91,7 @@ class _InlineSpoilerState extends State<_InlineSpoiler> {
         child: Text(
           widget.text,
           style: GoogleFonts.openSans(
-            fontSize: widget.style?.fontSize ?? bbcodeFontSize,
+            fontSize: bbcodeFontSize,
             color: _revealed
                 ? (widget.style?.color ?? hiddenColor)
                 : hiddenColor,
@@ -115,10 +110,7 @@ class _BlockSpoiler extends StatefulWidget {
   final bool isDark;
   final Widget child;
 
-  const _BlockSpoiler({
-    required this.isDark,
-    required this.child,
-  });
+  const _BlockSpoiler({required this.isDark, required this.child});
 
   @override
   State<_BlockSpoiler> createState() => _BlockSpoilerState();
@@ -141,10 +133,7 @@ class _BlockSpoilerState extends State<_BlockSpoiler> {
         child: Stack(
           children: [
             // Content — always rendered so it takes up its natural size.
-            IgnorePointer(
-              ignoring: !_revealed,
-              child: widget.child,
-            ),
+            IgnorePointer(ignoring: !_revealed, child: widget.child),
             // Overlay — hides content when unrevealed.
             if (!_revealed)
               Positioned.fill(
