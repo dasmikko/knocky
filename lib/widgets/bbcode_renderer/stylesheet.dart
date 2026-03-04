@@ -11,7 +11,6 @@ BBStylesheet buildBBCodeStylesheet(
   BuildContext context, {
   required Function(String) onUrlTap,
   void Function(String url, String heroTag)? onImageTap,
-  void Function(String url)? onVideoTap,
   void Function(int threadId, int page, int? postId)? onQuoteTap,
   void Function(int userId)? onMentionTap,
   List<dynamic> mentionUsers = const [],
@@ -70,7 +69,7 @@ BBStylesheet buildBBCodeStylesheet(
       brightness: theme.brightness,
       onTap: onMentionTap,
     ))
-    ..addTag(KnockoutVideoTag(onTap: onVideoTap))
+    ..addTag(KnockoutVideoTag())
     ..addTag(CodeBlockTag(isDark: isDark))
     ..addTag(SmartUrlTag())
     ..addTag(BlockquoteTag(contentBuilder: contentBuilder))

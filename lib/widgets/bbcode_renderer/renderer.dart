@@ -6,7 +6,6 @@ import '../../main.dart';
 import '../../screens/image_viewer_screen.dart';
 import '../../screens/thread_screen.dart';
 import '../../screens/user_screen.dart';
-import '../../screens/video_player_screen.dart';
 import '../../services/deep_link_service.dart';
 import 'parser.dart';
 import 'stylesheet.dart';
@@ -34,7 +33,6 @@ class BbcodeRenderer extends StatelessWidget {
       context,
       onUrlTap: _launchUrl,
       onImageTap: (url, heroTag) => _openImage(context, url, heroTag),
-      onVideoTap: (url) => _openVideo(context, url),
       onQuoteTap: (threadId, page, postId) =>
           _openQuote(context, threadId, page, postId),
       onMentionTap: (userId) => _openUser(context, userId),
@@ -102,13 +100,6 @@ class BbcodeRenderer extends StatelessWidget {
       MaterialPageRoute(
         builder: (_) => ImageViewerScreen(url: url, heroTag: heroTag),
       ),
-    );
-  }
-
-  void _openVideo(BuildContext context, String url) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => VideoPlayerScreen(url: url)),
     );
   }
 
