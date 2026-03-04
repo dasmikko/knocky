@@ -91,7 +91,7 @@ class _InlineSpoilerState extends State<_InlineSpoiler> {
         child: Text(
           widget.text,
           style: GoogleFonts.openSans(
-            fontSize: bbcodeFontSize,
+            fontSize: bbcodeFontSize-2,
             color: _revealed
                 ? (widget.style?.color ?? hiddenColor)
                 : hiddenColor,
