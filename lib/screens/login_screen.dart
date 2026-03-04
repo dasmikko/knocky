@@ -323,6 +323,9 @@ class _WebViewLoginScreenState extends State<_WebViewLoginScreen> {
               javaScriptEnabled: true,
               // Use a standard Chrome user agent to avoid Google blocking
               userAgent: 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+              // Suppress the X-Requested-With header that exposes the app
+              // package name, which Google uses to detect embedded webviews.
+              requestedWithHeaderOriginAllowList: {},
             ),
             onLoadStart: (controller, url) {
               setState(() {
