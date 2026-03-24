@@ -2,6 +2,7 @@ import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:flutter/material.dart';
 import 'package:flutter_bbcode/flutter_bbcode.dart';
 import '../parser.dart' show nodesToBBCode;
+import 'collapsible_quote_body.dart';
 
 /// [quote username="..." threadId="..." threadPage="..." postId="..."]...[/quote]
 class KnockoutQuoteTag extends AdvancedTag {
@@ -63,8 +64,10 @@ class KnockoutQuoteTag extends AdvancedTag {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  contentBuilder?.call(innerContent) ??
-                      Text(innerContent),
+                  CollapsibleQuoteBody(
+                    child: contentBuilder?.call(innerContent) ??
+                        Text(innerContent),
+                  ),
                 ],
               ),
             );
