@@ -59,6 +59,9 @@ firebase_app_id_file.json
 .env.*
 !.env.example
 
+# Release keystore
+release-key.jks
+
 # Gradle wrapper JAR (use gradle wrapper to download)
 !gradle-wrapper.jar
 
