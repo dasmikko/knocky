@@ -65,7 +65,3 @@ firebase_app_id_file.json
 # FVM Version Cache
 .fvm/
 
-# Downloaded assets (regenerate with: node scripts/download_and_embed_assets.js)
-assets/emotes/
-assets/ratings/
-assets/icons/
