@@ -9,6 +9,7 @@ import '../../models/sync_data.dart';
 import '../../models/thread_ad.dart';
 import '../../screens/events_screen.dart';
 import '../../screens/latest_threads_screen.dart';
+import '../../screens/ticker_screen.dart';
 import '../../screens/login_screen.dart';
 import '../../screens/popular_threads_screen.dart';
 import '../../screens/search_screen.dart';
@@ -81,6 +82,19 @@ class HomeDrawer extends StatelessWidget {
             },
           ),
           const Divider(),
+          ListTile(
+            leading: const FaIcon(FontAwesomeIcons.barsStaggered, size: 20),
+            title: const Text('Ticker'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const TickerScreen(),
+                ),
+              );
+            },
+          ),
           ListTile(
             leading: const FaIcon(FontAwesomeIcons.calendar, size: 20),
             title: const Text('Events'),

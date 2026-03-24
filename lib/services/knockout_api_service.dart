@@ -10,6 +10,7 @@ import '../models/motd.dart';
 import '../models/conversation.dart';
 import '../models/thread_ad.dart';
 import '../models/thread_search_response.dart';
+import '../models/ticker_event.dart';
 import '../models/notification.dart';
 import '../models/subforum.dart';
 import '../models/subforum_response.dart';
@@ -781,6 +782,26 @@ class KnockoutApiService extends ChangeNotifier {
     } on DioException catch (e) {
       log('Error fetching MOTD: ${e.message}');
       return null;
+    }
+  }
+
+  /// Fetch ticker events (activity feed)
+  Future<List<TickerEvent>> getTickerEvents() async {
+    try {
+      final response = await _dio.get('/v2/events', options: _options);
+
+      final List<dynamic> jsonData = response.data;
+      final List<TickerEvent> events = [];
+      for (final json in jsonData) {
+        try {
+          events.add(TickerEvent.fromJson(json as Map<String, dynamic>));
+        } catch (_) {
+          // Skip events that fail to parse
+        }
+      }
+      return events;
+    } on DioException catch (e) {
+      throw Exception('Error fetching ticker events: ${e.message}');
     }
   }
 
