@@ -64,11 +64,10 @@ void main() {
       expect(metadata.authorName, 'blogname');
     });
 
-    test('www.tumblr.com matches subdomain pattern', () {
-      // www.tumblr.com ends with .tumblr.com, so blog name = "www"
+    test('extracts blog name from www.tumblr.com path URL', () {
       final metadata =
           service.parseTumblr('https://www.tumblr.com/blogname/123456');
-      expect(metadata.authorName, 'www');
+      expect(metadata.authorName, 'blogname');
     });
 
     test('handles tumblr.com with no path', () {

@@ -95,7 +95,9 @@ class OEmbedService {
         case 'tiktok':
           metadata = await _fetchTikTok(url);
         case 'tumblr':
-          metadata = parseTumblr(url);
+          // Tumblr's oEmbed only returns iframe HTML, so prefer Open Graph
+          // tags from the post page (real thumbnail, title, description).
+          metadata = await _fetchOpenGraph(url) ?? parseTumblr(url);
         case 'mastodon':
           metadata = parseMastodon(url);
         default:
@@ -416,11 +418,17 @@ class OEmbedService {
     final uri = Uri.tryParse(url);
     String? blogName;
     if (uri != null) {
-      // URLs like tumblr.com/blogname/post/... or blogname.tumblr.com/post/...
-      if (uri.host.endsWith('.tumblr.com')) {
-        blogName = uri.host.replaceAll('.tumblr.com', '');
-      } else if (uri.pathSegments.isNotEmpty) {
-        blogName = uri.pathSegments.first;
+      // URLs like www.tumblr.com/blogname/postid, tumblr.com/blogname/postid,
+      // or blogname.tumblr.com/post/...
+      final host = uri.host;
+      if (host == 'tumblr.com' ||
+          host == 'www.tumblr.com' ||
+          host == 'm.tumblr.com') {
+        if (uri.pathSegments.isNotEmpty) {
+          blogName = uri.pathSegments.first;
+        }
+      } else if (host.endsWith('.tumblr.com')) {
+        blogName = host.substring(0, host.length - '.tumblr.com'.length);
       }
     }
 
@@ -431,6 +439,7 @@ class OEmbedService {
       authorName: blogName,
     );
   }
+
 
   @visibleForTesting
   EmbedMetadata parseMastodon(String url) {
@@ -471,14 +480,16 @@ class OEmbedService {
       final html = response.data as String;
 
       String? ogGet(String property) {
+        // Use [^>]*? to keep the content value within a single <meta> tag —
+        // .*? would happily span across tags when meta tags share a line.
         final match = RegExp(
-          '<meta[^>]+property=["\']og:$property["\'][^>]+content=["\'](.*?)["\']',
+          '<meta[^>]+property=["\']og:$property["\'][^>]+content=["\']([^>]*?)["\']',
           caseSensitive: false,
         ).firstMatch(html);
         if (match != null) return match.group(1);
         // Try reversed order (content before property)
         final alt = RegExp(
-          '<meta[^>]+content=["\'](.*?)["\'][^>]+property=["\']og:$property["\']',
+          '<meta[^>]+content=["\']([^>]*?)["\'][^>]+property=["\']og:$property["\']',
           caseSensitive: false,
         ).firstMatch(html);
         return alt?.group(1);
