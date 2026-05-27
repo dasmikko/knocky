@@ -15,11 +15,8 @@ class ConversationScreen extends StatefulWidget {
   final Conversation? conversation;
   final ThreadUser? recipient;
 
-  const ConversationScreen({
-    super.key,
-    this.conversation,
-    this.recipient,
-  }) : assert(conversation != null || recipient != null);
+  const ConversationScreen({super.key, this.conversation, this.recipient})
+    : assert(conversation != null || recipient != null);
 
   @override
   State<ConversationScreen> createState() => _ConversationScreenState();
@@ -34,7 +31,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
   String? _error;
 
   bool get _isNewConversation => widget.conversation == null;
-  int _getCurrentUserId(BuildContext context) => context.read<KnockoutApiService>().syncData?.id ?? 0;
+  int _getCurrentUserId(BuildContext context) =>
+      context.read<KnockoutApiService>().syncData?.id ?? 0;
 
   @override
   void initState() {
@@ -56,14 +54,18 @@ class _ConversationScreenState extends State<ConversationScreen> {
     setState(() => _isRefreshing = true);
 
     try {
-      final conversation = await context.read<KnockoutApiService>().getConversation(widget.conversation!.id);
+      final conversation = await context
+          .read<KnockoutApiService>()
+          .getConversation(widget.conversation!.id);
       if (mounted) {
         setState(() {
           _fullConversation = conversation;
           _isRefreshing = false;
         });
         if (conversation.messages.isNotEmpty) {
-          context.read<KnockoutApiService>().markMessagesRead(conversation.messages.first.id);
+          context.read<KnockoutApiService>().markMessagesRead(
+            conversation.messages.first.id,
+          );
         }
       }
     } catch (e) {
@@ -83,7 +85,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
     try {
       final apiService = context.read<KnockoutApiService>();
-      final conversation = await apiService.getConversation(widget.conversation!.id);
+      final conversation = await apiService.getConversation(
+        widget.conversation!.id,
+      );
       setState(() {
         _fullConversation = conversation;
         _isLoading = false;
@@ -177,7 +181,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Row(
-        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment: isMe
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isMe) ...[
@@ -187,7 +193,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => UserScreen(userId: message.user!.id),
+                          builder: (context) =>
+                              UserScreen(userId: message.user!.id),
                         ),
                       );
                     }
@@ -195,7 +202,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
               child: CircleAvatar(
                 radius: 16,
                 backgroundImage: hasAvatar
-                    ? ExtendedNetworkImageProvider('https://cdn.knockout.chat/image/$avatarUrl')
+                    ? ExtendedNetworkImageProvider(
+                        'https://cdn.knockout.chat/image/$avatarUrl',
+                      )
                     : null,
                 child: hasAvatar ? null : const Icon(Icons.person, size: 18),
               ),
@@ -220,8 +229,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 ),
               ),
               child: Column(
-                crossAxisAlignment:
-                    isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                crossAxisAlignment: isMe
+                    ? CrossAxisAlignment.end
+                    : CrossAxisAlignment.start,
                 children: [
                   if (!isMe && message.user != null)
                     Padding(
@@ -238,14 +248,12 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   BbcodeRenderer(
                     content: message.content,
                     postId: message.id,
+                    selectable: true,
                   ),
                   const SizedBox(height: 4),
                   Text(
                     _formatTime(message.createdAt),
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: TextStyle(fontSize: 10, color: Colors.grey.shade600),
                   ),
                 ],
               ),
@@ -265,7 +273,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
               child: CircleAvatar(
                 radius: 16,
                 backgroundImage: hasAvatar
-                    ? ExtendedNetworkImageProvider('https://cdn.knockout.chat/image/$avatarUrl')
+                    ? ExtendedNetworkImageProvider(
+                        'https://cdn.knockout.chat/image/$avatarUrl',
+                      )
                     : null,
                 child: hasAvatar ? null : const Icon(Icons.person, size: 18),
               ),
@@ -312,7 +322,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
     }
 
     // Messages are in reverse chronological order from API, which works with reverse: true
-    final messages = _isNewConversation ? <Message>[] : (_fullConversation?.messages ?? []);
+    final messages = _isNewConversation
+        ? <Message>[]
+        : (_fullConversation?.messages ?? []);
 
     return Scaffold(
       appBar: AppBar(
@@ -379,7 +391,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
               decoration: InputDecoration(
                 hintText: 'Type a message...',
                 filled: true,
-                fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                fillColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerHighest,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
                   borderSide: BorderSide.none,

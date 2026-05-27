@@ -16,6 +16,7 @@ class BbcodeRenderer extends StatelessWidget {
   final int? postId;
   final List<dynamic> mentionUsers;
   final String? heroTagPrefix;
+  final bool selectable;
 
   const BbcodeRenderer({
     super.key,
@@ -23,6 +24,7 @@ class BbcodeRenderer extends StatelessWidget {
     this.postId,
     this.mentionUsers = const [],
     this.heroTagPrefix,
+    this.selectable = false,
   });
 
   @override
@@ -68,6 +70,12 @@ class BbcodeRenderer extends StatelessWidget {
     }
 
     final textScaler = MediaQuery.of(context).textScaler;
+    if (selectable) {
+      return SelectableText.rich(
+        TextSpan(children: spans, style: stylesheet.defaultTextStyle),
+        textScaler: textScaler,
+      );
+    }
     return RichText(
       text: TextSpan(children: spans, style: stylesheet.defaultTextStyle),
       textScaler: textScaler,
