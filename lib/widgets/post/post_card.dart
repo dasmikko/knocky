@@ -580,9 +580,7 @@ class _PostCardState extends State<PostCard> {
             constraints: const BoxConstraints(),
             visualDensity: VisualDensity.compact,
           ),
-        if (widget.isAuthenticated && widget.isOwnPost)
-          const SizedBox(width: 8),
-        if (widget.isAuthenticated)
+        if (widget.isAuthenticated && !widget.isOwnPost)
           IconButton(
             icon: Icon(
               widget.userRatingCode != null
