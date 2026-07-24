@@ -272,6 +272,60 @@ void main() {
       expect(list.bottom, lessThan(caret));
     });
 
+    testWidgets('holds its position while typing near the bottom', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                const Spacer(),
+                SizedBox(
+                  height: 250,
+                  child: BbcodeEditor(
+                    controller: BbcodeEditorController(),
+                    showViewModeToggle: false,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byType(TextField));
+      await tester.pump();
+
+      final screen = tester.view.physicalSize / tester.view.devicePixelRatio;
+      // Caret a few lines up from the bottom: enough room below for a short
+      // list but not a full one, which is where the direction can flip.
+      const lines = '\n\n\n\n\n';
+
+      // The match count shrinks with every keystroke; the list must not move
+      // or fall off screen as it does.
+      Rect? previous;
+      for (final query in [':e', ':ev', ':evi', ':evil']) {
+        await typeText(tester, '$lines$query');
+
+        final list = tester.getRect(find.byType(EmoteAutocompleteOverlay));
+        expect(list.top, greaterThanOrEqualTo(0), reason: 'off top on $query');
+        expect(
+          list.bottom,
+          lessThanOrEqualTo(screen.height),
+          reason: 'off bottom on $query',
+        );
+        if (previous != null) {
+          expect(
+            list.bottom,
+            closeTo(previous.bottom, 1),
+            reason: 'jumped on $query',
+          );
+        }
+        previous = list;
+      }
+    });
+
     testWidgets('escape dismisses the suggestions', (tester) async {
       final controller = BbcodeEditorController();
       await pumpEditor(tester, controller);

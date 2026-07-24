@@ -147,7 +147,11 @@ class _BbcodeEditorState extends State<BbcodeEditor> {
 
   /// Where the suggestion list sits relative to the text field, measured from
   /// the caret. Null until the first measurement lands.
-  ({Offset offset, bool above, double width, double maxHeight})? _caretAnchor;
+  ({Offset offset, double width, double maxHeight})? _caretAnchor;
+
+  /// Which side of the caret the list opened on. Sticky while it is showing
+  /// so it doesn't hop around as the match count changes.
+  bool? _anchorAbove;
 
   /// Query the user dismissed with escape - suppressed until they type
   /// something else.
@@ -249,7 +253,7 @@ class _BbcodeEditorState extends State<BbcodeEditor> {
     _autocompleteOverlay.show();
   }
 
-  ({Offset offset, bool above, double width, double maxHeight})? _measureCaretAnchor() {
+  ({Offset offset, double width, double maxHeight})? _measureCaretAnchor() {
     final fieldBox = _textFieldKey.currentContext?.findRenderObject();
     if (fieldBox is! RenderBox || !fieldBox.hasSize) return null;
 
@@ -297,29 +301,44 @@ class _BbcodeEditorState extends State<BbcodeEditor> {
     final spaceAbove = fieldOrigin.dy + caretTop - _caretGap - 8;
 
     // Prefer below the caret, flip up when the list doesn't fit there and
-    // above is roomier. Either way it's capped to what's actually available.
-    final above = spaceBelow < listHeight && spaceAbove > spaceBelow;
-    final available = above ? spaceAbove : spaceBelow;
+    // above is roomier. The choice sticks until the list closes: the match
+    // count shrinks with every keystroke, and re-deciding each time made the
+    // list hop from above the caret to below it mid-word.
+    var above =
+        _anchorAbove ?? (spaceBelow < listHeight && spaceAbove > spaceBelow);
+    var available = above ? spaceAbove : spaceBelow;
 
     // Not worth showing a sliver of a list.
     final needed = listHeight < EmoteAutocompleteOverlay.minHeight
         ? listHeight
         : EmoteAutocompleteOverlay.minHeight;
-    if (available < needed) return null;
+    if (available < needed) {
+      // The remembered side has run out of room - try the other one.
+      above = !above;
+      available = above ? spaceAbove : spaceBelow;
+      if (available < needed) return null;
+    }
+    _anchorAbove = above;
+
+    final height = listHeight < available ? listHeight : available;
 
     // Keep the list on screen horizontally.
     final maxDx = media.size.width - 8 - width - fieldOrigin.dx;
     final minDx = 8 - fieldOrigin.dx;
     final dx = maxDx >= minDx ? caretBottom.dx.clamp(minDx, maxDx) : minDx;
 
+    // Final safety net: whatever the maths above decided, the list has to end
+    // up fully inside the visible area.
+    final desiredTop = above
+        ? fieldOrigin.dy + caretTop - _caretGap - height
+        : fieldOrigin.dy + caretBottom.dy + _caretGap;
+    final maxTop = bottomLimit - height;
+    final top = maxTop > 8 ? desiredTop.clamp(8.0, maxTop) : 8.0;
+
     return (
-      offset: Offset(
-        dx,
-        above ? caretTop - _caretGap : caretBottom.dy + _caretGap,
-      ),
-      above: above,
+      offset: Offset(dx, top - fieldOrigin.dy),
       width: width,
-      maxHeight: listHeight < available ? listHeight : available,
+      maxHeight: height,
     );
   }
 
@@ -347,6 +366,7 @@ class _BbcodeEditorState extends State<BbcodeEditor> {
   void _hideEmoteSuggestions() {
     if (!_autocompleteOverlay.isShowing) return;
     _autocompleteOverlay.hide();
+    _anchorAbove = null;
     setState(() {
       _emoteSuggestions = const [];
       _selectedSuggestion = 0;
@@ -638,7 +658,7 @@ class _BbcodeEditorState extends State<BbcodeEditor> {
 /// relative to the text field's top-left corner.
 class _EmoteAutocompletePosition extends StatelessWidget {
   final LayerLink link;
-  final ({Offset offset, bool above, double width, double maxHeight})? anchor;
+  final ({Offset offset, double width, double maxHeight})? anchor;
   final List<Emote> emotes;
   final int selectedIndex;
   final void Function(Emote emote) onEmoteSelected;
@@ -664,7 +684,7 @@ class _EmoteAutocompletePosition extends StatelessWidget {
       child: CompositedTransformFollower(
         link: link,
         targetAnchor: Alignment.topLeft,
-        followerAnchor: anchor.above ? Alignment.bottomLeft : Alignment.topLeft,
+        followerAnchor: Alignment.topLeft,
         offset: anchor.offset,
         showWhenUnlinked: false,
         child: SizedBox(
