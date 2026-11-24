@@ -36,8 +36,6 @@ class BbcodeRenderer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final processed = preprocessContent(content);
-
     final stylesheet = buildBBCodeStylesheet(
       context,
       onUrlTap: _launchUrl,
@@ -62,12 +60,26 @@ class BbcodeRenderer extends StatelessWidget {
       ),
     );
 
+    final processed = preprocessContent(content, stylesheet.validTags);
+
     // Parse BBCode ourselves to catch errors that BBCodeText doesn't handle
     // (e.g. RangeError from bbob_dart's trimChar on malformed attributes).
+    // parseBBCode also reports errors instead of throwing, and returns no
+    // spans at all when it does — fall back to plain text rather than
+    // rendering an empty post.
     List<InlineSpan> spans;
+    var failed = false;
     try {
-      spans = parseBBCode(processed, stylesheet: stylesheet);
+      spans = parseBBCode(
+        processed,
+        stylesheet: stylesheet,
+        onError: (_, _) => failed = true,
+      );
     } catch (_) {
+      failed = true;
+      spans = const [];
+    }
+    if (failed) {
       return SelectableText(
         stripAllBBCode(processed),
         style: TextStyle(

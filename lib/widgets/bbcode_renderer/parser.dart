@@ -83,6 +83,70 @@ const linkTags = {
 // TEXT PRE-PROCESSING
 // =============================================================================
 
+/// Matches a single BBCode tag: `[`, an optional `/`, the tag name, whatever
+/// follows it, and `]`. The trailing part cannot contain brackets so unclosed
+/// tags don't swallow the rest of the post.
+final _tagPattern = RegExp(r'\[(/?)([a-zA-Z0-9*]+)([^\[\]]*)\]');
+
+/// Only simple words survive as attribute names; anything else is dropped.
+final _simpleFlagPattern = RegExp(r'^[a-zA-Z0-9_-]+$');
+
+/// Rewrites value-less attributes (`[youtube thumbnail]`) into the `key="value"`
+/// form the parser understands.
+///
+/// Without an `=` anywhere in the tag, bbob folds the attributes into the tag
+/// name — `[youtube thumbnail]` becomes a tag literally named
+/// `youtube thumbnail`, which matches no renderer and leaves its `[/youtube]`
+/// orphaned. Tags simply ignore attributes they don't care about, so keeping
+/// the flag around is harmless and unsupported ones are silently ignored.
+///
+/// Only applied to [validTags] so that plain prose in brackets is left alone.
+String normalizeTagAttributes(String text, Set<String> validTags) {
+  return text.replaceAllMapped(_tagPattern, (m) {
+    final isClosing = m.group(1)!.isNotEmpty;
+    final name = m.group(2)!;
+    final rest = m.group(3)!;
+
+    if (isClosing || rest.isEmpty) return m.group(0)!;
+    if (!validTags.contains(name)) return m.group(0)!;
+    // An "=" is already enough for bbob to parse the tag name correctly.
+    if (rest.contains('=')) return m.group(0)!;
+
+    final flags = rest.trim().split(RegExp(r'\s+')).where((f) => f.isNotEmpty);
+    if (flags.isEmpty || !flags.every(_simpleFlagPattern.hasMatch)) {
+      return '[$name]';
+    }
+    return '[$name ${flags.map((f) => '$f="$f"').join(' ')}]';
+  });
+}
+
+/// Drops closing tags that have no matching opening tag.
+///
+/// bbob reports a parse error for an unbalanced closing tag, and
+/// `parseBBCode` throws away *every* span when that happens — so a single
+/// stray `[/b]` blanks the whole post. Dropping the orphan keeps the rest of
+/// the formatting intact.
+String dropOrphanedClosingTags(String text, Set<String> validTags) {
+  var openTags = 0;
+  return text.replaceAllMapped(_tagPattern, (m) {
+    final isClosing = m.group(1)!.isNotEmpty;
+    final name = m.group(2)!;
+
+    // bbob treats unknown tags as plain text, so they never open or close.
+    if (!validTags.contains(name)) return m.group(0)!;
+
+    if (!isClosing) {
+      // ...and it only tracks a tag as open when a closing tag exists at all.
+      if (text.contains('[/$name')) openTags++;
+      return m.group(0)!;
+    }
+
+    if (openTags == 0) return '';
+    openTags--;
+    return m.group(0)!;
+  });
+}
+
 /// Normalizes non-standard BBCode syntax into standard forms that the
 /// bbob parser can handle.
 String preNormalize(String text) {
@@ -197,9 +261,14 @@ String nodesToBBCode(List<bbob.Node> nodes) {
   return buffer.toString();
 }
 
-/// Runs the full preprocessing pipeline: normalize → emotes → mentions.
-String preprocessContent(String text) {
+/// Runs the full preprocessing pipeline: normalize → repair → emotes → mentions.
+///
+/// [validTags] comes from the stylesheet and decides which tags the repair
+/// steps are allowed to touch.
+String preprocessContent(String text, Set<String> validTags) {
   var result = preNormalize(text);
+  result = normalizeTagAttributes(result, validTags);
+  result = dropOrphanedClosingTags(result, validTags);
   result = preprocessEmotes(result);
   result = preprocessMentions(result);
   return result;
