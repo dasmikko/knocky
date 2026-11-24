@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bbcode/flutter_bbcode.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'gallery_images.dart';
 import 'parser.dart';
 import 'tags.dart';
 
@@ -20,7 +21,10 @@ BBStylesheet buildBBCodeStylesheet(
 }) {
   final theme = Theme.of(context);
   final isDark = theme.brightness == Brightness.dark;
-  final prefix = heroTagPrefix ?? 'image_$postId';
+  final prefix = imageHeroTagPrefix(
+    postId: postId,
+    heroTagPrefix: heroTagPrefix,
+  );
 
   // Build mention user lookup map
   final mentionUserMap = <int, Map<String, dynamic>>{};

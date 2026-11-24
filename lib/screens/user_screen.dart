@@ -129,10 +129,8 @@ class _UserScreenState extends State<UserScreen>
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => ImageViewerScreen(
-                      url: 'https://cdn.knockout.chat/image/$avatarUrl',
-                    ),
+                  ImageViewerScreen.singleRoute(
+                    url: 'https://cdn.knockout.chat/image/$avatarUrl',
                   ),
                 );
               },

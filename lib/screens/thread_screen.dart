@@ -14,11 +14,14 @@ import '../models/thread_post.dart';
 import '../services/knockout_api_service.dart';
 import '../services/settings_service.dart';
 import '../widgets/animated_content_switcher.dart';
+import '../widgets/bbcode_renderer/bbcode_renderer.dart';
 import '../widgets/bbcode_editor/bbcode_editor.dart';
 import '../widgets/bottom_paginator.dart';
+import '../widgets/image_gallery/image_gallery.dart';
 import '../widgets/post/post_card.dart';
 import '../widgets/post/post_sheets.dart';
 import '../widgets/post/rating_picker_dialog.dart';
+import 'image_viewer_screen.dart';
 import 'user_screen.dart';
 
 class ThreadScreen extends StatefulWidget {
@@ -73,6 +76,10 @@ class _ThreadScreenState extends State<ThreadScreen> {
 
   // Persistent editor controller for the create-post sheet
   final BbcodeEditorController _editorController = BbcodeEditorController();
+
+  // Inline image positions, used to follow along while swiping the gallery
+  final ImageAnchorRegistry _imageAnchors = ImageAnchorRegistry();
+  int _imageScrollGeneration = 0;
 
   @override
   void initState() {
@@ -527,6 +534,88 @@ class _ThreadScreenState extends State<ThreadScreen> {
     );
   }
 
+  /// Opens the image gallery for an image tapped in a post on this page.
+  void _openGalleryImage(
+    BuildContext context, {
+    required String url,
+    required String heroTag,
+    int? postId,
+  }) {
+    final posts = _pageCache[_currentPage]?.posts ?? const <ThreadPost>[];
+    final allImages = [
+      for (var i = 0; i < posts.length; i++)
+        ...extractGalleryImages(
+          posts[i].content,
+          postId: posts[i].id,
+          postIndex: i,
+        ),
+    ];
+
+    final postIndex = posts.indexWhere((p) => p.id == postId);
+    final initialImage = allImages.firstWhere(
+      (i) => i.heroTag == heroTag,
+      orElse: () => GalleryImage(
+        url: url,
+        heroTag: heroTag,
+        postId: postId,
+        postIndex: postIndex >= 0 ? postIndex : null,
+      ),
+    );
+
+    // Quoted images appear again inside the quoting post, so only keep the
+    // first occurrence of each URL. The tapped copy takes that slot so hero
+    // and scrolling stay on the image the user actually tapped.
+    final seenUrls = <String>{};
+    final threadImages = <GalleryImage>[
+      for (final image in allImages)
+        if (seenUrls.add(image.url))
+          image.url == initialImage.url ? initialImage : image,
+    ];
+
+    var postImages = allImages.where((i) => i.postId == postId).toList();
+    if (!postImages.any((i) => i.heroTag == heroTag)) {
+      postImages = [initialImage];
+    }
+
+    Navigator.push(
+      context,
+      ImageViewerScreen.route(
+        images: postImages,
+        threadImages: threadImages,
+        initialImage: initialImage,
+        onImageChanged: _scrollToImage,
+      ),
+    );
+  }
+
+  /// Scrolls the current page so [image] is in view. First brings the owning
+  /// post into view (it may not be built yet), then centers the image itself.
+  Future<void> _scrollToImage(GalleryImage image) async {
+    final generation = ++_imageScrollGeneration;
+    final controller = _scrollControllers[_currentPage];
+    if (controller == null || !controller.hasClients) return;
+
+    var anchor = _imageAnchors[image.heroTag];
+    if (anchor == null && image.postIndex != null) {
+      await controller.scrollToIndex(
+        image.postIndex!,
+        preferPosition: AutoScrollPosition.begin,
+        duration: const Duration(milliseconds: 250),
+      );
+      if (!mounted || generation != _imageScrollGeneration) return;
+      anchor = _imageAnchors[image.heroTag];
+    }
+
+    if (anchor != null) {
+      await Scrollable.ensureVisible(
+        anchor,
+        alignment: 0.5,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
   Widget _buildPostCard(
     ThreadPost post,
     int index,
@@ -798,13 +887,17 @@ class _ThreadScreenState extends State<ThreadScreen> {
         onRetry: _loadThread,
         contentBuilder: (response) => Stack(
           children: [
-            PageView.builder(
-              controller: _pageController,
-              onPageChanged: _onPageChanged,
-              itemCount: totalPages,
-              itemBuilder: (context, index) {
-                return _buildPageContent(index + 1, hasPagination);
-              },
+            ImageGalleryScope(
+              onOpenImage: _openGalleryImage,
+              registry: _imageAnchors,
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: _onPageChanged,
+                itemCount: totalPages,
+                itemBuilder: (context, index) {
+                  return _buildPageContent(index + 1, hasPagination);
+                },
+              ),
             ),
             BottomPaginator(
               currentPage: _currentPage,

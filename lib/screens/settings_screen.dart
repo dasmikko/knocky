@@ -137,6 +137,15 @@ class SettingsScreen extends StatelessWidget {
                 value: settings.autoSubscribe,
                 onChanged: (value) => settings.setAutoSubscribe(value),
               ),
+              SwitchListTile(
+                secondary: const Icon(Icons.photo_library_outlined),
+                title: const Text('Swipe through thread images'),
+                subtitle: const Text(
+                  'Image viewer swipes through all images on the page, not just the post',
+                ),
+                value: settings.swipeThreadImages,
+                onChanged: (value) => settings.setSwipeThreadImages(value),
+              ),
             ],
           ),
           _SettingsSection(

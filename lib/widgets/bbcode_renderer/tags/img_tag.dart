@@ -3,6 +3,8 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bbcode/flutter_bbcode.dart';
 
+import '../../image_gallery/image_gallery.dart';
+
 /// In-memory cache of image aspect ratios keyed by URL.
 /// Prevents layout jumps when scrolling back to already-loaded images.
 final Map<String, double> _aspectRatioCache = {};
@@ -32,11 +34,14 @@ class KnockoutImgTag extends AdvancedTag {
           padding: const EdgeInsets.only(bottom: 8),
           child: GestureDetector(
             onTap: onTap != null ? () => onTap!(url, heroTag) : null,
-            child: Hero(
-              tag: heroTag,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: _SizedImage(url: url),
+            child: ImageAnchor(
+              heroTag: heroTag,
+              child: Hero(
+                tag: heroTag,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: _SizedImage(url: url),
+                ),
               ),
             ),
           ),

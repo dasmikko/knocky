@@ -7,6 +7,8 @@ import '../../screens/image_viewer_screen.dart';
 import '../../screens/thread_screen.dart';
 import '../../screens/user_screen.dart';
 import '../../services/deep_link_service.dart';
+import '../image_gallery/image_gallery.dart';
+import 'gallery_images.dart';
 import 'parser.dart';
 import 'stylesheet.dart';
 
@@ -18,6 +20,10 @@ class BbcodeRenderer extends StatelessWidget {
   final String? heroTagPrefix;
   final bool selectable;
 
+  /// Full content used to build the image gallery. Nested renderers (quotes,
+  /// spoilers) pass the root content so swiping covers the whole post.
+  final String? galleryContent;
+
   const BbcodeRenderer({
     super.key,
     required this.content,
@@ -25,6 +31,7 @@ class BbcodeRenderer extends StatelessWidget {
     this.mentionUsers = const [],
     this.heroTagPrefix,
     this.selectable = false,
+    this.galleryContent,
   });
 
   @override
@@ -50,6 +57,7 @@ class BbcodeRenderer extends StatelessWidget {
           postId: postId,
           mentionUsers: mentionUsers,
           heroTagPrefix: heroTagPrefix,
+          galleryContent: galleryContent ?? content,
         ),
       ),
     );
@@ -103,11 +111,23 @@ class BbcodeRenderer extends StatelessWidget {
   }
 
   void _openImage(BuildContext context, String url, String heroTag) {
+    final scope = ImageGalleryScope.maybeOf(context);
+    if (scope != null) {
+      scope.onOpenImage(context, url: url, heroTag: heroTag, postId: postId);
+      return;
+    }
+
+    final tapped = GalleryImage(url: url, heroTag: heroTag, postId: postId);
+    var images = extractGalleryImages(
+      galleryContent ?? content,
+      postId: postId,
+      heroTagPrefix: heroTagPrefix,
+    );
+    if (!images.any((i) => i.heroTag == heroTag)) images = [tapped];
+
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => ImageViewerScreen(url: url, heroTag: heroTag),
-      ),
+      ImageViewerScreen.route(images: images, initialImage: tapped),
     );
   }
 

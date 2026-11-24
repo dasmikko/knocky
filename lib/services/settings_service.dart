@@ -54,6 +54,7 @@ class SettingsService extends ChangeNotifier {
   static const String _analyticsConsentKey = 'analytics_consent';
   static const String _hasSeenWelcomeKey = 'has_seen_welcome';
   static const String _disableAdInDrawerKey = 'disable_drawer_ad';
+  static const String _swipeThreadImagesKey = 'swipe_thread_images';
 
   // Current values
   AppThemeMode _themeMode = AppThemeMode.system;
@@ -64,6 +65,7 @@ class SettingsService extends ChangeNotifier {
   bool _analyticsConsent = false;
   bool _hasSeenWelcome = false;
   bool _disableAdInDrawer = false;
+  bool _swipeThreadImages = false;
 
 
   // Getters
@@ -76,6 +78,10 @@ class SettingsService extends ChangeNotifier {
   bool get analyticsConsent => _analyticsConsent;
   bool get hasSeenWelcome => _hasSeenWelcome;
   bool get disableAdInDrawer => _disableAdInDrawer;
+
+  /// Whether the image viewer swipes through all images in the thread page
+  /// instead of only the images in the tapped post.
+  bool get swipeThreadImages => _swipeThreadImages;
 
   /// Load all settings from storage
   Future<void> load() async {
@@ -105,6 +111,9 @@ class SettingsService extends ChangeNotifier {
 
     final disableAdInDrawer = await _storage.read(key: _disableAdInDrawerKey);
     _disableAdInDrawer = disableAdInDrawer == 'true';
+
+    final swipeThreadImages = await _storage.read(key: _swipeThreadImagesKey);
+    _swipeThreadImages = swipeThreadImages == 'true';
 
     notifyListeners();
   }
@@ -175,6 +184,14 @@ class SettingsService extends ChangeNotifier {
     if (_disableAdInDrawer == value) return;
     _disableAdInDrawer = value;
     await _storage.write(key: _disableAdInDrawerKey, value: value.toString());
+    notifyListeners();
+  }
+
+  /// Set whether the image viewer swipes through all images in the thread
+  Future<void> setSwipeThreadImages(bool value) async {
+    if (_swipeThreadImages == value) return;
+    _swipeThreadImages = value;
+    await _storage.write(key: _swipeThreadImagesKey, value: value.toString());
     notifyListeners();
   }
 }
