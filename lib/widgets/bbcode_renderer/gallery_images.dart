@@ -27,7 +27,12 @@ List<GalleryImage> extractGalleryImages(
     postId: postId,
     heroTagPrefix: heroTagPrefix,
   );
-  final processed = preprocessContent(content).replaceAll(_codeBlockRegex, '');
+  // Only [img] matters here, so limit the repair steps to it rather than
+  // needing the full stylesheet (which requires a BuildContext).
+  final processed = preprocessContent(
+    content,
+    const {'img'},
+  ).replaceAll(_codeBlockRegex, '');
 
   final seen = <String>{};
   final images = <GalleryImage>[];
