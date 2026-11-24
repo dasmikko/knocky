@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Wraps quote content with a max height and expand/collapse toggle.
 class CollapsibleQuoteBody extends StatefulWidget {

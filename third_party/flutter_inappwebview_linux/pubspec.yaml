@@ -1,0 +1,15 @@
+name: flutter_inappwebview_linux
+description: >-
+  Local no-op stand-in for flutter_inappwebview_linux. The real package needs
+  WPE WebKit, which Fedora does not ship, so Linux builds would fail in CMake.
+  This stub registers no native plugin, so Linux behaves as it did with
+  flutter_inappwebview 6.1.5 (no in-app webview on Linux).
+version: 0.1.0-beta.1
+publish_to: none
+
+environment:
+  sdk: ^3.14.0
+
+dependencies:
+  flutter:
+    sdk: flutter

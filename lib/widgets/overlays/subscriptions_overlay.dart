@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -172,7 +172,7 @@ class _SubscriptionsOverlayState extends State<SubscriptionsOverlay>
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          const Icon(FontAwesomeIcons.newspaper, size: 20),
+          const FaIcon(FontAwesomeIcons.newspaper, size: 20),
           const SizedBox(width: 8),
           const Text(
             'Subscriptions',

@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.6+1
 
 environment:
-  sdk: ^3.10.7
+  sdk: ^3.14.0
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -33,13 +33,13 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
+  cupertino_icons: ^2.0.0
 
   # HTTP client for REST API calls
   dio: ^5.8.0+1
 
   # JSON serialization annotations
-  json_annotation: ^4.9.0
+  json_annotation: ^4.12.0
 
   # Time ago formatting
   timeago: ^3.7.0
@@ -50,34 +50,43 @@ dependencies:
 
   # URL launching
   url_launcher: ^6.2.0
-  flutter_secure_storage: ^10.0.0
+  flutter_secure_storage: ^11.2.0
 
   # Video playback
   video_player: ^2.9.2
 
   # Sharing and file operations
-  share_plus: ^12.0.1
+  share_plus: ^13.3.1
   path_provider: ^2.1.0
   flutter_svg: ^2.2.3
-  google_fonts: ^8.0.0
+  google_fonts: ^9.0.0
   provider: ^6.1.5+1
-  font_awesome_flutter: ^10.12.0
-  flutter_inappwebview: ^6.1.5
+  font_awesome_flutter: ^11.0.0
+  flutter_inappwebview: 6.2.0-beta.3
   image_picker: ^1.1.2
   intl: ^0.20.2
   table_calendar: ^3.2.0
-  package_info_plus: ^9.0.0
+  package_info_plus: ^10.2.2
 
   # Firebase
-  firebase_core: ^3.12.1
-  firebase_analytics: ^11.6.0
+  firebase_core: ^5.2.0
+  firebase_analytics: ^13.1.0
   flutter_dotenv: ^6.0.0
   app_links: ^7.0.0
   scroll_to_index: ^3.0.1
-  wakelock_plus: ^1.4.0
+  wakelock_plus: ^1.8.2
   flutter_highlight: ^0.7.0
   highlight: ^0.7.0
   extended_image: ^10.0.1
+  material_ui: ^1.11.1
+
+# flutter_inappwebview 6.2's Linux implementation needs WPE WebKit, which
+# Fedora doesn't package. Replace it with a no-op stub so Linux builds skip
+# it (no in-app webview on Linux, same as with 6.1.5). Remove this once WPE
+# is available or the Linux webview is wanted.
+dependency_overrides:
+  flutter_inappwebview_linux:
+    path: third_party/flutter_inappwebview_linux
 
 dev_dependencies:
   flutter_test:

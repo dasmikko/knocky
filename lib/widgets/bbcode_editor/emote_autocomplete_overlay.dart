@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import '../../data/emotes.dart';
 
 /// Popup list of emote suggestions shown while typing `:code` in the editor.

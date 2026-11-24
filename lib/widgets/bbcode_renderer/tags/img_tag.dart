@@ -1,6 +1,6 @@
 import 'package:bbob_dart/bbob_dart.dart' as bbob;
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bbcode/flutter_bbcode.dart';
 
 import '../../image_gallery/image_gallery.dart';

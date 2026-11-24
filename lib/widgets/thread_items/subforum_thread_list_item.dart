@@ -1,5 +1,5 @@
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../../data/ratings.dart';
 import '../../data/role_colors.dart';

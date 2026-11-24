@@ -1,6 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -82,6 +82,13 @@ class MyApp extends StatelessWidget {
       darkTheme: KnockoutTheme.dark(),
       themeMode: settings.flutterThemeMode,
       navigatorObservers: [routeObserver],
+      // Some dependencies (extended_image, flutter_bbcode, table_calendar,
+      // ...) still use package:flutter/material.dart. The
+      // bridge maps our material_ui theme and localizations onto the legacy
+      // types so their widgets pick up the app theme. Remove once they've
+      // migrated to material_ui.
+      // ignore: deprecated_member_use
+      builder: (context, child) => MaterialUiCompatibilityBridge(child: child!),
       home: settings.hasSeenWelcome
           ? const HomeScreen(title: 'Knocky')
           : const WelcomeScreen(),

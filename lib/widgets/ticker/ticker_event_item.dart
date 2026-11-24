@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import '../../data/ratings.dart';
 import '../../data/role_colors.dart';
 import '../../models/ticker_event.dart';

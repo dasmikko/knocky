@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:dio/dio.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

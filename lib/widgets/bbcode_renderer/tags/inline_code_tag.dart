@@ -1,5 +1,5 @@
 import 'package:bbob_dart/bbob_dart.dart' as bbob;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bbcode/flutter_bbcode.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:knocky/widgets/bbcode_renderer/stylesheet.dart';

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import '../../data/ratings.dart';
 
 /// Result from rating picker - either a rating or a request to unrate

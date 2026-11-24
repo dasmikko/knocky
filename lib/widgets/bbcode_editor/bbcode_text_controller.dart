@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Controller for BBCode editor that handles text manipulation and selection
 class BbcodeTextController extends TextEditingController {

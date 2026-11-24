@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import '../services/settings_service.dart';
@@ -105,10 +105,10 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
         _canToggleMode && context.read<SettingsService>().swipeThreadImages;
     _images = _imagesForMode();
     _index = _indexOf(widget.initialImage);
-    _pageController = ExtendedPageController(
-      initialPage: _index,
-      pageSpacing: 16,
-    );
+    // No pageSpacing: extended_image 10.1.0 lays pages out at
+    // itemExtent + pageSpacing but reports itemExtent alone, which trips
+    // Flutter's (3.50+) fixed-extent sliver assertion in debug builds.
+    _pageController = ExtendedPageController(initialPage: _index);
   }
 
   @override
@@ -141,10 +141,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen>
       _images = _imagesForMode();
       _index = _indexOf(current);
       _pageController.dispose();
-      _pageController = ExtendedPageController(
-        initialPage: _index,
-        pageSpacing: 16,
-      );
+      _pageController = ExtendedPageController(initialPage: _index);
       _galleryGeneration++;
     });
     settings.setSwipeThreadImages(_threadMode);

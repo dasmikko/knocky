@@ -1,7 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
+// ignore: deprecated_member_use
+import 'package:flutter/material.dart' as legacy show Material, MaterialType;
+
 import '../models/calendar_event.dart';
 import '../services/knockout_api_service.dart';
 import 'event_detail_screen.dart';
@@ -41,9 +44,9 @@ class _EventsScreenState extends State<EventsScreen> {
       final endDate = DateTime(_focusedDay.year, _focusedDay.month + 1, 5);
 
       final events = await context.read<KnockoutApiService>().getCalendarEvents(
-            startDate: startDate,
-            endDate: endDate,
-          );
+        startDate: startDate,
+        endDate: endDate,
+      );
 
       setState(() {
         _events = events;
@@ -154,10 +157,7 @@ class _EventsScreenState extends State<EventsScreen> {
             const SizedBox(height: 16),
             Text('Error: $_error'),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _loadEvents,
-              child: const Text('Retry'),
-            ),
+            ElevatedButton(onPressed: _loadEvents, child: const Text('Retry')),
           ],
         ),
       );
@@ -170,95 +170,101 @@ class _EventsScreenState extends State<EventsScreen> {
         onRefresh: _loadEvents,
         child: Column(
           children: [
-            TableCalendar<CalendarEvent>(
-            firstDay: DateTime.utc(2020, 1, 1),
-            lastDay: DateTime.utc(2030, 12, 31),
-            focusedDay: _focusedDay,
-            calendarFormat: _calendarFormat,
-            eventLoader: _getEventsForDay,
-            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            onDaySelected: (selectedDay, focusedDay) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay;
-              });
-            },
-            onFormatChanged: (format) {
-              setState(() {
-                _calendarFormat = format;
-              });
-            },
-            onPageChanged: (focusedDay) {
-              setState(() {
-                _focusedDay = focusedDay;
-              });
-              // Reload events when month changes
-              _loadEvents();
-            },
-            calendarStyle: CalendarStyle(
-              markersMaxCount: 3,
-              markerDecoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-                shape: BoxShape.circle,
-              ),
-              todayDecoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
-                shape: BoxShape.circle,
-              ),
-              selectedDecoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-                shape: BoxShape.circle,
-              ),
-            ),
-            headerStyle: HeaderStyle(
-              formatButtonVisible: true,
-              titleCentered: true,
-              formatButtonShowsNext: false,
-              formatButtonDecoration: BoxDecoration(
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.primary,
+            // table_calendar still uses package:flutter/material.dart; its
+            // InkWell header buttons need a legacy Material ancestor.
+            legacy.Material(
+              type: legacy.MaterialType.transparency,
+              child: TableCalendar<CalendarEvent>(
+                firstDay: DateTime.utc(2020, 1, 1),
+                lastDay: DateTime.utc(2030, 12, 31),
+                focusedDay: _focusedDay,
+                calendarFormat: _calendarFormat,
+                eventLoader: _getEventsForDay,
+                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    _focusedDay = focusedDay;
+                  });
+                },
+                onFormatChanged: (format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                },
+                onPageChanged: (focusedDay) {
+                  setState(() {
+                    _focusedDay = focusedDay;
+                  });
+                  // Reload events when month changes
+                  _loadEvents();
+                },
+                calendarStyle: CalendarStyle(
+                  markersMaxCount: 3,
+                  markerDecoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  todayDecoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary
+                        .withValues(alpha: 0.3),
+                    shape: BoxShape.circle,
+                  ),
+                  selectedDecoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    shape: BoxShape.circle,
+                  ),
                 ),
-                borderRadius: BorderRadius.circular(8),
+                headerStyle: HeaderStyle(
+                  formatButtonVisible: true,
+                  titleCentered: true,
+                  formatButtonShowsNext: false,
+                  formatButtonDecoration: BoxDecoration(
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
               ),
             ),
-          ),
-          const Divider(height: 1),
-          Expanded(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: selectedEvents.isEmpty
-                  ? Center(
-                      key: const ValueKey('empty'),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.event_busy,
-                            size: 48,
-                            color: Colors.grey.shade400,
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            'No events on this day',
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontSize: 16,
+            const Divider(height: 1),
+            Expanded(
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: selectedEvents.isEmpty
+                    ? Center(
+                        key: const ValueKey('empty'),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.event_busy,
+                              size: 48,
+                              color: Colors.grey.shade400,
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 12),
+                            Text(
+                              'No events on this day',
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        key: ValueKey(_selectedDay),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        itemCount: selectedEvents.length,
+                        itemBuilder: (context, index) {
+                          final event = selectedEvents[index];
+                          return _buildEventCard(event);
+                        },
                       ),
-                    )
-                  : ListView.builder(
-                      key: ValueKey(_selectedDay),
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      itemCount: selectedEvents.length,
-                      itemBuilder: (context, index) {
-                        final event = selectedEvents[index];
-                        return _buildEventCard(event);
-                      },
-                    ),
+              ),
             ),
-          ),
           ],
         ),
       ),

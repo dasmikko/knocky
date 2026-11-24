@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A widget that provides smooth fade transitions between loading, empty,
 /// error, and content states.

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../../data/role_colors.dart';
 import '../../data/thread_icons.dart';

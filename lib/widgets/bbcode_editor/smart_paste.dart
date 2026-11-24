@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -6,9 +6,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 enum PasteUrlType {
   youtube('YouTube', FontAwesomeIcons.youtube, Colors.red),
   vimeo('Vimeo', FontAwesomeIcons.vimeo, Color(0xFF1AB7EA)),
-  streamable('Streamable', Icons.stream, Color(0xFF0F90FA)),
-  vocaroo('Vocaroo', Icons.mic, Color(0xFF4CAF50)),
-  spotify('Spotify', Icons.music_note, Color(0xFF1DB954)),
+  streamable('Streamable', FaIconData(Icons.stream), Color(0xFF0F90FA)),
+  vocaroo('Vocaroo', FaIconData(Icons.mic), Color(0xFF4CAF50)),
+  spotify('Spotify', FaIconData(Icons.music_note), Color(0xFF1DB954)),
   soundcloud('SoundCloud', FontAwesomeIcons.soundcloud, Color(0xFFFF5500)),
   twitter('Twitter/X', FontAwesomeIcons.twitter, Color(0xFF1DA1F2)),
   reddit('Reddit', FontAwesomeIcons.reddit, Colors.deepOrange),
@@ -18,12 +18,12 @@ enum PasteUrlType {
   tiktok('TikTok', FontAwesomeIcons.tiktok, Colors.black),
   tumblr('Tumblr', FontAwesomeIcons.tumblr, Color(0xFF35465C)),
   mastodon('Mastodon', FontAwesomeIcons.mastodon, Color(0xFF6364FF)),
-  image('Image', Icons.image, Color(0xFF4CAF50)),
-  video('Video', Icons.videocam, Color(0xFF2196F3)),
-  genericUrl('Link', Icons.link, Color(0xFF757575));
+  image('Image', FaIconData(Icons.image), Color(0xFF4CAF50)),
+  video('Video', FaIconData(Icons.videocam), Color(0xFF2196F3)),
+  genericUrl('Link', FaIconData(Icons.link), Color(0xFF757575));
 
   final String label;
-  final IconData icon;
+  final FaIconData icon;
   final Color color;
 
   const PasteUrlType(this.label, this.icon, this.color);
@@ -166,7 +166,7 @@ class _SmartPasteDialog extends StatelessWidget {
             const SizedBox(height: 12),
             ...options.map(
               (option) => ListTile(
-                leading: Icon(option.icon, color: option.color, size: 20),
+                leading: FaIcon(option.icon, color: option.color, size: 20),
                 title: Text(option.label),
                 contentPadding: EdgeInsets.zero,
                 visualDensity: VisualDensity.compact,
@@ -193,19 +193,19 @@ class _SmartPasteDialog extends StatelessWidget {
   List<_PasteOption> _buildOptions() {
     return switch (type) {
       PasteUrlType.image => [
-          _PasteOption('Insert as image', Icons.image, Color(0xFF4CAF50), SmartPasteAction.image),
-          _PasteOption('Insert as link', Icons.link, null, SmartPasteAction.link),
-          _PasteOption('Paste as text', Icons.text_fields, null, SmartPasteAction.plainText),
+          _PasteOption('Insert as image', FaIconData(Icons.image), Color(0xFF4CAF50), SmartPasteAction.image),
+          _PasteOption('Insert as link', FaIconData(Icons.link), null, SmartPasteAction.link),
+          _PasteOption('Paste as text', FaIconData(Icons.text_fields), null, SmartPasteAction.plainText),
         ],
       PasteUrlType.video => [
-          _PasteOption('Insert as video', Icons.videocam, Color(0xFF2196F3), SmartPasteAction.video),
-          _PasteOption('Insert as link', Icons.link, null, SmartPasteAction.link),
-          _PasteOption('Paste as text', Icons.text_fields, null, SmartPasteAction.plainText),
+          _PasteOption('Insert as video', FaIconData(Icons.videocam), Color(0xFF2196F3), SmartPasteAction.video),
+          _PasteOption('Insert as link', FaIconData(Icons.link), null, SmartPasteAction.link),
+          _PasteOption('Paste as text', FaIconData(Icons.text_fields), null, SmartPasteAction.plainText),
         ],
       PasteUrlType.genericUrl => [
-          _PasteOption('Insert as link', Icons.link, null, SmartPasteAction.link),
-          _PasteOption('Insert as smart link', Icons.preview, null, SmartPasteAction.smartLink),
-          _PasteOption('Paste as text', Icons.text_fields, null, SmartPasteAction.plainText),
+          _PasteOption('Insert as link', FaIconData(Icons.link), null, SmartPasteAction.link),
+          _PasteOption('Insert as smart link', FaIconData(Icons.preview), null, SmartPasteAction.smartLink),
+          _PasteOption('Paste as text', FaIconData(Icons.text_fields), null, SmartPasteAction.plainText),
         ],
       _ => [
           _PasteOption(
@@ -214,8 +214,8 @@ class _SmartPasteDialog extends StatelessWidget {
             type.color,
             SmartPasteAction.embed,
           ),
-          _PasteOption('Insert as link', Icons.link, null, SmartPasteAction.link),
-          _PasteOption('Paste as text', Icons.text_fields, null, SmartPasteAction.plainText),
+          _PasteOption('Insert as link', FaIconData(Icons.link), null, SmartPasteAction.link),
+          _PasteOption('Paste as text', FaIconData(Icons.text_fields), null, SmartPasteAction.plainText),
         ],
     };
   }
@@ -223,7 +223,7 @@ class _SmartPasteDialog extends StatelessWidget {
 
 class _PasteOption {
   final String label;
-  final IconData icon;
+  final FaIconData icon;
   final Color? color;
   final SmartPasteAction action;
 

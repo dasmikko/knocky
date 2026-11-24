@@ -1,5 +1,5 @@
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 import '../data/role_colors.dart';
 import '../data/thread_icons.dart';

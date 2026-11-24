@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +9,7 @@ import '../services/settings_service.dart';
 class _LoginProvider {
   final String name;
   final String provider;
-  final IconData icon;
+  final FaIconData icon;
   final Color color;
 
   const _LoginProvider({

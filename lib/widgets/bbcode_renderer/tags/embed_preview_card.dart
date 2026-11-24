@@ -1,5 +1,5 @@
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../services/oembed_service.dart';
@@ -7,7 +7,7 @@ import '../../../services/oembed_service.dart';
 /// Provider-specific styling configuration
 class _ProviderConfig {
   final String label;
-  final IconData icon;
+  final FaIconData icon;
   final Color color;
 
   const _ProviderConfig({
@@ -30,17 +30,17 @@ const _providerConfigs = {
   ),
   'streamable': _ProviderConfig(
     label: 'Streamable',
-    icon: Icons.stream,
+    icon: FaIconData(Icons.stream),
     color: Color(0xFF0F90FA),
   ),
   'vocaroo': _ProviderConfig(
     label: 'Vocaroo',
-    icon: Icons.mic,
+    icon: FaIconData(Icons.mic),
     color: Color(0xFF4CAF50),
   ),
   'spotify': _ProviderConfig(
     label: 'Spotify',
-    icon: Icons.music_note,
+    icon: FaIconData(Icons.music_note),
     color: Color(0xFF1DB954),
   ),
   'soundcloud': _ProviderConfig(
@@ -152,7 +152,7 @@ class _EmbedPreviewCardState extends State<EmbedPreviewCard> {
     final config = _providerConfigs[widget.provider] ??
         const _ProviderConfig(
           label: 'Link',
-          icon: Icons.link,
+          icon: FaIconData(Icons.link),
           color: Colors.grey,
         );
 
@@ -256,7 +256,7 @@ class _EmbedPreviewCardState extends State<EmbedPreviewCard> {
       padding: const EdgeInsets.all(12),
       child: Row(
         children: [
-          Icon(config.icon, color: config.color, size: 24),
+          FaIcon(config.icon, color: config.color, size: 24),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -314,7 +314,7 @@ class _EmbedPreviewCardState extends State<EmbedPreviewCard> {
                     case LoadState.failed:
                       return Container(
                         color: config.color.withValues(alpha: 0.1),
-                        child: Icon(config.icon, color: config.color, size: 32),
+                        child: FaIcon(config.icon, color: config.color, size: 32),
                       );
                     case LoadState.completed:
                       return null;
@@ -334,7 +334,7 @@ class _EmbedPreviewCardState extends State<EmbedPreviewCard> {
               ),
             ),
             child: Center(
-              child: Icon(config.icon, color: config.color, size: 28),
+              child: FaIcon(config.icon, color: config.color, size: 28),
             ),
           ),
         // Content
@@ -395,7 +395,7 @@ class _EmbedPreviewCardState extends State<EmbedPreviewCard> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(config.icon, size: 14, color: config.color),
+        FaIcon(config.icon, size: 14, color: config.color),
         const SizedBox(width: 4),
         Text(
           config.label,

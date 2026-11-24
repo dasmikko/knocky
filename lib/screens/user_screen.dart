@@ -1,6 +1,6 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:knocky/screens/image_viewer_screen.dart';
@@ -270,7 +270,7 @@ class _UserScreenState extends State<UserScreen>
         social.steam!.url!.isNotEmpty) {
       links.add(
         _buildSocialTile(
-          FontAwesomeIcons.steam,
+          FontAwesomeIcons.steam.data,
           'Steam',
           social.steam!.name ?? 'Steam Profile',
           social.steam!.url!,
@@ -281,7 +281,7 @@ class _UserScreenState extends State<UserScreen>
     if (social.discord != null && social.discord!.isNotEmpty) {
       links.add(
         _buildSocialTile(
-          FontAwesomeIcons.discord,
+          FontAwesomeIcons.discord.data,
           'Discord',
           social.discord!,
           '',
@@ -298,7 +298,7 @@ class _UserScreenState extends State<UserScreen>
     if (social.github != null && social.github!.isNotEmpty) {
       links.add(
         _buildSocialTile(
-          FontAwesomeIcons.github,
+          FontAwesomeIcons.github.data,
           'GitHub',
           social.github!,
           'https://github.com/${social.github}',
@@ -309,7 +309,7 @@ class _UserScreenState extends State<UserScreen>
     if (social.gitlab != null && social.gitlab!.isNotEmpty) {
       links.add(
         _buildSocialTile(
-          FontAwesomeIcons.gitlab,
+          FontAwesomeIcons.gitlab.data,
           'GitLab',
           social.gitlab!,
           'https://gitlab.com/${social.gitlab}',
@@ -320,7 +320,7 @@ class _UserScreenState extends State<UserScreen>
     if (social.twitter != null && social.twitter!.isNotEmpty) {
       links.add(
         _buildSocialTile(
-          FontAwesomeIcons.xTwitter,
+          FontAwesomeIcons.xTwitter.data,
           'Twitter',
           '@${social.twitter}',
           'https://x.com/${social.twitter}',
@@ -331,7 +331,7 @@ class _UserScreenState extends State<UserScreen>
     if (social.bluesky != null && social.bluesky!.isNotEmpty) {
       links.add(
         _buildSocialTile(
-          FontAwesomeIcons.bluesky,
+          FontAwesomeIcons.bluesky.data,
           'Bluesky',
           social.bluesky!,
           'https://bsky.app/profile/${social.bluesky}',
@@ -342,7 +342,7 @@ class _UserScreenState extends State<UserScreen>
     if (social.fediverse != null && social.fediverse!.isNotEmpty) {
       links.add(
         _buildSocialTile(
-          FontAwesomeIcons.mastodon,
+          FontAwesomeIcons.mastodon.data,
           'Fediverse',
           social.fediverse!,
           '',
@@ -361,7 +361,7 @@ class _UserScreenState extends State<UserScreen>
     if (social.youtube != null && social.youtube!.isNotEmpty) {
       links.add(
         _buildSocialTile(
-          FontAwesomeIcons.youtube,
+          FontAwesomeIcons.youtube.data,
           'YouTube',
           social.youtube!,
           'https://youtube.com/@${social.youtube}',
@@ -372,7 +372,7 @@ class _UserScreenState extends State<UserScreen>
     if (social.twitch != null && social.twitch!.isNotEmpty) {
       links.add(
         _buildSocialTile(
-          FontAwesomeIcons.twitch,
+          FontAwesomeIcons.twitch.data,
           'Twitch',
           social.twitch!,
           'https://twitch.tv/${social.twitch}',
@@ -383,7 +383,7 @@ class _UserScreenState extends State<UserScreen>
     if (social.tumblr != null && social.tumblr!.isNotEmpty) {
       links.add(
         _buildSocialTile(
-          FontAwesomeIcons.tumblr,
+          FontAwesomeIcons.tumblr.data,
           'Tumblr',
           social.tumblr!,
           'https://${social.tumblr}.tumblr.com',

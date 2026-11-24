@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'bbcode_editor.dart';
 import 'dialogs/emote_picker_dialog.dart';
@@ -56,7 +57,7 @@ class BbcodeToolbar extends StatelessWidget {
 
   Widget _buildInlineTagButton(BuildContext context, InlineTagConfig config) {
     return IconButton(
-      icon: Icon(config.icon),
+      icon: FaIcon(config.icon),
       tooltip: config.tooltip,
       onPressed: () {
         controller.wrapSelection(
@@ -70,7 +71,7 @@ class BbcodeToolbar extends StatelessWidget {
 
   Widget _buildDialogTagButton(BuildContext context, DialogTagConfig config) {
     return IconButton(
-      icon: Icon(config.icon),
+      icon: FaIcon(config.icon),
       tooltip: config.tooltip,
       onPressed: () => _handleDialogTag(context, config),
     );

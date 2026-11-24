@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:app_links/app_links.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import '../screens/subforum_screen.dart';
 import '../screens/thread_screen.dart';
 import '../screens/user_screen.dart';

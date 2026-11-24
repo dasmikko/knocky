@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Base class for toolbar items
@@ -14,7 +14,7 @@ class ToolbarSeparator extends ToolbarItem {
 /// Configuration for an inline tag (wraps selected text)
 class InlineTagConfig extends ToolbarItem {
   final String id;
-  final IconData icon;
+  final FaIconData icon;
   final String tooltip;
   final String openTag;
   final String closeTag;
@@ -33,7 +33,7 @@ class InlineTagConfig extends ToolbarItem {
 /// Configuration for a tag that requires a dialog to get additional input
 class DialogTagConfig extends ToolbarItem {
   final String id;
-  final IconData icon;
+  final FaIconData icon;
   final String tooltip;
   final DialogType dialogType;
 
@@ -79,7 +79,7 @@ class BbcodeToolbarConfig {
     // Text formatting
     InlineTagConfig(
       id: 'bold',
-      icon: Icons.format_bold,
+      icon: FaIconData(Icons.format_bold),
       tooltip: 'Bold',
       openTag: '[b]',
       closeTag: '[/b]',
@@ -87,7 +87,7 @@ class BbcodeToolbarConfig {
     ),
     InlineTagConfig(
       id: 'italic',
-      icon: Icons.format_italic,
+      icon: FaIconData(Icons.format_italic),
       tooltip: 'Italic',
       openTag: '[i]',
       closeTag: '[/i]',
@@ -95,7 +95,7 @@ class BbcodeToolbarConfig {
     ),
     InlineTagConfig(
       id: 'underline',
-      icon: Icons.format_underlined,
+      icon: FaIconData(Icons.format_underlined),
       tooltip: 'Underline',
       openTag: '[u]',
       closeTag: '[/u]',
@@ -103,7 +103,7 @@ class BbcodeToolbarConfig {
     ),
     InlineTagConfig(
       id: 'strikethrough',
-      icon: Icons.strikethrough_s,
+      icon: FaIconData(Icons.strikethrough_s),
       tooltip: 'Strikethrough',
       openTag: '[s]',
       closeTag: '[/s]',
@@ -111,13 +111,13 @@ class BbcodeToolbarConfig {
     ),
     DialogTagConfig(
       id: 'emote',
-      icon: Icons.emoji_emotions,
+      icon: FaIconData(Icons.emoji_emotions),
       tooltip: 'Insert Emote',
       dialogType: DialogType.emote,
     ),
     DialogTagConfig(
       id: 'mention',
-      icon: Icons.alternate_email,
+      icon: FaIconData(Icons.alternate_email),
       tooltip: 'Mention User',
       dialogType: DialogType.mention,
     ),
@@ -126,7 +126,7 @@ class BbcodeToolbarConfig {
     // Headings & structure
     InlineTagConfig(
       id: 'h1',
-      icon: Icons.looks_one,
+      icon: FaIconData(Icons.looks_one),
       tooltip: 'Heading 1',
       openTag: '[h1]',
       closeTag: '[/h1]',
@@ -134,7 +134,7 @@ class BbcodeToolbarConfig {
     ),
     InlineTagConfig(
       id: 'h2',
-      icon: Icons.looks_two,
+      icon: FaIconData(Icons.looks_two),
       tooltip: 'Heading 2',
       openTag: '[h2]',
       closeTag: '[/h2]',
@@ -142,7 +142,7 @@ class BbcodeToolbarConfig {
     ),
     InlineTagConfig(
       id: 'code',
-      icon: Icons.code,
+      icon: FaIconData(Icons.code),
       tooltip: 'Code',
       openTag: '[code]',
       closeTag: '[/code]',
@@ -150,7 +150,7 @@ class BbcodeToolbarConfig {
     ),
     InlineTagConfig(
       id: 'noparse',
-      icon: Icons.code_off,
+      icon: FaIconData(Icons.code_off),
       tooltip: 'No Parse',
       openTag: '[noparse]',
       closeTag: '[/noparse]',
@@ -163,13 +163,13 @@ class BbcodeToolbarConfig {
     // Block elements
     DialogTagConfig(
       id: 'quote',
-      icon: Icons.format_quote,
+      icon: FaIconData(Icons.format_quote),
       tooltip: 'Quote',
       dialogType: DialogType.quote,
     ),
     InlineTagConfig(
       id: 'blockquote',
-      icon: Icons.format_indent_increase,
+      icon: FaIconData(Icons.format_indent_increase),
       tooltip: 'Block Quote',
       openTag: '[blockquote]',
       closeTag: '[/blockquote]',
@@ -177,7 +177,7 @@ class BbcodeToolbarConfig {
     ),
     InlineTagConfig(
       id: 'spoiler',
-      icon: Icons.visibility_off,
+      icon: FaIconData(Icons.visibility_off),
       tooltip: 'Spoiler',
       openTag: '[spoiler]',
       closeTag: '[/spoiler]',
@@ -185,7 +185,7 @@ class BbcodeToolbarConfig {
     ),
     InlineTagConfig(
       id: 'collapse',
-      icon: Icons.expand_more,
+      icon: FaIconData(Icons.expand_more),
       tooltip: 'Collapse',
       openTag: '[collapse title="Title"]',
       closeTag: '[/collapse]',
@@ -195,19 +195,19 @@ class BbcodeToolbarConfig {
     // Links & media
     DialogTagConfig(
       id: 'url',
-      icon: Icons.link,
+      icon: FaIconData(Icons.link),
       tooltip: 'Insert Link',
       dialogType: DialogType.url,
     ),
     DialogTagConfig(
       id: 'image',
-      icon: Icons.image,
+      icon: FaIconData(Icons.image),
       tooltip: 'Insert Image',
       dialogType: DialogType.image,
     ),
     DialogTagConfig(
       id: 'video',
-      icon: Icons.videocam,
+      icon: FaIconData(Icons.videocam),
       tooltip: 'Insert Video',
       dialogType: DialogType.video,
     ),
@@ -228,7 +228,7 @@ class BbcodeToolbarConfig {
     ),
     DialogTagConfig(
       id: 'streamable',
-      icon: Icons.stream,
+      icon: FaIconData(Icons.stream),
       tooltip: 'Streamable',
       dialogType: DialogType.streamable,
     ),
@@ -237,13 +237,13 @@ class BbcodeToolbarConfig {
     // Audio embeds
     DialogTagConfig(
       id: 'vocaroo',
-      icon: Icons.mic,
+      icon: FaIconData(Icons.mic),
       tooltip: 'Vocaroo',
       dialogType: DialogType.vocaroo,
     ),
     DialogTagConfig(
       id: 'spotify',
-      icon: Icons.music_note,
+      icon: FaIconData(Icons.music_note),
       tooltip: 'Spotify',
       dialogType: DialogType.spotify,
     ),
